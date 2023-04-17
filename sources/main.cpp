@@ -27,7 +27,7 @@
 
 // server code
 
-#define PORT 3333
+#define PORT 8080
 
 int main(void)
 {
@@ -45,7 +45,14 @@ int main(void)
 		perror("cannot create socket");
 		return 0; 
 	}
-	
+
+	int enable = 1;
+	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
+	{
+		close(server_fd);
+		return (EXIT_FAILURE);
+	}
+
 	memset((char *)&address, 0, sizeof(address)); 
 	address.sin_family = AF_INET; 
 	address.sin_addr.s_addr = htonl(INADDR_ANY); 
@@ -81,7 +88,8 @@ int main(void)
 		// body += "\r\n\r\n";
 
 		head += "HTTP/1.1 200 OK\r\nContent-length: ";
-		head += body.size() + "\r\n\r\n";
+		head += "85\r\n";
+		// head += body.size() + "\r\n\r\n";
 		head += "Content-Type: text/html\r\n\r\n";
 
 		res = head + body + "\r\n\r\n";
@@ -90,6 +98,9 @@ int main(void)
 		send(new_socket, res.c_str(), res.size(), 0);
 		std::cout << "buffer:\n" << buffer << std::endl;
         close(new_socket);
+		res.clear();
+		body.clear();
+		head.clear();
     }
 
 	return (0);
