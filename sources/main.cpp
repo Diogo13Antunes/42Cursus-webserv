@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/04/13 16:17:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/04/17 15:17:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 // server code
 
-#define PORT 8080
+#define PORT 3333
 
 int main(void)
 {
@@ -35,6 +35,10 @@ int main(void)
 	long valread;
 	struct sockaddr_in address;
 	int addrlen;
+
+	std::string head;
+	std::string body;
+	std::string res;
 	
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
 	{
@@ -68,10 +72,23 @@ int main(void)
         }
         
         char buffer[30000] = {0};
-        valread = read( new_socket , buffer, 30000);
-        printf("%s\n",buffer );
-		write(new_socket , "hello" , strlen("hello"));
-        printf("Hello message sent\n");
+		
+        valread = read(new_socket , buffer, 30000);
+        
+		std::cout << "read: " << valread << std::endl;
+
+		body += "<html><head><title>WebServer</title></head><body><h1>Hello World</h1></body></html>";
+		// body += "\r\n\r\n";
+
+		head += "HTTP/1.1 200 OK\r\nContent-length: ";
+		head += body.size() + "\r\n\r\n";
+		head += "Content-Type: text/html\r\n\r\n";
+
+		res = head + body + "\r\n\r\n";
+
+		//send(new_socket, "HTTP/1.1 200 OK\r\nContent-length: 5\r\n\r\nhello\r\n\r\n", 48, 0);
+		send(new_socket, res.c_str(), res.size(), 0);
+		std::cout << "buffer:\n" << buffer << std::endl;
         close(new_socket);
     }
 
