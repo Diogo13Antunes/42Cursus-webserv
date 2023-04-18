@@ -18,6 +18,7 @@
 #include <netinet/in.h>
 #include <string.h>
 
+#include <fstream>
 
 // Test comminication wit sockets
 
@@ -29,7 +30,7 @@
 
 #define PORT 8080
 
-int main(void)
+int main(int ac, char **av)
 {
 	int server_fd, new_socket;
 	long valread;
@@ -40,6 +41,9 @@ int main(void)
 	std::string body;
 	std::string res;
 	
+	if (ac != 2)
+		return (write(2, "Error: Invalid number of Arguments!\n", strlen("Error: Invalid number of Arguments!\n")));
+
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
 	{
 		perror("cannot create socket");
@@ -84,12 +88,14 @@ int main(void)
         
 		std::cout << "read: " << valread << std::endl;
 
-		body += "<html><head><title>WebServer</title></head><body><h1>Hello World</h1></body></html>";
-		// body += "\r\n\r\n";
+		std::ifstream	htmlFile(av[1]);
+		std::string		buff;
+
+		while (std::getline(htmlFile, buff))
+			body += buff;
 
 		head += "HTTP/1.1 200 OK\r\nContent-length: ";
-		head += "85\r\n";
-		// head += body.size() + "\r\n\r\n";
+		head += body.size() + "\r\n";
 		head += "Content-Type: text/html\r\n\r\n";
 
 		res = head + body + "\r\n\r\n";
