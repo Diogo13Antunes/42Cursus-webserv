@@ -17,6 +17,8 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <sys/poll.h>
+#include <errno.h>
 
 #include <fstream>
 
@@ -50,6 +52,7 @@ int main(int ac, char **av)
 		return 0; 
 	}
 
+	// este if seve para podermos usar sempre a mesma porta
 	int enable = 1;
 	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
 	{
@@ -62,7 +65,7 @@ int main(int ac, char **av)
 	address.sin_addr.s_addr = htonl(INADDR_ANY); 
 	address.sin_port = htons(PORT);
 	addrlen = sizeof(address);
-	
+
 	if (bind(server_fd, (struct sockaddr *) &address, sizeof(address)) < 0) 
 	{
     	perror("bind failed"); 
@@ -73,6 +76,14 @@ int main(int ac, char **av)
         perror("In listen");
         exit(EXIT_FAILURE);
     }
+
+	struct pollfd fds[10 + 1];
+	int	nfds = 1;
+	int timeout = 5000;
+
+	fds[0].fd = server_fd;
+	fds[0].events = POLLIN;
+
     while(1)
     {
         printf("\n+++++++ Waiting for new connection ++++++++\n\n");
@@ -82,10 +93,10 @@ int main(int ac, char **av)
             exit(EXIT_FAILURE);
         }
         
-        char buffer[30000] = {0};
-		
+		char buffer[30000] = {0};
+
         valread = read(new_socket , buffer, 30000);
-        
+
 		std::cout << "read: " << valread << std::endl;
 
 		std::ifstream	htmlFile(av[1]);
@@ -107,6 +118,12 @@ int main(int ac, char **av)
 		res.clear();
 		body.clear();
 		head.clear();
+
+		poll(fds, nfds, timeout);
+		if (fds[0].revents & POLLIN)
+			std::cout << "Hello from backend!\n";
+		else
+			std::cout << "GoodBye from backend!\n";
     }
 
 	return (0);
