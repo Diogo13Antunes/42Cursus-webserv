@@ -7,7 +7,7 @@ RM = rm -f
 
 $(VERBOSE).SILENT:
 
-INC = -I ./includes
+INC = -I ./includes -I ./sources
 
 SRC_PATH = ./sources
 

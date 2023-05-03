@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/02 15:06:23 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/05/03 12:52:08 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <errno.h>
 
 #include <fstream>
+
+#include <Configs.hpp>
 
 // Test comminication wit sockets
 
@@ -42,9 +44,13 @@ int main(int ac, char **av)
 	std::string head;
 	std::string body;
 	std::string res;
-	
+
 	if (ac != 2)
 		return (write(2, "Error: Invalid number of Arguments!\n", strlen("Error: Invalid number of Arguments!\n")));
+
+	Configs	cfg;
+
+
 
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
 	{

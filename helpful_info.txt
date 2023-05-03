@@ -1,0 +1,122 @@
+In an HTTP server configuration file, there are various server attributes that can be defined to customize the server's behavior. Here are some common server attributes that can be specified:
+
+1.  Server name: The name of the server that will be used to identify it in log files and other places.
+2.  Listen: The IP address and port number the server should listen on.
+3.  Document root: The directory where the server should look for files to serve.
+4.  Error log: The file where the server should log errors.
+5.  Access log: The file where the server should log access to resources.
+6.  Directory index: The default file to serve when a client requests a directory.
+7.  MIME types: The mapping of file extensions to MIME types.
+8.  Virtual hosts: The ability to host multiple websites on the same server by specifying different configurations for each host.
+9.  SSL/TLS certificates: Configuration for securing connections using SSL/TLS certificates.
+10. Proxy configuration: Configuration for proxying requests to other servers.
+
+These attributes can be specified using various directives in the configuration file, such as:
+ServerName;
+Listen;
+DocumentRoot;
+ErrorLog;
+DirectoryIndex;
+Types;
+VirtualHost;
+
+Example ->
+
+{
+  "user": "nginx",
+  "worker_processes": 2,
+  "error_log": "/var/log/nginx/error.log",
+  "pid": "/var/run/nginx.pid",
+  "events": {
+    "worker_connections": 1024,
+    "use": "epoll"
+  },
+  "http": {
+    "include": "/etc/nginx/mime.types",
+    "default_type": "application/octet-stream",
+    "access_log": "/var/log/nginx/access.log",
+    "sendfile": "on",
+    "tcp_nopush": "on",
+    "tcp_nodelay": "on",
+    "keepalive_timeout": 65,
+    "gzip": "on",
+    "gzip_types": [
+      "text/plain",
+      "text/css",
+      "application/json",
+      "application/javascript",
+      "application/x-javascript",
+      "text/xml",
+      "application/xml",
+      "application/xml+rss",
+      "application/atom+xml",
+      "image/svg+xml"
+    ],
+    "server": {
+      "listen": [
+        "80 default_server",
+        "[::]:80 default_server"
+      ],
+      "server_name": "example.com",
+      "root": "/var/www/html",
+      "index": [
+        "index.html",
+        "index.htm"
+      ],
+      "error_page": {
+        "404": "/404.html",
+        "500": "/500.html"
+      },
+      "location": [
+        {
+          "path": "/",
+          "try_files": [
+            "$uri",
+            "$uri/",
+            "/index.html"
+          ]
+        },
+        {
+          "path": "/api",
+          "proxy_pass": "http://localhost:3000",
+          "proxy_set_header": {
+            "Host": "$host",
+            "X-Real-IP": "$remote_addr",
+            "X-Forwarded-For": "$proxy_add_x_forwarded_for"
+          }
+        },
+        {
+          "path": "/images",
+          "alias": "/var/www/images"
+        },
+        {
+          "path": "~ \\.php$",
+          "fastcgi_pass": "unix:/var/run/php-fpm.sock",
+          "fastcgi_param": {
+            "SCRIPT_FILENAME": "$document_root$fastcgi_script_name",
+            "PATH_INFO": "$fastcgi_path_info",
+            "QUERY_STRING": "$query_string",
+            "REQUEST_METHOD": "$request_method",
+            "CONTENT_TYPE": "$content_type",
+            "CONTENT_LENGTH": "$content_length",
+            "SERVER_NAME": "$server_name",
+            "REQUEST_URI": "$request_uri",
+            "DOCUMENT_URI": "$document_uri",
+            "DOCUMENT_ROOT": "$document_root",
+            "SERVER_PROTOCOL": "$server_protocol",
+            "GATEWAY_INTERFACE": "CGI/1.1",
+            "SERVER_SOFTWARE": "nginx/$nginx_version",
+            "REMOTE_ADDR": "$remote_addr",
+            "REMOTE_PORT": "$remote_port",
+            "SERVER_ADDR": "$server_addr",
+            "SERVER_PORT": "$server_port",
+            "SERVER_ADMIN": "$server_admin",
+            "SCRIPT_NAME": "$fastcgi_script_name"
+          },
+          "include": "fastcgi_params"
+        }
+      ]
+    }
+  }
+}
+
