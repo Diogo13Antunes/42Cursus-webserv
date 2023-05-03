@@ -1,9 +1,3 @@
-if [ $# -eq 0]
-	then
-		printf "Please provide the name of the class\n"
-		printf "Usage: $0 [CLASS_NAME] [PATH]\n"
-fi 
-
 cd $2
 
 cat << EOF > $1.hpp
