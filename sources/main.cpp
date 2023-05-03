@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/04/17 15:17:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/02 15:06:23 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,11 @@ int main(int ac, char **av)
 	fds[0].fd = server_fd;
 	fds[0].events = POLLIN;
 
+	int ret_poll = 0;
+
     while(1)
     {
-        printf("\n+++++++ Waiting for new connection ++++++++\n\n");
+	    printf("\n+++++++ Waiting for new connection ++++++++\n\n");
         if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
         {
             perror("In accept");
@@ -106,7 +108,8 @@ int main(int ac, char **av)
 			body += buff;
 
 		head += "HTTP/1.1 200 OK\r\nContent-length: ";
-		head += body.size() + "\r\n";
+		head += body.size();
+		head += "\r\n";
 		head += "Content-Type: text/html\r\n\r\n";
 
 		res = head + body + "\r\n\r\n";
@@ -119,7 +122,8 @@ int main(int ac, char **av)
 		body.clear();
 		head.clear();
 
-		poll(fds, nfds, timeout);
+		ret_poll = poll(fds, nfds, timeout);
+		printf("RET -> %d\n", ret_poll);
 		if (fds[0].revents & POLLIN)
 			std::cout << "Hello from backend!\n";
 		else
