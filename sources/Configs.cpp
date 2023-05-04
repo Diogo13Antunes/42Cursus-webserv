@@ -1,6 +1,7 @@
 #include "Configs.hpp"
 
-static bool	initConfigs(char *configFile);
+static bool			initConfigs(char *configFile);
+static std::string	getString();
 
 Configs::Configs(void)
 {
@@ -55,31 +56,51 @@ static bool	initConfigs(char *configFile)
 	return (true);
 }
 
-static char	Configs::getNextToken()
+char	Configs::getNextToken()
 {
 	static size_t	index = 0;
 	char			temp = 0;
 
 	while (1)
 	{
-		temp = this._configFile.c_str()[index];
+		temp = this->_configFile.c_str()[index];
 		if (temp == '\0')
 			break;
 		else if (temp == TOKEN_CURLY_OPEN)
 			return (TOKEN_CURLY_OPEN);
 		else if (temp == TOKEN_CURLY_CLOSE)
 			return (TOKEN_CURLY_CLOSE);
-		else if (temp == TOKEN_ARRAY_OPEN);
+		else if (temp == TOKEN_ARRAY_OPEN)
 			return (TOKEN_ARRAY_OPEN);
-		else if (temp == TOKEN_ARRAY_CLOSE);
+		else if (temp == TOKEN_ARRAY_CLOSE)
 			return (TOKEN_ARRAY_CLOSE);
-		else if (temp == TOKEN_COMMA);
+		else if (temp == TOKEN_COMMA)
 			return (TOKEN_COMMA);
-		else if (temp == TOKEN_COLON);
+		else if (temp == TOKEN_COLON)
 			return (TOKEN_COLON);
 		index++;
 	}
 	return (temp);
+}
+
+// Function to get a string inside quotes 
+// source -> source string to extract the result
+// index -> index to start getting the string
+// Example -> "example" = example
+static std::string	getString(std::string source, size_t *index)
+{
+	std::string	result;
+	char		temp = 0;
+	size_t		i;
+
+	i = *index;
+	result.clear();
+	while (1)
+	{
+		temp = 
+	}
+	*index = i + 1;
+	return (result);
 }
 
 /* Config Server inner class methods */

@@ -6,12 +6,13 @@
 
 #include "Terminal.hpp"
 
-#define	TOKEN_CURLY_OPEN '{'
-#define TOKEN_CURLY_CLOSE '}'
-#define TOKEN_ARRAY_OPEN '['
-#define TOKEN_ARRAY_CLOSE ']'
-#define TOKEN_COMMA ','
-#define TOKEN_COLON ':'
+#define	TOKEN_CURLY_OPEN		'{'
+#define TOKEN_CURLY_CLOSE		'}'
+#define TOKEN_ARRAY_OPEN		'['
+#define TOKEN_ARRAY_CLOSE		']'
+#define TOKEN_COMMA				','
+#define TOKEN_COLON				':'
+#define TOKEN_QUOTATION_MARKS	'\"'
 
 class Configs
 {
@@ -32,6 +33,7 @@ class Configs
 				std::string	getIndex();
 
 			private:
+			
 				int			_port;
 				std::string	_serverName;
 				std::string	_root;
