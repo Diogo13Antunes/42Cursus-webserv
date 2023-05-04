@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/04 16:28:59 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:05:12 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <string.h>
 
 #include <sys/poll.h>
+
+#include <sstream>
 
 
 // Test comminication wit sockets
@@ -155,11 +157,20 @@ void send_response(int socket_fd)
 	std::string body;
 	std::string res;
 
-	body += "<html><head><title>WebServer</title></head><body><h1>Hello World</h1></body></html>";
-	head += "HTTP/1.1 200 OK\r\nContent-length: ";
-	head += "85\r\n";
+	std::stringstream out;
+
+	body = "<html><head><title>WebServer</title></head><body><h1>Hello World</h1></body></html>\r\n\r\n";
+	out << body.size();
+	
+	head = "HTTP/1.1 200 OK\r\nContent-length: ";
+	head += out.str();
+	head += "\r\n";
 	head += "Content-Type: text/html\r\n\r\n";
-	res = head + body + "\r\n\r\n";
+	//res = head + body + "\r\n\r\n";
+	res = head + body;
+
+	std::cout << "#################" << std::endl; 
+	std::cout << head << std::endl; 
 
 	send(socket_fd, res.c_str(), res.size(), 0);
 	//write(socket_fd, res.c_str(), res.size());
