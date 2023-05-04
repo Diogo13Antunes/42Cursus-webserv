@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/03 12:52:08 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/05/04 13:39:35 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 #include <fstream>
 
-#include <Configs.hpp>
+#include "Configs.hpp"
 
 // Test comminication wit sockets
 
@@ -32,7 +32,7 @@
 
 // server code
 
-#define PORT 8080
+/* #define PORT 8080
 
 int main(int ac, char **av)
 {
@@ -45,12 +45,8 @@ int main(int ac, char **av)
 	std::string body;
 	std::string res;
 
-	if (ac != 2)
+	if (ac != 3)
 		return (write(2, "Error: Invalid number of Arguments!\n", strlen("Error: Invalid number of Arguments!\n")));
-
-	Configs	cfg;
-
-
 
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
 	{
@@ -136,5 +132,18 @@ int main(int ac, char **av)
 			std::cout << "GoodBye from backend!\n";
     }
 
+	return (0);
+} */
+
+int main(int ac, char **av)
+{
+	if (ac != 2)
+	{
+		Terminal::printErrors("Invalid number of Arguments");
+		return (1);
+	}
+
+	Configs	cfg(av[1]);
+	
 	return (0);
 }

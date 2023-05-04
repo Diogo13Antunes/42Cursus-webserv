@@ -1,13 +1,21 @@
-#include <Configs.hpp>
+#include "Configs.hpp"
+
+static bool	initConfigs(char *configFile);
 
 Configs::Configs(void)
 {
 	//Default Configs Constructor
 }
 
+Configs::Configs(char *configsFileName)
+{
+	initConfigs(configsFileName);
+}
+
 Configs::Configs(const Configs &src)
 {
 	//Configs Copy Constructor
+	*this = src;
 }
 
 Configs::~Configs(void)
@@ -18,6 +26,8 @@ Configs::~Configs(void)
 Configs &Configs::operator=(const Configs &src)
 {
 	//Configs Copy Assignment Operator
+	*this = src;
+	return (*this);
 }
 
 // Return true if the configs were done well, if not return false
@@ -29,12 +39,13 @@ static bool	initConfigs(char *configFile)
 
 	if (file.is_open())
 	{
-		Terminal::printMessages)("File opened successfully");
+		Terminal::printMessages("File opened successfully");
 		while (std::getline(file, buff))
 				contentFromFile += buff;
 		Terminal::printMessages("File ->");
-		Terminal::printMessages("");
 		Terminal::printMessages(contentFromFile.c_str());
+
+
 	}
 	else
 	{
@@ -42,4 +53,73 @@ static bool	initConfigs(char *configFile)
 		return (false);
 	}
 	return (true);
+}
+
+static char	Configs::getNextToken()
+{
+	static size_t	index = 0;
+	char			temp = 0;
+
+	while (1)
+	{
+		temp = this._configFile.c_str()[index];
+		if (temp == '\0')
+			break;
+		else if (temp == TOKEN_CURLY_OPEN)
+			return (TOKEN_CURLY_OPEN);
+		else if (temp == TOKEN_CURLY_CLOSE)
+			return (TOKEN_CURLY_CLOSE);
+		else if (temp == TOKEN_ARRAY_OPEN);
+			return (TOKEN_ARRAY_OPEN);
+		else if (temp == TOKEN_ARRAY_CLOSE);
+			return (TOKEN_ARRAY_CLOSE);
+		else if (temp == TOKEN_COMMA);
+			return (TOKEN_COMMA);
+		else if (temp == TOKEN_COLON);
+			return (TOKEN_COLON);
+		index++;
+	}
+	return (temp);
+}
+
+/* Config Server inner class methods */
+
+void	Configs::Server::setPort(int	newPort)
+{
+	this->_port = newPort;
+}
+
+void	Configs::Server::setServerName(std::string newServerName)
+{
+	this->_serverName = newServerName;
+}
+
+void	Configs::Server::setRoot(std::string newRoot)
+{
+	this->_root = newRoot;
+}
+
+void	Configs::Server::setIndex(std::string newIndex)
+{
+	this->_index = newIndex;
+}
+
+int	Configs::Server::getPort()
+{
+	return (this->_port);
+}
+
+std::string	Configs::Server::getServerName()
+{
+	return (this->_serverName);
+}
+
+std::string	Configs::Server::getRoot()
+{
+	return (this->_root);
+}
+
+std::string	Configs::Server::getIndex()
+{
+	return (this->_index);
 }
