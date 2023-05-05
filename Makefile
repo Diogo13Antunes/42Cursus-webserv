@@ -2,10 +2,10 @@ NAME = webserv
 
 CXX = c++
 # CXXFLAGS = -Wall -Werror -Wextra -g -fsanitize=address -std=c++98
-CXXFLAGS = -std=c++98
+CXXFLAGS = -g -std=c++98
 RM = rm -f
 
-$(VERBOSE).SILENT:
+#$(VERBOSE).SILENT:
 
 INC = -I ./includes
 
@@ -13,7 +13,9 @@ SRC_PATH = ./sources
 
 OBJ_PATH = ./objects
 
-SRC_NAME =	main.cpp
+SRC_NAME =	main.cpp		\
+			Connection.cpp	\
+			Connections.cpp	\
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))
 

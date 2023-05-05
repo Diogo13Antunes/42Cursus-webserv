@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/04 17:05:12 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/05 16:27:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@
 
 #include <sstream>
 
+#include "Connection.hpp"
+#include "Connections.hpp"
+
 
 // Test comminication wit sockets
 
@@ -35,6 +38,7 @@
 
 void send_response(int socket_fd);
 
+/*
 int main(void)
 {
 	int server_fd, new_socket;
@@ -47,6 +51,7 @@ int main(void)
 
 	int aux = 0;
 
+	int a = POLLPRI;
 
 	struct pollfd fds[3];
 	
@@ -93,9 +98,10 @@ int main(void)
     {
 		//std::cout << "Wait new connection" << std::endl;
 
-		res_poll = poll(fds, n_events, 1000);
+		res_poll = poll(fds, n_events, 10000);
 
-		//std::cout << "res_poll: " << res_poll << std::endl;
+
+		std::cout << "res_poll: " << res_poll << std::endl;
 
 		//if (res_poll > 0 && fds[0].revents && POLLIN)
 		if (fds[0].revents && POLLIN)
@@ -177,4 +183,18 @@ void send_response(int socket_fd)
 
     //if (close(socket_fd) == -1)
 	//	std::cout << "Erro a fechar" << std::endl;
+}
+*/
+
+int main(void)
+{
+
+	Connections c;
+
+	c.addConnection(new Connection(22, 0));
+	c.addConnection(new Connection(33, 0));
+	c.addConnection(new Connection(44, 0));
+	c.showConnections();
+	
+	return (0);
 }
