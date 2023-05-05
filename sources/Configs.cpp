@@ -1,7 +1,8 @@
 #include "Configs.hpp"
 
 static bool			initConfigs(char *configFile);
-static std::string	getString();
+static std::string	getString(std::string source, size_t *index);
+static bool isToken(char c);
 
 Configs::Configs(void)
 {
@@ -32,21 +33,39 @@ Configs &Configs::operator=(const Configs &src)
 }
 
 // Return true if the configs were done well, if not return false
-static bool	initConfigs(char *configFile)
+bool	Configs::initConfigs(char *configFile)
 {
 	std::ifstream	file(configFile);
 	std::string		buff;
-	std::string		contentFromFile;
+
+	size_t	index = 0;
 
 	if (file.is_open())
 	{
 		Terminal::printMessages("File opened successfully");
 		while (std::getline(file, buff))
-				contentFromFile += buff;
+				this->_configFile += buff;
 		Terminal::printMessages("File ->");
-		Terminal::printMessages(contentFromFile.c_str());
+		Terminal::printMessages(this->_configFile.c_str());
 
+		char		res;
+		std::string word;
 
+		while (1)
+		{
+			res = getNextToken(&index);
+			if (!res)
+				break;
+			if (res == TOKEN_QUOTATION_MARKS)
+			{
+				word += "Word ";
+				word += getString(this->_configFile, &index);
+				Terminal::printMessages(word.c_str());
+			}
+			if (isToken(res) || res == ' ')
+				index += 1;
+			word.clear();
+		}
 	}
 	else
 	{
@@ -56,30 +75,30 @@ static bool	initConfigs(char *configFile)
 	return (true);
 }
 
-char	Configs::getNextToken()
+static bool isToken(char c)
 {
-	static size_t	index = 0;
+	if (c == TOKEN_CURLY_OPEN || c == TOKEN_CURLY_CLOSE
+		|| c == TOKEN_ARRAY_OPEN || c == TOKEN_ARRAY_CLOSE
+		|| c == TOKEN_COMMA || c == TOKEN_COLON
+		|| c == TOKEN_QUOTATION_MARKS)
+		return (true);
+	return (false);
+}
+
+char	Configs::getNextToken(size_t *index)
+{
+	size_t			i = 0;
 	char			temp = 0;
 
+	i = *index;
 	while (1)
 	{
-		temp = this->_configFile.c_str()[index];
-		if (temp == '\0')
+		temp = this->_configFile[i];
+		if (temp == '\0' || isToken(temp))
 			break;
-		else if (temp == TOKEN_CURLY_OPEN)
-			return (TOKEN_CURLY_OPEN);
-		else if (temp == TOKEN_CURLY_CLOSE)
-			return (TOKEN_CURLY_CLOSE);
-		else if (temp == TOKEN_ARRAY_OPEN)
-			return (TOKEN_ARRAY_OPEN);
-		else if (temp == TOKEN_ARRAY_CLOSE)
-			return (TOKEN_ARRAY_CLOSE);
-		else if (temp == TOKEN_COMMA)
-			return (TOKEN_COMMA);
-		else if (temp == TOKEN_COLON)
-			return (TOKEN_COLON);
-		index++;
+		i++;
 	}
+	*index = i;
 	return (temp);
 }
 
@@ -93,13 +112,16 @@ static std::string	getString(std::string source, size_t *index)
 	char		temp = 0;
 	size_t		i;
 
-	i = *index;
-	result.clear();
+	i = *index + 1;
 	while (1)
 	{
-		temp = 
+		temp = source[i];
+		if (temp == TOKEN_QUOTATION_MARKS)
+			break;
+		result += temp;
+		i++;
 	}
-	*index = i + 1;
+	*index = i;
 	return (result);
 }
 

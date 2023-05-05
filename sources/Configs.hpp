@@ -46,7 +46,9 @@ class Configs
 
 	private:
 
-		char	getNextToken();
+		bool	initConfigs(char *configFile);
+
+		char	getNextToken(size_t *index);
 
 		Configs &operator=(const Configs &src);
 		Configs(const Configs &src);

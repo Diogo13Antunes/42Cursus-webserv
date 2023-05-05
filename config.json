@@ -1,4 +1,4 @@
-{
+"http": {
   "server": {
     "listen": [
       "8080 default_server",
