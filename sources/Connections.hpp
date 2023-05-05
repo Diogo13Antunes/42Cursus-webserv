@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/05 16:24:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/05 17:43:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ class Connections
 		~Connections(void);
 		//Connections &operator=(const Connections &src);
 
-		void addConnection(Connection *c);
+		void addConnection(int fd, short events);
 		void removeConnection(void);
 
 		// for debug only

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/05 16:27:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/05 17:44:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@
 
 void send_response(int socket_fd);
 
-/*
+
 int main(void)
 {
 	int server_fd, new_socket;
@@ -54,6 +54,8 @@ int main(void)
 	int a = POLLPRI;
 
 	struct pollfd fds[3];
+
+	Connections conns;
 	
 	// cria socket
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
@@ -111,6 +113,11 @@ int main(void)
 				perror("In accept");
 				exit(EXIT_FAILURE);
 			}
+			conns.addConnection(new_socket, POLLIN);
+			conns.showConnections();
+
+
+
 			valread = read(new_socket , buffer, 30000);
 			std::cout << "index: 0" << std::endl;
 			std::cout << buffer << std::endl;
@@ -184,8 +191,9 @@ void send_response(int socket_fd)
     //if (close(socket_fd) == -1)
 	//	std::cout << "Erro a fechar" << std::endl;
 }
-*/
 
+
+/*
 int main(void)
 {
 
@@ -198,3 +206,4 @@ int main(void)
 	
 	return (0);
 }
+*/
