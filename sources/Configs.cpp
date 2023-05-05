@@ -42,11 +42,9 @@ bool	Configs::initConfigs(char *configFile)
 
 	if (file.is_open())
 	{
-		Terminal::printMessages("File opened successfully");
 		while (std::getline(file, buff))
 				this->_configFile += buff;
-		Terminal::printMessages("File ->");
-		Terminal::printMessages(this->_configFile.c_str());
+		// Terminal::printMessages(this->_configFile.c_str());
 
 		char		res;
 		std::string word;
@@ -58,13 +56,11 @@ bool	Configs::initConfigs(char *configFile)
 				break;
 			if (res == TOKEN_QUOTATION_MARKS)
 			{
-				word += "Word ";
-				word += getString(this->_configFile, &index);
+				word = getString(this->_configFile, &index);
 				Terminal::printMessages(word.c_str());
 			}
 			if (isToken(res) || res == ' ')
 				index += 1;
-			word.clear();
 		}
 	}
 	else
