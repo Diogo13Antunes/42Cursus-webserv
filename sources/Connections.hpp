@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/05 17:43:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/08 14:45:48 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,22 +19,22 @@
 class Connections
 {
 	private:
-		std::vector<Connection *> activeConnects;
+		std::vector<Connection *>	_activeConnects;
+		struct pollfd				_fds[1024];
 
 		void removeAllConnections(void);
-
+		void removeConnection(void);
 
 	public:
-
-		//std::vector<Connection *> connect;
 
 		Connections(void);
 		//Connections(const Connections &src);
 		~Connections(void);
 		//Connections &operator=(const Connections &src);
 
-		void addConnection(int fd, short events);
-		void removeConnection(void);
+		void addNewConnection(int fd, short events);
+		struct pollfd *getConnectionsArray(void);
+		int getNumConnections(void);
 
 		// for debug only
 		void showConnections(void);

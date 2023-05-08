@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/05 17:44:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/08 15:00:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@
 
 void send_response(int socket_fd);
 
-
+/*
 int main(void)
 {
 	int server_fd, new_socket;
@@ -103,7 +103,7 @@ int main(void)
 		res_poll = poll(fds, n_events, 10000);
 
 
-		std::cout << "res_poll: " << res_poll << std::endl;
+		//std::cout << "res_poll: " << res_poll << std::endl;
 
 		//if (res_poll > 0 && fds[0].revents && POLLIN)
 		if (fds[0].revents && POLLIN)
@@ -113,8 +113,8 @@ int main(void)
 				perror("In accept");
 				exit(EXIT_FAILURE);
 			}
-			conns.addConnection(new_socket, POLLIN);
-			conns.showConnections();
+			//conns.addConnection(new_socket, POLLIN);
+			//conns.showConnections();
 
 
 
@@ -145,9 +145,13 @@ int main(void)
 		//else if (res_poll > 0 && fds[1].revents && POLLIN)
 		else if (fds[1].revents && POLLIN)
 		{
-			valread = read(fds[1].fd , buffer, 30000);
-			send_response(fds[1].fd);
-			std::cout << "index: 1" << std::endl;
+			for (int i = 0; i < 30000; i++)
+				buffer[i] = 0;
+
+			//valread = read(fds[1].fd , buffer, 30000);
+			//send_response(fds[1].fd);
+			valread = read(fds[1].fd , buffer, 10);
+			//std::cout << "index: 1" << std::endl;
 			std::cout << buffer << std::endl;
 			fds[1].revents = 0;
 		}
@@ -163,6 +167,91 @@ int main(void)
     }
 	return (0);
 }
+*/
+
+
+int main(void)
+{
+	int server_fd, new_socket;
+	long valread;
+	struct sockaddr_in address;
+	int addrlen;
+
+	int res_poll = 0;
+	int n_events = 1;
+
+	int aux = 0;
+
+	int a = POLLPRI;
+
+	struct pollfd fds[3];
+
+	Connections conns;
+	
+	// cria socket
+	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
+	{
+		perror("cannot create socket");
+		return 0; 
+	}
+
+	// para desimpedir o porto
+	int enable = 1;
+	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
+	{
+		close(server_fd);
+		return (EXIT_FAILURE);
+	}
+
+	memset((char *)&address, 0, sizeof(address)); 
+	address.sin_family = AF_INET; 
+	address.sin_addr.s_addr = htonl(INADDR_ANY); 
+	address.sin_port = htons(PORT);
+	addrlen = sizeof(address);
+	
+	if (bind(server_fd, (struct sockaddr *) &address, sizeof(address)) < 0) 
+	{
+    	perror("bind failed"); 
+    	return 0; 
+	}
+    if (listen(server_fd, 10) < 0)
+    {
+        perror("In listen");
+        exit(EXIT_FAILURE);
+    }
+
+	char buffer[30000] = {0};
+
+
+	fds[0].fd = server_fd;
+	fds[0].events = POLLIN;
+	fds[0].revents = 0;
+
+	conns.addNewConnection(server_fd, POLLIN);
+
+
+	struct pollfd *				_fds;
+
+	
+	_fds = new struct pollfd[1];
+
+	_fds[0].fd = 3;
+	_fds[0].events = POLLIN;
+	
+
+
+    while(1)
+    {
+		
+		res_poll = poll(conns.getConnectionsArray(), conns.getNumConnections(), 5000);
+
+		
+	}
+
+	return (0);
+}
+
+
 
 void send_response(int socket_fd)
 {
@@ -192,16 +281,15 @@ void send_response(int socket_fd)
 	//	std::cout << "Erro a fechar" << std::endl;
 }
 
-
 /*
 int main(void)
 {
 
 	Connections c;
 
-	c.addConnection(new Connection(22, 0));
-	c.addConnection(new Connection(33, 0));
-	c.addConnection(new Connection(44, 0));
+	c.addNewConnection(22, 0);
+	c.addNewConnection(33, 0);
+	c.addNewConnection(44, 0);
 	c.showConnections();
 	
 	return (0);
