@@ -1,11 +1,13 @@
-"http": {
-  "server": {
-    "listen": [
-      "8080 default_server",
-      "[::]:8080 default_server"
-    ],
-    "server_name": "webserv.com",
-    "root": "/root/webserv.com"
+ {
+ "http": {
+    "server": {
+      "listen": [
+        "8080 default_server",
+        "[::]:8080 default_server"
+      ],
+      "server_name": "webserv.com",
+      "root": "/root/webserv.com"
+    }
   }
-}
-
+ }
+ 
