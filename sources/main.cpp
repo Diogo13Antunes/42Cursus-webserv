@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/08 15:00:59 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/08 19:14:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 
 // server code
 
-#define PORT 8080
+#define PORT 4040
 
 void send_response(int socket_fd);
 
@@ -187,6 +187,8 @@ int main(void)
 	struct pollfd fds[3];
 
 	Connections conns;
+
+	struct pollfd serverConn;
 	
 	// cria socket
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
@@ -242,12 +244,31 @@ int main(void)
 
     while(1)
     {
-		
-		res_poll = poll(conns.getConnectionsArray(), conns.getNumConnections(), 5000);
+		conns.getConnectionsArray();
+		res_poll = poll(conns._fds, conns.getNumConnections(), 5000);
 
-		
+		//std::cout << "revents: " << conns._fds[0].revents << std::endl;
+		//std::cout << "n: " << conns.getNumConnections() << std::endl;
+
+		if (res_poll > 0)
+		{
+
+			serverConn = conns.getServerConnection();
+
+			if (serverConn.revents == POLLIN)
+			{
+				if ((new_socket = accept(serverConn.fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
+				{
+					perror("In accept");
+					exit(EXIT_FAILURE);
+				}
+				std::cout << "add new connection" <<  std::endl;
+				conns.addNewConnection(new_socket, serverConn.events, serverConn.revents);
+			}
+			std::cout << "update connections" <<  std::endl;
+			conns.updateConnections();
+		}
 	}
-
 	return (0);
 }
 

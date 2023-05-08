@@ -6,20 +6,20 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/08 14:53:19 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/08 17:58:38 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connection.hpp"
 
-Connection::Connection(int fd, short events):
+Connection::Connection(int fd, short events, short revents):
 	_keepAliveTimeout(15), 
 	_lastRequestTicks(clock()),
 	_isServerFd(false)
 {
 	_fd.fd = fd;
 	_fd.events = events;
-	_fd.revents = 0;
+	_fd.revents = revents;
 
 	std::cout << "new Conection " << _fd.fd << std::endl;
 }
@@ -58,6 +58,11 @@ bool Connection::isServer(void)
 struct pollfd Connection::getFd(void)
 {
 	return (_fd);
+}
+
+void Connection::updateConnection(struct pollfd conn)
+{
+	_fd = conn;
 }
 
 // Just for debug (remove when not necessary)
