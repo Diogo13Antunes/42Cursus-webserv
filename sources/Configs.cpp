@@ -34,6 +34,9 @@ Configs &Configs::operator=(const Configs &src)
 	return (*this);
 }
 
+// Checks if the file can be correctly open or not
+// After open the file obtain the content of him
+// Returns false if something went wrong or true if everything is OK
 bool	Configs::_getConfigFile(const char *configFile)
 {
 	std::ifstream	file(configFile);
@@ -50,6 +53,7 @@ bool	Configs::_getConfigFile(const char *configFile)
 	return (true);
 }
 
+// Returns true if the JSON file is valid or false if not
 bool	Configs::_isValidJsonFile(void)
 {
 	int	counterBrackets = 0;
@@ -96,7 +100,13 @@ bool	Configs::initConfigs(char *configFile)
 	return (true);
 }
 
-static bool isToken(char c)
+/**
+ * Checks if a charecter is or not a Token
+ * 
+ * @return
+ * True or False
+*/
+bool	Configs::_isToken(char c)
 {
 	if (c == TOKEN_CURLY_OPEN || c == TOKEN_CURLY_CLOSE
 		|| c == TOKEN_ARRAY_OPEN || c == TOKEN_ARRAY_CLOSE
@@ -106,15 +116,20 @@ static bool isToken(char c)
 	return (false);
 }
 
+/**
+ * Function to get the next token in the file
+ * 
+ * @param index starting point from where to find the next token
+*/
 char	Configs::getNextToken(size_t *index)
 {
-	size_t			i = 0;
-	char			temp = 0;
+	size_t	i = 0;
+	char	temp = 0;
 
 	i = *index;
 	while (1)
 	{
-		temp = this->_configFile[i];
+		temp = _configFile[i];
 		if (temp == '\0' || isToken(temp))
 			break;
 		i++;
@@ -123,10 +138,13 @@ char	Configs::getNextToken(size_t *index)
 	return (temp);
 }
 
-// Function to get a string inside quotes 
-// source -> source string to extract the result
-// index -> index to start getting the string
-// Example -> "example" = example
+/**
+ * Function to get a string inside quotes
+ * 
+ * @param source string to extract the result
+ * @param index point to start getting the string
+ * 
+*/
 static std::string	getString(std::string source, size_t *index)
 {
 	std::string	result;

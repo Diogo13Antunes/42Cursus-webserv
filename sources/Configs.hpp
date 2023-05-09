@@ -33,6 +33,9 @@ class Configs
 		bool	_getConfigFile(const char *configFile);
 		bool	_isValidJsonFile(void);
 
+		bool	_isToken(char c);
+
+
 		bool	initConfigs(char *configFile);
 
 		char	getNextToken(size_t *index);
