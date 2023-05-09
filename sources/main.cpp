@@ -135,6 +135,20 @@ int main(int ac, char **av)
 	return (0);
 } */
 
+bool	initConfigs(const char *filename)
+{
+	try
+	{
+		Configs	cfg(filename);
+	}
+	catch(const std::exception& e)
+	{
+		Terminal::printErrors(e.what());
+		return (false);
+	}
+	return (true);
+}
+
 int main(int ac, char **av)
 {
 	if (ac != 2)
@@ -143,7 +157,8 @@ int main(int ac, char **av)
 		return (1);
 	}
 
-	Configs	cfg(av[1]);
-	
+	if (!initConfigs(av[1]))
+		return (1);
+
 	return (0);
 }

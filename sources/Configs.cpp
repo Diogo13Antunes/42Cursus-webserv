@@ -9,9 +9,11 @@ Configs::Configs(void)
 	//Default Configs Constructor
 }
 
-Configs::Configs(char *configsFileName)
+Configs::Configs(const char *configsFileName)
 {
-	initConfigs(configsFileName);
+	if (!_getConfigFile(configsFileName) || !_isValidJsonFile())
+		throw InvalidConfigFileException();
+	Terminal::printMessages(this->_configFile.c_str());
 }
 
 Configs::Configs(const Configs &src)
@@ -32,41 +34,64 @@ Configs &Configs::operator=(const Configs &src)
 	return (*this);
 }
 
+bool	Configs::_getConfigFile(const char *configFile)
+{
+	std::ifstream	file(configFile);
+	std::string		buff;
+
+	if (file.is_open())
+	{
+		while (std::getline(file, buff))
+				_configFile += buff;
+		file.close();
+	}
+	else
+		return (false);
+	return (true);
+}
+
+bool	Configs::_isValidJsonFile(void)
+{
+	int	counterBrackets = 0;
+	int	counterQuotes = 0;
+
+	if (_configFile.empty())
+		return (false);
+	for (int i = 0; _configFile[i]; i++)
+	{
+		if (_configFile[i] == '{' || _configFile[i] == '['
+			|| _configFile[i] == '}' || _configFile[i] == ']')
+			counterBrackets++;
+		else if (_configFile[i] == '\"')
+			counterQuotes++;
+	}
+	if (counterQuotes % 2 != 0 || counterBrackets % 2 != 0)
+		return (false);
+	return (true);
+}
+
 // Return true if the configs were done well, if not return false
 bool	Configs::initConfigs(char *configFile)
 {
 	std::ifstream	file(configFile);
 	std::string		buff;
 
-	size_t	index = 0;
+	size_t		index = 0;
+	char		res;
+	std::string word;
 
-	if (file.is_open())
+	while (1)
 	{
-		while (std::getline(file, buff))
-				this->_configFile += buff;
-		// Terminal::printMessages(this->_configFile.c_str());
-
-		char		res;
-		std::string word;
-
-		while (1)
+		res = getNextToken(&index);
+		if (!res)
+			break;
+		if (res == TOKEN_QUOTATION_MARKS)
 		{
-			res = getNextToken(&index);
-			if (!res)
-				break;
-			if (res == TOKEN_QUOTATION_MARKS)
-			{
-				word = getString(this->_configFile, &index);
-				Terminal::printMessages(word.c_str());
-			}
-			if (isToken(res) || res == ' ')
-				index += 1;
+			word = getString(this->_configFile, &index);
+			Terminal::printMessages(word.c_str());
 		}
-	}
-	else
-	{
-		Terminal::printErrors("Impossible to read from Configuration File");
-		return (false);
+		if (isToken(res) || res == ' ')
+			index += 1;
 	}
 	return (true);
 }
@@ -121,44 +146,9 @@ static std::string	getString(std::string source, size_t *index)
 	return (result);
 }
 
-/* Config Server inner class methods */
+/* Exceptions */
 
-void	Configs::Server::setPort(int	newPort)
+const char *Configs::InvalidConfigFileException::what(void) const throw()
 {
-	this->_port = newPort;
-}
-
-void	Configs::Server::setServerName(std::string newServerName)
-{
-	this->_serverName = newServerName;
-}
-
-void	Configs::Server::setRoot(std::string newRoot)
-{
-	this->_root = newRoot;
-}
-
-void	Configs::Server::setIndex(std::string newIndex)
-{
-	this->_index = newIndex;
-}
-
-int	Configs::Server::getPort()
-{
-	return (this->_port);
-}
-
-std::string	Configs::Server::getServerName()
-{
-	return (this->_serverName);
-}
-
-std::string	Configs::Server::getRoot()
-{
-	return (this->_root);
-}
-
-std::string	Configs::Server::getIndex()
-{
-	return (this->_index);
+	return ("Invalid Configuration File");
 }

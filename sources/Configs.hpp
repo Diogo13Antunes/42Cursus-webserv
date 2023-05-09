@@ -18,33 +18,20 @@ class Configs
 {
 	public:
 
-		class Server
+		class InvalidConfigFileException: public std::exception
 		{
 			public:
-
-				void		setPort(int	newPort);
-				void		setServerName(std::string newServerName);
-				void		setRoot(std::string newRoot);
-				void		setIndex(std::string newIndex);
-
-				int			getPort();
-				std::string	getServerName();
-				std::string	getRoot();
-				std::string	getIndex();
-
-			private:
-			
-				int			_port;
-				std::string	_serverName;
-				std::string	_root;
-				std::string	_index;
+				const char *what() const throw();
 		};
 
-		Configs(char *configsFileName);
+		Configs(const char *configFileName);
 		Configs(void);
 		~Configs(void);
 
 	private:
+
+		bool	_getConfigFile(const char *configFile);
+		bool	_isValidJsonFile(void);
 
 		bool	initConfigs(char *configFile);
 
