@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:28 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/08 17:57:19 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/09 15:43:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,9 @@ class Connection
 		bool isServer(void);
 		struct pollfd getFd(void);
 		void updateConnection(struct pollfd conn);
+
+		int getKeepAliveTimeout(void);
+		clock_t getLastRequestTicks(void);
 
 		void showDataConnection(void);
 };

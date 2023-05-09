@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/08 19:17:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/09 16:22:01 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ Connections::Connections(const Connections &src)
 
 Connections::~Connections(void)
 {
-	this->removeAllConnections();
+	removeAllConnections();
 }
 
 /*
@@ -52,10 +52,14 @@ void Connections::addNewConnection(int fd, short events)
 
 void Connections::addNewConnection(int fd, short events, short revents)
 {
+	size_t numConns;
+
 	std::cout << "connection Added" << std::endl;
-		
+	
 	_activeConnects.push_back(new Connection(fd, events, revents));
-	if (_activeConnects.size() == 1)
+	numConns = _activeConnects.size();
+	_fds[numConns - 1] = _activeConnects.at(numConns - 1)->getFd();
+	if (numConns == 1)
 		_activeConnects.front()->setAsServer();
 }
 
@@ -64,14 +68,64 @@ void Connections::removeConnection()
 	std::cout << "connection remove" << std::endl;
 }
 
+/*
 struct pollfd *Connections::getConnectionsArray(void)
 {
 	std::vector<Connection *>::iterator	it;
 	int									index;
+	int									timeout;
+	int									actualTime;
+	clock_t								ticks;
 
 	index = 0;
-	for(it = _activeConnects.begin(); it != _activeConnects.end(); it++, index++)
-		_fds[index] = (*it)->getFd();
+	for(it = _activeConnects.begin(); it != _activeConnects.end(); it++)
+	{
+		ticks = (*it)->getLastRequestTicks();
+		timeout = (*it)->getKeepAliveTimeout();
+		actualTime = (double)(clock() - ticks) / CLOCKS_PER_SEC;
+		if (actualTime >= timeout)
+			it
+		_fds[index++] = (*it)->getFd();
+	}
+	return _fds;
+}
+*/
+
+struct pollfd *Connections::getConnectionsArray(void)
+{
+	std::vector<Connection *>::iterator	begin;
+	int									index;
+	int									timeout;
+	double								actualTime;
+	clock_t								ticks;
+	int									i;
+
+	begin = _activeConnects.begin();
+	index = 0;
+
+
+	i = 0;
+	
+	while(i < _activeConnects.size())
+	{
+		ticks = _activeConnects.at(i)->getLastRequestTicks();
+		timeout = _activeConnects.at(i)->getKeepAliveTimeout();
+		actualTime = (double)(clock() - ticks) / CLOCKS_PER_SEC;
+		std::cout << "actual time: " <<  actualTime << std::endl;
+		if (actualTime >= timeout)
+		{
+			delete _activeConnects.at(i);
+			_activeConnects.erase(begin);
+			std::cout << "remove connection" << std::endl;
+		}
+		else
+		{
+			_fds[i] = _activeConnects.at(i)->getFd();
+			i++;
+		}
+
+		//_fds[index++] = (*it)->getFd();
+	}
 	return _fds;
 }
 
@@ -102,36 +156,44 @@ void send_response_test(int socket_fd)
 	head += "\r\n";
 	head += "Content-Type: text/html\r\n\r\n";
 	res = head + body;
-
-	//std::cout << "#################" << std::endl; 
-	//std::cout << head << std::endl; 
-
 	send(socket_fd, res.c_str(), res.size(), 0);
 }
 
-
 void Connections::updateConnections(void)
 {
-	char buffer[30000];
-	ssize_t valread;
+	char	buffer[30000];
+	ssize_t	valread;
+	size_t	numConns;
 
-	//std::cout << "porra chega aqui ou não " << std::endl;
+	numConns = _activeConnects.size();
 
-	for (int i = 0; i < _activeConnects.size(); i++)
+	// Just for test and debug
+	for(int i = 0; i < 30000; i++)
+		buffer[i] = 0;
+
+	for (int i = 0; i < numConns; i++)
 	{
-		if (i < _activeConnects.size() - 1)
+		if (i < numConns - 1)
 			_activeConnects.at(i)->updateConnection(_fds[i]);
 
+		// Just for test and debug
 		if (i > 0 && _activeConnects.at(i)->getFd().revents == POLLIN)
 		{
-			valread = read(_activeConnects.at(i)->getFd().fd , buffer, 30000);
+			valread = read(_activeConnects.at(i)->getFd().fd , buffer, 30000 - 1);
 			std::cout << buffer << std::endl;
 			send_response_test(_activeConnects.at(i)->getFd().fd);
-
 			showConnections();
 		}
 	}
 }
+
+
+/*
+struct pollfd* Connections::getConnections(void)
+{
+	return (_fds);
+}
+*/
 
 // Just for debug (remove when not necessary)
 // Remove

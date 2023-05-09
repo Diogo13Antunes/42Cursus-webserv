@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/08 19:14:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/09 16:11:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,21 +240,20 @@ int main(void)
 	_fds[0].fd = 3;
 	_fds[0].events = POLLIN;
 	
-
+	struct pollfd *fds1;
+	int fdsSize;
 
     while(1)
     {
-		conns.getConnectionsArray();
-		res_poll = poll(conns._fds, conns.getNumConnections(), 5000);
+		fds1 = conns.getConnectionsArray();
+		fdsSize = conns.getNumConnections();
 
-		//std::cout << "revents: " << conns._fds[0].revents << std::endl;
-		//std::cout << "n: " << conns.getNumConnections() << std::endl;
+		res_poll = poll(fds1, fdsSize, 500);
 
 		if (res_poll > 0)
 		{
 
 			serverConn = conns.getServerConnection();
-
 			if (serverConn.revents == POLLIN)
 			{
 				if ((new_socket = accept(serverConn.fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
@@ -262,10 +261,8 @@ int main(void)
 					perror("In accept");
 					exit(EXIT_FAILURE);
 				}
-				std::cout << "add new connection" <<  std::endl;
 				conns.addNewConnection(new_socket, serverConn.events, serverConn.revents);
-			}
-			std::cout << "update connections" <<  std::endl;
+			}		
 			conns.updateConnections();
 		}
 	}
@@ -302,16 +299,29 @@ void send_response(int socket_fd)
 	//	std::cout << "Erro a fechar" << std::endl;
 }
 
+
 /*
 int main(void)
 {
 
 	Connections c;
 
+	
 	c.addNewConnection(22, 0);
 	c.addNewConnection(33, 0);
 	c.addNewConnection(44, 0);
 	c.showConnections();
+	
+
+	char *asd = c.getTest();
+
+	asd[0] = 'a';
+	asd[1] = 'b';
+	asd[2] = 'c';
+	asd[3] = 0;
+	
+	std::cout << "string: " << asd << std::endl;
+	std::cout << "string: " << c.test << std::endl;
 	
 	return (0);
 }

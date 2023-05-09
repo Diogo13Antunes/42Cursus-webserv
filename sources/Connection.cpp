@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/08 17:58:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/09 15:43:35 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,17 @@ struct pollfd Connection::getFd(void)
 void Connection::updateConnection(struct pollfd conn)
 {
 	_fd = conn;
+}
+
+
+int Connection::getKeepAliveTimeout(void)
+{
+	return(_keepAliveTimeout);
+}
+
+clock_t Connection::getLastRequestTicks(void)
+{
+	return(_lastRequestTicks);
 }
 
 // Just for debug (remove when not necessary)
