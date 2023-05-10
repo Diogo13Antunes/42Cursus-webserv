@@ -6,14 +6,14 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/10 09:47:13 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/10 11:40:55 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connection.hpp"
 
 Connection::Connection(int fd, short events, short revents):
-	_keepAliveTimeout(15), 
+	_keepAliveTimeout(40), 
 	_lastRequestTime(time(NULL)),
 	_isServerFd(false)
 {

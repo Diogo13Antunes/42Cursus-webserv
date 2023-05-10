@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/10 09:56:48 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/10 11:37:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,11 @@ struct pollfd *Connections::getConnectionsArray(void)
 		lastRequestTime = _activeConnects.at(i)->getLastRequestTime();
 		timeout = _activeConnects.at(i)->getKeepAliveTimeout();
 		pastTime = (int) (time(NULL) - lastRequestTime);
-		if (i > 0)
+		
+		/*if (i > 0)
 		{
 			std::cout << "time: " << pastTime << std::endl;
-		}
+		}*/
 
 		if (i > 0 && pastTime >= timeout)
 		{
@@ -159,11 +160,7 @@ void Connections::updateConnections(void)
 
 	for (int i = 0; i < numConns; i++)
 	{
-		if (i < numConns - 1)
-		{
-			_activeConnects.at(i)->updateConnection(_fds[i]);
-		}
-
+		_activeConnects.at(i)->updateConnection(_fds[i]);
 		if (_activeConnects.at(i)->getFd().revents == POLLIN)
 			_activeConnects.at(i)->setLastRequestTime(time(NULL));
 
@@ -177,7 +174,6 @@ void Connections::updateConnections(void)
 		}
 	}
 }
-
 
 /*
 struct pollfd* Connections::getConnections(void)
