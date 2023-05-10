@@ -25,13 +25,9 @@ class Configs
 
 		void							_removeCommentsAndEmptyLines(void);
 		void							_removeExtraWhiteSpaces(void);
+		
 		bool							_getConfigFile(const char *configFile);
-
-		bool							_isToken(char c);
-
-		bool	initConfigs(char *configFile);
-
-		char	getNextToken(size_t *index);
+		bool							_isValidConfigFile(void);
 
 		Configs &operator=(const Configs &src);
 		Configs(const Configs &src);

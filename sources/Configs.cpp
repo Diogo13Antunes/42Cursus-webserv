@@ -2,7 +2,7 @@
 
 static bool			initConfigs(char *configFile);
 static std::string	getString(std::string source, size_t *index);
-static bool			isHashtagInsideQuotes(std::string src, size_t index);
+static bool			isInsideQuotes(std::string src, size_t index);
 static std::string	stringTrim(const std::string &str);
 
 Configs::Configs(void)
@@ -14,6 +14,10 @@ Configs::Configs(const char *configsFileName)
 {
 	if (!_getConfigFile(configsFileName))
 		throw InvalidConfigFileException();
+	if (!_isValidConfigFile())
+		throw InvalidConfigFileException();
+
+	
 }
 
 Configs::Configs(const Configs &src)
@@ -47,7 +51,7 @@ void	Configs::_removeCommentsAndEmptyLines(void)
 		for (size_t j = 0; j < _configFileVec.at(i).size(); j++)
 		{
 			if (_configFileVec.at(i)[j] == '#')
-				if (!isHashtagInsideQuotes(_configFileVec.at(i), j))
+				if (!isInsideQuotes(_configFileVec.at(i), j))
 					_configFileVec.at(i) = _configFileVec.at(i).substr(0, j);
 		}
 		if (_configFileVec.at(i).find_first_not_of("\n\r\t ") == _configFileVec.at(i).npos)
@@ -88,94 +92,9 @@ bool	Configs::_getConfigFile(const char *configFile)
 	return (true);
 }
 
-// Return true if the configs were done well, if not return false
-bool	Configs::initConfigs(char *configFile)
+bool	Configs::_isValidConfigFile(void)
 {
-	std::ifstream	file(configFile);
-	std::string		buff;
-
-	size_t		index = 0;
-	char		res;
-	//std::string word;
-
-	while (1)
-	{
-		res = getNextToken(&index);
-		if (!res)
-			break;
-		if (res == TOKEN_QUOTATION_MARKS)
-		{
-			//word = getString(this->_configFile, &index);
-			//Terminal::printMessages(word.c_str());
-		}
-		if (_isToken(res) || res == ' ')
-			index += 1;
-	}
 	return (true);
-}
-
-/**
- * Checks if a charecter is or not a Token
- * 
- * @return
- * True or False
-*/
-bool	Configs::_isToken(char c)
-{
-	if (c == TOKEN_CURLY_OPEN || c == TOKEN_CURLY_CLOSE
-		|| c == TOKEN_ARRAY_OPEN || c == TOKEN_ARRAY_CLOSE
-		|| c == TOKEN_COMMA || c == TOKEN_COLON
-		|| c == TOKEN_QUOTATION_MARKS)
-		return (true);
-	return (false);
-}
-
-/**
- * Function to get the next token in the file
- * 
- * @param index starting point from where to find the next token
-*/
-char	Configs::getNextToken(size_t *index)
-{
-	size_t	i = 0;
-	char	temp = 0;
-
-	i = *index;
-	while (1)
-	{
-		temp = 'a';//_configFile[i];
-		if (temp == '\0' || _isToken(temp))
-			break;
-		i++;
-	}
-	*index = i;
-	return (temp);
-}
-
-/**
- * Function to get a string inside quotes
- * 
- * @param source string to extract the result
- * @param index point to start getting the string
- * 
-*/
-static std::string	getString(std::string source, size_t *index)
-{
-	std::string	result;
-	char		temp = 0;
-	size_t		i;
-
-	i = *index + 1;
-	while (1)
-	{
-		temp = source[i];
-		if (temp == TOKEN_QUOTATION_MARKS)
-			break;
-		result += temp;
-		i++;
-	}
-	*index = i;
-	return (result);
 }
 
 /* Exceptions */
@@ -202,10 +121,8 @@ static std::string	stringTrim(const std::string &str)
 	return (trimmed);
 }
 
-static bool	isHashtagInsideQuotes(std::string src, size_t index)
+static bool	isInsideQuotes(std::string src, size_t index)
 {
-	if (src[index] != '#')
-		return (false);
 	if (src.find_first_of('\"', index) == src.npos)
 		return (false);
 	if (src.find_last_of('\"', index) == src.npos)
