@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/09 15:43:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/10 09:47:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 Connection::Connection(int fd, short events, short revents):
 	_keepAliveTimeout(15), 
-	_lastRequestTicks(clock()),
+	_lastRequestTime(time(NULL)),
 	_isServerFd(false)
 {
 	_fd.fd = fd;
@@ -71,9 +71,14 @@ int Connection::getKeepAliveTimeout(void)
 	return(_keepAliveTimeout);
 }
 
-clock_t Connection::getLastRequestTicks(void)
+time_t Connection::getLastRequestTime(void)
 {
-	return(_lastRequestTicks);
+	return(_lastRequestTime);
+}
+
+void Connection::setLastRequestTime(time_t time)
+{
+	_lastRequestTime = time;
 }
 
 // Just for debug (remove when not necessary)
@@ -86,5 +91,5 @@ void Connection::showDataConnection(void)
 	std::cout << "revents: " << _fd.revents << std::endl;
 	std::cout << "events: " << _fd.events << std::endl;
 	std::cout << "keep-alive: " << _keepAliveTimeout << std::endl;
-	std::cout << "last request: " << _lastRequestTicks << std::endl;
+	std::cout << "last request: " << _lastRequestTime << std::endl;
 }

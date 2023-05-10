@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/09 16:11:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/09 17:55:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include <sys/poll.h>
 
 #include <sstream>
+
+#include <ctime>
 
 #include "Connection.hpp"
 #include "Connections.hpp"
@@ -170,6 +172,7 @@ int main(void)
 */
 
 
+
 int main(void)
 {
 	int server_fd, new_socket;
@@ -248,7 +251,7 @@ int main(void)
 		fds1 = conns.getConnectionsArray();
 		fdsSize = conns.getNumConnections();
 
-		res_poll = poll(fds1, fdsSize, 500);
+		res_poll = poll(fds1, fdsSize, 1000);
 
 		if (res_poll > 0)
 		{
@@ -303,26 +306,8 @@ void send_response(int socket_fd)
 /*
 int main(void)
 {
-
-	Connections c;
-
-	
-	c.addNewConnection(22, 0);
-	c.addNewConnection(33, 0);
-	c.addNewConnection(44, 0);
-	c.showConnections();
-	
-
-	char *asd = c.getTest();
-
-	asd[0] = 'a';
-	asd[1] = 'b';
-	asd[2] = 'c';
-	asd[3] = 0;
-	
-	std::cout << "string: " << asd << std::endl;
-	std::cout << "string: " << c.test << std::endl;
-	
+    time_t result = std::time(NULL);
+    std::cout << result << " seconds since the Epoch\n";
 	return (0);
 }
 */

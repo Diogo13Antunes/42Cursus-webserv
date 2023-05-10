@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/09 12:44:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/09 17:55:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <vector>
 #include <sys/socket.h>
 #include <sys/poll.h>
+#include <ctime>
 #include "Connection.hpp"
 
 class Connections
