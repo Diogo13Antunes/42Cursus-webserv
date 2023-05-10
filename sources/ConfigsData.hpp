@@ -10,6 +10,8 @@ class ConfigsData
 {
 	public:
 
+		Server	_serverData;
+		
 		ConfigsData &operator=(const ConfigsData &src);
 		ConfigsData(const ConfigsData &src);
 		ConfigsData(void);
@@ -17,6 +19,5 @@ class ConfigsData
 	
 	private:
 
-		Server	_serverData;
-
+		
 };

@@ -3,8 +3,11 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
+#include <map>
 
 #include "Terminal.hpp"
+#include "Server.hpp"
 
 #define	TOKEN_CURLY_OPEN		'{'
 #define TOKEN_CURLY_CLOSE		'}'
@@ -16,25 +19,15 @@
 
 class Configs
 {
-	public:
-
-		class InvalidConfigFileException: public std::exception
-		{
-			public:
-				const char *what() const throw();
-		};
-
-		Configs(const char *configFileName);
-		Configs(void);
-		~Configs(void);
-
 	private:
 
-		bool	_getConfigFile(const char *configFile);
-		bool	_isValidJsonFile(void);
+		std::vector<std::string>		_configFileVec;
 
-		bool	_isToken(char c);
+		void							_removeCommentsAndEmptyLines(void);
+		void							_removeExtraWhiteSpaces(void);
+		bool							_getConfigFile(const char *configFile);
 
+		bool							_isToken(char c);
 
 		bool	initConfigs(char *configFile);
 
@@ -43,5 +36,16 @@ class Configs
 		Configs &operator=(const Configs &src);
 		Configs(const Configs &src);
 
-		std::string	_configFile;
+	public:
+
+		Configs(const char *configFileName);
+		Configs(void);
+		~Configs(void);
+
+		class InvalidConfigFileException: public std::exception
+		{
+			public:
+				const char *what() const throw();
+		};
+
 };

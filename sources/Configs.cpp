@@ -2,7 +2,8 @@
 
 static bool			initConfigs(char *configFile);
 static std::string	getString(std::string source, size_t *index);
-static bool isToken(char c);
+static bool			isHashtagInsideQuotes(std::string src, size_t index);
+static std::string	stringTrim(const std::string &str);
 
 Configs::Configs(void)
 {
@@ -11,9 +12,8 @@ Configs::Configs(void)
 
 Configs::Configs(const char *configsFileName)
 {
-	if (!_getConfigFile(configsFileName) || !_isValidJsonFile())
+	if (!_getConfigFile(configsFileName))
 		throw InvalidConfigFileException();
-	Terminal::printMessages(this->_configFile.c_str());
 }
 
 Configs::Configs(const Configs &src)
@@ -34,6 +34,36 @@ Configs &Configs::operator=(const Configs &src)
 	return (*this);
 }
 
+static void	printConfigFile(std::vector<std::string> *file)
+{
+	for (int i = 0; i < (*file).size(); i++)
+		Terminal::printMessages((*file).at(i).c_str());
+}
+
+void	Configs::_removeCommentsAndEmptyLines(void)
+{
+	for (size_t i = 0; i < _configFileVec.size(); i++)
+	{
+		for (size_t j = 0; j < _configFileVec.at(i).size(); j++)
+		{
+			if (_configFileVec.at(i)[j] == '#')
+				if (!isHashtagInsideQuotes(_configFileVec.at(i), j))
+					_configFileVec.at(i) = _configFileVec.at(i).substr(0, j);
+		}
+		if (_configFileVec.at(i).find_first_not_of("\n\r\t ") == _configFileVec.at(i).npos)
+		{
+			_configFileVec.erase(_configFileVec.begin() + i);
+			i--;
+		}
+	}
+}
+
+void	Configs::_removeExtraWhiteSpaces(void)
+{
+	for (size_t i = 0; i < _configFileVec.size(); i++)
+		_configFileVec.at(i) = stringTrim(_configFileVec.at(i));
+}
+
 // Checks if the file can be correctly open or not
 // After open the file obtain the content of him
 // Returns false if something went wrong or true if everything is OK
@@ -45,31 +75,15 @@ bool	Configs::_getConfigFile(const char *configFile)
 	if (file.is_open())
 	{
 		while (std::getline(file, buff))
-				_configFile += buff;
+			_configFileVec.push_back(buff);
 		file.close();
+		printConfigFile(&_configFileVec);
+		_removeCommentsAndEmptyLines();
+		_removeExtraWhiteSpaces();
+		Terminal::printMessages("-------------------------------------------");
+		printConfigFile(&_configFileVec);
 	}
 	else
-		return (false);
-	return (true);
-}
-
-// Returns true if the JSON file is valid or false if not
-bool	Configs::_isValidJsonFile(void)
-{
-	int	counterBrackets = 0;
-	int	counterQuotes = 0;
-
-	if (_configFile.empty())
-		return (false);
-	for (int i = 0; _configFile[i]; i++)
-	{
-		if (_configFile[i] == '{' || _configFile[i] == '['
-			|| _configFile[i] == '}' || _configFile[i] == ']')
-			counterBrackets++;
-		else if (_configFile[i] == '\"')
-			counterQuotes++;
-	}
-	if (counterQuotes % 2 != 0 || counterBrackets % 2 != 0)
 		return (false);
 	return (true);
 }
@@ -82,7 +96,7 @@ bool	Configs::initConfigs(char *configFile)
 
 	size_t		index = 0;
 	char		res;
-	std::string word;
+	//std::string word;
 
 	while (1)
 	{
@@ -91,10 +105,10 @@ bool	Configs::initConfigs(char *configFile)
 			break;
 		if (res == TOKEN_QUOTATION_MARKS)
 		{
-			word = getString(this->_configFile, &index);
-			Terminal::printMessages(word.c_str());
+			//word = getString(this->_configFile, &index);
+			//Terminal::printMessages(word.c_str());
 		}
-		if (isToken(res) || res == ' ')
+		if (_isToken(res) || res == ' ')
 			index += 1;
 	}
 	return (true);
@@ -129,8 +143,8 @@ char	Configs::getNextToken(size_t *index)
 	i = *index;
 	while (1)
 	{
-		temp = _configFile[i];
-		if (temp == '\0' || isToken(temp))
+		temp = 'a';//_configFile[i];
+		if (temp == '\0' || _isToken(temp))
 			break;
 		i++;
 	}
@@ -169,4 +183,32 @@ static std::string	getString(std::string source, size_t *index)
 const char *Configs::InvalidConfigFileException::what(void) const throw()
 {
 	return ("Invalid Configuration File");
+}
+
+/* Utils Functions */
+
+static std::string	stringTrim(const std::string &str)
+{
+	std::string	trimmed = str;
+	size_t		start = trimmed.find_first_not_of(" \t\r\n");
+	size_t		end = trimmed.find_last_not_of(" \t\r\n");
+
+	if (start != std::string::npos)
+		trimmed = trimmed.substr(start);
+
+	if (end != std::string::npos)
+		trimmed = trimmed.substr(0, end + 1);
+
+	return (trimmed);
+}
+
+static bool	isHashtagInsideQuotes(std::string src, size_t index)
+{
+	if (src[index] != '#')
+		return (false);
+	if (src.find_first_of('\"', index) == src.npos)
+		return (false);
+	if (src.find_last_of('\"', index) == src.npos)
+		return (false);
+	return (true);
 }
