@@ -4,6 +4,8 @@ static bool			initConfigs(char *configFile);
 static std::string	getString(std::string source, size_t *index);
 static bool			isInsideQuotes(std::string src, size_t index);
 static std::string	stringTrim(const std::string &str);
+static bool			isValidArray(std::string &array);
+static bool			isValisNbrQuotes(std::string &data);
 
 Configs::Configs(void)
 {
@@ -16,8 +18,7 @@ Configs::Configs(const char *configsFileName)
 		throw InvalidConfigFileException();
 	if (!_isValidConfigFile())
 		throw InvalidConfigFileException();
-
-	
+	Terminal::printMessages("\n------------\nChecks: OK\n------------\n");
 }
 
 Configs::Configs(const Configs &src)
@@ -54,7 +55,7 @@ void	Configs::_removeCommentsAndEmptyLines(void)
 				if (!isInsideQuotes(_configFileVec.at(i), j))
 					_configFileVec.at(i) = _configFileVec.at(i).substr(0, j);
 		}
-		if (_configFileVec.at(i).find_first_not_of("\n\r\t ") == _configFileVec.at(i).npos)
+		if (_configFileVec.at(i).find_first_not_of(WHITE_SPACE) == _configFileVec.at(i).npos)
 		{
 			_configFileVec.erase(_configFileVec.begin() + i);
 			i--;
@@ -92,8 +93,55 @@ bool	Configs::_getConfigFile(const char *configFile)
 	return (true);
 }
 
+bool	Configs::_isWithSingleColon(std::string &line)
+{
+	int	count = 0;
+	
+	for (size_t i = 0; i < line.size(); i++)
+		if (line[i] == ':' && !isInsideQuotes(line, i))
+			count++;
+	if (count != 1)
+		return (false);
+	return (true);
+}
+
+bool	Configs::_isValidKey(std::string &line)
+{
+	std::string	key;
+	size_t		i;
+
+	key = line.substr(0, line.find_first_of(":"));
+	if (key.find_first_not_of(VALID_KEY_LETTERS) != key.npos)
+		return (false);
+	return (true);
+}
+
+bool	Configs::_isValidData(std::string &line)
+{
+	std::string	data;
+
+	data = line.substr(line.find_first_of(":") + 1, line.size());
+	data = stringTrim(data);
+	if (data.find_first_of("[") != data.npos)
+		if (!isValidArray(data))
+			return (false);
+	if (data.find_first_of("\"") != data.npos)
+		if (!isValisNbrQuotes(data))
+			return (false);
+	return (true);
+}
+
 bool	Configs::_isValidConfigFile(void)
 {
+	for (size_t i = 0; i < _configFileVec.size(); i++)
+	{
+		if (!_isWithSingleColon(_configFileVec.at(i)))
+			return (false);
+		else if (!_isValidKey(_configFileVec.at(i)))
+			return (false);
+		else if (!_isValidData(_configFileVec.at(i)))
+			return (false);
+	}
 	return (true);
 }
 
@@ -126,6 +174,37 @@ static bool	isInsideQuotes(std::string src, size_t index)
 	if (src.find_first_of('\"', index) == src.npos)
 		return (false);
 	if (src.find_last_of('\"', index) == src.npos)
+		return (false);
+	return (true);
+}
+
+static bool	isValidArray(std::string &array)
+{
+	size_t	nbrBrackets = 0;
+	size_t	nbrQuotes = 0;
+
+	for (size_t i = 0; i < array.size(); i++)
+	{
+		if (array[i] == '[')
+			nbrBrackets++;
+		else if (array[i] == ']')
+			nbrBrackets--;
+		else if (array[i] == '\"')
+			nbrQuotes++;
+	}
+	if (nbrBrackets != 0 || nbrQuotes % 2 != 0)
+		return (false);
+	return (true);
+}
+
+static bool	isValisNbrQuotes(std::string &data)
+{
+	size_t nbrQuotes = 0;
+
+	for (size_t i = 0; i < data.size(); i++)
+		if (data[i] == '\"')
+			nbrQuotes++;
+	if (nbrQuotes % 2 != 0)
 		return (false);
 	return (true);
 }

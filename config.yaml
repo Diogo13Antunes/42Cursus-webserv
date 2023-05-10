@@ -6,7 +6,9 @@ listen: 8080
 server_name: "webserv.com"
 
 # root
-root: "/root/webserv.com"
+root: "/root/webserv.com:"
 
                 # index
-index: "index.html"       # hello
+index: "inde#x.html"       # hello
+
+nomes: [ "diogo", "leonardo" ]

@@ -9,13 +9,8 @@
 #include "Terminal.hpp"
 #include "Server.hpp"
 
-#define	TOKEN_CURLY_OPEN		'{'
-#define TOKEN_CURLY_CLOSE		'}'
-#define TOKEN_ARRAY_OPEN		'['
-#define TOKEN_ARRAY_CLOSE		']'
-#define TOKEN_COMMA				','
-#define TOKEN_COLON				':'
-#define TOKEN_QUOTATION_MARKS	'\"'
+#define VALID_KEY_LETTERS	"abcdefghijklmnopqrstuvwxyz_-"
+#define WHITE_SPACE			"\n\t\r "
 
 class Configs
 {
@@ -25,9 +20,13 @@ class Configs
 
 		void							_removeCommentsAndEmptyLines(void);
 		void							_removeExtraWhiteSpaces(void);
-		
+
 		bool							_getConfigFile(const char *configFile);
+
 		bool							_isValidConfigFile(void);
+		bool							_isWithSingleColon(std::string &line);
+		bool							_isValidKey(std::string	&line);
+		bool							_isValidData(std::string &line);
 
 		Configs &operator=(const Configs &src);
 		Configs(const Configs &src);
