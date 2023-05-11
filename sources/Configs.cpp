@@ -7,11 +7,6 @@ static std::string	stringTrim(const std::string &str);
 static bool			isValidArray(std::string &array);
 static bool			isValisNbrQuotes(std::string &data);
 
-Configs::Configs(void)
-{
-	//Default Configs Constructor
-}
-
 Configs::Configs(const char *configsFileName)
 {
 	if (!_getConfigFile(configsFileName))
@@ -21,22 +16,9 @@ Configs::Configs(const char *configsFileName)
 	Terminal::printMessages("\n------------\nChecks: OK\n------------\n");
 }
 
-Configs::Configs(const Configs &src)
-{
-	//Configs Copy Constructor
-	*this = src;
-}
-
 Configs::~Configs(void)
 {
 	//Default Configs Destructor
-}
-
-Configs &Configs::operator=(const Configs &src)
-{
-	//Configs Copy Assignment Operator
-	*this = src;
-	return (*this);
 }
 
 static void	printConfigFile(std::vector<std::string> *file)
@@ -93,7 +75,7 @@ bool	Configs::_getConfigFile(const char *configFile)
 	return (true);
 }
 
-bool	Configs::_isWithSingleColon(std::string &line)
+bool	Configs::_isSingleColon(std::string &line)
 {
 	int	count = 0;
 	
@@ -111,23 +93,30 @@ bool	Configs::_isValidKey(std::string &line)
 	size_t		i;
 
 	key = line.substr(0, line.find_first_of(":"));
+	key = stringTrim(key);
 	if (key.find_first_not_of(VALID_KEY_LETTERS) != key.npos)
 		return (false);
 	return (true);
 }
 
-bool	Configs::_isValidData(std::string &line)
+bool	Configs::_isValidValue(std::string &line)
 {
-	std::string	data;
+	std::string	value;
 
-	data = line.substr(line.find_first_of(":") + 1, line.size());
-	data = stringTrim(data);
-	if (data.find_first_of("[") != data.npos)
-		if (!isValidArray(data))
+	value = line.substr(line.find_first_of(":") + 1, line.size());
+	value = stringTrim(value);
+	if (value.find_first_of("[") != value.npos || value.find_first_of("]") != value.npos)
+	{
+		if (!isValidArray(value))
 			return (false);
-	if (data.find_first_of("\"") != data.npos)
-		if (!isValisNbrQuotes(data))
+	}
+	else if (value.find_first_of("\"") != value.npos)
+	{
+		if (!isValisNbrQuotes(value))
 			return (false);
+		if (value[0] != '\"' || value[value.size() - 1] != '\"')
+			return (false);
+	}
 	return (true);
 }
 
@@ -135,11 +124,11 @@ bool	Configs::_isValidConfigFile(void)
 {
 	for (size_t i = 0; i < _configFileVec.size(); i++)
 	{
-		if (!_isWithSingleColon(_configFileVec.at(i)))
+		if (!_isSingleColon(_configFileVec.at(i)))
 			return (false);
 		else if (!_isValidKey(_configFileVec.at(i)))
 			return (false);
-		else if (!_isValidData(_configFileVec.at(i)))
+		else if (!_isValidValue(_configFileVec.at(i)))
 			return (false);
 	}
 	return (true);
@@ -149,7 +138,7 @@ bool	Configs::_isValidConfigFile(void)
 
 const char *Configs::InvalidConfigFileException::what(void) const throw()
 {
-	return ("Invalid Configuration File");
+	return ("InvalidConfigFileException: Invalid Config File");
 }
 
 /* Utils Functions */
@@ -180,8 +169,10 @@ static bool	isInsideQuotes(std::string src, size_t index)
 
 static bool	isValidArray(std::string &array)
 {
-	size_t	nbrBrackets = 0;
-	size_t	nbrQuotes = 0;
+	size_t						nbrBrackets = 0;
+	size_t						nbrQuotes = 0;
+	std::string					temp;
+	size_t						a = 1;
 
 	for (size_t i = 0; i < array.size(); i++)
 	{
@@ -194,6 +185,15 @@ static bool	isValidArray(std::string &array)
 	}
 	if (nbrBrackets != 0 || nbrQuotes % 2 != 0)
 		return (false);
+	while (array[a])
+	{
+		while (array[a] != ',' && array[a + 1])
+			temp += array[a++];
+		if (temp.find_first_not_of(WHITE_SPACE) == temp.npos)
+			return (false);
+		temp.clear();
+		a++;
+	}
 	return (true);
 }
 
@@ -204,7 +204,7 @@ static bool	isValisNbrQuotes(std::string &data)
 	for (size_t i = 0; i < data.size(); i++)
 		if (data[i] == '\"')
 			nbrQuotes++;
-	if (nbrQuotes % 2 != 0)
+	if (nbrQuotes != 2)
 		return (false);
 	return (true);
 }

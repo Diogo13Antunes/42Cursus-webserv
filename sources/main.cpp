@@ -143,7 +143,7 @@ bool	initConfigs(const char *filename)
 	}
 	catch(const std::exception& e)
 	{
-		Terminal::printErrors(e.what());
+		std::cerr << e.what() << std::endl;
 		return (false);
 	}
 	return (true);

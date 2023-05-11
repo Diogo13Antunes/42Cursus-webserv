@@ -20,23 +20,17 @@ class Configs
 
 		void							_removeCommentsAndEmptyLines(void);
 		void							_removeExtraWhiteSpaces(void);
-
 		bool							_getConfigFile(const char *configFile);
-
 		bool							_isValidConfigFile(void);
-		bool							_isWithSingleColon(std::string &line);
+		bool							_isSingleColon(std::string &line);
 		bool							_isValidKey(std::string	&line);
-		bool							_isValidData(std::string &line);
-
-		Configs &operator=(const Configs &src);
-		Configs(const Configs &src);
+		bool							_isValidValue(std::string &line);
 
 	public:
 
 		Configs(const char *configFileName);
-		Configs(void);
 		~Configs(void);
-
+		
 		class InvalidConfigFileException: public std::exception
 		{
 			public:

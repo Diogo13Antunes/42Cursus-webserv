@@ -3,7 +3,7 @@
 listen: 8080
 
 # server_name
-server_name: "webserv.com"
+server_name  : "webserv.com"
 
 # root
 root: "/root/webserv.com:"
@@ -11,4 +11,4 @@ root: "/root/webserv.com:"
                 # index
 index: "inde#x.html"       # hello
 
-nomes: [ "diogo", "leonardo" ]
+nomes: ["diogo:13","leonardo"]
