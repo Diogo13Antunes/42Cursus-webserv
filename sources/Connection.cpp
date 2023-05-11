@@ -6,65 +6,30 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/10 11:40:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/11 12:25:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connection.hpp"
 
 Connection::Connection(int fd, short events, short revents):
-	_keepAliveTimeout(40), 
-	_lastRequestTime(time(NULL)),
-	_isServerFd(false)
+	_keepAliveTimeout(60), 
+	_lastRequestTime(time(NULL))
 {
-	_fd.fd = fd;
-	_fd.events = events;
-	_fd.revents = revents;
-
-	std::cout << "new Conection " << _fd.fd << std::endl;
+	_pollFd.fd = fd;
+	_pollFd.events = events;
+	_pollFd.revents = revents;
 }
-
-/*
-Connection::Connection(const Connection &src)
-{
-
-}
-*/
 
 Connection::~Connection(void)
 {
-	std::cout << "close conection " << _fd.fd << std::endl;
-	close(_fd.fd);
-}
-
-/*
-Connection &Connection::operator=(const Connection &src)
-{
-
-}
-*/
-
-
-void Connection::setAsServer(void)
-{
-	_isServerFd = true;
-}
-
-bool Connection::isServer(void)
-{
-	return (_isServerFd);
+	close(_pollFd.fd);
 }
 
 struct pollfd Connection::getFd(void)
 {
-	return (_fd);
+	return (_pollFd);
 }
-
-void Connection::updateConnection(struct pollfd conn)
-{
-	_fd = conn;
-}
-
 
 int Connection::getKeepAliveTimeout(void)
 {
@@ -76,9 +41,14 @@ time_t Connection::getLastRequestTime(void)
 	return(_lastRequestTime);
 }
 
-void Connection::setLastRequestTime(time_t time)
+void Connection::setLastRequestTime(time_t lastRequestTime)
 {
-	_lastRequestTime = time;
+	_lastRequestTime = lastRequestTime;
+}
+
+void Connection::setPollFd(struct pollfd pollFd)
+{
+	_pollFd = pollFd;
 }
 
 // Just for debug (remove when not necessary)
@@ -86,10 +56,9 @@ void Connection::setLastRequestTime(time_t time)
 void Connection::showDataConnection(void)
 {
 	std::cout << "------------ Connection ------------" << std::endl;
-	std::cout << "fd: " << _fd.fd << std::endl;
-	std::cout << "is server: " << isServer() << std::endl;
-	std::cout << "revents: " << _fd.revents << std::endl;
-	std::cout << "events: " << _fd.events << std::endl;
+	std::cout << "fd: " << _pollFd.fd << std::endl;
+	std::cout << "revents: " << _pollFd.revents << std::endl;
+	std::cout << "events: " << _pollFd.events << std::endl;
 	std::cout << "keep-alive: " << _keepAliveTimeout << std::endl;
 	std::cout << "last request: " << _lastRequestTime << std::endl;
 }
