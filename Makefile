@@ -16,6 +16,7 @@ OBJ_PATH = ./objects
 SRC_NAME =	main.cpp				\
 			Configs.cpp				\
 			ConfigsUtils.cpp		\
+			ConfigsData.cpp			\
 			Terminal.cpp
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))

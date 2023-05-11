@@ -27,11 +27,13 @@ class Configs
 
 		Configs(const char *configFileName);
 		~Configs(void);
-		
+
 		class InvalidConfigFileException: public std::exception
 		{
 			public:
 				const char *what() const throw();
 		};
+
+		bool	getNextConfig(std::string &key, std::string &value);
 
 };

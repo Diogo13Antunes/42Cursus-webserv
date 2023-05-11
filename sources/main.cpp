@@ -23,123 +23,17 @@
 #include <fstream>
 
 #include "Configs.hpp"
+#include "ConfigsData.hpp"
 
-// Test comminication wit sockets
-
-// sockaddr_in -> especific IP-based communication
-// sockaddr    -> is a generic descriptor for any kind of socket operation
-// http://localhost:8080/
-
-// server code
-
-/* #define PORT 8080
-
-int main(int ac, char **av)
+bool	initConfigs(const char *filename, ConfigsData &data)
 {
-	int server_fd, new_socket;
-	long valread;
-	struct sockaddr_in address;
-	int addrlen;
+	std::string	key, value;
 
-	std::string head;
-	std::string body;
-	std::string res;
-
-	if (ac != 3)
-		return (write(2, "Error: Invalid number of Arguments!\n", strlen("Error: Invalid number of Arguments!\n")));
-
-	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
-	{
-		perror("cannot create socket");
-		return 0; 
-	}
-
-	// este if seve para podermos usar sempre a mesma porta
-	int enable = 1;
-	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
-	{
-		close(server_fd);
-		return (EXIT_FAILURE);
-	}
-
-	memset((char *)&address, 0, sizeof(address)); 
-	address.sin_family = AF_INET; 
-	address.sin_addr.s_addr = htonl(INADDR_ANY); 
-	address.sin_port = htons(PORT);
-	addrlen = sizeof(address);
-
-	if (bind(server_fd, (struct sockaddr *) &address, sizeof(address)) < 0) 
-	{
-    	perror("bind failed"); 
-    	return 0; 
-	}
-    if (listen(server_fd, 10) < 0)
-    {
-        perror("In listen");
-        exit(EXIT_FAILURE);
-    }
-
-	struct pollfd fds[10 + 1];
-	int	nfds = 1;
-	int timeout = 5000;
-
-	fds[0].fd = server_fd;
-	fds[0].events = POLLIN;
-
-	int ret_poll = 0;
-
-    while(1)
-    {
-	    printf("\n+++++++ Waiting for new connection ++++++++\n\n");
-        if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
-        {
-            perror("In accept");
-            exit(EXIT_FAILURE);
-        }
-        
-		char buffer[30000] = {0};
-
-        valread = read(new_socket , buffer, 30000);
-
-		std::cout << "read: " << valread << std::endl;
-
-		std::ifstream	htmlFile(av[1]);
-		std::string		buff;
-
-		while (std::getline(htmlFile, buff))
-			body += buff;
-
-		head += "HTTP/1.1 200 OK\r\nContent-length: ";
-		head += body.size();
-		head += "\r\n";
-		head += "Content-Type: text/html\r\n\r\n";
-
-		res = head + body + "\r\n\r\n";
-
-		//send(new_socket, "HTTP/1.1 200 OK\r\nContent-length: 5\r\n\r\nhello\r\n\r\n", 48, 0);
-		send(new_socket, res.c_str(), res.size(), 0);
-		std::cout << "buffer:\n" << buffer << std::endl;
-        close(new_socket);
-		res.clear();
-		body.clear();
-		head.clear();
-
-		ret_poll = poll(fds, nfds, timeout);
-		printf("RET -> %d\n", ret_poll);
-		if (fds[0].revents & POLLIN)
-			std::cout << "Hello from backend!\n";
-		else
-			std::cout << "GoodBye from backend!\n";
-    }
-
-	return (0);
-} */
-
-bool	initConfigs(const char *filename)
-{
 	try
 	{
 		Configs	cfg(filename);
+		while (cfg.getNextConfig(key, value))
+			data.addNewConfigs(key, value);
 	}
 	catch(const std::exception& e)
 	{
@@ -151,13 +45,15 @@ bool	initConfigs(const char *filename)
 
 int main(int ac, char **av)
 {
+	ConfigsData	data;
+
 	if (ac != 2)
 	{
 		Terminal::printErrors("Invalid number of Arguments");
 		return (1);
 	}
 
-	if (!initConfigs(av[1]))
+	if (!initConfigs(av[1], data))
 		return (1);
 
 	return (0);

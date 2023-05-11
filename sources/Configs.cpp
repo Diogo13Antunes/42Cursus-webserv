@@ -16,6 +16,22 @@ Configs::~Configs(void)
 	//Default Configs Destructor
 }
 
+bool	Configs::getNextConfig(std::string &key, std::string &value)
+{
+	static int	i = 0;
+	size_t		index;
+	std::string	temp;
+
+	if (i == _configFileVec.size())
+		return (false);
+	temp = _configFileVec.at(i);
+	index = temp.find_first_of(":");
+	key = ConfigsUtils::stringTrim(temp.substr(0, index));
+	value = ConfigsUtils::stringTrim(temp.substr(index + 1, temp.size() - 1));
+	i++;
+	return (true);
+}
+
 void	Configs::_removeCommentsAndEmptyLines(void)
 {
 	for (size_t i = 0; i < _configFileVec.size(); i++)

@@ -63,3 +63,13 @@ bool	ConfigsUtils::isValisNbrQuotes(std::string &data)
 		return (false);
 	return (true);
 }
+
+int	ConfigsUtils::strToInt(std::string str)
+{
+	std::stringstream	out(str);
+	int	res = 0;
+
+	out >> res;
+
+	return (res);
+}

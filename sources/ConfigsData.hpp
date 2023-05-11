@@ -2,22 +2,33 @@
 
 #include <string>
 #include <iostream>
+#include <map>
 
 #include "Terminal.hpp"
-#include "Server.hpp"
+#include "ConfigsUtils.hpp"
 
 class ConfigsData
 {
-	public:
-
-		Server	_serverData;
-		
-		ConfigsData &operator=(const ConfigsData &src);
-		ConfigsData(const ConfigsData &src);
-		ConfigsData(void);
-		~ConfigsData(void);
-	
 	private:
 
-		
+		std::map<std::string, std::string>	_dataStr;
+		std::map<std::string, int>			_dataInt;
+
+	public:
+
+		ConfigsData(void);
+		~ConfigsData(void);
+
+		int			getListen(void);
+		std::string	getServerName(void);
+		std::string	getRoot(void);
+		std::string	getIndex(void);
+
+		void		addNewConfigs(std::string name, std::string data);
+
+		class InvalidConfigDataException: public std::exception
+		{
+			public:
+				const char *what() const throw();
+		};
 };
