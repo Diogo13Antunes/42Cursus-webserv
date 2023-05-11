@@ -6,27 +6,35 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/11 16:05:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/11 17:56:11 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connections.hpp"
 
-Connections::Connections(void) {}
+Connections::Connections(void)
+{
+
+}
 
 Connections::~Connections(void)
 {
 	_removeAllConnections();
 }
 
-int Connections::getNumConnections(void)
+struct pollfd*	Connections::getPollFds(void)
+{
+	return (_pollFds);
+}
+
+int Connections::getNumOfConnections(void)
 {
 	return (_activeConnects.size());
 }
 
 struct pollfd Connections::getServerConnection(void)
 {
-	return (_fds[0]);
+	return (_pollFds[0]);
 }
 
 void Connections::addNewConnection(int fd, short events)
@@ -35,7 +43,7 @@ void Connections::addNewConnection(int fd, short events)
 	
 	_activeConnects.push_back(new Connection(fd, events, 0));
 	numConns = _activeConnects.size();
-	_fds[numConns - 1] = _activeConnects.at(numConns - 1)->getFd();
+	_pollFds[numConns - 1] = _activeConnects.at(numConns - 1)->getPollFd();
 }
 
 void Connections::addNewConnection(int fd, short events, short revents)
@@ -44,28 +52,23 @@ void Connections::addNewConnection(int fd, short events, short revents)
 
 	_activeConnects.push_back(new Connection(fd, events, revents));
 	numConns = _activeConnects.size();
-	_fds[numConns - 1] = _activeConnects.at(numConns - 1)->getFd();
+	_pollFds[numConns - 1] = _activeConnects.at(numConns - 1)->getPollFd();
 }
 
-struct pollfd *Connections::getConnectionsArray(void)
+void Connections::removeExpiredConnections(void)
 {
-	Connection *conn;
-
 	for (int i = 0; i < _activeConnects.size(); i++)
 	{
-		conn = _activeConnects.at(i);
-		if (i > 0 && _isConnectionTimeout(conn->getLastRequestTime(),
-			conn->getKeepAliveTimeout()))
+		if (i > 0 && _activeConnects.at(i)->isKeepAliveTimeout())
 		{
 			_removeConnection(i);
-			std::cout << "remove connection" << std::endl;
 			i--;
 		}
 		else
-			_fds[i] = _activeConnects.at(i)->getFd();		
+			_pollFds[i] = _activeConnects.at(i)->getPollFd();	
 	}
-	return _fds;
 }
+
 
 
 // Just for debug and tests
@@ -102,16 +105,16 @@ void Connections::updateConnections(void)
 
 	for (int i = 0; i < numConns; i++)
 	{
-		_activeConnects.at(i)->setPollFd(_fds[i]);
-		if (_activeConnects.at(i)->getFd().revents == POLLIN)
+		_activeConnects.at(i)->setPollFd(_pollFds[i]);
+		if (_activeConnects.at(i)->getPollFd().revents == POLLIN)
 			_activeConnects.at(i)->setLastRequestTime(time(NULL));
 
 		// Just for test and debug
-		if (i > 0 && _activeConnects.at(i)->getFd().revents == POLLIN)
+		if (i > 0 && _activeConnects.at(i)->getPollFd().revents == POLLIN)
 		{
-			valread = read(_activeConnects.at(i)->getFd().fd , buffer, 30000 - 1);
+			valread = read(_activeConnects.at(i)->getPollFd().fd , buffer, 30000 - 1);
 			std::cout << buffer << std::endl;
-			send_response_test(_activeConnects.at(i)->getFd().fd);
+			send_response_test(_activeConnects.at(i)->getPollFd().fd);
 			showConnections();
 		}
 	}
@@ -126,7 +129,6 @@ void Connections::showConnections(void)
 	for(it = _activeConnects.begin(); it != _activeConnects.end(); it++)
 		(*it)->showDataConnection();
 }
-
 	
 void Connections::_removeAllConnections(void)
 {
@@ -143,14 +145,4 @@ void Connections::_removeConnection(int index)
 	begin = _activeConnects.begin();
 	delete _activeConnects.at(index);
 	_activeConnects.erase(begin + index);
-}
-
-bool Connections::_isConnectionTimeout(time_t startTime, int timeout)
-{
-	int		elapsedTime;
-
-	elapsedTime = (int)(time(NULL) - startTime);
-	if (elapsedTime >= timeout)
-		return (true);
-	return (false);
 }

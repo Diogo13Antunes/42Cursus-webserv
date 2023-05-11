@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/09 17:55:06 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/11 17:55:19 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,9 +248,9 @@ int main(void)
 
     while(1)
     {
-		fds1 = conns.getConnectionsArray();
-		fdsSize = conns.getNumConnections();
-
+		conns.removeExpiredConnections();
+		fds1 = conns.getPollFds();
+		fdsSize = conns.getNumOfConnections();
 		res_poll = poll(fds1, fdsSize, 1000);
 
 		if (res_poll > 0)

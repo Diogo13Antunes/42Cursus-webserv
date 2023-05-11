@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/11 12:25:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/11 17:20:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ Connection::~Connection(void)
 	close(_pollFd.fd);
 }
 
-struct pollfd Connection::getFd(void)
+struct pollfd Connection::getPollFd(void)
 {
 	return (_pollFd);
 }
@@ -49,6 +49,16 @@ void Connection::setLastRequestTime(time_t lastRequestTime)
 void Connection::setPollFd(struct pollfd pollFd)
 {
 	_pollFd = pollFd;
+}
+
+bool Connection::isKeepAliveTimeout(void)
+{
+	int		elapsedTime;
+
+	elapsedTime = (int)(time(NULL) - _lastRequestTime);
+	if (elapsedTime >= _keepAliveTimeout)
+		return (true);
+	return (false);
 }
 
 // Just for debug (remove when not necessary)
