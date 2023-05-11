@@ -9,18 +9,11 @@ Configs::Configs(const char *configsFileName)
 		throw InvalidConfigFileException();
 	if (!_isValidConfigFile())
 		throw InvalidConfigFileException();
-	Terminal::printMessages("\n------------\nChecks: OK\n------------\n");
 }
 
 Configs::~Configs(void)
 {
 	//Default Configs Destructor
-}
-
-static void	printConfigFile(std::vector<std::string> *file)
-{
-	for (int i = 0; i < (*file).size(); i++)
-		Terminal::printMessages((*file).at(i).c_str());
 }
 
 void	Configs::_removeCommentsAndEmptyLines(void)
@@ -60,11 +53,8 @@ bool	Configs::_getConfigFile(const char *configFile)
 		while (std::getline(file, buff))
 			_configFileVec.push_back(buff);
 		file.close();
-		printConfigFile(&_configFileVec);
 		_removeCommentsAndEmptyLines();
 		_removeExtraWhiteSpaces();
-		Terminal::printMessages("-------------------------------------------");
-		printConfigFile(&_configFileVec);
 	}
 	else
 		return (false);
