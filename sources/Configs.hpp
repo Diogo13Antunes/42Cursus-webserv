@@ -19,7 +19,6 @@ class Configs
 		void							_removeExtraWhiteSpaces(void);
 		bool							_getConfigFile(const char *configFile);
 		bool							_isValidConfigFile(void);
-		bool							_isSingleColon(std::string &line);
 		bool							_isValidKey(std::string	&line);
 		bool							_isValidValue(std::string &line);
 

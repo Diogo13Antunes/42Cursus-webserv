@@ -15,4 +15,6 @@ class ConfigsUtils
 		static bool			isInsideQuotes(std::string src, size_t index);
 		static bool			isValisNbrQuotes(std::string &data);
 		static int			strToInt(std::string str);
+		static bool			isSingleColon(std::string &line);
+		static std::string	removeQuotes(std::string src);
 };

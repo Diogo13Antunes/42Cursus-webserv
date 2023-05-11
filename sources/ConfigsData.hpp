@@ -11,8 +11,12 @@ class ConfigsData
 {
 	private:
 
-		std::map<std::string, std::string>	_dataStr;
-		std::map<std::string, int>			_dataInt;
+		std::map<std::string, std::string>									_dataStr;
+		std::map<std::string, int>											_dataInt;
+		std::map<std::string, std::map<std::string, std::string> >			_dataArrs;
+
+		void																_initNewDataArray(std::string key);
+		std::map<std::string, std::string>									_newArrayConfig(std::string &src);
 
 	public:
 

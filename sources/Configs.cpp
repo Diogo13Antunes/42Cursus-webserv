@@ -77,18 +77,6 @@ bool	Configs::_getConfigFile(const char *configFile)
 	return (true);
 }
 
-bool	Configs::_isSingleColon(std::string &line)
-{
-	int	count = 0;
-	
-	for (size_t i = 0; i < line.size(); i++)
-		if (line[i] == ':' && !ConfigsUtils::isInsideQuotes(line, i))
-			count++;
-	if (count != 1)
-		return (false);
-	return (true);
-}
-
 bool	Configs::_isValidKey(std::string &line)
 {
 	std::string	key;
@@ -126,7 +114,7 @@ bool	Configs::_isValidConfigFile(void)
 {
 	for (size_t i = 0; i < _configFileVec.size(); i++)
 	{
-		if (!_isSingleColon(_configFileVec.at(i)))
+		if (!ConfigsUtils::isSingleColon(_configFileVec.at(i)))
 			return (false);
 		else if (!_isValidKey(_configFileVec.at(i)))
 			return (false);

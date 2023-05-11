@@ -73,3 +73,27 @@ int	ConfigsUtils::strToInt(std::string str)
 
 	return (res);
 }
+
+bool	ConfigsUtils::isSingleColon(std::string &line)
+{
+	int	count = 0;
+
+	for (size_t i = 0; i < line.size(); i++)
+		if (line[i] == ':' && !ConfigsUtils::isInsideQuotes(line, i))
+			count++;
+	if (count != 1)
+		return (false);
+	return (true);
+}
+
+std::string	ConfigsUtils::removeQuotes(std::string src)
+{
+	std::string	res;
+
+	for (size_t i = 0; i < src.size(); i++)
+	{
+		if (src[i] != '\"')
+			res += src[i];
+	}
+	return (res);
+}
