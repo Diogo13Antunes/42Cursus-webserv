@@ -7,10 +7,7 @@
 #include <map>
 
 #include "Terminal.hpp"
-#include "Server.hpp"
-
-#define VALID_KEY_LETTERS	"abcdefghijklmnopqrstuvwxyz_-"
-#define WHITE_SPACE			"\n\t\r "
+#include "ConfigsUtils.hpp"
 
 class Configs
 {

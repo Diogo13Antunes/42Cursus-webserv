@@ -1,0 +1,17 @@
+#pragma once
+
+#include <string>
+
+#define VALID_KEY_LETTERS	"abcdefghijklmnopqrstuvwxyz_-"
+#define WHITE_SPACE			"\n\t\r "
+
+class ConfigsUtils
+{
+	public:
+
+		static std::string	stringTrim(const std::string &str);
+		static bool			isValidArray(std::string &array);
+		static bool			isInsideQuotes(std::string src, size_t index);
+		static bool			isValisNbrQuotes(std::string &data);
+
+};

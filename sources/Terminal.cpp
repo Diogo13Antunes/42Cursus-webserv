@@ -1,15 +1,5 @@
 #include "Terminal.hpp"
 
-Terminal::Terminal(void)
-{
-	//Default Terminal Constructor
-}
-
-Terminal::~Terminal(void)
-{
-	//Default Terminal Destructor
-}
-
 // Used to print messages of error to the standart error
 void	Terminal::printErrors(const char *error)
 {
