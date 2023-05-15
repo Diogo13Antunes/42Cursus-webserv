@@ -7,16 +7,16 @@ RM = rm -f
 
 $(VERBOSE).SILENT:
 
-INC = -I ./sources -I ./includes 
+INC = -I ./sources -I ./sources/configs -I ./includes
 
 SRC_PATH = ./sources
 
 OBJ_PATH = ./objects
 
 SRC_NAME =	main.cpp				\
-			Configs.cpp				\
-			ConfigsUtils.cpp		\
-			ConfigsData.cpp			\
+			configs/Configs.cpp				\
+			configs/ConfigsUtils.cpp		\
+			configs/ConfigsData.cpp			\
 			Terminal.cpp
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))
@@ -31,6 +31,7 @@ $(NAME) : $(OBJS)
 
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects
+	mkdir -p objects/configs
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $@
 
 clean:
