@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connections.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/11 18:05:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/15 13:52:15 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,8 @@ class Connections
 		struct pollfd	*getPollFds(void);
 		int 			getNumOfConnections(void);
 		struct pollfd	getServerConnection(void);
-	
-		void			addNewConnection(int fd, short events);
-		void			addNewConnection(int fd, short events, short revents);
+
+		void			addNewConnection(Connection *conn);
 		void			removeExpiredConnections(void);
 		void			updateConnections(void);
 

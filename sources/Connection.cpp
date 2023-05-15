@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/11 17:20:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/15 13:48:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ Connection::Connection(int fd, short events, short revents):
 
 Connection::~Connection(void)
 {
+	std::cout << "remove connection" << std::endl;
 	close(_pollFd.fd);
 }
 

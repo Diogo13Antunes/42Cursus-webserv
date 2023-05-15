@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connections.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/11 18:00:06 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/15 13:51:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,20 +37,11 @@ struct pollfd Connections::getServerConnection(void)
 	return (_pollFds[0]);
 }
 
-void Connections::addNewConnection(int fd, short events)
+void Connections::addNewConnection(Connection *conn)
 {
 	size_t numConns;
 	
-	_activeConnects.push_back(new Connection(fd, events, 0));
-	numConns = _activeConnects.size();
-	_pollFds[numConns - 1] = _activeConnects.at(numConns - 1)->getPollFd();
-}
-
-void Connections::addNewConnection(int fd, short events, short revents)
-{
-	size_t numConns;
-
-	_activeConnects.push_back(new Connection(fd, events, revents));
+	_activeConnects.push_back(conn);
 	numConns = _activeConnects.size();
 	_pollFds[numConns - 1] = _activeConnects.at(numConns - 1)->getPollFd();
 }
