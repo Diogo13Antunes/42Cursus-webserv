@@ -15,8 +15,6 @@ class Configs
 
 		std::vector<std::string>		_configFileVec;
 
-		void							_removeCommentsAndEmptyLines(void);
-		void							_removeExtraWhiteSpaces(void);
 		bool							_getConfigFile(const char *configFile);
 		bool							_isValidConfigFile(void);
 		bool							_isValidKey(std::string	&line);

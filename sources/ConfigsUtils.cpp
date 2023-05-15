@@ -97,3 +97,23 @@ std::string	ConfigsUtils::removeQuotes(std::string src)
 	}
 	return (res);
 }
+
+std::string	ConfigsUtils::removeComments(std::string src)
+{
+	std::string	result;
+
+	result = src;
+	for (size_t j = 0; j < result.size(); j++)
+	{
+		if (result[j] == '#')
+		{
+			if (!ConfigsUtils::isInsideQuotes(result, j))
+				result = result.substr(0, j);
+		}
+	}
+	if (result.find_first_not_of(WHITE_SPACE) == result.npos)
+		result.clear();
+	if (!result.empty())
+		result = ConfigsUtils::stringTrim(result);
+	return (result);
+}

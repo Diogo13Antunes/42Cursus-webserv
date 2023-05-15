@@ -17,4 +17,6 @@ class ConfigsUtils
 		static int			strToInt(std::string str);
 		static bool			isSingleColon(std::string &line);
 		static std::string	removeQuotes(std::string src);
+		static	std::string	removeComments(std::string src);
+
 };

@@ -15,7 +15,7 @@ ConfigsData::~ConfigsData(void)
 	//Default ConfigsData Destructor
 }
 
-void	ConfigsData::addNewConfigs(std::string name, std::string data)
+/* void	ConfigsData::addNewConfigs(std::string name, std::string data)
 {
 	std::map<std::string, std::string>::iterator									itStr;
 	std::map<std::string, int>::iterator											itInt;
@@ -25,7 +25,7 @@ void	ConfigsData::addNewConfigs(std::string name, std::string data)
 	itInt = _dataInt.find(name);
 	itArrs = _dataArrs.find(name);
 	if (itStr != _dataStr.end())
-		(*itStr).second = data;
+		(*itStr).second = ConfigsUtils::removeQuotes(data);
 	else if (itInt != _dataInt.end())
 		(*itInt).second = ConfigsUtils::strToInt(data);
 	else if (itArrs != _dataArrs.end())
@@ -45,6 +45,44 @@ void	ConfigsData::addNewConfigs(std::string name, std::string data)
 	}
 	else
 		throw InvalidConfigDataException();
+} */
+
+void	ConfigsData::addNewConfigs(std::string name, std::string data)
+{
+	std::map<std::string, std::string>::iterator									itStr;
+	std::map<std::string, int>::iterator											itInt;
+	std::map<std::string, std::map<std::string, std::string> >::iterator			itArrs;
+
+	itStr = _dataStr.find(name);
+	if (itStr != _dataStr.end())
+	{
+		(*itStr).second = ConfigsUtils::removeQuotes(data);
+		return;
+	}
+	itInt = _dataInt.find(name);
+	if (itInt != _dataInt.end())
+	{
+		(*itInt).second = ConfigsUtils::strToInt(data);
+		return;
+	}
+	itArrs = _dataArrs.find(name);
+	if (itArrs != _dataArrs.end())
+	{
+		std::map<std::string, std::string>				&innerMap = (*itArrs).second;
+		std::map<std::string, std::string>				temp;
+		std::map<std::string, std::string>::iterator	itTemp;
+		temp = _newArrayConfig(data);
+		if (!temp.empty())
+		{
+			for (itTemp = temp.begin(); itTemp != temp.end(); ++itTemp)
+				innerMap.insert(*itTemp);
+		}
+		// std::cout << "[Key] : [Value]" << std::endl;
+		// for (itTemp = temp.begin(); itTemp != temp.end(); ++itTemp)
+			// std::cout << "[" << (*itTemp).first << "] : [" << (*itTemp).second << "]" << std::endl;
+		return;
+	}
+	throw InvalidConfigDataException();
 }
 
 int	ConfigsData::getListen(void)

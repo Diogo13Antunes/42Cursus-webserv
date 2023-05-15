@@ -32,30 +32,6 @@ bool	Configs::getNextConfig(std::string &key, std::string &value)
 	return (true);
 }
 
-void	Configs::_removeCommentsAndEmptyLines(void)
-{
-	for (size_t i = 0; i < _configFileVec.size(); i++)
-	{
-		for (size_t j = 0; j < _configFileVec.at(i).size(); j++)
-		{
-			if (_configFileVec.at(i)[j] == '#')
-				if (!ConfigsUtils::isInsideQuotes(_configFileVec.at(i), j))
-					_configFileVec.at(i) = _configFileVec.at(i).substr(0, j);
-		}
-		if (_configFileVec.at(i).find_first_not_of(WHITE_SPACE) == _configFileVec.at(i).npos)
-		{
-			_configFileVec.erase(_configFileVec.begin() + i);
-			i--;
-		}
-	}
-}
-
-void	Configs::_removeExtraWhiteSpaces(void)
-{
-	for (size_t i = 0; i < _configFileVec.size(); i++)
-		_configFileVec.at(i) = ConfigsUtils::stringTrim(_configFileVec.at(i));
-}
-
 // Checks if the file can be correctly open or not
 // After open the file obtain the content of him
 // Returns false if something went wrong or true if everything is OK
@@ -67,10 +43,12 @@ bool	Configs::_getConfigFile(const char *configFile)
 	if (file.is_open())
 	{
 		while (std::getline(file, buff))
-			_configFileVec.push_back(buff);
+		{
+			buff = ConfigsUtils::removeComments(buff);
+			if (!buff.empty())
+				_configFileVec.push_back(buff);
+		}
 		file.close();
-		_removeCommentsAndEmptyLines();
-		_removeExtraWhiteSpaces();
 	}
 	else
 		return (false);

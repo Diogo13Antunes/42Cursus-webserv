@@ -34,10 +34,10 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 		Configs	cfg(filename);
 		while (cfg.getNextConfig(key, value))
 			data.addNewConfigs(key, value);
-		std::cout << "listen:   " << data.getListen() << std::endl;
-		std::cout << "ServName: " << data.getServerName() << std::endl;
-		std::cout << "Root:     " << data.getRoot() << std::endl;
-		std::cout << "Index:    " << data.getIndex() << std::endl;
+		// std::cout << "listen:   " << data.getListen() << std::endl;
+		// std::cout << "ServName: " << data.getServerName() << std::endl;
+		// std::cout << "Root:     " << data.getRoot() << std::endl;
+		// std::cout << "Index:    " << data.getIndex() << std::endl;
 	}
 	catch(const std::exception& e)
 	{
