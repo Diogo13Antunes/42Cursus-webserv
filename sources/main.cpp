@@ -19,11 +19,12 @@
 #include <string.h>
 #include <sys/poll.h>
 #include <errno.h>
-
+#include <fcntl.h>
 #include <fstream>
 
 #include "Configs.hpp"
 #include "ConfigsData.hpp"
+#include "RequestParser.hpp"
 
 bool	initConfigs(const char *filename, ConfigsData &data)
 {
@@ -47,7 +48,7 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 	return (true);
 }
 
-int main(int ac, char **av)
+/* int main(int ac, char **av)
 {
 	ConfigsData	data;
 
@@ -61,4 +62,23 @@ int main(int ac, char **av)
 		return (1);
 
 	return (0);
+} */
+
+int main(int ac, char **av)
+{
+	int	fd;
+
+	if (ac != 2)
+	{
+		Terminal::printErrors("Invalid number of Arguments");
+		return (1);
+	}
+
+	fd = open(av[1], O_RDONLY);
+	if (fd < 0)
+	{
+		Terminal::printErrors("Invalid Request File");
+		return (1);
+	}
+	RequestParser request(fd);
 }
