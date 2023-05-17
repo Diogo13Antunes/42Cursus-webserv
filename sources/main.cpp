@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/15 13:50:11 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/17 17:59:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@
 #include "Connection.hpp"
 #include "Connections.hpp"
 
+#include "EventLoop.hpp"
+
+
 
 // Test comminication wit sockets
 
@@ -39,7 +42,7 @@
 #define PORT 8080
 
 void send_response(int socket_fd);
-
+/*
 int main(void)
 {
 	int server_fd, new_socket;
@@ -136,5 +139,17 @@ int main(void)
 			conns.updateConnections();
 		}
 	}
+	return (0);
+}
+*/
+
+int main(void)
+{
+	EventLoop eventLoop;
+
+	eventLoop.registerEvent(new ReadHandler());
+	eventLoop.registerEvent(new WriteHandler());
+	eventLoop.handleEvents();
+
 	return (0);
 }
