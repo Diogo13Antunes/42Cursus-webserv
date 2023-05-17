@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/17 17:58:00 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/17 19:05:11 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,11 @@ void EventLoop::handleEvents(void)
 	std::map<EventType, IEventHandler*>::iterator it;
 	EventType type;
 
-	type = READ;
+	type = READ_EVENT;
 	it = _handlers.find(type);
 	it->second->handleEvent();
 
-	type = WRITE;
+	type = WRITE_EVENT;
 	it = _handlers.find(type);
 	it->second->handleEvent();
 }

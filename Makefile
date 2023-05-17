@@ -13,12 +13,13 @@ SRC_PATH = ./sources
 
 OBJ_PATH = ./objects
 
-SRC_NAME =	main.cpp			\
-			Connection.cpp		\
-			Connections.cpp		\
-			EventLoop.cpp		\
-			WriteHandler.cpp	\
-			ReadHandler.cpp		\
+SRC_NAME =	main.cpp				\
+			Connection.cpp			\
+			Connections.cpp			\
+			EventLoop.cpp			\
+			WriteHandler.cpp		\
+			ReadHandler.cpp			\
+			EventHandlerFactory.cpp	\
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))
 

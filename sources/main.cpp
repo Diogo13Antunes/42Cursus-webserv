@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/17 17:59:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/17 19:04:54 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #include "Connections.hpp"
 
 #include "EventLoop.hpp"
+#include "EventHandlerFactory.hpp"
 
 
 
@@ -145,10 +146,11 @@ int main(void)
 
 int main(void)
 {
-	EventLoop eventLoop;
+	EventLoop			eventLoop;
+	EventHandlerFactory	factory;
 
-	eventLoop.registerEvent(new ReadHandler());
-	eventLoop.registerEvent(new WriteHandler());
+	eventLoop.registerEvent(factory.getEventHandler(READ_EVENT));
+	eventLoop.registerEvent(factory.getEventHandler(WRITE_EVENT));
 	eventLoop.handleEvents();
 
 	return (0);

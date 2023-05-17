@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   WriteHandler.cpp                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/05/17 19:05:25 by dsilveri         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "WriteHandler.hpp"
 
 WriteHandler::WriteHandler(void)
@@ -29,5 +41,5 @@ void WriteHandler::handleEvent(void)
 
 EventType WriteHandler::getHandleType(void)
 {
-	return (WRITE);
+	return (WRITE_EVENT);
 }

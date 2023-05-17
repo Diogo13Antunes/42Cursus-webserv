@@ -1,34 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   EventLoop.hpp                                      :+:      :+:    :+:   */
+/*   EventHandlerFactory.hpp                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/17 19:03:25 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/05/17 19:03:49 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/05/17 19:04:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <map>
-
 #include "IEventHandler.hpp"
 #include "ReadHandler.hpp"
 #include "WriteHandler.hpp"
 
-class EventLoop
+class EventHandlerFactory
 {
-	std::map<EventType, IEventHandler*> _handlers;
-
 	public:
-		EventLoop(void);
-		EventLoop(const EventLoop &src);
-		~EventLoop(void);
-		EventLoop &operator=(const EventLoop &src);
+		EventHandlerFactory &operator=(const EventHandlerFactory &src);
+		EventHandlerFactory(const EventHandlerFactory &src);
+		EventHandlerFactory(void);
+		~EventHandlerFactory(void);
 
-		void	registerEvent(IEventHandler *event);
-		void	unregisterEvent(IEventHandler *event);
-		void	handleEvents(void);
+		IEventHandler *getEventHandler(EventType type);
 };

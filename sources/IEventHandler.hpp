@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:48:24 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/17 15:52:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/17 19:04:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 
 typedef enum 
 {
-    READ,
-    WRITE
+    READ_EVENT,
+    WRITE_EVENT
 }	EventType;
 
 class IEventHandler

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/17 17:58:27 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/17 19:05:33 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,5 @@ void ReadHandler::handleEvent(void)
 
 EventType ReadHandler::getHandleType(void)
 {
-	return (READ);
+	return (READ_EVENT);
 }
