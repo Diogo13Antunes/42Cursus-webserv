@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:54:59 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/17 15:47:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/18 12:08:11 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@ class ReadHandler: public IEventHandler
 		ReadHandler(void);
 		~ReadHandler(void);
 
-		void		handleEvent(void);
+		void		handleEvent(int event);
 		EventType	getHandleType(void);
 };

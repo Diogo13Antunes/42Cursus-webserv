@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/17 19:05:25 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/18 12:09:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ WriteHandler &WriteHandler::operator=(const WriteHandler &src)
 }
 */
 
-void WriteHandler::handleEvent(void)
+void WriteHandler::handleEvent(int event)
 {
-	std::cout << "handle WRITE event" << std::endl;
+	std::cout << "handle WRITE event" << event << std::endl;
 }
 
 EventType WriteHandler::getHandleType(void)

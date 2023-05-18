@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:03:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/17 19:05:49 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/17 19:52:16 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ EventHandlerFactory &EventHandlerFactory::operator=(const EventHandlerFactory &s
 	//EventHandlerFactory Copy Assignment Operator
 }
 */
+
 
 IEventHandler* EventHandlerFactory::getEventHandler(EventType type)
 {

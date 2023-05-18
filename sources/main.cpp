@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/17 19:04:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/18 15:40:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@
 #define PORT 8080
 
 void send_response(int socket_fd);
-/*
+
+
 int main(void)
 {
 	int server_fd, new_socket;
@@ -63,6 +64,7 @@ int main(void)
 	Connections conns;
 
 	struct pollfd serverConn;
+
 	
 	// cria socket
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
@@ -116,6 +118,12 @@ int main(void)
 	struct pollfd *fds1;
 	int fdsSize;
 
+	EventLoop			eventLoop;
+	EventHandlerFactory	factory;
+	
+	eventLoop.registerEvent(factory.getEventHandler(READ_EVENT));
+	eventLoop.registerEvent(factory.getEventHandler(WRITE_EVENT));
+
     while(1)
     {
 		conns.removeExpiredConnections();
@@ -134,16 +142,41 @@ int main(void)
 					perror("In accept");
 					exit(EXIT_FAILURE);
 				}
-				//conns.addNewConnection(new_socket, serverConn.events, serverConn.revents);
 				conns.addNewConnection(new Connection(new_socket, serverConn.events, serverConn.revents));
-			}		
+			}
 			conns.updateConnections();
+
+			/*fds1 = conns.getPollFds();
+			fdsSize = conns.getNumOfConnections();
+		
+			for (int i = 1; i < fdsSize; i++)
+			{
+				if (fds1[i].revents)
+				{
+					std::cout << "Add event" << std::endl;
+					std::cout << "fd " << fds1[i].fd << std::endl;
+					std::cout << "revets " << fds1[i].revents << std::endl;
+					eventLoop.addNewEvent(fds1[i].fd);
+				}
+			}
+			eventLoop.handleEvents();*/
 		}
+		
+		fds1 = conns.getPollFds();
+		fdsSize = conns.getNumOfConnections();
+		for (int i = 1; i < fdsSize; i++)
+		{
+			if (fds1[i].revents)
+				eventLoop.addNewEvent(fds1[i].fd);
+		}
+		eventLoop.handleEvents();
+
 	}
 	return (0);
 }
-*/
 
+
+/*
 int main(void)
 {
 	EventLoop			eventLoop;
@@ -155,3 +188,4 @@ int main(void)
 
 	return (0);
 }
+*/

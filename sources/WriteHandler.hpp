@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:30:30 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/17 17:30:33 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/18 12:07:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,6 @@ class WriteHandler: public IEventHandler
 		WriteHandler(void);
 		~WriteHandler(void);
 
-		void		handleEvent(void);
+		void		handleEvent(int event);
 		EventType	getHandleType(void);
 };

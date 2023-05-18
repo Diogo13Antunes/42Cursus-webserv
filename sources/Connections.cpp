@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connections.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/15 13:51:59 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/18 15:38:49 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ void Connections::removeExpiredConnections(void)
 
 
 // Just for debug and tests
+/*
 void send_response_test(int socket_fd)
 {
 	std::string head;
@@ -81,18 +82,19 @@ void send_response_test(int socket_fd)
 	res = head + body;
 	send(socket_fd, res.c_str(), res.size(), 0);
 }
+*/
 
 void Connections::updateConnections(void)
 {
-	char	buffer[30000];
-	ssize_t	valread;
+	//char	buffer[30000];
+	//ssize_t	valread;
 	size_t	numConns;
 
 	numConns = _activeConnects.size();
 
 	// Just for test and debug
-	for(int i = 0; i < 30000; i++)
-		buffer[i] = 0;
+	//for(int i = 0; i < 30000; i++)
+	//	buffer[i] = 0;
 
 	for (int i = 0; i < numConns; i++)
 	{
@@ -101,13 +103,13 @@ void Connections::updateConnections(void)
 			_activeConnects.at(i)->setLastRequestTime(time(NULL));
 
 		// Just for test and debug
-		if (i > 0 && _activeConnects.at(i)->getPollFd().revents == POLLIN)
+		/*if (i > 0 && _activeConnects.at(i)->getPollFd().revents == POLLIN)
 		{
 			valread = read(_activeConnects.at(i)->getPollFd().fd , buffer, 30000 - 1);
 			std::cout << buffer << std::endl;
 			send_response_test(_activeConnects.at(i)->getPollFd().fd);
 			showConnections();
-		}
+		}*/
 	}
 }
 
