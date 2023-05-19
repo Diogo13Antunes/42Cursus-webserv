@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connections.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/15 13:52:15 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/19 19:23:17 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@
 #include <sys/socket.h>
 #include <sys/poll.h>
 #include "Connection.hpp"
+#include "Event.hpp"
 
 class Connections
 {
 	private:
-		std::vector<Connection *>	_activeConnects;
-		struct pollfd				_pollFds[1024];
+		std::vector<Connection *>			_activeConnects;
+		struct pollfd						_pollFds[1024];
+		int									_index;
 
 		void 						_removeAllConnections(void);
 		void 						_removeConnection(int index);
@@ -39,6 +41,8 @@ class Connections
 		void			addNewConnection(Connection *conn);
 		void			removeExpiredConnections(void);
 		void			updateConnections(void);
+
+		Event			*getNextEvent(void);
 
 		// for debug only
 		void			showConnections(void);

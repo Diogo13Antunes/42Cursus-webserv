@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/19 14:12:01 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/19 19:38:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ struct pollfd Connection::getPollFd(void)
 	return (_pollFd);
 }
 
-short Connection::getFd(void)
+int Connection::getFd(void)
 {
 	return (_pollFd.fd);
 }

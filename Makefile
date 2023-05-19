@@ -20,6 +20,7 @@ SRC_NAME =	main.cpp				\
 			WriteHandler.cpp		\
 			ReadHandler.cpp			\
 			EventHandlerFactory.cpp	\
+			Event.cpp				\
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))
 

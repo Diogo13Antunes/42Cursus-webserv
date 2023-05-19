@@ -6,16 +6,15 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/18 15:38:49 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/19 19:50:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connections.hpp"
 
-Connections::Connections(void)
-{
-
-}
+Connections::Connections(void):
+	_index(1)
+{}
 
 Connections::~Connections(void)
 {
@@ -111,6 +110,26 @@ void Connections::updateConnections(void)
 			showConnections();
 		}*/
 	}
+}
+
+Event* Connections::getNextEvent(void)
+{
+	int size;
+
+	size =  _activeConnects.size();
+	if (size <= 1)
+		return (NULL);
+	while (_index < size)
+	{
+		if (_pollFds[_index].revents)
+		{
+			_activeConnects.at(_index)->setPollFd(_pollFds[_index]);
+			return (new Event(_activeConnects.at(_index++)));
+		}
+		_index++;
+	}
+	_index = 1;
+	return (NULL);
 }
 
 // Just for debug (remove when not necessary)

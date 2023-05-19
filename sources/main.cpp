@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/19 16:47:00 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/19 19:41:02 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,8 @@ int main(void)
 
 	EventLoop			eventLoop;
 	EventHandlerFactory	factory;
+
+	Event *event;
 	
 	eventLoop.registerEvent(factory.getEventHandler(READ_EVENT));
 	eventLoop.registerEvent(factory.getEventHandler(WRITE_EVENT));
@@ -145,7 +147,18 @@ int main(void)
 				}
 				conns.addNewConnection(new Connection(new_socket, serverConn.events, serverConn.revents));
 			}
-			conns.updateConnections();
+			//conns.updateConnections();
+			
+			while (true)
+			{
+				event = conns.getNextEvent();
+				if (event)
+					std::cout << "event fd: " << event->getFd() << std::endl;
+				else
+					break;
+
+			}
+
 		}
 
 		fds1 = conns.getPollFds();
