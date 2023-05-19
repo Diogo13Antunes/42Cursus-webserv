@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connection.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/15 13:48:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/19 14:12:01 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,21 @@ Connection::~Connection(void)
 struct pollfd Connection::getPollFd(void)
 {
 	return (_pollFd);
+}
+
+short Connection::getFd(void)
+{
+	return (_pollFd.fd);
+}
+
+short Connection::getRevents(void)
+{
+	return (_pollFd.revents);
+}
+
+short Connection::getEvents(void)
+{
+	return (_pollFd.events);
 }
 
 int Connection::getKeepAliveTimeout(void)

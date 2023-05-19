@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:28 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/11 17:20:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/19 12:49:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,12 @@ class Connection
 		~Connection(void);
 
 		struct pollfd	getPollFd(void);
+		short			getFd(void);
+		short			getRevents(void);
+		short			getEvents(void);
 		int				getKeepAliveTimeout(void);
 		time_t			getLastRequestTime(void);
+
 		void			setLastRequestTime(time_t lastRequestTime);
 		void			setPollFd(struct pollfd pollFd);
 

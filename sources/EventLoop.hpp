@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/18 11:07:27 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/19 14:37:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,15 @@
 #include "IEventHandler.hpp"
 #include "ReadHandler.hpp"
 #include "WriteHandler.hpp"
+#include "Connections.hpp"
 
 class EventLoop
 {
 	private:
 		std::map<EventType, IEventHandler*> _handlers;
-		std::queue<int> _events;
+		std::queue<int>						_events;
+		std::vector<Connection *>			*conn;
+		
 
 	public:
 		EventLoop(void);

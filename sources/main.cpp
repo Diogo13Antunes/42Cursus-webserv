@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/18 15:40:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/19 16:47:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ int main(void)
 		conns.removeExpiredConnections();
 		fds1 = conns.getPollFds();
 		fdsSize = conns.getNumOfConnections();
+
 		res_poll = poll(fds1, fdsSize, 1000);
 
 		if (res_poll > 0)
@@ -145,23 +146,8 @@ int main(void)
 				conns.addNewConnection(new Connection(new_socket, serverConn.events, serverConn.revents));
 			}
 			conns.updateConnections();
-
-			/*fds1 = conns.getPollFds();
-			fdsSize = conns.getNumOfConnections();
-		
-			for (int i = 1; i < fdsSize; i++)
-			{
-				if (fds1[i].revents)
-				{
-					std::cout << "Add event" << std::endl;
-					std::cout << "fd " << fds1[i].fd << std::endl;
-					std::cout << "revets " << fds1[i].revents << std::endl;
-					eventLoop.addNewEvent(fds1[i].fd);
-				}
-			}
-			eventLoop.handleEvents();*/
 		}
-		
+
 		fds1 = conns.getPollFds();
 		fdsSize = conns.getNumOfConnections();
 		for (int i = 1; i < fdsSize; i++)
@@ -172,6 +158,7 @@ int main(void)
 		eventLoop.handleEvents();
 
 	}
+	
 	return (0);
 }
 
