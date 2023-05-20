@@ -6,13 +6,14 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/19 19:50:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/20 18:15:38 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connections.hpp"
 
-Connections::Connections(void):
+Connections::Connections(Messenger *messenger):
+	_messenger(messenger),
 	_index(1)
 {}
 
@@ -132,6 +133,16 @@ Event* Connections::getNextEvent(void)
 	return (NULL);
 }
 
+ModuleID Connections::getId(void)
+{
+	return (CONNECTIONS_ID);
+}
+
+void Connections::handleMessage(t_msg msg)
+{
+	std::cout << "Menssage reived by Connections: msg: " << msg.msg << std::endl;
+}
+
 // Just for debug (remove when not necessary)
 // Remove
 void Connections::showConnections(void)
@@ -141,7 +152,12 @@ void Connections::showConnections(void)
 	for(it = _activeConnects.begin(); it != _activeConnects.end(); it++)
 		(*it)->showDataConnection();
 }
-	
+
+void	Connections::_sendMessage(t_msg msg)
+{
+	_messenger->sendMessage(msg);
+}
+
 void Connections::_removeAllConnections(void)
 {
 	std::vector<Connection *>::iterator it;

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/19 19:23:17 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/20 18:12:47 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,25 @@
 #include <sys/poll.h>
 #include "Connection.hpp"
 #include "Event.hpp"
+#include "IModule.hpp"
+#include "Messenger.hpp"
 
-class Connections
+class Connections: public IModule
 {
 	private:
-		std::vector<Connection *>			_activeConnects;
-		struct pollfd						_pollFds[1024];
-		int									_index;
+		std::vector<Connection *>	_activeConnects;
+		struct pollfd				_pollFds[1024];
+		int							_index;
+		Messenger					*_messenger;
 
-		void 						_removeAllConnections(void);
-		void 						_removeConnection(int index);
+		void	_sendMessage(t_msg msg);
+
+		void	_removeAllConnections(void);
+		void	_removeConnection(int index);
 
 	public:
 		Connections(void);
+		Connections(Messenger *messenger);
 		~Connections(void);
 
 		struct pollfd	*getPollFds(void);
@@ -43,6 +49,9 @@ class Connections
 		void			updateConnections(void);
 
 		Event			*getNextEvent(void);
+
+		ModuleID		getId(void);
+		void			handleMessage(t_msg msg);
 
 		// for debug only
 		void			showConnections(void);

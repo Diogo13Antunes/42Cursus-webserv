@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/19 19:41:02 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/20 18:16:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@
 
 #include "EventLoop.hpp"
 #include "EventHandlerFactory.hpp"
+
+#include "Messenger.hpp"
 
 
 
@@ -61,7 +63,8 @@ int main(void)
 
 	struct pollfd fds[3];
 
-	Connections conns;
+	Messenger messenger;
+	Connections conns(&messenger);
 
 	struct pollfd serverConn;
 
@@ -118,13 +121,17 @@ int main(void)
 	struct pollfd *fds1;
 	int fdsSize;
 
-	EventLoop			eventLoop;
+	Event *event;
+
+	
+	EventLoop			eventLoop(&messenger);
 	EventHandlerFactory	factory;
 
-	Event *event;
-	
 	eventLoop.registerEvent(factory.getEventHandler(READ_EVENT));
 	eventLoop.registerEvent(factory.getEventHandler(WRITE_EVENT));
+
+	messenger.registerModule(&conns);
+	messenger.registerModule(&eventLoop);
 
     while(1)
     {
@@ -149,7 +156,7 @@ int main(void)
 			}
 			//conns.updateConnections();
 			
-			while (true)
+			/*while (true)
 			{
 				event = conns.getNextEvent();
 				if (event)
@@ -157,7 +164,7 @@ int main(void)
 				else
 					break;
 
-			}
+			}*/
 
 		}
 
@@ -166,7 +173,10 @@ int main(void)
 		for (int i = 1; i < fdsSize; i++)
 		{
 			if (fds1[i].revents)
+			{
 				eventLoop.addNewEvent(fds1[i].fd);
+				
+			}
 		}
 		eventLoop.handleEvents();
 
