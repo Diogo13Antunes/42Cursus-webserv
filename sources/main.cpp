@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/20 18:16:30 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/22 11:44:18 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,20 +154,12 @@ int main(void)
 				}
 				conns.addNewConnection(new Connection(new_socket, serverConn.events, serverConn.revents));
 			}
-			//conns.updateConnections();
-			
-			/*while (true)
-			{
-				event = conns.getNextEvent();
-				if (event)
-					std::cout << "event fd: " << event->getFd() << std::endl;
-				else
-					break;
-
-			}*/
-
+			conns.updateConnections();
 		}
+		
+		eventLoop.handleEvents();
 
+		/*
 		fds1 = conns.getPollFds();
 		fdsSize = conns.getNumOfConnections();
 		for (int i = 1; i < fdsSize; i++)
@@ -179,7 +171,7 @@ int main(void)
 			}
 		}
 		eventLoop.handleEvents();
-
+		*/
 	}
 	
 	return (0);

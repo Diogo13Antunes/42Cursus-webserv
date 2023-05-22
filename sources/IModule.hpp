@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 15:40:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/20 17:51:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/22 11:31:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ typedef enum
 
 typedef struct s_msg
 {
-	ModuleID	dest;
-	std::string	msg;			;
+	ModuleID	dst;
+	int			fd;
 }	t_msg;
 
 class IModule

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/20 18:12:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/22 11:40:25 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ class EventLoop: public IModule
 	private:
 		std::map<EventType, IEventHandler*> _handlers;
 		std::queue<int>						_events;
-		std::vector<Connection *>			*conn;
 		Messenger							*_messenger;
 		
 		void	_sendMessage(t_msg msg);

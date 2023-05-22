@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 17:11:39 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/20 17:35:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/22 11:35:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void Messenger::sendMessage(t_msg msg)
 
 	if (msgHandler.size())
 	{
-		it = msgHandler.find(msg.dest);
+		it = msgHandler.find(msg.dst);
 		it->second->handleMessage(msg);
 	}
 }

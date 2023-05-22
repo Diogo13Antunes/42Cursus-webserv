@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/18 15:47:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/22 11:55:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void ReadHandler::handleEvent(int event)
 	for(int i = 0; i < 30000; i++)
 		buffer[i] = 0;
 
-	valread = read(event , buffer, 30000 - 1);
+	valread = read(event, buffer, 30000 - 1);
 	send_response_test(event);
 	std::cout << "handle READ event: " << event << std::endl;
 }

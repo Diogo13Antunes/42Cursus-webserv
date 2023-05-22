@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/20 18:23:41 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/22 11:45:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,9 +100,9 @@ void EventLoop::handleEvents(void)
 		it->second->handleEvent(_events.front());
 		_events.pop();
 
-		msg.dest = CONNECTIONS_ID;
-		msg.msg = "It's me EventLoop, processing Events";
-		_sendMessage(msg);
+		//msg.dest = CONNECTIONS_ID;
+		//msg.msg = "It's me EventLoop, processing Events";
+		//_sendMessage(msg);
 	}
 }
 
@@ -118,7 +118,8 @@ ModuleID EventLoop::getId(void)
 
 void EventLoop::handleMessage(t_msg msg)
 {
-	std::cout << "Menssage reived by EventLoop: msg: " << msg.msg << std::endl;
+	std::cout << "Menssage reived by EventLoop: msg: " << msg.fd << std::endl;
+	addNewEvent(msg.fd);
 }
 
 void	EventLoop::_sendMessage(t_msg msg)

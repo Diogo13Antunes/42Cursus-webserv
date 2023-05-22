@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/20 18:15:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/22 11:56:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,63 +56,30 @@ void Connections::removeExpiredConnections(void)
 			i--;
 		}
 		else
-			_pollFds[i] = _activeConnects.at(i)->getPollFd();	
+			_pollFds[i] = _activeConnects.at(i)->getPollFd();
 	}
 }
-
-
-
-// Just for debug and tests
-/*
-void send_response_test(int socket_fd)
-{
-	std::string head;
-	std::string body;
-	std::string res;
-
-	std::stringstream out;
-
-	body = "<html><head><title>WebServer</title></head><body><h1>Hello World</h1></body></html>\r\n\r\n";
-	out << body.size();
-	
-	head = "HTTP/1.1 200 OK\r\nContent-length: ";
-	head += out.str();
-	head += "\r\n";
-	head += "Content-Type: text/html\r\n\r\n";
-	res = head + body;
-	send(socket_fd, res.c_str(), res.size(), 0);
-}
-*/
 
 void Connections::updateConnections(void)
 {
-	//char	buffer[30000];
-	//ssize_t	valread;
 	size_t	numConns;
+	t_msg	msg;
 
 	numConns = _activeConnects.size();
-
-	// Just for test and debug
-	//for(int i = 0; i < 30000; i++)
-	//	buffer[i] = 0;
-
-	for (int i = 0; i < numConns; i++)
+	for (int i = 1; i < numConns; i++)
 	{
 		_activeConnects.at(i)->setPollFd(_pollFds[i]);
 		if (_activeConnects.at(i)->getPollFd().revents == POLLIN)
-			_activeConnects.at(i)->setLastRequestTime(time(NULL));
-
-		// Just for test and debug
-		/*if (i > 0 && _activeConnects.at(i)->getPollFd().revents == POLLIN)
 		{
-			valread = read(_activeConnects.at(i)->getPollFd().fd , buffer, 30000 - 1);
-			std::cout << buffer << std::endl;
-			send_response_test(_activeConnects.at(i)->getPollFd().fd);
-			showConnections();
-		}*/
+			_activeConnects.at(i)->setLastRequestTime(time(NULL));
+			msg.dst = EVENTLOOP_ID;
+			msg.fd = _activeConnects.at(i)->getFd();
+			_sendMessage(msg);
+		}
 	}
 }
 
+/*
 Event* Connections::getNextEvent(void)
 {
 	int size;
@@ -132,6 +99,7 @@ Event* Connections::getNextEvent(void)
 	_index = 1;
 	return (NULL);
 }
+*/
 
 ModuleID Connections::getId(void)
 {
@@ -140,7 +108,7 @@ ModuleID Connections::getId(void)
 
 void Connections::handleMessage(t_msg msg)
 {
-	std::cout << "Menssage reived by Connections: msg: " << msg.msg << std::endl;
+	//std::cout << "Menssage reived by Connections: msg: " << msg.msg << std::endl;
 }
 
 // Just for debug (remove when not necessary)
