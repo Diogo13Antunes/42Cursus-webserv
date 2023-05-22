@@ -22,8 +22,12 @@ RequestParser::RequestParser(int RequestFd)
 	for (it = _requestHeader.begin(); it != _requestHeader.end(); it++)
 		std::cout << "[" << (*it).first << "] | [" << (*it).second << "]" << std::endl;
 	
-	std::cout << "---------- BODY ----------";
-	std::cout << _requestBody;
+	// _requestBody.erase(_requestBody.find_last_not_of("\r\n"));
+
+	// std::cout << "---------- BODY ----------";
+	// std::cout << _requestBody;
+	// std::cout << "Length 1 > " << _requestBody.length() << std::endl;
+	// std::cout << "Length 2 > " << _requestHeader.find("content-length")->second << std::endl;
 }
 
 RequestParser::~RequestParser(void)

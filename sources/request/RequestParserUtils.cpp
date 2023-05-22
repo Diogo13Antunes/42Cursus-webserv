@@ -47,10 +47,10 @@ std::map<std::string, std::string>	RequestParserUtils::getRequestHeader(std::vec
 	std::map<std::string, std::string>	header;
 	std::string	temp;
 
-	for (size_t i = 0; i < src.size(); i++)
+	while (1)
 	{
 		temp = src.begin()->c_str();
-		if (temp.find_first_not_of("\r\n") == src.at(i).npos)
+		if (temp.find_first_not_of("\r\n") == temp.npos)
 			break;
 		header.insert(getPair(temp));
 		src.erase(src.begin());
