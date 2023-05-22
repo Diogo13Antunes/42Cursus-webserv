@@ -20,4 +20,11 @@ class RequestParser
 	public:
 		RequestParser(int RequestFd);
 		~RequestParser(void);
+		
+		class EmptyRequestException: public std::exception
+		{
+			public:
+				const char *what() const throw();
+		};
+
 };

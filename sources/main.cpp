@@ -80,5 +80,16 @@ int main(int ac, char **av)
 		Terminal::printErrors("Invalid Request File");
 		return (1);
 	}
-	RequestParser request1(fd1);
+
+	try
+	{
+		RequestParser request1(fd1);
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+		return (1);
+	}
+
+	return (0);
 }

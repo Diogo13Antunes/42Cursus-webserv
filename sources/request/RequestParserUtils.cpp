@@ -26,6 +26,7 @@ std::string	RequestParserUtils::getRequestLine(std::vector<std::string> &src)
 	std::string	line;
 
 	line = src.begin()->c_str();
+	line.erase(line.find_first_of("\r\n"));
 	src.erase(src.begin());
 	return (line);
 }

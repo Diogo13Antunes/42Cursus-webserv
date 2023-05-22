@@ -121,6 +121,4 @@ Example ->
 }
 
 Links to check RFC:
- -> https://www.ietf.org/rfc/rfc2616.txt
- -> https://datatracker.ietf.org/doc/html/rfc2616
-
+ -> https://datatracker.ietf.org/doc/html/rfc9110
