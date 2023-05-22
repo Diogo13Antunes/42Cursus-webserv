@@ -16,8 +16,10 @@ class RequestParserUtils
 {
 	public:
 		
+		static std::string							getRequestLine(std::vector<std::string> &src);
 		static std::string							getDataString(int fd);
 		static std::vector<std::string>				getDataVector(std::string &src);
 		static std::map<std::string, std::string>	getRequestHeader(std::vector<std::string> &src);
+		static std::string							getBody(std::vector<std::string> &src);
 
 };

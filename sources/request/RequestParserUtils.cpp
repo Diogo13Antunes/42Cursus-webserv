@@ -21,6 +21,15 @@ std::string	RequestParserUtils::getDataString(int fd)
 	return (data);
 }
 
+std::string	RequestParserUtils::getRequestLine(std::vector<std::string> &src)
+{
+	std::string	line;
+
+	line = src.begin()->c_str();
+	src.erase(src.begin());
+	return (line);
+}
+
 std::vector<std::string>	RequestParserUtils::getDataVector(std::string &src)
 {
 	std::vector<std::string>	result;
@@ -35,14 +44,26 @@ std::vector<std::string>	RequestParserUtils::getDataVector(std::string &src)
 std::map<std::string, std::string>	RequestParserUtils::getRequestHeader(std::vector<std::string> &src)
 {
 	std::map<std::string, std::string>	header;
+	std::string	temp;
 
-	for (size_t i = 1; i < src.size(); i++)
+	for (size_t i = 0; i < src.size(); i++)
 	{
-		if (src.at(i).find_first_not_of("\r\n") == src.at(i).npos)
+		temp = src.begin()->c_str();
+		if (temp.find_first_not_of("\r\n") == src.at(i).npos)
 			break;
-		header.insert(getPair(src.at(i)));
+		header.insert(getPair(temp));
+		src.erase(src.begin());
 	}
 	return (header);
+}
+
+std::string	RequestParserUtils::getBody(std::vector<std::string> &src)
+{
+	std::string	body;
+
+	for (size_t i = 0; i < src.size(); i++)
+		body += src.at(i).c_str();
+	return (body);
 }
 
 static std::pair<std::string, std::string>	getPair(std::string &src)
@@ -50,6 +71,8 @@ static std::pair<std::string, std::string>	getPair(std::string &src)
 	std::string	key, value;
 
 	key = src.substr(0, src.find_first_of(":"));
+	for (size_t i = 0; i < key.size(); i++)
+		key[i] = std::tolower(key[i]);
 	value = src.substr(src.find_first_of(" "), src.size());
 	value = stringTrim(value);
 	return (std::make_pair(key, value));

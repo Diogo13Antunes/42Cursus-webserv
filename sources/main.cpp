@@ -66,19 +66,19 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 
 int main(int ac, char **av)
 {
-	int	fd;
+	int	fd1;
 
-	if (ac != 2)
+	if (ac < 2)
 	{
 		Terminal::printErrors("Invalid number of Arguments");
 		return (1);
 	}
 
-	fd = open(av[1], O_RDONLY);
-	if (fd < 0)
+	fd1 = open(av[1], O_RDONLY);
+	if (fd1 < 0)
 	{
 		Terminal::printErrors("Invalid Request File");
 		return (1);
 	}
-	RequestParser request(fd);
+	RequestParser request1(fd1);
 }
