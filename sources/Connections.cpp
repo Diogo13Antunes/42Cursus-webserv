@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/22 11:56:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/23 10:26:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,42 +64,23 @@ void Connections::updateConnections(void)
 {
 	size_t	numConns;
 	t_msg	msg;
+	short	revents;
 
 	numConns = _activeConnects.size();
-	for (int i = 1; i < numConns; i++)
+	msg.dst = EVENTLOOP_ID;
+	for (int i = 0; i < numConns; i++)
 	{
 		_activeConnects.at(i)->setPollFd(_pollFds[i]);
-		if (_activeConnects.at(i)->getPollFd().revents == POLLIN)
+		revents = _activeConnects.at(i)->getRevents();
+		if (i > 0 && revents)
 		{
 			_activeConnects.at(i)->setLastRequestTime(time(NULL));
-			msg.dst = EVENTLOOP_ID;
 			msg.fd = _activeConnects.at(i)->getFd();
+			msg.event = revents;
 			_sendMessage(msg);
 		}
 	}
 }
-
-/*
-Event* Connections::getNextEvent(void)
-{
-	int size;
-
-	size =  _activeConnects.size();
-	if (size <= 1)
-		return (NULL);
-	while (_index < size)
-	{
-		if (_pollFds[_index].revents)
-		{
-			_activeConnects.at(_index)->setPollFd(_pollFds[_index]);
-			return (new Event(_activeConnects.at(_index++)));
-		}
-		_index++;
-	}
-	_index = 1;
-	return (NULL);
-}
-*/
 
 ModuleID Connections::getId(void)
 {
@@ -108,7 +89,15 @@ ModuleID Connections::getId(void)
 
 void Connections::handleMessage(t_msg msg)
 {
-	//std::cout << "Menssage reived by Connections: msg: " << msg.msg << std::endl;
+	std::vector<Connection *>::iterator it;
+	
+	//std::cout << "Menssage reived by Connections: msg: " << msg.fd << std::endl;
+	
+	for(it = _activeConnects.begin(); it != _activeConnects.end(); it++)
+	{
+		if ((*it)->getFd() == msg.fd)
+			(*it)->setEvents(msg.event);
+	}
 }
 
 // Just for debug (remove when not necessary)

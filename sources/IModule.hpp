@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 15:40:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/22 11:31:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/22 12:15:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ typedef struct s_msg
 {
 	ModuleID	dst;
 	int			fd;
+	short		event;
 }	t_msg;
 
 class IModule

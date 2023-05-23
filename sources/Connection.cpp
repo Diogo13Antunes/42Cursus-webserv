@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/19 19:38:44 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/23 10:00:29 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,16 @@ void Connection::setLastRequestTime(time_t lastRequestTime)
 void Connection::setPollFd(struct pollfd pollFd)
 {
 	_pollFd = pollFd;
+}
+
+void Connection::setRevents(short revents)
+{
+	_pollFd.revents = revents;
+}
+
+void Connection::setEvents(short events)
+{
+	_pollFd.events = events;
 }
 
 bool Connection::isKeepAliveTimeout(void)

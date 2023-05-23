@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/22 11:44:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/23 10:24:27 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,6 @@ int main(void)
 
 		if (res_poll > 0)
 		{
-
 			serverConn = conns.getServerConnection();
 			if (serverConn.revents == POLLIN)
 			{
@@ -156,22 +155,7 @@ int main(void)
 			}
 			conns.updateConnections();
 		}
-		
 		eventLoop.handleEvents();
-
-		/*
-		fds1 = conns.getPollFds();
-		fdsSize = conns.getNumOfConnections();
-		for (int i = 1; i < fdsSize; i++)
-		{
-			if (fds1[i].revents)
-			{
-				eventLoop.addNewEvent(fds1[i].fd);
-				
-			}
-		}
-		eventLoop.handleEvents();
-		*/
 	}
 	
 	return (0);

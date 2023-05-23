@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/19 19:40:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/22 17:56:17 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@ Event::Event(void)
 	//Default Event Constructor
 }
 
-Event::Event(Connection *conn):
-	_conn(conn)
+Event::Event(int fd, int state):
+	_fd(fd),
+	_state(state)
 {}
 
 Event::Event(const Event &src)
@@ -38,7 +39,18 @@ Event &Event::operator=(const Event &src)
 }
 */
 
+
 int Event::getFd(void)
 {
-	return (_conn->getFd());
+	return (_fd);
+}
+
+short Event::getState(void)
+{
+	return (_state);
+}
+
+void Event::setState(short state)
+{
+	_state = state;
 }
