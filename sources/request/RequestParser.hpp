@@ -20,7 +20,11 @@ class RequestParser
 	public:
 		RequestParser(int RequestFd);
 		~RequestParser(void);
-		
+
+		std::string							getRequestLine(void);
+		std::string 						getRequestBody(void);
+		std::map<std::string, std::string>	getRequestHeader(void);
+
 		class EmptyRequestException: public std::exception
 		{
 			public:
