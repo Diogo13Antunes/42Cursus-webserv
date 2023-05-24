@@ -62,8 +62,12 @@ std::string	RequestParserUtils::getBody(std::vector<std::string> &src)
 {
 	std::string	body;
 
-	for (size_t i = 0; i < src.size(); i++)
-		body += src.at(i).c_str();
+	body.clear();	
+	if (src.size() > 1)
+	{
+		for (size_t i = 0; i < src.size(); i++)
+			body += src.at(i).c_str();
+	}
 	return (body);
 }
 
