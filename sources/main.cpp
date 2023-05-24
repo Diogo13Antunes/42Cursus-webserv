@@ -92,12 +92,12 @@ int main(int ac, char **av)
 		requestHeader = request1.getRequestHeader();
 		requestBody = request1.getRequestBody();
 		std::cout << "Line: " << requestLine << std::endl;
-	
+
 		std::cout << "[KEY] | [VALUE]" << std::endl;
 		std::map<std::string, std::string>::iterator	it;
 		for (it = requestHeader.begin(); it != requestHeader.end(); it++)
 			std::cout << "[" << (*it).first << "] | [" << (*it).second << "]" << std::endl;
-		
+
 		std::cout << requestBody << std::endl;
 	}
 	catch(const std::exception& e)
