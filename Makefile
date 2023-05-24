@@ -21,6 +21,7 @@ SRC_NAME =	main.cpp				\
 			ReadHandler.cpp			\
 			EventHandlerFactory.cpp	\
 			Event.cpp				\
+			EventDemux.cpp			\
 			Messenger.cpp			\
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))

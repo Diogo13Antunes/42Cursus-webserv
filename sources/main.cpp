@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/23 16:33:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/24 16:27:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@
 #include "EventHandlerFactory.hpp"
 
 #include "Messenger.hpp"
+
+#include "EventDemux.hpp"
 
 #define PORT 8080
 
@@ -181,7 +183,7 @@ void send_response_test1(int socket_fd)
 }
 
 
-int main(void)
+int main1(void)
 {
 	int server_fd, new_socket;
 	struct sockaddr_in address;
@@ -247,11 +249,13 @@ int main(void)
 
     while(1)
     {
-		numEvents = epoll_wait(epollFd, events, max_events, 1500);
+		numEvents = epoll_wait(epollFd, events, max_events, -1);
+		std::cout << "começa loop num: " << numEvents << std::endl;
 		for (int i = 0; i < numEvents; i++) 
 		{
 			if (events[i].data.fd == server_fd)
 			{
+				std::cout << "addiciona evento a lista" << std::endl;
 				if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
 				{
 					perror("In accept");
@@ -266,12 +270,13 @@ int main(void)
 			}
 			else 
 			{
+				std::cout << "verifica o evento mesmo" << std::endl;
 				if (events[i].events & EPOLLIN)
 				{
 						for(int i = 0; i < 30000; i++)
 							buffer[i] = 0;
 						valread = read(events[i].data.fd, buffer, 30000 - 1);
-						std::cout << buffer << std::endl;
+						//std::cout << buffer << std::endl;
 						send_response_test1(events[i].data.fd);
 				}
 			}
@@ -279,3 +284,68 @@ int main(void)
 	}
 	return (0);
 }
+
+
+int main(void)
+{
+	int server_fd, new_socket;
+	struct sockaddr_in address;
+	int addrlen;
+
+	
+	// cria socket
+	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
+	{
+		perror("cannot create socket");
+		return 0; 
+	}
+
+	// para desimpedir o porto
+	int enable = 1;
+	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
+	{
+		close(server_fd);
+		return (EXIT_FAILURE);
+	}
+
+
+	memset((char *)&address, 0, sizeof(address)); 
+	address.sin_family = AF_INET; 
+	address.sin_addr.s_addr = htonl(INADDR_ANY); 
+	address.sin_port = htons(PORT);
+	addrlen = sizeof(address);
+	
+	if (bind(server_fd, (struct sockaddr *) &address, sizeof(address)) < 0) 
+	{
+    	perror("bind failed"); 
+    	return 0; 
+	}
+    if (listen(server_fd, 100) < 0)
+    {
+        perror("In listen");
+        exit(EXIT_FAILURE);
+    }
+
+	Messenger			messenger;
+	EventHandlerFactory	factory;
+	EventLoop			eventLoop(&messenger);
+	Connections			conns(&messenger);
+
+	eventLoop.registerEvent(factory.getEventHandler(READ_EVENT));
+	eventLoop.registerEvent(factory.getEventHandler(WRITE_EVENT));
+
+	EventDemux eventDemux(server_fd, address, (socklen_t) addrlen);
+	eventDemux.setMessenger(&messenger);
+
+	messenger.registerModule(&conns);
+	messenger.registerModule(&eventLoop);
+	messenger.registerModule(&eventDemux);
+
+    while(1)
+    {
+		eventDemux.waitAndDispatchEvents();
+	}
+
+	return (0);
+}
+

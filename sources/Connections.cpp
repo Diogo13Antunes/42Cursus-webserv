@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/23 10:26:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/24 16:22:19 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void Connections::handleMessage(t_msg msg)
 {
 	std::vector<Connection *>::iterator it;
 	
-	//std::cout << "Menssage reived by Connections: msg: " << msg.fd << std::endl;
+	std::cout << "Menssage reived by Connections: msg: " << msg.fd << std::endl;
 	
 	for(it = _activeConnects.begin(); it != _activeConnects.end(); it++)
 	{

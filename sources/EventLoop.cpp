@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/23 10:31:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/24 16:22:47 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ ModuleID EventLoop::getId(void)
 
 void EventLoop::handleMessage(t_msg msg)
 {
+	std::cout << "Menssage reived by EventLoop: msg: " << msg.fd << std::endl;
+
 	if (msg.event == POLLIN)
 		_addNewEventReadPoll(msg.fd, msg.event);
 	else if (msg.event == POLLOUT)
