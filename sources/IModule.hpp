@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 15:40:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/24 12:00:45 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/24 17:50:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ typedef enum
 {
     CONNECTIONS_ID,
     EVENTLOOP_ID,
-	EVENT_DEMUX
+	EVENTDEMUX_ID
 }	ModuleID;
 
 typedef struct s_msg

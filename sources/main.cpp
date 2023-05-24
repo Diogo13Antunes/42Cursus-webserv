@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/24 16:27:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/24 17:48:54 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -343,6 +343,7 @@ int main(void)
 
     while(1)
     {
+		conns.updateAllConnections();
 		eventDemux.waitAndDispatchEvents();
 	}
 

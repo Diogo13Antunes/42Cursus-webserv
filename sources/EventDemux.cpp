@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/24 16:28:01 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/24 17:50:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void EventDemux::waitAndDispatchEvents(void)
 
 ModuleID EventDemux::getId(void)
 {
-	return (EVENT_DEMUX);
+	return (EVENTDEMUX_ID);
 }
 
 void EventDemux::handleMessage(t_msg msg)

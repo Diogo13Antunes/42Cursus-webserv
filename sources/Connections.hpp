@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/22 12:03:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/24 17:43:38 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,9 @@ class Connections: public IModule
 		void			addNewConnection(Connection *conn);
 		void			removeExpiredConnections(void);
 		void			updateConnections(void);
+
+		// new
+		void			updateAllConnections(void);
 
 		ModuleID		getId(void);
 		void			handleMessage(t_msg msg);

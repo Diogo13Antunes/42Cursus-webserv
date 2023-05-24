@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/24 16:22:19 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/24 18:00:02 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,23 @@ void Connections::updateConnections(void)
 	}
 }
 
+void Connections::updateAllConnections(void)
+{
+	t_msg msg;
+
+	msg.dst = EVENTDEMUX_ID;
+	for (int i = 0; i < _activeConnects.size(); i++)
+	{
+		if (_activeConnects.at(i)->isKeepAliveTimeout())
+		{
+			msg.fd = _activeConnects.at(i)->getFd();
+			_sendMessage(msg);
+			_removeConnection(i);
+			i--;
+		}
+	}
+}
+
 ModuleID Connections::getId(void)
 {
 	return (CONNECTIONS_ID);
@@ -89,15 +106,11 @@ ModuleID Connections::getId(void)
 
 void Connections::handleMessage(t_msg msg)
 {
-	std::vector<Connection *>::iterator it;
-	
-	std::cout << "Menssage reived by Connections: msg: " << msg.fd << std::endl;
-	
-	for(it = _activeConnects.begin(); it != _activeConnects.end(); it++)
-	{
-		if ((*it)->getFd() == msg.fd)
-			(*it)->setEvents(msg.event);
-	}
+
+	std::cout << "Connections receive mensage: fd: " << msg.fd << std::endl;
+
+	if (msg.fd > 0)
+		_activeConnects.push_back(new Connection(msg.fd));
 }
 
 // Just for debug (remove when not necessary)

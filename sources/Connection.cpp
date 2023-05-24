@@ -6,11 +6,18 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/23 10:00:29 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/24 17:58:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connection.hpp"
+
+
+Connection::Connection(int fd):
+	_fd(fd),
+	_keepAliveTimeout(60), 
+	_lastRequestTime(time(NULL))
+{}
 
 Connection::Connection(int fd, short events, short revents):
 	_keepAliveTimeout(60), 
@@ -24,7 +31,8 @@ Connection::Connection(int fd, short events, short revents):
 Connection::~Connection(void)
 {
 	std::cout << "remove connection" << std::endl;
-	close(_pollFd.fd);
+	//close(_pollFd.fd);
+	close(_fd);
 }
 
 struct pollfd Connection::getPollFd(void)
@@ -34,7 +42,7 @@ struct pollfd Connection::getPollFd(void)
 
 int Connection::getFd(void)
 {
-	return (_pollFd.fd);
+	return (_fd);
 }
 
 short Connection::getRevents(void)
@@ -92,9 +100,7 @@ bool Connection::isKeepAliveTimeout(void)
 void Connection::showDataConnection(void)
 {
 	std::cout << "------------ Connection ------------" << std::endl;
-	std::cout << "fd: " << _pollFd.fd << std::endl;
-	std::cout << "revents: " << _pollFd.revents << std::endl;
-	std::cout << "events: " << _pollFd.events << std::endl;
+	std::cout << "fd: " << _fd << std::endl;
 	std::cout << "keep-alive: " << _keepAliveTimeout << std::endl;
 	std::cout << "last request: " << _lastRequestTime << std::endl;
 }

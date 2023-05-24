@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:28 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/23 10:00:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/24 17:40:40 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,16 @@
 class Connection
 {
 	private:
-		struct pollfd	_pollFd;
+		struct pollfd	_pollFd; // to remove
+		int				_fd;
 		int				_keepAliveTimeout;
 		time_t			_lastRequestTime;
 
 	public:
 
+		Connection(int fd);
+
+		// to remove events and revents is not necessary
 		Connection(int fd, short events, short revents);
 		~Connection(void);
 
