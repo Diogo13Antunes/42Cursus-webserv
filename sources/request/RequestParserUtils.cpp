@@ -27,7 +27,6 @@ std::string	RequestParserUtils::getRequestLine(std::vector<std::string> &src)
 
 	line = src.begin()->c_str();
 	line.erase(line.find_first_of("\r\n"));
-	src.erase(src.begin());
 	return (line);
 }
 
@@ -47,13 +46,12 @@ std::map<std::string, std::string>	RequestParserUtils::getRequestHeader(std::vec
 	std::map<std::string, std::string>	header;
 	std::string	temp;
 
-	while (1)
+	for (size_t i = 1; i < src.size(); i++)
 	{
-		temp = src.begin()->c_str();
+		temp = src.at(i).c_str();
 		if (temp.find_first_not_of("\r\n") == temp.npos)
 			break;
 		header.insert(getPair(temp));
-		src.erase(src.begin());
 	}
 	return (header);
 }
@@ -61,12 +59,15 @@ std::map<std::string, std::string>	RequestParserUtils::getRequestHeader(std::vec
 std::string	RequestParserUtils::getBody(std::vector<std::string> &src)
 {
 	std::string	body;
+	bool		start_body = false;
 
 	body.clear();
-	if (src.size() > 1)
+	for (size_t i = 1; i < src.size(); i++)
 	{
-		for (size_t i = 0; i < src.size(); i++)
+		if (start_body)
 			body += src.at(i).c_str();
+		if (src.at(i).find_first_not_of("\r\n") == src.at(i).npos)
+			start_body = true;
 	}
 	return (body);
 }

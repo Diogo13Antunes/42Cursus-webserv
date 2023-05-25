@@ -2,13 +2,16 @@
 
 RequestParser::RequestParser(int RequestFd)
 {
-	std::string	fileData = RequestParserUtils::getDataString(RequestFd);
+	std::vector<std::string>	requestContentVec;
+	std::string					fileData;
+	
+	fileData = RequestParserUtils::getDataString(RequestFd);
 	if (fileData.empty())
 		throw EmptyRequestException();
-	_requestContentVec = RequestParserUtils::getDataVector(fileData);
-	_requestLine = RequestParserUtils::getRequestLine(_requestContentVec);
-	_requestHeader = RequestParserUtils::getRequestHeader(_requestContentVec);
-	_requestBody = RequestParserUtils::getBody(_requestContentVec);
+	requestContentVec = RequestParserUtils::getDataVector(fileData);
+	_requestLine = RequestParserUtils::getRequestLine(requestContentVec);
+	_requestHeader = RequestParserUtils::getRequestHeader(requestContentVec);
+	_requestBody = RequestParserUtils::getBody(requestContentVec);
 }
 
 RequestParser::~RequestParser(void)
