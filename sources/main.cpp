@@ -94,12 +94,12 @@ int main(int ac, char **av)
 		requestHeader = request1.getRequestHeader();
 		requestBody = request1.getRequestBody();
 
-		std::cout << "Line: " << requestLine << std::endl;
+		// std::cout << "Line: " << requestLine << std::endl;
 
-		std::cout << "[KEY] | [VALUE]" << std::endl;
-		std::map<std::string, std::string>::iterator	it;
-		for (it = requestHeader.begin(); it != requestHeader.end(); it++)
-			std::cout << "[" << (*it).first << "] | [" << (*it).second << "]" << std::endl;
+		// std::cout << "[KEY] | [VALUE]" << std::endl;
+		// std::map<std::string, std::string>::iterator	it;
+		// for (it = requestHeader.begin(); it != requestHeader.end(); it++)
+			// std::cout << "[" << (*it).first << "] | [" << (*it).second << "]" << std::endl;
 
 		// std::cout << requestBody << std::endl;
 
@@ -111,7 +111,13 @@ int main(int ac, char **av)
 		return (1);
 	}
 
+	std::vector<std::string>	line;
+	line = data.getRequestLine();
 
+	std::cout << "---------- Request Line ----------" << std::endl;
+	for (size_t i = 0; i < line.size(); i++)
+		std::cout << "\'" << line.at(i).c_str() << "\'" << std::endl; 
+	std::cout << "----------------------------------" << std::endl;
 
 	return (0);
 }

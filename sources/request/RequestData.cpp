@@ -33,6 +33,8 @@ void	RequestData::setRequestLine(std::string &src)
 			throw InvalidRequestLineException();
 		}
 	}
+	if (!RequestDataUtils::isValidRequestLine(_requestLine))
+		throw InvalidRequestLineException();
 }
 
 std::vector<std::string>	RequestData::getRequestLine(void)
