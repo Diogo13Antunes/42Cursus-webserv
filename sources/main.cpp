@@ -96,10 +96,10 @@ int main(int ac, char **av)
 
 		std::cout << "Line: " << requestLine << std::endl;
 
-		// std::cout << "[KEY] | [VALUE]" << std::endl;
-		// std::map<std::string, std::string>::iterator	it;
-		// for (it = requestHeader.begin(); it != requestHeader.end(); it++)
-			// std::cout << "[" << (*it).first << "] | [" << (*it).second << "]" << std::endl;
+		std::cout << "[KEY] | [VALUE]" << std::endl;
+		std::map<std::string, std::string>::iterator	it;
+		for (it = requestHeader.begin(); it != requestHeader.end(); it++)
+			std::cout << "[" << (*it).first << "] | [" << (*it).second << "]" << std::endl;
 
 		// std::cout << requestBody << std::endl;
 
@@ -111,7 +111,7 @@ int main(int ac, char **av)
 		return (1);
 	}
 
-	
+
 
 	return (0);
 }

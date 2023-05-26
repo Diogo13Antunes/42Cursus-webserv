@@ -75,12 +75,25 @@ std::string	RequestParserUtils::getBody(std::vector<std::string> &src)
 static std::pair<std::string, std::string>	getPair(std::string &src)
 {
 	std::string	key, value;
+	size_t		index;
 
-	key = src.substr(0, src.find_first_of(":"));
-	for (size_t i = 0; i < key.size(); i++)
-		key[i] = std::tolower(key[i]);
-	value = src.substr(src.find_first_of(" "), src.size());
-	value = stringTrim(value);
+	key.clear();
+	value.clear();
+	index = src.find_first_of(":");
+	if (index != src.npos)
+	{
+		if (src.find_last_not_of(WHITE_SPACE, index - 1) != src.npos)
+		{
+			key = src.substr(0, index);
+			for (size_t i = 0; i < key.size(); i++)
+				key[i] = std::tolower(key[i]);
+		}
+		if (src.find_first_not_of(WHITE_SPACE, index + 1) != src.npos)
+		{
+			value = src.substr(src.find_first_of(":") + 1, src.size());
+			value = stringTrim(value);
+		}
+	}
 	return (std::make_pair(key, value));
 }
 
