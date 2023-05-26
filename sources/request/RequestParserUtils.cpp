@@ -26,7 +26,7 @@ std::string	RequestParserUtils::getRequestLine(std::vector<std::string> &src)
 	std::string	line;
 
 	line = src.begin()->c_str();
-	line.erase(line.find_first_of("\r\n"));
+	line = stringTrim(line);
 	return (line);
 }
 
@@ -86,13 +86,14 @@ static std::pair<std::string, std::string>	getPair(std::string &src)
 
 static std::string	stringTrim(const std::string &str)
 {
-	std::string	trimmed = str;
-	size_t		start = trimmed.find_first_not_of(WHITE_SPACE);
-	size_t		end = trimmed.find_last_not_of(WHITE_SPACE);
+	std::string	trimmed;
+	size_t		start;
+	size_t		end;
+	size_t		len;
 
-	if (start != std::string::npos)
-		trimmed = trimmed.substr(start);
-	if (end != std::string::npos)
-		trimmed = trimmed.substr(0, end);
+	start = str.find_first_not_of(WHITE_SPACE);
+	end = str.find_last_not_of(WHITE_SPACE);
+	len = end - start + 1;
+	trimmed = str.substr(start, len);
 	return (trimmed);
 }

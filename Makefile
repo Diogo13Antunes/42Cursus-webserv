@@ -19,6 +19,8 @@ SRC_NAME =	main.cpp							\
 			configs/ConfigsData.cpp				\
 			request/RequestParser.cpp			\
 			request/RequestParserUtils.cpp		\
+			request/RequestData.cpp				\
+			request/RequestDataUtils.cpp		\
 			Terminal.cpp
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))

@@ -25,6 +25,7 @@
 #include "Configs.hpp"
 #include "ConfigsData.hpp"
 #include "RequestParser.hpp"
+#include "RequestData.hpp"
 
 bool	initConfigs(const char *filename, ConfigsData &data)
 {
@@ -67,6 +68,7 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 int main(int ac, char **av)
 {
 	int	fd1;
+	RequestData	data;
 
 	if (ac < 2)
 	{
@@ -83,7 +85,7 @@ int main(int ac, char **av)
 
 	try
 	{
-		RequestParser request1(fd1);
+		RequestParser 						request1(fd1);
 		std::string							requestLine;
 		std::map<std::string, std::string>	requestHeader;
 		std::string							requestBody;
@@ -91,14 +93,17 @@ int main(int ac, char **av)
 		requestLine = request1.getRequestLine();
 		requestHeader = request1.getRequestHeader();
 		requestBody = request1.getRequestBody();
+
 		std::cout << "Line: " << requestLine << std::endl;
 
-		std::cout << "[KEY] | [VALUE]" << std::endl;
-		std::map<std::string, std::string>::iterator	it;
-		for (it = requestHeader.begin(); it != requestHeader.end(); it++)
-			std::cout << "[" << (*it).first << "] | [" << (*it).second << "]" << std::endl;
+		// std::cout << "[KEY] | [VALUE]" << std::endl;
+		// std::map<std::string, std::string>::iterator	it;
+		// for (it = requestHeader.begin(); it != requestHeader.end(); it++)
+			// std::cout << "[" << (*it).first << "] | [" << (*it).second << "]" << std::endl;
 
-		std::cout << requestBody << std::endl;
+		// std::cout << requestBody << std::endl;
+
+		data.setRequestLine(requestLine);
 	}
 	catch(const std::exception& e)
 	{
