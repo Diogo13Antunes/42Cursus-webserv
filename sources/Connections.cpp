@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/24 18:00:02 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/26 18:43:27 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ void Connections::updateAllConnections(void)
 	t_msg msg;
 
 	msg.dst = EVENTDEMUX_ID;
+	msg.type = 1;
 	for (int i = 0; i < _activeConnects.size(); i++)
 	{
 		if (_activeConnects.at(i)->isKeepAliveTimeout())
@@ -109,8 +110,16 @@ void Connections::handleMessage(t_msg msg)
 
 	std::cout << "Connections receive mensage: fd: " << msg.fd << std::endl;
 
-	if (msg.fd > 0)
+	if (msg.fd > 0 && msg.type == 0)
 		_activeConnects.push_back(new Connection(msg.fd));
+	else if (msg.type == 1)
+	{
+		std::cout << "update the connection timeout" << std::endl;
+		for (int i = 0; i < _activeConnects.size(); i++)
+		{
+			//if (_activeConnects.at(i)->getFd() == msg.fd)
+		}
+	}
 }
 
 // Just for debug (remove when not necessary)

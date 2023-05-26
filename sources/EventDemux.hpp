@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:09:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/24 16:15:11 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/26 18:24:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,23 @@
 #include <sys/epoll.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <fcntl.h>
 #include "IModule.hpp"
 #include "Messenger.hpp"
 
 #define N_MAX_EVENTS	1024
 
+typedef enum 
+{
+    READ = 0,
+    WRITE
+}	Type;
+
 class EventDemux: public IModule
 {
 	private:
 		struct epoll_event	_events[N_MAX_EVENTS];
+		struct epoll_event	_event;
 		int					_serverFd;
 		int					_epollFd;
 		socklen_t			_addrlen;
@@ -32,6 +40,8 @@ class EventDemux: public IModule
 		Messenger			*_messenger;
 
 		void	_addNewFdToEventList(int fd);
+		void	_removeFdFromEventList(int fd);
+		void	_changeFdIntoEventList(int fd, int event);
 		void	_sendMessage(t_msg msg);
 		
 	public:

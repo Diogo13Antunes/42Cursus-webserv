@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/22 18:46:16 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/26 10:59:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,19 @@ class EventLoop: public IModule
 {
 	private:
 		std::map<EventType, IEventHandler*> _handlers;
-		std::map<int, Event*>				_eventsMap;
+		std::map<int, Event*>				_eventsMap; //passar para _eventMap
 
 		//std::queue<int>						_events; // para remover
 
 		std::queue<Event*>					_readQueue;
 		std::queue<Event*>					_writeQueue;
+
+		std::queue<Event*>					_eventQueue;
 		
 
 		Messenger							*_messenger;
 		
 		void	_sendMessage(t_msg msg);
-		void	_addNewEventReadPoll(int fd, short event);
-		void	_addNewEventWritePoll(int fd, short event);
 
 	public:
 		EventLoop(void);

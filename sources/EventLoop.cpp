@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/24 16:22:47 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/26 18:15:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,37 +53,31 @@ void EventLoop::unregisterEvent(IEventHandler *event)
 
 void EventLoop::handleEvents(void)
 {
-	Event											*ev;
-	t_msg											msg;
+	Event	*ev;
+	t_msg	msg;
 
-	if (_readQueue.size())
+	while (!_eventQueue.empty())
 	{
-		ev = _readQueue.front();
-		 _handlers.find(READ_EVENT)->second->handleEvent(ev);
-		_readQueue.pop();
-		ev->setState(0);
+		ev = _eventQueue.front();
+		_handlers.find((EventType)ev->getState())->second->handleEvent(ev);
+		_eventQueue.pop();
 
-		// Important: can only send the message after ensuring that you have nothing else to read. 
-		// hadle later.
-
-		msg.dst = CONNECTIONS_ID;
+		// to do this you need to check that you have read or written everything. For now it stays like this
+		msg.dst = EVENTDEMUX_ID;
 		msg.fd = ev->getFd();
-		msg.event = POLLOUT;
-		_sendMessage(msg);
-	}
-	if (_writeQueue.size())
-	{
-		ev = _writeQueue.front();
-		_handlers.find(WRITE_EVENT)->second->handleEvent(ev);
-		_writeQueue.pop();
-
-		msg.dst = CONNECTIONS_ID;
-		msg.fd = ev->getFd();
-		msg.event = POLLIN;
-		_sendMessage(msg);
-
-		_eventsMap.erase(ev->getFd());
-		delete ev;
+		msg.type = 0;
+		if ((EventType)ev->getState() == READ_EVENT)
+		{
+			msg.event = WRITE_EVENT;
+			_sendMessage(msg);
+		}
+		else if ((EventType)ev->getState() == WRITE_EVENT)
+		{
+			msg.event = READ_EVENT;
+			_sendMessage(msg);
+			_eventsMap.erase(ev->getFd());
+			delete ev;
+		}
 	}
 }
 
@@ -92,48 +86,28 @@ ModuleID EventLoop::getId(void)
 	return (EVENTLOOP_ID);
 }
 
+
 void EventLoop::handleMessage(t_msg msg)
 {
-	std::cout << "Menssage reived by EventLoop: msg: " << msg.fd << std::endl;
+	std::map<int, Event*>::iterator it;
 
-	if (msg.event == POLLIN)
-		_addNewEventReadPoll(msg.fd, msg.event);
-	else if (msg.event == POLLOUT)
-		_addNewEventWritePoll(msg.fd, msg.event);
+	std::cout << "EventLoop: fd: " << msg.fd << " event: " << msg.event << std::endl;
+
+	it = _eventsMap.find(msg.fd);
+	if (it == _eventsMap.end())
+	{
+		Event *ev = new Event(msg.fd, (int)msg.event);
+		_eventsMap.insert(std::pair<int,Event*>(msg.fd, ev));
+		_eventQueue.push(ev);
+	}
+	else 
+	{
+		it->second->setState(msg.event);
+		_eventQueue.push(it->second);
+	}
 }
 
 void EventLoop::_sendMessage(t_msg msg)
 {
 	_messenger->sendMessage(msg);
-}
-
-void EventLoop::_addNewEventReadPoll(int fd, short event)
-{
-	Event *ev;
-
-	// IMPORTANT: What happens if event is from read and is in the map as hide or write ?
-
-	if (_eventsMap.empty() || _eventsMap.find(fd) == _eventsMap.end())
-	{
-		ev = new Event(fd, event);
-		_eventsMap.insert(std::pair<int,Event*>(fd, ev));
-		_readQueue.push(ev);
-	}
-}
-
-void EventLoop::_addNewEventWritePoll(int fd, short event)
-{
-	std::map<int, Event*>::iterator it;
-
-	if (_eventsMap.empty()) //there must have been reading first. have to throw error ?
-		return ;
-	it = _eventsMap.find(fd);
-	if (it != _eventsMap.end())
-	{
-		if (it->second->getState() == 0)
-		{
-			it->second->setState(event);
-			_writeQueue.push(it->second);
-		}
-	}
 }

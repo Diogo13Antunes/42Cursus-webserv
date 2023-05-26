@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:48:24 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/22 15:04:47 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/26 11:29:12 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 typedef enum 
 {
-    READ_EVENT,
+    READ_EVENT = 0,
     WRITE_EVENT
 }	EventType;
 

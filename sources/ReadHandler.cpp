@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/23 10:24:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/26 11:13:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void ReadHandler::handleEvent(Event *event)
 
 	valread = read(event->getFd(), buffer, 90000 - 1);
 
-	//std::cout << buffer << std::endl;
+	std::cout << buffer << std::endl;
 	std::cout << "handle READ event: " << event->getFd() << std::endl;
 }
 

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/24 17:58:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/26 18:22:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 Connection::Connection(int fd):
 	_fd(fd),
-	_keepAliveTimeout(60), 
+	_keepAliveTimeout(15), 
 	_lastRequestTime(time(NULL))
 {}
 

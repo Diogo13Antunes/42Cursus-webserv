@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/24 17:48:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/26 14:19:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,7 +231,7 @@ int main1(void)
 
 	epoll_event event;
     event.data.fd = server_fd;
-    event.events = EPOLLIN | EPOLLET;
+    event.events = EPOLLIN; // | EPOLLET;
     if (epoll_ctl(epollFd, EPOLL_CTL_ADD, server_fd, &event) == -1) {
         std::cerr << "Failed to add server socket to epoll." << std::endl;
         return 1;
@@ -262,17 +262,25 @@ int main1(void)
 					exit(EXIT_FAILURE);
 				}
 				event.data.fd = new_socket;
-                event.events = EPOLLIN | EPOLLET;
+                event.events = EPOLLIN | EPOLLOUT; // | EPOLLET;
+
+				std::cout << "------ Valor Eventos ------" << std::endl;
+				std::cout << "EPOLLIN  : " << EPOLLIN << std::endl;
+				std::cout << "EPOLLOUT : " << EPOLLOUT << std::endl;
+				std::cout << "EPOLLET  : " << EPOLLET << std::endl;
+
 				// Set client socket to non-blocking mode
             	flags = fcntl(new_socket, F_GETFL, 0);
                 fcntl(new_socket, F_SETFL, flags | O_NONBLOCK);
                 epoll_ctl(epollFd, EPOLL_CTL_ADD, new_socket, &event); // has to verify error returned
 			}
-			else 
+			else
 			{
 				std::cout << "verifica o evento mesmo" << std::endl;
+				std::cout << "EVENTO: " << events[i].events << " FD: " << events[i].data.fd << std::endl;
 				if (events[i].events & EPOLLIN)
 				{
+						std::cout << "Evento de Leitura" << std::endl;
 						for(int i = 0; i < 30000; i++)
 							buffer[i] = 0;
 						valread = read(events[i].data.fd, buffer, 30000 - 1);
@@ -345,6 +353,7 @@ int main(void)
     {
 		conns.updateAllConnections();
 		eventDemux.waitAndDispatchEvents();
+		eventLoop.handleEvents();
 	}
 
 	return (0);
