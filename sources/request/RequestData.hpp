@@ -14,7 +14,8 @@ class RequestData
 
 	public:
 
-		void	setRequestLine(std::string &src);
+		void						setRequestLine(std::string &src);
+		std::vector<std::string>	getRequestLine(void);
 
 		RequestData(void);
 		~RequestData(void);
