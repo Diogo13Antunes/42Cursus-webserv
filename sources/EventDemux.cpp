@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/26 18:35:13 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/27 11:01:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ void EventDemux::waitAndDispatchEvents(void)
 			msg.dst = CONNECTIONS_ID;
 			msg.type = 1;
 			_sendMessage(msg);
-			//_events[i].events = 0;
 		}
 	}
 }

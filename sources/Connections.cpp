@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/27 10:28:41 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/27 11:11:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,66 +20,6 @@ Connections::Connections(Messenger *messenger):
 Connections::~Connections(void)
 {
 	_removeAllConnections();
-}
-
-struct pollfd*	Connections::getPollFds(void)
-{
-	return (_pollFds);
-}
-
-int Connections::getNumOfConnections(void)
-{
-	return (_activeConnects.size());
-}
-
-struct pollfd Connections::getServerConnection(void)
-{
-	return (_pollFds[0]);
-}
-
-void Connections::addNewConnection(Connection *conn)
-{
-	size_t numConns;
-	
-	_activeConnects.push_back(conn);
-	numConns = _activeConnects.size();
-	_pollFds[numConns - 1] = _activeConnects.at(numConns - 1)->getPollFd();
-}
-
-void Connections::removeExpiredConnections(void)
-{
-	for (int i = 0; i < _activeConnects.size(); i++)
-	{
-		if (i > 0 && _activeConnects.at(i)->isKeepAliveTimeout())
-		{
-			_removeConnection(i);
-			i--;
-		}
-		else
-			_pollFds[i] = _activeConnects.at(i)->getPollFd();
-	}
-}
-
-void Connections::updateConnections(void)
-{
-	size_t	numConns;
-	t_msg	msg;
-	short	revents;
-
-	numConns = _activeConnects.size();
-	msg.dst = EVENTLOOP_ID;
-	for (int i = 0; i < numConns; i++)
-	{
-		_activeConnects.at(i)->setPollFd(_pollFds[i]);
-		revents = _activeConnects.at(i)->getRevents();
-		if (i > 0 && revents)
-		{
-			_activeConnects.at(i)->setLastRequestTime(time(NULL));
-			msg.fd = _activeConnects.at(i)->getFd();
-			msg.event = revents;
-			_sendMessage(msg);
-		}
-	}
 }
 
 void Connections::updateAllConnections(void)
