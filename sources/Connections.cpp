@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/26 18:43:27 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/27 10:28:41 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,8 @@ void Connections::handleMessage(t_msg msg)
 		std::cout << "update the connection timeout" << std::endl;
 		for (int i = 0; i < _activeConnects.size(); i++)
 		{
-			//if (_activeConnects.at(i)->getFd() == msg.fd)
+			if (_activeConnects.at(i)->getFd() == msg.fd)
+				_activeConnects.at(i)->resetKeepAliveTimeout();
 		}
 	}
 }

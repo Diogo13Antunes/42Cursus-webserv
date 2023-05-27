@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:28 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/24 17:40:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/27 10:26:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class Connection
 		void			setEvents(short events);
 
 		bool			isKeepAliveTimeout(void);
+		void			resetKeepAliveTimeout(void);
 
 		// Just for debug
 		void			showDataConnection(void);

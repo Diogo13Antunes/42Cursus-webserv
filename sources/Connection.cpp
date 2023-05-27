@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/26 18:22:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/27 10:27:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,12 @@ bool Connection::isKeepAliveTimeout(void)
 		return (true);
 	return (false);
 }
+
+void Connection::resetKeepAliveTimeout(void)
+{
+	_lastRequestTime = time(NULL);
+}
+
 
 // Just for debug (remove when not necessary)
 // Remove
