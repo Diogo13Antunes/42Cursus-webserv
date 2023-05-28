@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 15:02:09 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/27 15:39:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/28 14:23:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class Messenger
 		void	unregisterModule(IModule *module);
 		void	sendMessage(t_msg msg);
 		*/
-		void	registerclient(AMessengerClient *client);
-		void	unregisterclient(AMessengerClient *client);
+		void	registerClient(AMessengerClient *client);
+		void	unregisterClient(ClientID clientID);
 		void	sendMessage(t_msg msg);
 };

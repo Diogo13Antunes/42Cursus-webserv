@@ -6,11 +6,13 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 17:11:39 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/27 15:11:16 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/28 14:29:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Messenger.hpp"
+
+#include <iostream>
 
 Messenger::Messenger(void)
 {
@@ -60,7 +62,7 @@ void Messenger::sendMessage(t_msg msg)
 }
 */
 
-void Messenger::registerclient(AMessengerClient *client)
+void Messenger::registerClient(AMessengerClient *client)
 {
 	ClientID id;
 
@@ -68,9 +70,9 @@ void Messenger::registerclient(AMessengerClient *client)
 	_clients.insert(std::pair<ClientID, AMessengerClient*>(id, client));
 }
 
-void Messenger::unregisterclient(AMessengerClient *client)
+void Messenger::unregisterClient(ClientID clientID)
 {
-	_clients.erase(client->getId());
+	_clients.erase(clientID);
 }
 
 void Messenger::sendMessage(t_msg msg)

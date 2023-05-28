@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 12:20:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/28 10:00:13 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/28 14:24:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class AMessengerClient
 {
 	private:
 		Messenger	*_messenger;
+		ClientID	clientID;
 
 	public:
 		

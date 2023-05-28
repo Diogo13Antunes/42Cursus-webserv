@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/28 14:03:02 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/28 14:29:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ int main(void)
 	conns.setMessenger(&messenger);
 	eventDemux.setMessenger(&messenger);
 
+	
 	eventLoop.registerEvent(factory.getEventHandler(READ_EVENT));
 	eventLoop.registerEvent(factory.getEventHandler(WRITE_EVENT));
 
@@ -104,7 +105,7 @@ int main(void)
 		eventDemux.waitAndDispatchEvents();
 		eventLoop.handleEvents();
 	}
-
+	
 	return (0);
 }
 
