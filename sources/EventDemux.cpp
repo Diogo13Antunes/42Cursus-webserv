@@ -6,24 +6,20 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/27 11:01:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/28 14:00:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventDemux.hpp"
 
-EventDemux::EventDemux(void)
+EventDemux::EventDemux(void): AMessengerClient(NULL)
 {
 	//Default EventDemultiplexer Constructor
 }
 
-EventDemux::EventDemux(Messenger *messenger)
-{
-
-}
-
 // missing get errors of epoll functions and handle
 EventDemux::EventDemux(int serverFd, struct sockaddr_in address, socklen_t addrlen):
+	AMessengerClient(NULL),
 	_serverFd(serverFd),
 	_address(address),
 	_addrlen(addrlen)
@@ -54,10 +50,12 @@ void EventDemux::setServerFd(int serverFd)
 	_serverFd = serverFd;
 }
 
+/*
 void EventDemux::setMessenger(Messenger *messenger)
 {
 	_messenger = messenger;
 }
+*/
 
 void EventDemux::waitAndDispatchEvents(void)
 {
@@ -76,7 +74,7 @@ void EventDemux::waitAndDispatchEvents(void)
 			msg.dst = CONNECTIONS_ID;
 			msg.fd = newFd;
 			msg.type = 0;
-			_sendMessage(msg);
+			sendMessage(msg);
 			_events[i].events = 0;
 		}
 		else 
@@ -95,21 +93,22 @@ void EventDemux::waitAndDispatchEvents(void)
 				msg.event = WRITE;
 				std::cout << "EventDemux: evento escrita: " << msg.event << std::endl;
 			}
-			_sendMessage(msg);
+			
+			sendMessage(msg);
 
 			msg.dst = CONNECTIONS_ID;
 			msg.type = 1;
-			_sendMessage(msg);
+			sendMessage(msg);
 		}
 	}
 }
 
-ModuleID EventDemux::getId(void)
+ClientID EventDemux::getId(void)
 {
 	return (EVENTDEMUX_ID);
 }
 
-void EventDemux::handleMessage(t_msg msg)
+void EventDemux::receiveMessage(t_msg msg)
 {
 	std::cout << "EventDemux receive mensage: FD: " << msg.fd << " event: " << msg.event << std::endl;
 
@@ -151,9 +150,4 @@ void EventDemux::_changeFdIntoEventList(int fd, int event)
     _event.events = event;
 	if (epoll_ctl(_epollFd, EPOLL_CTL_MOD, fd, &_event) == -1)
 		std::cerr << "Failed to modify socket to epoll." << std::endl;
-}
-
-void	EventDemux::_sendMessage(t_msg msg)
-{
-	_messenger->sendMessage(msg);
 }

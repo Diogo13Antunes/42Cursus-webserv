@@ -6,21 +6,22 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/26 18:15:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/28 10:04:43 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventLoop.hpp"
 #include "Event.hpp"
 
-EventLoop::EventLoop(void)
+EventLoop::EventLoop(void): AMessengerClient(NULL)
 {
 	//Default EventLoop Constructor
 }
 
-EventLoop::EventLoop(Messenger *messenger):
-	_messenger(messenger)
+/*
+EventLoop::EventLoop(Messenger *messenger)
 {}
+*/
 
 EventLoop::EventLoop(const EventLoop &src)
 {
@@ -69,25 +70,24 @@ void EventLoop::handleEvents(void)
 		if ((EventType)ev->getState() == READ_EVENT)
 		{
 			msg.event = WRITE_EVENT;
-			_sendMessage(msg);
+			sendMessage(msg);
 		}
 		else if ((EventType)ev->getState() == WRITE_EVENT)
 		{
 			msg.event = READ_EVENT;
-			_sendMessage(msg);
+			sendMessage(msg);
 			_eventsMap.erase(ev->getFd());
 			delete ev;
 		}
 	}
 }
 
-ModuleID EventLoop::getId(void)
+ClientID EventLoop::getId(void)
 {
 	return (EVENTLOOP_ID);
 }
 
-
-void EventLoop::handleMessage(t_msg msg)
+void EventLoop::receiveMessage(t_msg msg)
 {
 	std::map<int, Event*>::iterator it;
 
@@ -107,7 +107,9 @@ void EventLoop::handleMessage(t_msg msg)
 	}
 }
 
+/*
 void EventLoop::_sendMessage(t_msg msg)
 {
 	_messenger->sendMessage(msg);
 }
+*/

@@ -6,15 +6,19 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/27 11:11:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/28 13:43:01 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connections.hpp"
 
+/*
 Connections::Connections(Messenger *messenger):
-	_messenger(messenger),
-	_index(1)
+	_messenger(messenger)
+{}
+*/
+
+Connections::Connections(void): AMessengerClient(NULL)
 {}
 
 Connections::~Connections(void)
@@ -33,19 +37,19 @@ void Connections::updateAllConnections(void)
 		if (_activeConnects.at(i)->isKeepAliveTimeout())
 		{
 			msg.fd = _activeConnects.at(i)->getFd();
-			_sendMessage(msg);
+			sendMessage(msg);
 			_removeConnection(i);
 			i--;
 		}
 	}
 }
 
-ModuleID Connections::getId(void)
+ClientID Connections::getId(void)
 {
 	return (CONNECTIONS_ID);
 }
 
-void Connections::handleMessage(t_msg msg)
+void Connections::receiveMessage(t_msg msg)
 {
 
 	std::cout << "Connections receive mensage: fd: " << msg.fd << std::endl;
@@ -71,11 +75,6 @@ void Connections::showConnections(void)
 
 	for(it = _activeConnects.begin(); it != _activeConnects.end(); it++)
 		(*it)->showDataConnection();
-}
-
-void	Connections::_sendMessage(t_msg msg)
-{
-	_messenger->sendMessage(msg);
 }
 
 void Connections::_removeAllConnections(void)

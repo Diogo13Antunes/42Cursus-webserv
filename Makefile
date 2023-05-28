@@ -23,6 +23,7 @@ SRC_NAME =	main.cpp				\
 			Event.cpp				\
 			EventDemux.cpp			\
 			Messenger.cpp			\
+			AMessengerClient.cpp	\
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))
 

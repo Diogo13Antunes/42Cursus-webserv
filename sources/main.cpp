@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/27 11:12:41 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/28 14:03:02 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,18 +86,17 @@ int main(void)
 
 	Messenger			messenger;
 	EventHandlerFactory	factory;
-	EventLoop			eventLoop(&messenger);
-	Connections			conns(&messenger);
+
+	EventLoop			eventLoop;
+	Connections			conns;
+	EventDemux			eventDemux(server_fd, address, (socklen_t) addrlen);
+
+	eventLoop.setMessenger(&messenger);
+	conns.setMessenger(&messenger);
+	eventDemux.setMessenger(&messenger);
 
 	eventLoop.registerEvent(factory.getEventHandler(READ_EVENT));
 	eventLoop.registerEvent(factory.getEventHandler(WRITE_EVENT));
-
-	EventDemux eventDemux(server_fd, address, (socklen_t) addrlen);
-	eventDemux.setMessenger(&messenger);
-
-	messenger.registerModule(&conns);
-	messenger.registerModule(&eventLoop);
-	messenger.registerModule(&eventDemux);
 
     while(1)
     {

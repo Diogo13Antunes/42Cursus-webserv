@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/26 10:59:00 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/28 13:35:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@
 #include "ReadHandler.hpp"
 #include "WriteHandler.hpp"
 #include "Connections.hpp"
-#include "IModule.hpp"
-#include "Messenger.hpp"
+//#include "Messenger.hpp"
+#include "AMessengerClient.hpp"
 #include "Event.hpp"
 
-class EventLoop: public IModule
+class EventLoop: public AMessengerClient
 {
 	private:
 		std::map<EventType, IEventHandler*> _handlers;
@@ -38,9 +38,9 @@ class EventLoop: public IModule
 		std::queue<Event*>					_eventQueue;
 		
 
-		Messenger							*_messenger;
+		//Messenger							*_messenger;
 		
-		void	_sendMessage(t_msg msg);
+		//void	_sendMessage(t_msg msg);
 
 	public:
 		EventLoop(void);
@@ -53,6 +53,6 @@ class EventLoop: public IModule
 		void		unregisterEvent(IEventHandler *event);
 		void		handleEvents(void);
 
-		ModuleID	getId(void);
-		void		handleMessage(t_msg msg);
+		ClientID	getId(void);
+		void		receiveMessage(t_msg msg);
 };
