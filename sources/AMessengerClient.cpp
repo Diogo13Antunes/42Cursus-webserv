@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMessengerClient.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 14:29:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/28 14:29:01 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/29 11:02:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ void AMessengerClient::sendMessage(t_msg msg)
 
 void AMessengerClient::setMessenger(Messenger *messenger)
 {
-	_messenger = messenger;
-	if (_messenger)
+	if (messenger)
 	{
+		_messenger = messenger;
 		_messenger->registerClient(this);
 		clientID = this->getId();
 	}

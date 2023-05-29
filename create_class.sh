@@ -12,15 +12,15 @@ cat << EOF > $1.hpp
 class $1
 {
 	public:
-		$1 &operator=(const $1 &src);
-		$1(const $1 &src);
 		$1(void);
+		$1(const $1 &src);
 		~$1(void);
+		$1 &operator=(const $1 &src);
 };
 EOF
 
 cat << EOF > $1.cpp
-#include <$1.hpp>
+#include "$1.hpp"
 
 $1::$1(void)
 {
