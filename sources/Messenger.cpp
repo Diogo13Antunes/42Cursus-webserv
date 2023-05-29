@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Messenger.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 17:11:39 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/28 14:29:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/29 17:41:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,32 +36,6 @@ Messenger &Messenger::operator=(const Messenger &src)
 }
 */
 
-/*
-void Messenger::registerModule(IModule *module)
-{
-	ModuleID id;
-
-	id = module->getId();
-	msgHandler.insert(std::pair<ModuleID, IModule*>(id, module));
-}
-
-void Messenger::unregisterModule(IModule *module)
-{
-	msgHandler.erase(module->getId());
-}
-
-void Messenger::sendMessage(t_msg msg)
-{
-	std::map<ModuleID, IModule*>::iterator it;
-
-	if (msgHandler.size())
-	{
-		it = msgHandler.find(msg.dst);
-		it->second->handleMessage(msg);
-	}
-}
-*/
-
 void Messenger::registerClient(AMessengerClient *client)
 {
 	ClientID id;
@@ -75,13 +49,13 @@ void Messenger::unregisterClient(ClientID clientID)
 	_clients.erase(clientID);
 }
 
-void Messenger::sendMessage(t_msg msg)
+void Messenger::sendMessage(Message *msg)
 {
 	std::map<ClientID, AMessengerClient*>::iterator it;
 
 	if (_clients.size())
 	{
-		it = _clients.find(msg.dst);
-		it->second->receiveMessage(msg);
+		//it = _clients.find(msg->getDst());
+		//it->second->receiveMessage(msg);
 	}
 }

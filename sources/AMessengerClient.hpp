@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   AMessengerClient.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 12:20:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/28 14:24:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/29 17:21:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 //#include "Messenger.hpp"
+
+#include "Message.hpp"
 
 class Messenger;
 
@@ -23,6 +25,7 @@ typedef enum
 	EVENTDEMUX_ID
 }	ClientID;
 
+/*
 typedef struct s_msg
 {
 	ClientID	dst;
@@ -30,7 +33,7 @@ typedef struct s_msg
 	short		event;
 	short		type;
 }	t_msg;
-
+*/
 
 class AMessengerClient
 {
@@ -47,8 +50,8 @@ class AMessengerClient
 		AMessengerClient &operator=(const AMessengerClient &src);
 		
 		void				setMessenger(Messenger *messenger);
-		void				sendMessage(t_msg msg);
+		void				sendMessage(Message *msg);
 		
 		virtual	ClientID	getId(void) = 0;
-		virtual	void		receiveMessage(t_msg msg) = 0;
+		virtual	void		receiveMessage(Message *msg) = 0;
 };

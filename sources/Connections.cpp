@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connections.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/28 13:43:01 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/29 17:39:47 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,16 @@ Connections::~Connections(void)
 
 void Connections::updateAllConnections(void)
 {
-	t_msg msg;
+	//t_msg msg;
 
-	msg.dst = EVENTDEMUX_ID;
-	msg.type = 1;
+	//msg.dst = EVENTDEMUX_ID;
+	//msg.type = 1;
 	for (int i = 0; i < _activeConnects.size(); i++)
 	{
 		if (_activeConnects.at(i)->isKeepAliveTimeout())
 		{
-			msg.fd = _activeConnects.at(i)->getFd();
-			sendMessage(msg);
+			//msg.fd = _activeConnects.at(i)->getFd();
+			//sendMessage(msg);
 			_removeConnection(i);
 			i--;
 		}
@@ -49,9 +49,9 @@ ClientID Connections::getId(void)
 	return (CONNECTIONS_ID);
 }
 
-void Connections::receiveMessage(t_msg msg)
+void Connections::receiveMessage(Message *msg)
 {
-
+	/*
 	std::cout << "Connections receive mensage: fd: " << msg.fd << std::endl;
 
 	if (msg.fd > 0 && msg.type == 0)
@@ -64,7 +64,7 @@ void Connections::receiveMessage(t_msg msg)
 			if (_activeConnects.at(i)->getFd() == msg.fd)
 				_activeConnects.at(i)->resetKeepAliveTimeout();
 		}
-	}
+	}*/
 }
 
 // Just for debug (remove when not necessary)

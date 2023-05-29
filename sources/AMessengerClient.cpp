@@ -6,14 +6,12 @@
 /*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 14:29:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/29 11:02:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/29 17:16:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AMessengerClient.hpp"
 #include "Messenger.hpp"
-
-#include <iostream>
 
 AMessengerClient::AMessengerClient(void)
 {
@@ -44,7 +42,7 @@ AMessengerClient &AMessengerClient::operator=(const AMessengerClient &src)
 }
 */
 
-void AMessengerClient::sendMessage(t_msg msg)
+void AMessengerClient::sendMessage(Message *msg)
 {
 	if (_messenger)
 		_messenger->sendMessage(msg);

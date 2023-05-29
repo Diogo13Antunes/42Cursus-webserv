@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventDemux.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/28 14:14:29 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/29 17:38:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void EventDemux::waitAndDispatchEvents(void)
 {
 	int		numEvents;
 	int		newFd;
-	t_msg	msg;
+	//t_msg	msg;
 
 	std::cout << "Wait New Events" <<std::endl;
 	numEvents = epoll_wait(_epollFd, _events, N_MAX_EVENTS, 1000);
@@ -71,34 +71,34 @@ void EventDemux::waitAndDispatchEvents(void)
 		{
 			newFd = accept(_serverFd, (struct sockaddr *) &_address, &_addrlen);
 			_addNewFdToEventList(newFd);
-			msg.dst = CONNECTIONS_ID;
-			msg.fd = newFd;
-			msg.type = 0;
-			sendMessage(msg);
+			//msg.dst = CONNECTIONS_ID;
+			//msg.fd = newFd;
+			//msg.type = 0;
+			//sendMessage(msg);
 			_events[i].events = 0;
 		}
 		else 
 		{
 			//Preciso criar mensagens através de herança para defenir tipos
-			msg.dst = EVENTLOOP_ID;
-			msg.fd = _events[i].data.fd;
+			//msg.dst = EVENTLOOP_ID;
+			//msg.fd = _events[i].data.fd;
 			std::cout << "EventDemux: fd: "<< _events[i].data.fd << " events: " << _events[i].events <<std::endl;
 			if (_events[i].events & EPOLLIN)
 			{
-				msg.event = READ;
-				std::cout << "EventDemux: evento leitura: "<< msg.event <<std::endl;
+				//msg.event = READ;
+				//std::cout << "EventDemux: evento leitura: "<< msg.event <<std::endl;
 			}
 			else if (_events[i].events & EPOLLOUT)
 			{
-				msg.event = WRITE;
-				std::cout << "EventDemux: evento escrita: " << msg.event << std::endl;
+				//msg.event = WRITE;
+				//std::cout << "EventDemux: evento escrita: " << msg.event << std::endl;
 			}
 			
-			sendMessage(msg);
+			//sendMessage(msg);
 
-			msg.dst = CONNECTIONS_ID;
-			msg.type = 1;
-			sendMessage(msg);
+			//msg.dst = CONNECTIONS_ID;
+			//msg.type = 1;
+			//sendMessage(msg);
 		}
 	}
 }
@@ -108,9 +108,9 @@ ClientID EventDemux::getId(void)
 	return (EVENTDEMUX_ID);
 }
 
-void EventDemux::receiveMessage(t_msg msg)
+void EventDemux::receiveMessage(Message *msg)
 {
-	std::cout << "EventDemux receive mensage: FD: " << msg.fd << " event: " << msg.event << std::endl;
+	/*std::cout << "EventDemux receive mensage: FD: " << msg.fd << " event: " << msg.event << std::endl;
 
 	if (msg.type == 0)
 	{
@@ -122,7 +122,7 @@ void EventDemux::receiveMessage(t_msg msg)
 	else if (msg.type == 1)
 	{
 		_removeFdFromEventList(msg.fd);
-	}
+	}*/
 }
 
 void EventDemux::_addNewFdToEventList(int fd)

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 12:06:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/29 15:16:41 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/29 17:27:29 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Message::Message(void)
 	//Default IMessage Constructor
 }
 
-Message::Message(ClientID dst):
+Message::Message(int dst):
 	_dst(dst)
 {}
 
@@ -38,7 +38,7 @@ Message &Message::operator=(const Message &src)
 }
 */
 
-ClientID Message::getDst(void)
+int Message::getDst(void)
 {
 	return (_dst);
 }

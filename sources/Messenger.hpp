@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Messenger.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 15:02:09 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/28 14:23:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/29 16:33:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <string>
 #include <map>
 #include "AMessengerClient.hpp"
+#include "Message.hpp"
 
 class Messenger
 {
@@ -34,5 +35,5 @@ class Messenger
 		*/
 		void	registerClient(AMessengerClient *client);
 		void	unregisterClient(ClientID clientID);
-		void	sendMessage(t_msg msg);
+		void	sendMessage(Message *msg);
 };

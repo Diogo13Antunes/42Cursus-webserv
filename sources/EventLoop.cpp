@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/28 10:04:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/29 17:40:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ void EventLoop::unregisterEvent(IEventHandler *event)
 void EventLoop::handleEvents(void)
 {
 	Event	*ev;
-	t_msg	msg;
 
 	while (!_eventQueue.empty())
 	{
@@ -64,18 +63,18 @@ void EventLoop::handleEvents(void)
 		_eventQueue.pop();
 
 		// to do this you need to check that you have read or written everything. For now it stays like this
-		msg.dst = EVENTDEMUX_ID;
-		msg.fd = ev->getFd();
-		msg.type = 0;
+		//msg.dst = EVENTDEMUX_ID;
+		//msg.fd = ev->getFd();
+		//msg.type = 0;
 		if ((EventType)ev->getState() == READ_EVENT)
 		{
-			msg.event = WRITE_EVENT;
-			sendMessage(msg);
+			//msg.event = WRITE_EVENT;
+			//sendMessage(msg);
 		}
 		else if ((EventType)ev->getState() == WRITE_EVENT)
 		{
-			msg.event = READ_EVENT;
-			sendMessage(msg);
+			//msg.event = READ_EVENT;
+			//sendMessage(msg);
 			_eventsMap.erase(ev->getFd());
 			delete ev;
 		}
@@ -87,11 +86,11 @@ ClientID EventLoop::getId(void)
 	return (EVENTLOOP_ID);
 }
 
-void EventLoop::receiveMessage(t_msg msg)
+void EventLoop::receiveMessage(Message *msg)
 {
 	std::map<int, Event*>::iterator it;
 
-	std::cout << "EventLoop: fd: " << msg.fd << " event: " << msg.event << std::endl;
+	/*std::cout << "EventLoop: fd: " << msg.fd << " event: " << msg.event << std::endl;
 
 	it = _eventsMap.find(msg.fd);
 	if (it == _eventsMap.end())
@@ -104,7 +103,7 @@ void EventLoop::receiveMessage(t_msg msg)
 	{
 		it->second->setState(msg.event);
 		_eventQueue.push(it->second);
-	}
+	}*/
 }
 
 /*

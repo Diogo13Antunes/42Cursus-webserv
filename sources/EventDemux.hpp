@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventDemux.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:09:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/28 13:53:09 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/29 17:32:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,5 @@ class EventDemux: public AMessengerClient
 		void		waitAndDispatchEvents(void);
 
 		ClientID	getId(void);
-		void		receiveMessage(t_msg msg);
+		void		receiveMessage(Message *msg);
 };

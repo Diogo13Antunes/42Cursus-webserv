@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connections.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/28 13:35:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/29 17:33:01 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ class Connections: public AMessengerClient
 
 
 		ClientID	getId(void);
-		void		receiveMessage(t_msg msg);
+		void		receiveMessage(Message *msg);
 
 		// for debug only
 		void			showConnections(void);
