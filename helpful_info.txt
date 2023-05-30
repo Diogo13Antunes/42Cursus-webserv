@@ -122,3 +122,8 @@ Example ->
 
 Links to check RFC:
  -> https://datatracker.ietf.org/doc/html/rfc9110
+
+
+Verificar se o Request Line pode levar mais do que 1 espaço por cada elemento.
+
+

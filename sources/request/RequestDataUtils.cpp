@@ -46,8 +46,7 @@ Metodos:
 -> POST
 -> DELETE
 */
-
-bool	RequestDataUtils::isValidRequestLine(std::vector<std::string> &requestLine)
+/* bool	RequestDataUtils::isValidRequestLine(std::vector<std::string> &requestLine)
 {
 	std::string	method;
 
@@ -55,4 +54,4 @@ bool	RequestDataUtils::isValidRequestLine(std::vector<std::string> &requestLine)
 	if (method.compare("GET") != 0 && method.compare("POST") != 0 && method.compare("DELETE") != 0)
 		return (false);
 	return (true);
-}
+} */

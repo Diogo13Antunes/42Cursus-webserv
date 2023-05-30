@@ -1,7 +1,9 @@
 #include "RequestParserUtils.hpp"
 
-static std::pair<std::string, std::string>	getPair(std::string &src);
-static std::string							stringTrim(const std::string &str);
+static std::vector<std::string>								getElementValue(const std::string &src);
+static std::pair<std::string, std::vector<std::string> >	getPair(std::string &src);
+static std::string											stringTrim(const std::string &str);
+static std::string											removeQuotes(const std::string &src);
 
 std::string	RequestParserUtils::getDataString(int fd)
 {
@@ -41,10 +43,10 @@ std::vector<std::string>	RequestParserUtils::getDataVector(std::string &src)
 	return (result);
 }
 
-std::map<std::string, std::string>	RequestParserUtils::getRequestHeader(std::vector<std::string> &src)
+std::map<std::string, std::vector<std::string> >	RequestParserUtils::getRequestHeader(std::vector<std::string> &src)
 {
-	std::map<std::string, std::string>	header;
-	std::string	temp;
+	std::map<std::string, std::vector<std::string> >	header;
+	std::string											temp;
 
 	for (size_t i = 1; i < src.size(); i++)
 	{
@@ -72,9 +74,11 @@ std::string	RequestParserUtils::getBody(std::vector<std::string> &src)
 	return (body);
 }
 
-static std::pair<std::string, std::string>	getPair(std::string &src)
+static std::pair<std::string, std::vector<std::string> >	getPair(std::string &src)
 {
-	std::string	key, value;
+	std::string					key;
+	std::vector<std::string>	value;
+	std::string					temp;
 	size_t		index;
 
 	key.clear();
@@ -90,8 +94,9 @@ static std::pair<std::string, std::string>	getPair(std::string &src)
 		}
 		if (src.find_first_not_of(WHITE_SPACE, index + 1) != src.npos)
 		{
-			value = src.substr(src.find_first_of(":") + 1, src.size());
-			value = stringTrim(value);
+			temp = src.substr(src.find_first_of(":") + 1, src.size());
+			temp = stringTrim(temp);
+			value = getElementValue(temp);
 		}
 	}
 	return (std::make_pair(key, value));
@@ -109,4 +114,64 @@ static std::string	stringTrim(const std::string &str)
 	len = end - start + 1;
 	trimmed = str.substr(start, len);
 	return (trimmed);
+}
+
+static bool	isValidNumberOfQuotes(const std::string &src);
+
+static std::vector<std::string>	getElementValue(const std::string &src)
+{
+	std::vector<std::string>	elements;
+	std::string					temp;
+	size_t						nbrQuotes = 0;
+	size_t						j = 0;
+
+	elements.clear();
+	if (isValidNumberOfQuotes(src))
+	{
+		for (size_t i = 0; i <= src.size(); i++)
+		{
+			if (src[i] == '\"')
+				nbrQuotes++;
+			if (i == src.size() || (src[i] == ',' && nbrQuotes % 2 == 0))
+			{
+				temp = src.substr(j, i - j);
+				temp = removeWhiteSpacesAndQuotes();
+				temp = removeQuotes(temp);
+				elements.push_back(temp);
+				temp.clear();
+				nbrQuotes = 0;
+				j = i + 1;
+			}
+		}
+	}
+	return (elements);
+}
+
+static bool	isValidNumberOfQuotes(const std::string &src)
+{
+	size_t	nbrQuotes = 0;
+
+	for (size_t i = 0; i < src.size(); i++)
+	{
+		if (src[i] == '\"')
+			nbrQuotes++;
+	}
+	if (nbrQuotes % 2 != 0)
+		return (false);
+	return (true);
+}
+
+static std::string	removeQuotes(const std::string &src)
+{
+	std::string	res;
+	size_t		index_1;
+	size_t		index_2;
+
+	res = src;
+	index_1 = res.find_first_not_of("\"");
+	index_2 = res.find_last_not_of("\"");
+	if (index_1 == res.npos || index_2 == res.npos)
+		return (res);
+	res = res.substr(index_1, index_2 - index_1 + 1);
+	return (res);
 }

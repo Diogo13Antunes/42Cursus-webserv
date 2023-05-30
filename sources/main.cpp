@@ -85,10 +85,10 @@ int main(int ac, char **av)
 
 	try
 	{
-		RequestParser 						request1(fd1);
-		std::string							requestLine;
-		std::map<std::string, std::string>	requestHeader;
-		std::string							requestBody;
+		RequestParser 										request1(fd1);
+		std::string											requestLine;
+		std::map<std::string, std::vector<std::string> >	requestHeader;
+		std::string											requestBody;
 
 		requestLine = request1.getRequestLine();
 		requestHeader = request1.getRequestHeader();
@@ -96,10 +96,22 @@ int main(int ac, char **av)
 
 		// std::cout << "Line: " << requestLine << std::endl;
 
-		// std::cout << "[KEY] | [VALUE]" << std::endl;
-		// std::map<std::string, std::string>::iterator	it;
-		// for (it = requestHeader.begin(); it != requestHeader.end(); it++)
-			// std::cout << "[" << (*it).first << "] | [" << (*it).second << "]" << std::endl;
+		std::cout << "[KEY] | [VALUE]" << std::endl;
+		std::map<std::string, std::vector<std::string> >::iterator	it;
+		std::vector<std::string>									elements;
+		
+		for (it = requestHeader.begin(); it != requestHeader.end(); it++)
+		{
+			elements = (*it).second;
+			std::cout << "[" << (*it).first << "] | ";
+			for (size_t i = 0; i < elements.size(); i++)
+			{
+				std::cout << "[" << elements.at(i).c_str() << "]";
+				if (i < elements.size() - 1)
+					std::cout << " , ";
+			}
+			std::cout << std::endl;
+		}
 
 		// std::cout << requestBody << std::endl;
 
