@@ -6,45 +6,18 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/31 12:18:11 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/31 17:04:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connections.hpp"
 
-/*
-Connections::Connections(Messenger *messenger):
-	_messenger(messenger)
-{}
-*/
-
-Connections::Connections(void): AMessengerClient(NULL)
-{}
+Connections::Connections(void): AMessengerClient(NULL) {}
 
 Connections::~Connections(void)
 {
 	_removeAllConnections();
 }
-
-/*
-void Connections::updateAllConnections(void)
-{
-	//t_msg msg;
-
-	//msg.dst = EVENTDEMUX_ID;
-	//msg.type = 1;
-	for (int i = 0; i < _activeConnects.size(); i++)
-	{
-		if (_activeConnects.at(i)->isKeepAliveTimeout())
-		{
-			//msg.fd = _activeConnects.at(i)->getFd();
-			//sendMessage(msg);
-			//_removeConnection(i);
-			i--;
-		}
-	}
-}
-*/
 
 void Connections::updateAllConnections(void)
 {
@@ -70,19 +43,12 @@ ClientID Connections::getId(void)
 
 void Connections::receiveMessage(Message *msg)
 {
-	std::map<int, Connection *>::iterator	it;
-	ConnectionMessage						*m;
-	int										fd;
+	ConnectionMessage	*m;
 
 	m = dynamic_cast<ConnectionMessage*>(msg);
 	if (!m)
 		return ;
-	fd = m->getFd();
-	it = _activeConnects.find(m->getFd());
-	if (it == _activeConnects.end())
-		_activeConnects.insert(std::make_pair(fd, new Connection(fd)));
-	else
-		it->second->resetKeepAliveTimeout();
+	_handleMessage(m);
 }
 
 // Just for debug (remove when not necessary)
@@ -93,6 +59,19 @@ void Connections::showConnections(void)
 
 	for(it = _activeConnects.begin(); it != _activeConnects.end(); it++)
 		it->second->showDataConnection();
+}
+
+void Connections::_handleMessage(ConnectionMessage *msg)
+{
+	std::map<int, Connection *>::iterator	it;
+	int										fd;
+
+	fd = msg->getFd();
+	it = _activeConnects.find(fd);
+	if (it == _activeConnects.end())
+		_activeConnects.insert(std::make_pair(fd, new Connection(fd)));
+	else
+		it->second->resetKeepAliveTimeout();
 }
 
 void Connections::_removeAllConnections(void)

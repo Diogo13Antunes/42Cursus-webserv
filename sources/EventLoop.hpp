@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/29 17:32:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/31 16:42:41 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,9 @@
 #include "IEventHandler.hpp"
 #include "ReadHandler.hpp"
 #include "WriteHandler.hpp"
-#include "Connections.hpp"
-//#include "Messenger.hpp"
 #include "AMessengerClient.hpp"
 #include "Event.hpp"
+#include "EventMessage.hpp"
 
 class EventLoop: public AMessengerClient
 {
