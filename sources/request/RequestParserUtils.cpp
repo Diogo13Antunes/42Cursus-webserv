@@ -67,7 +67,7 @@ std::string	RequestParserUtils::getBody(std::vector<std::string> &src)
 	{
 		if (start_body)
 			body += src.at(i).c_str();
-		if (src.at(i).find_first_not_of("\r\n") == src.at(i).npos)
+		else if (src.at(i).find_first_not_of("\r\n") == src.at(i).npos)
 			start_body = true;
 	}
 	return (body);
@@ -135,7 +135,6 @@ static std::vector<std::string>	getElementValue(const std::string &src)
 			{
 				temp = getReadyValue(src, i, j);
 				elements.push_back(temp);
-				temp.clear();
 				j = i + 1;
 			}
 		}

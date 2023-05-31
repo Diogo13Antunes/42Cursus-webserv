@@ -96,26 +96,27 @@ int main(int ac, char **av)
 
 		// std::cout << "Line: " << requestLine << std::endl;
 
-		std::cout << "[KEY] | [VALUE]" << std::endl;
-		std::map<std::string, std::vector<std::string> >::iterator	it;
-		std::vector<std::string>									elements;
-		
-		for (it = requestHeader.begin(); it != requestHeader.end(); it++)
-		{
-			elements = (*it).second;
-			std::cout << "[" << (*it).first << "] | ";
-			for (size_t i = 0; i < elements.size(); i++)
-			{
-				std::cout << "[" << elements.at(i).c_str() << "]";
-				if (i < elements.size() - 1)
-					std::cout << " , ";
-			}
-			std::cout << std::endl;
-		}
+		// std::cout << "[KEY] | [VALUE]" << std::endl;
+		// std::map<std::string, std::vector<std::string> >::iterator	it;
+		// std::vector<std::string>									elements;
+		// for (it = requestHeader.begin(); it != requestHeader.end(); it++)
+		// {
+			// elements = (*it).second;
+			// std::cout << "[" << (*it).first << "] | ";
+			// for (size_t i = 0; i < elements.size(); i++)
+			// {
+				// std::cout << "[" << elements.at(i).c_str() << "]";
+				// if (i < elements.size() - 1)
+					// std::cout << " , ";
+			// }
+			// std::cout << std::endl;
+		// }
 
-		// std::cout << requestBody << std::endl;
+		// std::cout << "-------------------- BODY --------------------" << std::endl;
+		// std::cout << requestBody;
+		// std::cout << "----------------------------------------------" << std::endl;
 
-		data.setRequestLine(requestLine);
+		// data.setRequestLine(requestLine);
 	}
 	catch(const std::exception& e)
 	{
@@ -126,10 +127,10 @@ int main(int ac, char **av)
 	std::vector<std::string>	line;
 	line = data.getRequestLine();
 
-	std::cout << "---------- Request Line ----------" << std::endl;
-	for (size_t i = 0; i < line.size(); i++)
-		std::cout << "\'" << line.at(i).c_str() << "\'" << std::endl; 
-	std::cout << "----------------------------------" << std::endl;
+	// std::cout << "---------- Request Line ----------" << std::endl;
+	// for (size_t i = 0; i < line.size(); i++)
+		// std::cout << "\'" << line.at(i).c_str() << "\'" << std::endl; 
+	// std::cout << "----------------------------------" << std::endl;
 
 	return (0);
 }
