@@ -3,7 +3,6 @@
 static std::vector<std::string>								getElementValue(const std::string &src);
 static std::pair<std::string, std::vector<std::string> >	getPair(std::string &src);
 static std::string											stringTrim(const std::string &str);
-static std::string											removeQuotes(const std::string &src);
 
 std::string	RequestParserUtils::getDataString(int fd)
 {
@@ -116,7 +115,8 @@ static std::string	stringTrim(const std::string &str)
 	return (trimmed);
 }
 
-static bool	isValidNumberOfQuotes(const std::string &src);
+static bool			isValidNumberOfQuotes(const std::string &src);
+static std::string	getReadyValue(const std::string &src, size_t index1, size_t index2);
 
 static std::vector<std::string>	getElementValue(const std::string &src)
 {
@@ -125,21 +125,17 @@ static std::vector<std::string>	getElementValue(const std::string &src)
 	size_t						nbrQuotes = 0;
 	size_t						j = 0;
 
-	elements.clear();
 	if (isValidNumberOfQuotes(src))
 	{
-		for (size_t i = 0; i <= src.size(); i++)
+		for (size_t i = 0; i < src.size(); i++)
 		{
 			if (src[i] == '\"')
 				nbrQuotes++;
-			if (i == src.size() || (src[i] == ',' && nbrQuotes % 2 == 0))
+			if (i == src.size() - 1 || (src[i] == ',' && nbrQuotes % 2 == 0))
 			{
-				temp = src.substr(j, i - j);
-				temp = removeWhiteSpacesAndQuotes();
-				temp = removeQuotes(temp);
+				temp = getReadyValue(src, i, j);
 				elements.push_back(temp);
 				temp.clear();
-				nbrQuotes = 0;
 				j = i + 1;
 			}
 		}
@@ -161,17 +157,15 @@ static bool	isValidNumberOfQuotes(const std::string &src)
 	return (true);
 }
 
-static std::string	removeQuotes(const std::string &src)
+static std::string	getReadyValue(const std::string &src, size_t index1, size_t index2)
 {
-	std::string	res;
-	size_t		index_1;
-	size_t		index_2;
+	const std::string	notValueChars = "\n\r\t\", ";
+	std::string			result;
+	size_t				i1 = 0;
+	size_t				i2 = 0;
 
-	res = src;
-	index_1 = res.find_first_not_of("\"");
-	index_2 = res.find_last_not_of("\"");
-	if (index_1 == res.npos || index_2 == res.npos)
-		return (res);
-	res = res.substr(index_1, index_2 - index_1 + 1);
-	return (res);
+	i1 = src.find_first_not_of(notValueChars, index2);
+	i2 = src.find_last_not_of(notValueChars, index1);
+	result = src.substr(i1, i2 - i1 + 1);
+	return (result);
 }

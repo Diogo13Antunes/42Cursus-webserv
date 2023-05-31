@@ -2,7 +2,7 @@ NAME = webserv
 
 CXX = c++
 # CXXFLAGS = -Wall -Werror -Wextra -g -fsanitize=address -std=c++98
-CXXFLAGS = -std=c++98 -g -fsanitize=address
+CXXFLAGS = -g -std=c++98 -O3 -fsanitize=address
 RM = rm -f
 
 $(VERBOSE).SILENT:
