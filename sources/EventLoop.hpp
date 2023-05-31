@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/31 16:42:41 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/31 18:07:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,23 +27,16 @@ class EventLoop: public AMessengerClient
 {
 	private:
 		std::map<EventType, IEventHandler*> _handlers;
-		std::map<int, Event*>				_eventsMap; //passar para _eventMap
-
-		//std::queue<int>						_events; // para remover
-
-		std::queue<Event*>					_readQueue;
-		std::queue<Event*>					_writeQueue;
-
+		std::map<int, Event*>				_eventMap;
 		std::queue<Event*>					_eventQueue;
-		
 
-		//Messenger							*_messenger;
-		
-		//void	_sendMessage(t_msg msg);
+		void	_handleMessage(EventMessage *msg);
+		void	_addNewEvent(Event *ev);
+		void	_changeEvent(Event *ev, short status);
+		Event*	_handleNextEvent(void);
 
 	public:
 		EventLoop(void);
-		EventLoop(Messenger *messenger);
 		EventLoop(const EventLoop &src);
 		~EventLoop(void);
 		EventLoop &operator=(const EventLoop &src);
