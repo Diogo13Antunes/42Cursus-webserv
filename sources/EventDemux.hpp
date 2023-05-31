@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventDemux.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:09:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/29 17:32:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/31 10:37:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <fcntl.h>
 //#include "Messenger.hpp"
 #include "AMessengerClient.hpp"
+#include "ConnectionMessage.hpp"
+#include "EventMessage.hpp"
 
 #define N_MAX_EVENTS	1024
 

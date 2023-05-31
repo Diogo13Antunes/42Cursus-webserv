@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   AMessengerClient.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 14:29:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/29 17:16:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/30 09:13:15 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AMessengerClient.hpp"
 #include "Messenger.hpp"
+
+#include <iostream>
 
 AMessengerClient::AMessengerClient(void)
 {

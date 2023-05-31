@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/29 17:40:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/31 11:03:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,13 @@ void EventLoop::handleEvents(void)
 		{
 			//msg.event = WRITE_EVENT;
 			//sendMessage(msg);
+			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), WRITE_EVENT));
 		}
 		else if ((EventType)ev->getState() == WRITE_EVENT)
 		{
 			//msg.event = READ_EVENT;
 			//sendMessage(msg);
+			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), READ_EVENT));
 			_eventsMap.erase(ev->getFd());
 			delete ev;
 		}
@@ -86,11 +88,12 @@ ClientID EventLoop::getId(void)
 	return (EVENTLOOP_ID);
 }
 
+/*
 void EventLoop::receiveMessage(Message *msg)
 {
 	std::map<int, Event*>::iterator it;
 
-	/*std::cout << "EventLoop: fd: " << msg.fd << " event: " << msg.event << std::endl;
+	std::cout << "EventLoop: fd: " << msg.fd << " event: " << msg.event << std::endl;
 
 	it = _eventsMap.find(msg.fd);
 	if (it == _eventsMap.end())
@@ -103,12 +106,31 @@ void EventLoop::receiveMessage(Message *msg)
 	{
 		it->second->setState(msg.event);
 		_eventQueue.push(it->second);
-	}*/
-}
-
-/*
-void EventLoop::_sendMessage(t_msg msg)
-{
-	_messenger->sendMessage(msg);
+	}
 }
 */
+
+void EventLoop::receiveMessage(Message *msg)
+{
+	std::map<int, Event*>::iterator	it;
+	EventMessage					*m;
+	int								fd;
+
+	m = dynamic_cast<EventMessage*>(msg);
+	if (!m)
+		return ;
+	fd = m->getFd();
+	it = _eventsMap.find(m->getFd());
+	if (it == _eventsMap.end())
+	{
+		Event *ev = new Event(fd, m->getEvent());
+		_eventsMap.insert(std::make_pair(fd, ev));
+		_eventQueue.push(ev);
+	}
+	else 
+	{
+		it->second->setState(m->getEvent());
+		_eventQueue.push(it->second);
+	}
+}
+

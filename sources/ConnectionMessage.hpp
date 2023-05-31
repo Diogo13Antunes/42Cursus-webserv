@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConnectionMessage.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 15:49:45 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/29 15:57:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/30 08:47:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ class ConnectionMessage: public Message
 
 	public:
 		ConnectionMessage(void);
-		ConnectionMessage(ClientID dst, int fd);
+		ConnectionMessage(int dst, int fd);
 		ConnectionMessage(const ConnectionMessage &src);
 		~ConnectionMessage(void);
 		ConnectionMessage &operator=(const ConnectionMessage &src);

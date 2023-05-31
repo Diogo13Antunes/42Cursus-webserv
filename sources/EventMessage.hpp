@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventMessage.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 13:49:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/29 15:57:30 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/30 09:00:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ class EventMessage: public Message
 		
 	public:
 		EventMessage(void);
-		EventMessage(ClientID dst, int fd, short event);
+		EventMessage(int dst, int fd, short event);
 		EventMessage(const EventMessage &src);
 		~EventMessage(void);
 		EventMessage &operator=(const EventMessage &src);

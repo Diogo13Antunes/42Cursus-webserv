@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventDemux.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/29 17:38:30 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/31 11:58:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,10 @@ void EventDemux::waitAndDispatchEvents(void)
 {
 	int		numEvents;
 	int		newFd;
+	short	event;
 	//t_msg	msg;
 
-	std::cout << "Wait New Events" <<std::endl;
+	std::cout << "wait events" << std::endl;
 	numEvents = epoll_wait(_epollFd, _events, N_MAX_EVENTS, 1000);
 	for (int i = 0; i < numEvents; i++) 
 	{
@@ -75,21 +76,27 @@ void EventDemux::waitAndDispatchEvents(void)
 			//msg.fd = newFd;
 			//msg.type = 0;
 			//sendMessage(msg);
-			_events[i].events = 0;
+
+			
+			sendMessage(new ConnectionMessage(CONNECTIONS_ID, newFd));
+			
+			//_events[i].events = 0;
 		}
 		else 
 		{
 			//Preciso criar mensagens através de herança para defenir tipos
 			//msg.dst = EVENTLOOP_ID;
 			//msg.fd = _events[i].data.fd;
-			std::cout << "EventDemux: fd: "<< _events[i].data.fd << " events: " << _events[i].events <<std::endl;
+			//std::cout << "EventDemux: fd: "<< _events[i].data.fd << " events: " << _events[i].events <<std::endl;
 			if (_events[i].events & EPOLLIN)
 			{
+				event = (short)READ;
 				//msg.event = READ;
 				//std::cout << "EventDemux: evento leitura: "<< msg.event <<std::endl;
 			}
 			else if (_events[i].events & EPOLLOUT)
 			{
+				event = (short)WRITE;
 				//msg.event = WRITE;
 				//std::cout << "EventDemux: evento escrita: " << msg.event << std::endl;
 			}
@@ -99,6 +106,9 @@ void EventDemux::waitAndDispatchEvents(void)
 			//msg.dst = CONNECTIONS_ID;
 			//msg.type = 1;
 			//sendMessage(msg);
+
+			sendMessage(new EventMessage(EVENTLOOP_ID, _events[i].data.fd, event));
+			sendMessage(new ConnectionMessage(CONNECTIONS_ID, _events[i].data.fd));
 		}
 	}
 }
@@ -108,9 +118,10 @@ ClientID EventDemux::getId(void)
 	return (EVENTDEMUX_ID);
 }
 
+/*
 void EventDemux::receiveMessage(Message *msg)
 {
-	/*std::cout << "EventDemux receive mensage: FD: " << msg.fd << " event: " << msg.event << std::endl;
+	std::cout << "EventDemux receive mensage: FD: " << msg.fd << " event: " << msg.event << std::endl;
 
 	if (msg.type == 0)
 	{
@@ -122,7 +133,30 @@ void EventDemux::receiveMessage(Message *msg)
 	else if (msg.type == 1)
 	{
 		_removeFdFromEventList(msg.fd);
-	}*/
+	}
+}
+*/
+
+void EventDemux::receiveMessage(Message *msg)
+{
+	ConnectionMessage	*connMsg;
+	EventMessage		*eventMsg;
+
+	connMsg = dynamic_cast<ConnectionMessage*>(msg);
+	eventMsg = dynamic_cast<EventMessage*>(msg);
+	if (connMsg)
+	{
+		std::cout << "Recebido fd: " << connMsg->getFd() << std::endl;
+		_removeFdFromEventList(connMsg->getFd());
+	}
+	else if (eventMsg)
+	{
+		if (eventMsg->getEvent() == 0)
+			_changeFdIntoEventList(eventMsg->getFd(), EPOLLIN);
+		else 
+			_changeFdIntoEventList(eventMsg->getFd(), EPOLLOUT);
+	}
+	std::cout << "EventDemux receive mensage"<< std::endl;
 }
 
 void EventDemux::_addNewFdToEventList(int fd)
@@ -139,6 +173,7 @@ void EventDemux::_addNewFdToEventList(int fd)
 
 void EventDemux::_removeFdFromEventList(int fd)
 {
+	std::cout << "remover fd: " << fd << std::endl;
 	if (epoll_ctl(_epollFd, EPOLL_CTL_DEL, fd, NULL) == -1) {
 		std::cerr << "Failed to remove event from epoll" << std::endl;
 	}	

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Messenger.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 17:11:39 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/29 17:41:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/30 17:49:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ void Messenger::sendMessage(Message *msg)
 
 	if (_clients.size())
 	{
-		//it = _clients.find(msg->getDst());
-		//it->second->receiveMessage(msg);
+		it = _clients.find((ClientID) msg->getDst());
+		it->second->receiveMessage(msg);
 	}
+	delete msg;
 }

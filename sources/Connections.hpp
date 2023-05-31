@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connections.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/29 17:33:01 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/05/30 11:38:15 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 #include <iostream>
 #include <sstream>
-#include <vector>
+//#include <vector>
+#include <map>
+
 #include <sys/socket.h>
 #include <sys/poll.h>
 #include "Connection.hpp"
@@ -22,16 +24,24 @@
 //#include "Messenger.hpp"
 #include "AMessengerClient.hpp"
 
+#include "ConnectionMessage.hpp"
+#include "EventMessage.hpp"
+
 class Connections: public AMessengerClient
 {
 	private:
-		std::vector<Connection *>	_activeConnects;
+		std::map<int, Connection *> _activeConnects;
+
+		//std::vector<Connection *>	_activeConnects;
+
+
 		//Messenger					*_messenger;
 
 		//void	_sendMessage(t_msg msg);
 
 		void	_removeAllConnections(void);
-		void	_removeConnection(int index);
+		void	_removeConnection(std::map<int, Connection *>::iterator it);
+		//void	_removeConnection(int index);
 
 	public:
 		Connections(void);
