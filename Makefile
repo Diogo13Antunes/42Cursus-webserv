@@ -7,26 +7,26 @@ RM = rm -f
 
 #$(VERBOSE).SILENT:
 
-INC = -I ./includes
+INC = -I ./sources -I ./sources/connections
 
 SRC_PATH = ./sources
 
 OBJ_PATH = ./objects
 
-SRC_NAME =	main.cpp				\
-			Connection.cpp			\
-			Connections.cpp			\
-			EventLoop.cpp			\
-			WriteHandler.cpp		\
-			ReadHandler.cpp			\
-			EventHandlerFactory.cpp	\
-			Event.cpp				\
-			EventDemux.cpp			\
-			Messenger.cpp			\
-			AMessengerClient.cpp	\
-			Message.cpp				\
-			ConnectionMessage.cpp	\
-			EventMessage.cpp		\
+SRC_NAME =	main.cpp							\
+			connections/Connection.cpp			\
+			connections/Connections.cpp			\
+			EventLoop.cpp						\
+			WriteHandler.cpp					\
+			ReadHandler.cpp						\
+			EventHandlerFactory.cpp				\
+			Event.cpp							\
+			EventDemux.cpp						\
+			Messenger.cpp						\
+			AMessengerClient.cpp				\
+			Message.cpp							\
+			ConnectionMessage.cpp				\
+			EventMessage.cpp					\
 
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))
@@ -41,6 +41,7 @@ $(NAME) : $(OBJS)
 
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects
+	mkdir -p objects/connections
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $@
 
 clean:

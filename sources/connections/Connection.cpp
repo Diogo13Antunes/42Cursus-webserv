@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/31 12:00:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/01 10:09:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,70 +19,15 @@ Connection::Connection(int fd):
 	_lastRequestTime(time(NULL))
 {}
 
-Connection::Connection(int fd, short events, short revents):
-	_keepAliveTimeout(60), 
-	_lastRequestTime(time(NULL))
-{
-	_pollFd.fd = fd;
-	_pollFd.events = events;
-	_pollFd.revents = revents;
-}
-
 Connection::~Connection(void)
 {
 	std::cout << "remove connection" << std::endl;
-	//close(_pollFd.fd);
 	close(_fd);
-}
-
-struct pollfd Connection::getPollFd(void)
-{
-	return (_pollFd);
 }
 
 int Connection::getFd(void)
 {
 	return (_fd);
-}
-
-short Connection::getRevents(void)
-{
-	return (_pollFd.revents);
-}
-
-short Connection::getEvents(void)
-{
-	return (_pollFd.events);
-}
-
-int Connection::getKeepAliveTimeout(void)
-{
-	return(_keepAliveTimeout);
-}
-
-time_t Connection::getLastRequestTime(void)
-{
-	return(_lastRequestTime);
-}
-
-void Connection::setLastRequestTime(time_t lastRequestTime)
-{
-	_lastRequestTime = lastRequestTime;
-}
-
-void Connection::setPollFd(struct pollfd pollFd)
-{
-	_pollFd = pollFd;
-}
-
-void Connection::setRevents(short revents)
-{
-	_pollFd.revents = revents;
-}
-
-void Connection::setEvents(short events)
-{
-	_pollFd.events = events;
 }
 
 bool Connection::isKeepAliveTimeout(void)
