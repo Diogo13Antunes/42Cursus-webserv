@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/23 10:31:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/01 11:17:02 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,11 @@
 
 #include "WriteHandler.hpp"
 
-WriteHandler::WriteHandler(void)
-{
-	//Default WriteHandler Constructor
-}
+WriteHandler::WriteHandler(void) {}
 
-WriteHandler::WriteHandler(const WriteHandler &src)
-{
-	//WriteHandler Copy Constructor
-}
+WriteHandler::WriteHandler(const WriteHandler &src) {}
 
-WriteHandler::~WriteHandler(void)
-{
-	//Default WriteHandler Destructor
-}
+WriteHandler::~WriteHandler(void) {}
 
 /*
 WriteHandler &WriteHandler::operator=(const WriteHandler &src)

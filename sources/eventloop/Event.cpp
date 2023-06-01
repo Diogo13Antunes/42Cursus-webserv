@@ -6,31 +6,22 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/22 17:56:17 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/01 11:19:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Event.hpp"
 
-Event::Event(void)
-{
-	//Default Event Constructor
-}
+Event::Event(void) {}
 
 Event::Event(int fd, int state):
 	_fd(fd),
 	_state(state)
 {}
 
-Event::Event(const Event &src)
-{
-	//Event Copy Constructor
-}
+Event::Event(const Event &src) {}
 
-Event::~Event(void)
-{
-	//Default Event Destructor
-}
+Event::~Event(void) {}
 
 /*
 Event &Event::operator=(const Event &src)
@@ -38,7 +29,6 @@ Event &Event::operator=(const Event &src)
 	//Event Copy Assignment Operator
 }
 */
-
 
 int Event::getFd(void)
 {

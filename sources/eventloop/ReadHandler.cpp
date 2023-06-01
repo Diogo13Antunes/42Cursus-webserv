@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/26 11:13:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/01 11:16:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,11 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-ReadHandler::ReadHandler(void)
-{
-	//Default ReadHandler Constructor
-}
+ReadHandler::ReadHandler(void) {}
 
-ReadHandler::ReadHandler(const ReadHandler &src)
-{
-	//ReadHandler Copy Constructor
-}
+ReadHandler::ReadHandler(const ReadHandler &src) {}
 
-ReadHandler::~ReadHandler(void)
-{
-	//Default ReadHandler Destructor
-}
+ReadHandler::~ReadHandler(void) {}
 
 /*
 ReadHandler &ReadHandler::operator=(const ReadHandler &src)
