@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/31 15:59:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/01 12:41:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void EventDemux::receiveMessage(Message *msg)
 	if (connMsg)
 		_removeEvent(connMsg->getFd());
 	else if (eventMsg)
-		_changeEvent(eventMsg->getFd(), (Type)eventMsg->getEvent());
+		_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
 }
 
 void EventDemux::_addNewEvent(int fd)
@@ -95,7 +95,7 @@ void EventDemux::_removeEvent(int fd)
 	}	
 }
 
-void EventDemux::_changeEvent(int fd, Type eventType)
+void EventDemux::_changeEvent(int fd, EventType eventType)
 {
 	struct epoll_event	ev;
 
@@ -105,25 +105,25 @@ void EventDemux::_changeEvent(int fd, Type eventType)
 		std::cerr << "Failed to modify socket to epoll." << std::endl;
 }
 
-Type EventDemux::_getEventType(uint32_t events)
+EventType EventDemux::_getEventType(uint32_t events)
 {
-	Type evType;
+	EventType evType;
 
 	if (events & EPOLLIN)
-		evType = READ;
+		evType = READ_EVENT;
 	else if (events & EPOLLOUT)
-		evType = WRITE;
+		evType = WRITE_EVENT;
 	return (evType);
 }
 
-uint32_t EventDemux::_getEventsMask(Type eventType)
+uint32_t EventDemux::_getEventsMask(EventType eventType)
 {
 	uint32_t events;
 
 	events = 0;
-	if (eventType == READ)
+	if (eventType == READ_EVENT)
 		events = EPOLLIN;
-	if (eventType == WRITE)
+	if (eventType == WRITE_EVENT)
 		events = EPOLLOUT;
 	return (events);
 }
