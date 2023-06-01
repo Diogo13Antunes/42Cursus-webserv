@@ -37,9 +37,29 @@ void	RequestData::setRequestLine(std::string &src)
 		// throw InvalidRequestLineException();
 }
 
+void	RequestData::setRequestHeader(std::map<std::string, std::vector<std::string> > &src)
+{
+	_requestHeader = src;
+}
+
+void	RequestData::setRequestBody(std::string &src)
+{
+	_requestBody = src;
+}
+
 std::vector<std::string>	RequestData::getRequestLine(void)
 {
 	return (_requestLine);
+}
+
+std::map<std::string, std::vector<std::string> >	RequestData::getRequestHeader(void)
+{
+	return (_requestHeader);
+}
+
+std::string	RequestData::getRequestBody(void)
+{
+	return (_requestBody);
 }
 
 /* Exceptions */
