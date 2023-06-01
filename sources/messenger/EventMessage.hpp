@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ConnectionMessage.hpp                              :+:      :+:    :+:   */
+/*   EventMessage.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/29 15:49:45 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/30 08:47:21 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/05/29 13:49:18 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/06/01 10:52:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,19 @@
 
 #include "Message.hpp"
 
-class ConnectionMessage: public Message
+class EventMessage: public Message
 {
 	private:
-		int	_fd;
-
-	public:
-		ConnectionMessage(void);
-		ConnectionMessage(int dst, int fd);
-		ConnectionMessage(const ConnectionMessage &src);
-		~ConnectionMessage(void);
-		ConnectionMessage &operator=(const ConnectionMessage &src);
+		int		_fd;
+		short	_event;
 		
-		int	getFd(void);
+	public:
+		EventMessage(void);
+		EventMessage(int dst, int fd, short event);
+		EventMessage(const EventMessage &src);
+		~EventMessage(void);
+		EventMessage &operator=(const EventMessage &src);
+		
+		int		getFd(void);
+		short	getEvent(void);	
 };

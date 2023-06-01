@@ -1,32 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   EventMessage.hpp                                   :+:      :+:    :+:   */
+/*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/29 13:49:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/30 09:00:03 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/05/29 12:06:08 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/06/01 10:42:55 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Message.hpp"
-
-class EventMessage: public Message
+class Message
 {
 	private:
-		int		_fd;
-		short	_event;
-		
+		int	_dst;
+
 	public:
-		EventMessage(void);
-		EventMessage(int dst, int fd, short event);
-		EventMessage(const EventMessage &src);
-		~EventMessage(void);
-		EventMessage &operator=(const EventMessage &src);
-		
-		int		getFd(void);
-		short	getEvent(void);	
+		Message(void);
+		Message(int dst);
+		Message(const Message &src);
+		virtual ~Message(void);
+		Message &operator=(const Message &src);
+
+		int	getDst(void);
 };

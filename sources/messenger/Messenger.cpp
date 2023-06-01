@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 17:11:39 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/30 17:49:24 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/01 10:37:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,11 @@
 
 #include <iostream>
 
-Messenger::Messenger(void)
-{
-	//Default Messenger Constructor
-}
+Messenger::Messenger(void) {}
 
-Messenger::Messenger(const Messenger &src)
-{
-	//Messenger Copy Constructor
-}
+Messenger::Messenger(const Messenger &src) {}
 
-Messenger::~Messenger(void)
-{
-	//Default Messenger Destructor
-}
+Messenger::~Messenger(void) {}
 
 /*
 Messenger &Messenger::operator=(const Messenger &src)

@@ -3,33 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 12:06:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/29 17:27:29 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/01 10:42:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Message.hpp"
 
-Message::Message(void)
-{
-	//Default IMessage Constructor
-}
+Message::Message(void) {}
 
-Message::Message(int dst):
-	_dst(dst)
-{}
+Message::Message(int dst): _dst(dst) {}
 
-Message::Message(const Message &src)
-{
-	//IMessage Copy Constructor
-}
+Message::Message(const Message &src) {}
 
-Message::~Message(void)
-{
-	//Default IMessage Destructor
-}
+Message::~Message(void) {}
 
 /*
 Message &Message::operator=(const Message &src)

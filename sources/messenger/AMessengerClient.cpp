@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 14:29:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/30 09:13:15 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/01 10:33:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,18 @@
 
 #include <iostream>
 
-AMessengerClient::AMessengerClient(void)
-{
-	//Default AMessegerClient Constructor
-}
+AMessengerClient::AMessengerClient(void) {}
 
 AMessengerClient::AMessengerClient(Messenger *messenger):
 	_messenger(messenger)
 {}
 
-AMessengerClient::AMessengerClient(const AMessengerClient &src)
-{
-	//AMessegerClient Copy Constructor
-}
+AMessengerClient::AMessengerClient(const AMessengerClient &src) {}
 
 AMessengerClient::~AMessengerClient(void)
 {
 	if (_messenger)
 		_messenger->unregisterClient(clientID);
-
-	//Default AMessegerClient Destructor
 }
 
 /*

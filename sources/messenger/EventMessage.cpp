@@ -6,16 +6,13 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 13:49:27 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/30 09:01:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/01 10:53:16 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventMessage.hpp"
 
-EventMessage::EventMessage(void)
-{
-	//Default EventMessage Constructor
-}
+EventMessage::EventMessage(void): Message() {}
 
 EventMessage::EventMessage(int dst, int fd, short event):
 	Message(dst),
@@ -23,15 +20,9 @@ EventMessage::EventMessage(int dst, int fd, short event):
 	_event(event)
 {}
 
-EventMessage::EventMessage(const EventMessage &src)
-{
-	//EventMessage Copy Constructor
-}
+EventMessage::EventMessage(const EventMessage &src) {}
 
-EventMessage::~EventMessage(void)
-{
-	//Default EventMessage Destructor
-}
+EventMessage::~EventMessage(void) {}
 
 /*
 EventMessage &EventMessage::operator=(const EventMessage &src)
