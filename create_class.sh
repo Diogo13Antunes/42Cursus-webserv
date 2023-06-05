@@ -1,9 +1,6 @@
-if [ $# -eq 0]
-	then
-		printf "Please provide the name of the class\n"
-		printf "Usage: $0 [CLASS_NAME] [PATH]\n"
-fi 
+# Usage: ./create_class.sh [CLASS_NAME] [PATH]
 
+mkdir -p $2
 cd $2
 
 cat << EOF > $1.hpp
@@ -42,5 +39,3 @@ $1 &$1::operator=(const $1 &src)
 	//$1 Copy Assignment Operator
 }
 EOF
-
-cd ..
