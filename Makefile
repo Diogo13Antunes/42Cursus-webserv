@@ -2,18 +2,32 @@ NAME = webserv
 
 CXX = c++
 # CXXFLAGS = -Wall -Werror -Wextra -g -fsanitize=address -std=c++98
-CXXFLAGS = -std=c++98
+CXXFLAGS = -g -std=c++98
 RM = rm -f
 
-$(VERBOSE).SILENT:
+#$(VERBOSE).SILENT:
 
-INC = -I ./includes
+INC = -I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop
 
 SRC_PATH = ./sources
 
 OBJ_PATH = ./objects
 
-SRC_NAME =	main.cpp
+SRC_NAME =	main.cpp							\
+			connections/Connection.cpp			\
+			connections/Connections.cpp			\
+			messenger/AMessengerClient.cpp		\
+			messenger/Messenger.cpp				\
+			messenger/Message.cpp				\
+			messenger/ConnectionMessage.cpp		\
+			messenger/EventMessage.cpp			\
+			eventloop/EventLoop.cpp				\
+			eventloop/WriteHandler.cpp			\
+			eventloop/ReadHandler.cpp			\
+			eventloop/EventHandlerFactory.cpp	\
+			eventloop/Event.cpp					\
+			eventloop/EventDemux.cpp			\
+
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))
 
@@ -27,6 +41,9 @@ $(NAME) : $(OBJS)
 
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects
+	mkdir -p objects/connections
+	mkdir -p objects/messenger
+	mkdir -p objects/eventloop
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $@
 
 clean:
