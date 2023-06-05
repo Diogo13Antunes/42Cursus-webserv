@@ -1,0 +1,14 @@
+ # Server Configs
+# listen
+listen: 8080
+
+# server_name
+server_name  : "webserv.com"
+
+# root
+root: "/root/webserv.com:"
+
+                # index
+index: "inde#x.html"       # hello
+
+error_page: ["404:error1.html", "500:error2.html"]

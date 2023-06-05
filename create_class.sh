@@ -1,6 +1,3 @@
-# Usage: ./create_class.sh [CLASS_NAME] [PATH]
-
-mkdir -p $2
 cd $2
 
 cat << EOF > $1.hpp
