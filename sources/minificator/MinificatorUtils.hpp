@@ -13,5 +13,7 @@ class MinificatorUtils
 
 	static std::string	getFileContent(const char *file);
 	static std::string	stringTrim(const std::string &src);
+	static void			removeNewLineChars(std::string &src);
 	static void			removeComentsWithDelemiters(std::string &src, const std::string delimiterBegin, const std::string delimiterEnd);
+	static void			removeSpacesOutsideQuotes(std::string &src);
 };

@@ -16,6 +16,7 @@ OBJ_PATH = ./objects
 SRC_NAME =	main.cpp							\
 			minificator/AMinificator.cpp		\
 			minificator/MinificatorHTML.cpp		\
+			minificator/MinificatorCSS.cpp		\
 			minificator/MinificatorUtils.cpp	\
 			Terminal.cpp
 

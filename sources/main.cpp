@@ -25,6 +25,25 @@
 #include "Terminal.hpp"
 
 #include "MinificatorHTML.hpp"
+#include "MinificatorCSS.hpp"
+
+void	minificateFiles(const std::string filename)
+{
+	std::string	fileType;
+	size_t		index = filename.find_last_of(".") + 1;
+
+	fileType = filename.substr(index, filename.size() - index);
+	if (fileType.compare("html") == 0)
+	{
+		MinificatorHTML	html(filename.c_str());
+		std::cout << html.getMinificatedHTML() << std::endl;
+	}
+	else if (fileType.compare("css") == 0)
+	{
+		MinificatorCSS	css(filename.c_str());
+		std::cout << css.getMinificatedCSS() << std::endl;
+	}
+}
 
 int main(int ac, char **av)
 {
@@ -34,7 +53,7 @@ int main(int ac, char **av)
 		return (1);
 	}
 
-	MinificatorHTML	html(av[1]);
+	minificateFiles(av[1]);
 
 	return (0);
 }
