@@ -1,0 +1,17 @@
+#pragma once
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
+
+#define WHITE_SPACE "\r\n\t "
+
+class MinificatorUtils
+{
+	public:
+
+	static std::string	getFileContent(const char *file);
+	static std::string	stringTrim(const std::string &src);
+
+};

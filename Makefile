@@ -7,20 +7,16 @@ RM = rm -f
 
 $(VERBOSE).SILENT:
 
-INC = -I ./sources -I ./sources/configs -I ./sources/request -I ./includes
+INC = -I ./sources -I ./sources/minificator
 
 SRC_PATH = ./sources
 
 OBJ_PATH = ./objects
 
 SRC_NAME =	main.cpp							\
-			configs/Configs.cpp					\
-			configs/ConfigsUtils.cpp			\
-			configs/ConfigsData.cpp				\
-			request/RequestParser.cpp			\
-			request/RequestParserUtils.cpp		\
-			request/RequestData.cpp				\
-			request/RequestDataUtils.cpp		\
+			minificator/AMinificator.cpp		\
+			minificator/MinificatorHTML.cpp		\
+			minificator/MinificatorUtils.cpp	\
 			Terminal.cpp
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))
@@ -35,8 +31,7 @@ $(NAME) : $(OBJS)
 
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects
-	mkdir -p objects/configs
-	mkdir -p objects/request
+	mkdir -p objects/minificator
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $@
 
 clean:

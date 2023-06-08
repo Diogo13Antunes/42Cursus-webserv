@@ -1,13 +1,15 @@
-#include <AMinificator.hpp>
+#include "AMinificator.hpp"
 
 AMinificator::AMinificator(void)
 {
 	//Default AMinificator Constructor
 }
 
-AMinificator::AMinificator(const AMinificator &src)
+AMinificator::AMinificator(const char *file)
 {
-	//AMinificator Copy Constructor
+	_fileContent = MinificatorUtils::getFileContent(file);
+	if (_fileContent.empty())
+		std::cerr << "Invalid File" << std::endl;
 }
 
 AMinificator::~AMinificator(void)
@@ -15,7 +17,3 @@ AMinificator::~AMinificator(void)
 	//Default AMinificator Destructor
 }
 
-AMinificator &AMinificator::operator=(const AMinificator &src)
-{
-	//AMinificator Copy Assignment Operator
-}

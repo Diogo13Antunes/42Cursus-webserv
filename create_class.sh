@@ -14,7 +14,7 @@ class $1
 EOF
 
 cat << EOF > $1.cpp
-#include <$1.hpp>
+#include "$1.hpp"
 
 $1::$1(void)
 {

@@ -24,15 +24,17 @@
 
 #include "Terminal.hpp"
 
+#include "MinificatorHTML.hpp"
+
 int main(int ac, char **av)
 {
-	int	fd;
-
 	if (ac < 2)
 	{
 		Terminal::printErrors("Invalid number of Arguments");
 		return (1);
 	}
+
+	MinificatorHTML	html(av[1]);
 
 	return (0);
 }
