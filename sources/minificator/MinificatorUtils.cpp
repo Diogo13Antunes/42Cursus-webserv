@@ -30,3 +30,25 @@ std::string	MinificatorUtils::stringTrim(const std::string &str)
 	trimmed = str.substr(start, len);
 	return (trimmed);
 }
+
+void	MinificatorUtils::removeComentsWithDelemiters(std::string &src, const std::string delimiterBegin, const std::string delimiterEnd)
+{
+	std::string result;
+	size_t		start = 0;
+	size_t		end = 0;
+	size_t		index = 0;
+
+	while (1)
+	{
+		start = src.find(delimiterBegin, index);
+		end = src.find(delimiterEnd, start);
+		if (start == src.npos || end == src.npos)
+		{
+			result += src.substr(index, src.size() - index + 1);
+			break;
+		}
+		result += src.substr(index, start - index);
+		index = end + delimiterEnd.size() + 1;
+	}
+	src = result;
+}

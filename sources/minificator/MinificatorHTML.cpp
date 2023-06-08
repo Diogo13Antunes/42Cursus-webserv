@@ -9,10 +9,7 @@ MinificatorHTML::MinificatorHTML(const char *file):
 	_minificatedFile = _fileContent;
 
 	removeNewLineChars(_minificatedFile);
-	removeComents(_minificatedFile);
-
-	std::cout << _minificatedFile << std::endl;
-
+	MinificatorUtils::removeComentsWithDelemiters(_minificatedFile, "<!--", "-->");
 }
 
 MinificatorHTML::~MinificatorHTML(void)
@@ -42,28 +39,6 @@ static void	removeNewLineChars(std::string &src)
 			result += MinificatorUtils::stringTrim(line) + " ";
 		i++;
 		j = i;
-	}
-	src = result;
-}
-
-static void	removeComents(std::string &src)
-{
-	std::string result;
-	size_t		start = 0;
-	size_t		end = 0;
-	size_t		index = 0;
-
-	while (1)
-	{
-		start = src.find("<!--", index);
-		end = src.find("-->", start);
-		if (start == src.npos || end == src.npos)
-		{
-			result += src.substr(index, src.size() - index + 1);
-			break;
-		}
-		result += src.substr(index, start - index);
-		index = end + 4;
 	}
 	src = result;
 }
