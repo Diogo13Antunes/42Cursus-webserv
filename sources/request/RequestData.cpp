@@ -23,6 +23,7 @@ void	RequestData::setRequestLine(std::string &src)
 	element[0] = RequestDataUtils::getRequestLineElement(src, 0, index_1);
 	element[1] = RequestDataUtils::getRequestLineElement(src, index_1, index_2);
 	element[2] = RequestDataUtils::getRequestLineElement(src, index_2, src.size());
+
 	for (size_t i = 0; i < 3; i++)
 	{
 		if (!element[i].empty())
@@ -60,6 +61,11 @@ std::map<std::string, std::vector<std::string> >	RequestData::getRequestHeader(v
 std::string	RequestData::getRequestBody(void)
 {
 	return (_requestBody);
+}
+
+std::string RequestData::getPath(void)
+{
+	return (_requestLine.at(1));
 }
 
 /* Exceptions */

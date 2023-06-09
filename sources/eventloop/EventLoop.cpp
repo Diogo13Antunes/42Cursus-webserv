@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/31 18:11:49 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/08 16:14:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ EventLoop &EventLoop::operator=(const EventLoop &src)
 }
 */
 
-void EventLoop::registerEvent(IEventHandler *event)
+void EventLoop::registerEventHandler(IEventHandler *event)
 {
 	EventType type;
 	
@@ -33,7 +33,7 @@ void EventLoop::registerEvent(IEventHandler *event)
 	_handlers.insert(std::make_pair(type, event));
 }
 
-void EventLoop::unregisterEvent(IEventHandler *event)
+void EventLoop::unregisterEventHandler(IEventHandler *event)
 {
 	_handlers.erase(event->getHandleType());
 }
@@ -97,6 +97,7 @@ void EventLoop::_changeEvent(Event *ev, short status)
 	ev->setState(status);
 	_eventQueue.push(ev);
 }
+
 
 Event* EventLoop::_handleNextEvent(void)
 {

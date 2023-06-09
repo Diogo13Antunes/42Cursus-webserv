@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 11:19:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/09 10:49:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,17 @@ short Event::getState(void)
 	return (_state);
 }
 
+std::string	Event::getResponse(void)
+{
+	return (_res);
+}
+
 void Event::setState(short state)
 {
 	_state = state;
+}
+
+void Event::setResponse(std::string res)
+{
+	_res = res;
 }

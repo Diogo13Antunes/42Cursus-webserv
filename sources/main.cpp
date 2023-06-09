@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/05 14:30:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/08 19:24:34 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@
 #include "RequestData.hpp"
 
 
+// O configs pode receber o data e modificar o data dentro dele.
 bool	initConfigs(const char *filename, ConfigsData &data)
 {
 	std::string	key, value;
@@ -53,9 +54,9 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 		Configs	cfg(filename);
 		while (cfg.getNextConfig(key, value))
 			data.addNewConfigs(key, value);
-		// std::cout << "listen:   " << data.getListen() << std::endl;
-		// std::cout << "ServName: " << data.getServerName() << std::endl;
-		// std::cout << "Root:     " << data.getRoot() << std::endl;
+		//std::cout << "listen:   " << data.getListen() << std::endl;
+		//std::cout << "ServName: " << data.getServerName() << std::endl;
+		 std::cout << "Root:     " << data.getRoot() << std::endl;
 		// std::cout << "Index:    " << data.getIndex() << std::endl;
 	}
 	catch(const std::exception& e)
@@ -82,7 +83,7 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 	return (0);
 } */
 
-int main(int ac, char **av)
+int main1(int ac, char **av)
 {
 	int	fd1;
 	RequestData	data;
@@ -182,11 +183,17 @@ int main(int ac, char **av)
 	return (0);
 }
 
-int main1(void)
+int main(int argc, char **argv)
 {
 	int server_fd, new_socket;
 	struct sockaddr_in address;
 	int addrlen;
+
+	if (argc != 2)
+	{
+		std::cout << "Error: No config file" << std::endl;
+		return (0);
+	}
 
 	
 	// cria socket
@@ -222,6 +229,10 @@ int main1(void)
         exit(EXIT_FAILURE);
     }
 
+	ConfigsData	data;
+	initConfigs(argv[1], data);
+
+
 	Messenger			messenger;
 	EventHandlerFactory	factory;
 
@@ -233,9 +244,10 @@ int main1(void)
 	conns.setMessenger(&messenger);
 	eventDemux.setMessenger(&messenger);
 	
-	eventLoop.registerEvent(factory.getEventHandler(READ_EVENT));
-	eventLoop.registerEvent(factory.getEventHandler(WRITE_EVENT));
-
+	//eventLoop.registerEventHandler(factory.getEventHandler(READ_EVENT));
+	eventLoop.registerEventHandler(new ReadHandler(data));
+	eventLoop.registerEventHandler(factory.getEventHandler(WRITE_EVENT));
+	
     while(1)
     {
 		conns.updateAllConnections();

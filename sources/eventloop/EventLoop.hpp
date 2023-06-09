@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/31 18:07:13 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/08 16:11:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ class EventLoop: public AMessengerClient
 		~EventLoop(void);
 		EventLoop &operator=(const EventLoop &src);
 
-		void		registerEvent(IEventHandler *event);
-		void		unregisterEvent(IEventHandler *event);
+		void		registerEventHandler(IEventHandler *event);
+		void		unregisterEventHandler(IEventHandler *event);
 		void		handleEvents(void);
 
 		ClientID	getId(void);

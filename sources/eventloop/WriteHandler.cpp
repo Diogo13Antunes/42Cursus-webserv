@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 11:17:02 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/09 10:55:55 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ WriteHandler &WriteHandler::operator=(const WriteHandler &src)
 }
 */
 
+/*
 void send_response_test(int socket_fd)
 {
 	std::string head;
@@ -36,7 +37,9 @@ void send_response_test(int socket_fd)
 
 	std::stringstream out;
 
-	body = "<html><head><title>WebServer</title></head><body><h1>Hello World</h1></body></html>\r\n\r\n";
+	//body = "<html><head><title>WebServer</title></head><body><h1>Hello World</h1></body></html>\r\n\r\n";
+	//body = "<html><head><title>WebServer</title></head><body><h1>Hello World</h1><img src=\"https://res.cloudinary.com/dk-find-out/image/upload/q_70,c_pad,w_1200,h_630,f_auto/MonolophosaurusHiRes_usl6ti.jpg\" alt=\"Dinosaur\" /></body></html>\r\n\r\n";
+	body = "<html><head><title>WebServer</title></head><body><h1>Hello World</h1><img src=\"dinosaur.jpg\" alt=\"Dinosaur\" /></body></html>\r\n\r\n";
 	out << body.size();
 	
 	head = "HTTP/1.1 200 OK\r\nContent-length: ";
@@ -46,12 +49,21 @@ void send_response_test(int socket_fd)
 	res = head + body;
 	send(socket_fd, res.c_str(), res.size(), 0);
 }
+*/
+
+void send_response_test(Event *event)
+{
+	std::string res;
+
+	res = event->getResponse();
+	send(event->getFd(), res.c_str(), res.size(), 0);
+}
 
 void WriteHandler::handleEvent(Event *event)
 {
 	std::cout << "handle WRITE event " << event->getFd() << std::endl;
 
-	send_response_test(event->getFd());
+	send_response_test(event);
 }
 
 EventType WriteHandler::getHandleType(void)

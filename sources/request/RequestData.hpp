@@ -16,7 +16,9 @@ class RequestData
 		std::string											_requestBody;
 
 	public:
-
+		RequestData(void);
+		~RequestData(void);
+		
 		void												setRequestLine(std::string &src);
 		void												setRequestHeader(std::map<std::string, std::vector<std::string> > &src);
 		void												setRequestBody(std::string	&src);
@@ -24,9 +26,7 @@ class RequestData
 		std::vector<std::string>							getRequestLine(void);
 		std::map<std::string, std::vector<std::string> >	getRequestHeader(void);
 		std::string											getRequestBody(void);
-
-		RequestData(void);
-		~RequestData(void);
+		std::string											getPath(void);
 
 		class InvalidRequestLineException: public std::exception
 		{

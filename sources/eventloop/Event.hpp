@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 11:19:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/09 10:46:33 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,10 @@ class Event
 		~Event(void);
 		Event &operator=(const Event &src);
 
-		int		getFd(void);
-		short	getState(void);
+		int			getFd(void);
+		short		getState(void);
+		std::string	getResponse(void);
 
 		void	setState(short state);
+		void	setResponse(std::string	res);
 };
