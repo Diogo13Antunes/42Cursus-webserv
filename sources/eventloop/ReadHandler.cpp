@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/09 14:31:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/09 15:47:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 static std::string createResponse(std::string path);
 static std::string getFileContent(std::string fileName);
-static std::string createResponseTestGeneric(void);
+static std::string createResponsePageNotFound(void);
 
 ReadHandler::ReadHandler(void) {}
 
@@ -73,6 +73,7 @@ void ReadHandler::handleEvent(Event *event)
 	std::map<std::string, std::vector<std::string> >	requestHeader;
 	std::string											requestBody;
 	std::string											filePath;
+	std::string											reqPath;
 
 	requestLine = request1.getRequestLine();
 	requestHeader = request1.getRequestHeader();
@@ -82,24 +83,31 @@ void ReadHandler::handleEvent(Event *event)
 	req.setRequestHeader(requestHeader);
 	req.setRequestBody(requestBody);
 
-	std::cout << "path: " << req.getPath() << std::endl;
+	reqPath = req.getPath();
+	std::cout << "path: " << reqPath << std::endl;
 
 
-	//std::cout << "root: " << _data.getRoot() << std::endl;
-
-	if (!req.getPath().compare("/"))
+	if (!reqPath.compare("/"))
 		filePath = _data.getConfig("root");
 	else
-	{	
 		filePath = _data.getConfig(req.getPath());
-		std::cout << "obtem o path: " << req.getPath() << std::endl;
-		std::cout << "filePath: " << filePath << std::endl;
+
+
+	if (filePath.size()) //existe rota
+		event->setResponse(createResponse(filePath));
+	else
+	{
+		reqPath = _data.getConfig("path") + "/" + reqPath;
+		event->setResponse(createResponse(reqPath));
 	}
 
-	if (filePath.empty())
+
+	/*if (filePath.empty())
 		event->setResponse(createResponseTestGeneric());
 	else
-		event->setResponse(createResponse(filePath));
+		event->setResponse(createResponse(filePath));*/
+
+
 }
 
 EventType ReadHandler::getHandleType(void)
@@ -114,8 +122,10 @@ static std::string createResponse(std::string path)
 	std::stringstream bodySize;
 
 	body = getFileContent(path);
+	if (body.empty())
+		return (createResponsePageNotFound());
+
 	bodySize << body.size();
-	
 	response = "HTTP/1.1 200 OK\r\nContent-length: ";
 	response += bodySize.str();
 	response += "\r\n";
@@ -143,12 +153,20 @@ static std::string getFileContent(std::string fileName)
 	return (body);
 }
 
-static std::string createResponseTestGeneric(void)
+static std::string createResponsePageNotFound(void)
 {
 	std::string response;
+	std::string body;
+	std::stringstream bodySize;
 
-	response = "HTTP/1.1 200 OK\r\nContent-length: 0";
+	body = "<html><head></head><body><h1>404 - Page not Found</h1><a href=\"/\">pagina inicial</a></body></html>";
+
+	bodySize << body.size();
+	response = "HTTP/1.1 404 KO\r\nContent-length: ";
+	response += bodySize.str();
 	response += "\r\n";
 	response += "Content-Type: text/html\r\n\r\n";
+	response += body;
+
 	return (response);
 }
