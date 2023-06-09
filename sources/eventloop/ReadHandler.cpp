@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/09 15:47:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/09 16:52:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,10 @@
 #include <string>
 
 
-static std::string createResponse(std::string path);
+static std::string createResponse(std::string path, std::string contentType);
 static std::string getFileContent(std::string fileName);
 static std::string createResponsePageNotFound(void);
+static std::string getFileType(std::string path);
 
 ReadHandler::ReadHandler(void) {}
 
@@ -74,6 +75,7 @@ void ReadHandler::handleEvent(Event *event)
 	std::string											requestBody;
 	std::string											filePath;
 	std::string											reqPath;
+	std::string											contentType;
 
 	requestLine = request1.getRequestLine();
 	requestHeader = request1.getRequestHeader();
@@ -93,21 +95,14 @@ void ReadHandler::handleEvent(Event *event)
 		filePath = _data.getConfig(req.getPath());
 
 
-	if (filePath.size()) //existe rota
-		event->setResponse(createResponse(filePath));
+	if (filePath.size())//existe rota
+		event->setResponse(createResponse(filePath, "text/html"));
 	else
 	{
 		reqPath = _data.getConfig("path") + "/" + reqPath;
-		event->setResponse(createResponse(reqPath));
+		contentType = _data.getConfig(getFileType(reqPath));
+		event->setResponse(createResponse(reqPath, contentType));
 	}
-
-
-	/*if (filePath.empty())
-		event->setResponse(createResponseTestGeneric());
-	else
-		event->setResponse(createResponse(filePath));*/
-
-
 }
 
 EventType ReadHandler::getHandleType(void)
@@ -115,7 +110,7 @@ EventType ReadHandler::getHandleType(void)
 	return (READ_EVENT);
 }
 
-static std::string createResponse(std::string path)
+static std::string createResponse(std::string path, std::string contentType)
 {
 	std::string response;
 	std::string body;
@@ -125,11 +120,14 @@ static std::string createResponse(std::string path)
 	if (body.empty())
 		return (createResponsePageNotFound());
 
+	// get content type str
+
 	bodySize << body.size();
 	response = "HTTP/1.1 200 OK\r\nContent-length: ";
 	response += bodySize.str();
 	response += "\r\n";
-	response += "Content-Type: text/html\r\n\r\n";
+	response += "Content-Type: " + contentType;
+	response += "\r\n\r\n";
 	response += body;
 	return (response);
 }
@@ -169,4 +167,15 @@ static std::string createResponsePageNotFound(void)
 	response += body;
 
 	return (response);
+}
+
+static std::string getFileType(std::string path)
+{
+	std::string type;
+	size_t		dotIdx;
+
+	dotIdx = (path.find_last_of('.')) + 1;
+	if (dotIdx < path.size())
+		type = path.substr(dotIdx, path.size());
+	return (type);
 }
