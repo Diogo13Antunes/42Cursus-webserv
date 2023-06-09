@@ -3,11 +3,11 @@
 ConfigsData::ConfigsData(void)
 {
 	//Default ConfigsData Constructor
-	_dataInt.insert(std::pair<std::string, int>("listen", 0));
-	_dataStr.insert(std::pair<std::string, std::string>("server_name", ""));
-	_dataStr.insert(std::pair<std::string, std::string>("root", ""));
-	_dataStr.insert(std::pair<std::string, std::string>("index", ""));
-	_initNewDataArray("error_page");
+	//_dataInt.insert(std::pair<std::string, int>("listen", 0));
+	//_dataStr.insert(std::pair<std::string, std::string>("server_name", ""));
+	//_dataStr.insert(std::pair<std::string, std::string>("root", ""));
+	//_dataStr.insert(std::pair<std::string, std::string>("index", ""));
+	//_initNewDataArray("error_page");
 }
 
 ConfigsData::~ConfigsData(void)
@@ -53,12 +53,17 @@ void	ConfigsData::addNewConfigs(std::string name, std::string data)
 	std::map<std::string, int>::iterator											itInt;
 	std::map<std::string, std::map<std::string, std::string> >::iterator			itArrs;
 
-	itStr = _dataStr.find(name);
+	/*itStr = _dataStr.find(name);
 	if (itStr != _dataStr.end())
 	{
 		(*itStr).second = ConfigsUtils::removeQuotes(data);
 		return;
-	}
+	}*/
+
+	_dataStr.insert(std::pair<std::string, std::string>(name, ConfigsUtils::removeQuotes(data)));
+
+	return;
+
 	itInt = _dataInt.find(name);
 	if (itInt != _dataInt.end())
 	{
@@ -103,6 +108,17 @@ std::string	ConfigsData::getRoot(void)
 std::string	ConfigsData::getIndex(void)
 {
 	return (_dataStr.find("index")->second);
+}
+
+std::string ConfigsData::getConfig(std::string name)
+{
+	std::map<std::string, std::string>::iterator	it;
+	std::string										res;
+
+	it = _dataStr.find(name);
+	if (it != _dataStr.end())
+		res = it->second;
+	return(res);
 }
 
 void	ConfigsData::_initNewDataArray(std::string key)

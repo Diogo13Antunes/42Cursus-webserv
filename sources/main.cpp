@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/08 19:24:34 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/09 12:23:46 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 			data.addNewConfigs(key, value);
 		//std::cout << "listen:   " << data.getListen() << std::endl;
 		//std::cout << "ServName: " << data.getServerName() << std::endl;
-		 std::cout << "Root:     " << data.getRoot() << std::endl;
+		//std::cout << "Root:     " << data.getRoot() << std::endl;
 		// std::cout << "Index:    " << data.getIndex() << std::endl;
 	}
 	catch(const std::exception& e)

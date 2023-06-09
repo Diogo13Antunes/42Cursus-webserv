@@ -24,6 +24,9 @@ void	RequestData::setRequestLine(std::string &src)
 	element[1] = RequestDataUtils::getRequestLineElement(src, index_1, index_2);
 	element[2] = RequestDataUtils::getRequestLineElement(src, index_2, src.size());
 
+	if (element[1].size() > 1)
+		element[1] = element[1].substr(1, element[1].size());
+
 	for (size_t i = 0; i < 3; i++)
 	{
 		if (!element[i].empty())

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/09 10:55:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/09 12:45:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void send_response_test(Event *event)
 
 void WriteHandler::handleEvent(Event *event)
 {
-	std::cout << "handle WRITE event " << event->getFd() << std::endl;
+	//std::cout << "handle WRITE event " << event->getFd() << std::endl;
 
 	send_response_test(event);
 }

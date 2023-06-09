@@ -28,6 +28,8 @@ class ConfigsData
 		std::string	getRoot(void);
 		std::string	getIndex(void);
 
+		std::string getConfig(std::string name);
+
 		void		addNewConfigs(std::string name, std::string data);
 
 		class InvalidConfigDataException: public std::exception

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/09 11:05:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/09 14:31:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void ReadHandler::handleEvent(Event *event)
 	std::string											requestLine;
 	std::map<std::string, std::vector<std::string> >	requestHeader;
 	std::string											requestBody;
+	std::string											filePath;
 
 	requestLine = request1.getRequestLine();
 	requestHeader = request1.getRequestHeader();
@@ -82,12 +83,23 @@ void ReadHandler::handleEvent(Event *event)
 	req.setRequestBody(requestBody);
 
 	std::cout << "path: " << req.getPath() << std::endl;
-	std::cout << "root: " << _data.getRoot() << std::endl;
 
-	if (req.getPath() == "/")
-		event->setResponse(createResponse(_data.getRoot()));
+
+	//std::cout << "root: " << _data.getRoot() << std::endl;
+
+	if (!req.getPath().compare("/"))
+		filePath = _data.getConfig("root");
 	else
+	{	
+		filePath = _data.getConfig(req.getPath());
+		std::cout << "obtem o path: " << req.getPath() << std::endl;
+		std::cout << "filePath: " << filePath << std::endl;
+	}
+
+	if (filePath.empty())
 		event->setResponse(createResponseTestGeneric());
+	else
+		event->setResponse(createResponse(filePath));
 }
 
 EventType ReadHandler::getHandleType(void)
