@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/20 13:51:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/20 17:09:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,11 @@
 #include "ConfigsData.hpp"
 
 
-#define	NONE		0
-#define	HEADER_DONE	1
-#define	BODY_DONE	2
+//#define	NONE			0
+#define HEADER_HANDLE	0
+#define	HEADER_DONE		1
+#define	BODY_HANDLE		2
+#define	BODY_DONE		3
  
 
 class Event
@@ -34,8 +36,8 @@ class Event
 
 		int			_fd;
 		short		_state;
-
 		short		_parseState;
+
 
 	public:
 		Event(void);
@@ -50,11 +52,16 @@ class Event
 		std::string getReqRaw(void);
 		std::string getHeaderRaw(void);
 		short		getParseState(void);
+		size_t		getBodySize(void);
+
 
 		void		setState(short state);
 		void		setResponse(std::string	res);
 
 		void		setResquestHeader(std::string reqLine, std::map<std::string, std::vector<std::string> > reqHeader);
+		void		setResquestBody(std::string body);
+
+		void		setParseState(int state);
 
 		void		updateReqRaw(std::string req);
 

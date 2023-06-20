@@ -1,5 +1,7 @@
 #include "RequestData.hpp"
 
+#include <sstream>
+
 RequestData::RequestData(void)
 {
 	//Default RequestData Constructor
@@ -69,6 +71,31 @@ std::string	RequestData::getRequestBody(void)
 std::string RequestData::getPath(void)
 {
 	return (_requestLine.at(1));
+}
+
+size_t	RequestData::getContentLenght(void)
+{
+	std::vector<std::string>	value;
+	size_t						lenght = 0;
+
+	value = getHeaderValue("content-length");
+	if (!value.empty())
+	{
+		std::stringstream	ss(value.at(0));
+		ss >> lenght;
+	}
+	return (lenght);
+}
+
+std::vector<std::string>	RequestData::getHeaderValue(std::string	element)
+{
+	std::map<std::string, std::vector<std::string> >::iterator	it;
+	std::vector<std::string>									value;
+
+	it = _requestHeader.find(element);
+	if (it != _requestHeader.end())
+		value = it->second;
+	return (value);
 }
 
 /* Exceptions */

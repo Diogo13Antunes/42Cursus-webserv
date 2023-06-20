@@ -27,6 +27,9 @@ class RequestData
 		std::map<std::string, std::vector<std::string> >	getRequestHeader(void);
 		std::string											getRequestBody(void);
 		std::string											getPath(void);
+		size_t												getContentLenght(void);
+
+		std::vector<std::string>							getHeaderValue(std::string	element);
 
 		class InvalidRequestLineException: public std::exception
 		{

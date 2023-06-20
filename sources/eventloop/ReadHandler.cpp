@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/20 14:22:25 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/20 17:10:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,28 +146,55 @@ void ReadHandler::handleEvent(Event *event)
 
 void ReadHandler::handleEvent(Event *event)
 {
-	char			buffer[10];
+	char			buffer[2];
 	ssize_t			valread;
 	RequestParser	parser;
+	short			state;
 
-	for(int i = 0; i < 10; i++)
+	for(int i = 0; i < 2; i++)
 		buffer[i] = 0;
-	valread = read(event->getFd(), buffer, 10 - 1);
+	valread = read(event->getFd(), buffer, 2 - 1);
 
 	//std::cout << buffer << std::endl;
 
-	event->updateReqRaw(buffer);
+	//event->updateReqRaw(buffer);
 	//std::cout << "---------------------" << std::endl;
 	//std::cout << event->getReqRaw() << std::endl;
 
-	if (event->getParseState())
+	state = event->getParseState();
+	if (state == HEADER_HANDLE || state == BODY_HANDLE)
+	{
+		event->updateReqRaw(buffer);
+		state = event->getParseState();
+	}
+	if (state == HEADER_DONE)
 	{
 		std::string str = event->getHeaderRaw();
 		parser.headerParse(str);
 		event->setResquestHeader(parser.getRequestLine(), parser.getRequestHeader());
+
+		//std::cout << "body size: " << event->getBodySize() << std::endl;
+		if (event->getBodySize())
+			event->setParseState(BODY_HANDLE);
+	}
+	if (state == BODY_DONE)
+	{
+		std::string str = event->getReqRaw();
+		parser.bodyParse(str);
+		event->setResquestBody(parser.getRequestBody());
+
+		
+	}
+	if (state == BODY_DONE || (state == HEADER_DONE && !event->getBodySize()))
+	{
 		event->createResponse(_data);
 		event->setState(WRITE_EVENT);
 	}
+
+	// saber se existe body -> content-leng
+	// Depois estar terminado verificar se existe content leng -> criar no evento um field com bodySize
+
+
 }
 
 EventType ReadHandler::getHandleType(void)

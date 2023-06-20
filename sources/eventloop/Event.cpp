@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/20 14:20:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/20 17:12:33 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Event::Event(void) {}
 Event::Event(int fd, int state):
 	_fd(fd),
 	_state(state),
-	_parseState(NONE)
+	_parseState(HEADER_HANDLE)
 {}
 
 Event::Event(const Event &src) {}
@@ -66,6 +66,11 @@ short Event::getParseState(void)
 	return (_parseState);
 }
 
+size_t Event::getBodySize(void)
+{
+	return (_reqParsed.getContentLenght());
+}
+
 void Event::setState(short state)
 {
 	_state = state;
@@ -82,25 +87,43 @@ void Event::setResquestHeader(std::string reqLine, std::map<std::string, std::ve
 	_reqParsed.setRequestHeader(reqHeader);
 }
 
+void Event::setResquestBody(std::string body)
+{
+	_reqParsed.setRequestBody(body);
+
+	std::cout << "body: " << _reqParsed.getRequestBody() << std::endl;
+}
+
+void Event::setParseState(int state)
+{
+	_parseState = state;
+}
+
 void Event::updateReqRaw(std::string req)
 {
 	size_t	headerSize;
+	size_t	bodySize = 0;
+	size_t	currentBodySize = 0;
 
 	_reqRaw += req;
 
-	headerSize = _reqRaw.find("\r\n\r\n");
-	if (headerSize != std::string::npos)
+	if (_parseState == HEADER_HANDLE)
 	{
-		_parseState = HEADER_DONE;
-		_headerRaw = _reqRaw.substr(0, headerSize + 4);
-		_reqRaw = _reqRaw.substr(headerSize + 4);
-		std::cout << "HEADER DONE" << std::endl;
-
-		std::cout << "HEADER RAW" << std::endl;
-		std::cout << _headerRaw << std::endl;
-		std::cout << "Request RAW" << std::endl;
-		std::cout << _reqRaw << std::endl;
+		headerSize = _reqRaw.find("\r\n\r\n");
+		if (headerSize != std::string::npos)
+		{
+			setParseState(HEADER_DONE);
+			_headerRaw = _reqRaw.substr(0, headerSize + 4);
+			_reqRaw = _reqRaw.substr(headerSize + 4);
+		}
 	}
+	else if (_parseState == BODY_HANDLE)
+	{
+		if (_reqRaw.size() == this->getBodySize())
+			setParseState(BODY_DONE);
+	}
+
+	//this->setBodySize();
 }
 
 void Event::createResponse(ConfigsData configsData)
