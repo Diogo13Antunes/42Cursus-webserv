@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/08 16:11:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/20 14:46:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class EventLoop: public AMessengerClient
 		void	_addNewEvent(Event *ev);
 		void	_changeEvent(Event *ev, short status);
 		Event*	_handleNextEvent(void);
+		void	_handleEvent(Event *ev);
 
 	public:
 		EventLoop(void);

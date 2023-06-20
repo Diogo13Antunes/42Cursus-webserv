@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/09 16:52:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/20 14:22:25 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,12 @@
 #include <string>
 
 
+/*
 static std::string createResponse(std::string path, std::string contentType);
 static std::string getFileContent(std::string fileName);
 static std::string createResponsePageNotFound(void);
 static std::string getFileType(std::string path);
+*/
 
 ReadHandler::ReadHandler(void) {}
 
@@ -58,15 +60,51 @@ void ReadHandler::handleEvent(Event *event)
 }
 */
 
+/*
+GET /echo HTTP/1.1
+Host: reqbin.com
+Accept: text/html
+Connection: keep-alive
+*/
+
+
+// estes dados tem de ser guardados no meu evento
+// usar um estado para indicar se parse request line, header, or body
+// Estado 0 - estado inicial request line (troca para estado 1) \r\n
+// Estado 1 - parse do header (troca para estado 2 após \r\n\r\n e content-length)
+// Estado 2 - parse Body (leitura do content-length)
+
+/*
+GET /echo HTTP/1.1 - resquest Line
+Host: reqbin.com - header parser
+
+// pedido 1
+GET /echo HTTP/1.1
+Host: reqbin.com
+Accept: tex
+
+//pedido 2
+t/html
+Connection: keep-alive\r\n\r\n
+
+Accept: tex
+t/html
+
+Accept: text/html
+
+Accept: text/html\r\n
+*/
+
+/*
 void ReadHandler::handleEvent(Event *event)
 {
 
-	/*char	buffer[90000];
+	char	buffer[90000];
 	ssize_t	valread;
 
 	for(int i = 0; i < 90000; i++)
 		buffer[i] = 0;
-	valread = read(event->getFd(), buffer, 90000 - 1);*/
+	valread = read(event->getFd(), buffer, 90000 - 1);
 
 	RequestData											req;
 	RequestParser										request1(event->getFd());
@@ -104,12 +142,40 @@ void ReadHandler::handleEvent(Event *event)
 		event->setResponse(createResponse(reqPath, contentType));
 	}
 }
+*/
+
+void ReadHandler::handleEvent(Event *event)
+{
+	char			buffer[10];
+	ssize_t			valread;
+	RequestParser	parser;
+
+	for(int i = 0; i < 10; i++)
+		buffer[i] = 0;
+	valread = read(event->getFd(), buffer, 10 - 1);
+
+	//std::cout << buffer << std::endl;
+
+	event->updateReqRaw(buffer);
+	//std::cout << "---------------------" << std::endl;
+	//std::cout << event->getReqRaw() << std::endl;
+
+	if (event->getParseState())
+	{
+		std::string str = event->getHeaderRaw();
+		parser.headerParse(str);
+		event->setResquestHeader(parser.getRequestLine(), parser.getRequestHeader());
+		event->createResponse(_data);
+		event->setState(WRITE_EVENT);
+	}
+}
 
 EventType ReadHandler::getHandleType(void)
 {
 	return (READ_EVENT);
 }
 
+/*
 static std::string createResponse(std::string path, std::string contentType)
 {
 	std::string response;
@@ -179,3 +245,4 @@ static std::string getFileType(std::string path)
 		type = path.substr(dotIdx, path.size());
 	return (type);
 }
+*/

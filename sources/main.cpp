@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/09 12:23:46 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/20 12:27:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ int main1(int ac, char **av)
 
 	try
 	{
-		RequestParser 										request1(fd1);
+		/*RequestParser 										request1(fd1);
 		std::string											requestLine;
 		std::map<std::string, std::vector<std::string> >	requestHeader;
 		std::string											requestBody;
@@ -136,7 +136,7 @@ int main1(int ac, char **av)
 
 		data.setRequestLine(requestLine);
 		data.setRequestHeader(requestHeader);
-		data.setRequestBody(requestBody);
+		data.setRequestBody(requestBody);*/
 	}
 	catch(const std::exception& e)
 	{

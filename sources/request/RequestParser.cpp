@@ -1,8 +1,8 @@
 #include "RequestParser.hpp"
 
-RequestParser::RequestParser(int RequestFd)
+RequestParser::RequestParser(void)
 {
-	std::vector<std::string>	requestContentVec;
+	/* std::vector<std::string>	requestContentVec;
 	std::string					fileData;
 	
 	fileData = RequestParserUtils::getDataString(RequestFd);
@@ -11,12 +11,26 @@ RequestParser::RequestParser(int RequestFd)
 	requestContentVec = RequestParserUtils::getDataVector(fileData);
 	_requestLine = RequestParserUtils::getRequestLine(requestContentVec);
 	_requestHeader = RequestParserUtils::getRequestHeader(requestContentVec);
-	_requestBody = RequestParserUtils::getBody(requestContentVec);
+	_requestBody = RequestParserUtils::getBody(requestContentVec); */
 }
 
 RequestParser::~RequestParser(void)
 {
 	//Default RequestParser Destructor
+}
+
+void	RequestParser::headerParse(std::string &header)
+{
+	std::vector<std::string>	requestHeaderVec;
+
+	requestHeaderVec = RequestParserUtils::getDataVector(header);
+	_requestLine = RequestParserUtils::getRequestLine(requestHeaderVec);
+	_requestHeader = RequestParserUtils::getRequestHeader(requestHeaderVec);
+}
+
+void	RequestParser::bodyParse(std::string &body)
+{
+	_requestBody = body;
 }
 
 std::string RequestParser::getRequestLine(void)

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/08 16:14:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/20 14:50:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,16 @@ void EventLoop::unregisterEventHandler(IEventHandler *event)
 	_handlers.erase(event->getHandleType());
 }
 
-void EventLoop::handleEvents(void)
+
+// Isto tem de ser modificado a troca de estado não deve acontecer aqui
+/*void EventLoop::handleEvents(void)
 {
 	Event	*ev;
 
 	while (!_eventQueue.empty())
 	{
 		ev = _handleNextEvent();
+		// send messages to Event Demux
 		if ((EventType)ev->getState() == READ_EVENT)
 			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), WRITE_EVENT));
 		else if ((EventType)ev->getState() == WRITE_EVENT)
@@ -54,7 +57,32 @@ void EventLoop::handleEvents(void)
 			delete ev;
 		}
 	}
+}*/
+
+void EventLoop::handleEvents(void)
+{
+	Event	*ev;
+	short	initState;
+
+	while (!_eventQueue.empty())
+	{		
+		ev = _eventQueue.front();
+		initState = ev->getState();
+		//std::cout << ev->getState() << std::endl;
+		_handleEvent(ev);
+		_eventQueue.pop();
+		
+		sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), ev->getState()));
+
+		if (initState == WRITE_EVENT)
+		{
+			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), READ_EVENT));
+			_eventMap.erase(ev->getFd());
+			delete ev;		
+		}
+	}
 }
+
 
 ClientID EventLoop::getId(void)
 {
@@ -73,6 +101,8 @@ void EventLoop::receiveMessage(Message *msg)
 	_handleMessage(m);
 }
 
+
+// Modificar isto o change event não deve existir apenas deve existir o add new event
 void EventLoop::_handleMessage(EventMessage *msg)
 {
 	std::map<int, Event*>::iterator	it;
@@ -99,6 +129,7 @@ void EventLoop::_changeEvent(Event *ev, short status)
 }
 
 
+
 Event* EventLoop::_handleNextEvent(void)
 {
 	Event	*ev;
@@ -107,4 +138,14 @@ Event* EventLoop::_handleNextEvent(void)
 	_handlers.find((EventType)ev->getState())->second->handleEvent(ev);
 	_eventQueue.pop();
 	return (ev);
+}
+
+
+void EventLoop::_handleEvent(Event *ev)
+{
+	//Event	*ev;
+
+	//ev = _eventQueue.front();
+	_handlers.find((EventType)ev->getState())->second->handleEvent(ev);
+	//_eventQueue.pop();
 }

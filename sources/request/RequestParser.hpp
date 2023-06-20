@@ -17,12 +17,15 @@ class RequestParser
 		std::string											_requestBody;
 
 	public:
-		RequestParser(int RequestFd);
+		RequestParser(void);
 		~RequestParser(void);
 
 		std::string											getRequestLine(void);
 		std::string 										getRequestBody(void);
 		std::map<std::string, std::vector<std::string> >	getRequestHeader(void);
+
+		void												headerParse(std::string	&header);
+		void												bodyParse(std::string &body);
 
 		class EmptyRequestException: public std::exception
 		{
