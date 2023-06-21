@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/20 17:10:44 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/21 11:07:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,14 +146,15 @@ void ReadHandler::handleEvent(Event *event)
 
 void ReadHandler::handleEvent(Event *event)
 {
-	char			buffer[2];
+	char			buffer[20];
 	ssize_t			valread;
 	RequestParser	parser;
 	short			state;
 
-	for(int i = 0; i < 2; i++)
+	for(int i = 0; i < 20; i++)
 		buffer[i] = 0;
-	valread = read(event->getFd(), buffer, 2 - 1);
+	valread = read(event->getFd(), buffer, 20 - 1);
+
 
 	//std::cout << buffer << std::endl;
 
@@ -161,40 +162,41 @@ void ReadHandler::handleEvent(Event *event)
 	//std::cout << "---------------------" << std::endl;
 	//std::cout << event->getReqRaw() << std::endl;
 
-	state = event->getParseState();
-	if (state == HEADER_HANDLE || state == BODY_HANDLE)
+	//state = event->getParseState();
+	if (event->getParseState() == HEADER_HANDLE || event->getParseState() == BODY_HANDLE)
 	{
 		event->updateReqRaw(buffer);
-		state = event->getParseState();
+		//state = event->getParseState();
 	}
-	if (state == HEADER_DONE)
+	if (event->getParseState() == HEADER_DONE)
 	{
 		std::string str = event->getHeaderRaw();
+
 		parser.headerParse(str);
 		event->setResquestHeader(parser.getRequestLine(), parser.getRequestHeader());
 
 		//std::cout << "body size: " << event->getBodySize() << std::endl;
 		if (event->getBodySize())
+		{
 			event->setParseState(BODY_HANDLE);
+		}
 	}
-	if (state == BODY_DONE)
+	if (event->getParseState() == BODY_HANDLE)
+	{
+		if (event->isBodyComplete())
+			event->setParseState(BODY_DONE);
+	}
+	if (event->getParseState() == BODY_DONE)
 	{
 		std::string str = event->getReqRaw();
 		parser.bodyParse(str);
 		event->setResquestBody(parser.getRequestBody());
-
-		
 	}
-	if (state == BODY_DONE || (state == HEADER_DONE && !event->getBodySize()))
+	if (event->getParseState() == BODY_DONE || (event->getParseState() == HEADER_DONE && !event->getBodySize()))
 	{
 		event->createResponse(_data);
 		event->setState(WRITE_EVENT);
 	}
-
-	// saber se existe body -> content-leng
-	// Depois estar terminado verificar se existe content leng -> criar no evento um field com bodySize
-
-
 }
 
 EventType ReadHandler::getHandleType(void)

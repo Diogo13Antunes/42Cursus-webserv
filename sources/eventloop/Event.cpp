@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/20 17:12:33 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/21 11:03:35 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,17 @@ void Event::updateReqRaw(std::string req)
 	}
 
 	//this->setBodySize();
+}
+
+// Para remover mais tarde
+bool Event::isBodyComplete(void)
+{
+	bool bodyComplete;
+
+	bodyComplete = false;
+	if (_reqRaw.size() == this->getBodySize())
+		bodyComplete = true;
+	return (bodyComplete);
 }
 
 void Event::createResponse(ConfigsData configsData)

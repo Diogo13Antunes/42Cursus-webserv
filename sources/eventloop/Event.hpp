@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/20 17:09:44 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/21 11:03:32 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ class Event
 		void		setParseState(int state);
 
 		void		updateReqRaw(std::string req);
+
+		bool		isBodyComplete(void);
 
 		void		createResponse(ConfigsData configsData);
 };
