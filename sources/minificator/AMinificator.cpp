@@ -1,19 +1,11 @@
 #include "AMinificator.hpp"
 
-AMinificator::AMinificator(void)
+std::string	AMinificator::getFile(const char *file)
 {
-	//Default AMinificator Constructor
-}
+	std::string	fileContent;
 
-AMinificator::AMinificator(const char *file)
-{
-	_fileContent = MinificatorUtils::getFileContent(file);
-	if (_fileContent.empty())
+	fileContent = MinificatorUtils::getFileContent(file);
+	if (fileContent.empty())
 		std::cerr << "Invalid File" << std::endl;
+	return (fileContent);
 }
-
-AMinificator::~AMinificator(void)
-{
-	//Default AMinificator Destructor
-}
-

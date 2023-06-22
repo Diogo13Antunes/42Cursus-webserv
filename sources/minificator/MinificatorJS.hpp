@@ -1,10 +1,9 @@
 #pragma once
 
-class MinificatorJS
+#include "AMinificator.hpp"
+
+class MinificatorJS: public AMinificator
 {
 	public:
-		MinificatorJS &operator=(const MinificatorJS &src);
-		MinificatorJS(const MinificatorJS &src);
-		MinificatorJS(void);
-		~MinificatorJS(void);
+		static std::string	getMinificatedJS(const char *file);
 };

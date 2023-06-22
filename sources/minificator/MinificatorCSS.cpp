@@ -1,20 +1,11 @@
 #include "MinificatorCSS.hpp"
 
-MinificatorCSS::MinificatorCSS(const char *file):
-	AMinificator(file)
+std::string		MinificatorCSS::getMinificatedCSS(const char *file)
 {
-	_minificatedFile = _fileContent;
+	std::string	minificatedFile;
 
-	MinificatorUtils::removeNewLineChars(_minificatedFile);
-	MinificatorUtils::removeComentsWithDelemiters(_minificatedFile, "/*", "*/");
-}
-
-MinificatorCSS::~MinificatorCSS(void)
-{
-	//Default MinificatorCSS Destructor
-}
-
-std::string		MinificatorCSS::getMinificatedCSS(void)
-{
-	return (_minificatedFile);
+	minificatedFile = getFile(file);
+	MinificatorUtils::removeNewLineChars(minificatedFile);
+	MinificatorUtils::removeComentsWithDelemiters(minificatedFile, "/*", "*/");
+	return (minificatedFile);
 }

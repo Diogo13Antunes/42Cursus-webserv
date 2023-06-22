@@ -4,16 +4,7 @@
 
 class MinificatorCSS: public AMinificator
 {
-	private:
-
-		std::string		_minificatedFile;
-
-
 	public:
-
-		MinificatorCSS(const char *file);
-		~MinificatorCSS(void);
-
-		std::string		getMinificatedCSS(void);
+		static std::string	getMinificatedCSS(const char *file);
 
 };

@@ -74,17 +74,89 @@ void	MinificatorUtils::removeNewLineChars(std::string &src)
 	src = result;
 }
 
-void	MinificatorUtils::removeSpacesOutsideQuotes(std::string &src)
-{
-	std::string	result;
-	size_t		nbrQuotes = 0;
+static std::vector<std::string>	getFileInVector(std::string src);
+static std::string				stringWithoutComments(std::string src, std::string delimiter);
+static bool						isStringEmpty(std::string src);
 
-	for (size_t i = 0; i < src.size(); i++)
-	{		
-		if (src.at(i) == '\"')
-			nbrQuotes++;
-		if (!(src.at(i) == ' ' && nbrQuotes % 2 == 0))
-			result += src.at(i);
+void	MinificatorUtils::removeInlineComents(std::string &src, std::string commentDelimiter)
+{
+	std::string					result;
+	std::vector<std::string>	tempVector;
+	std::string					line;
+
+	tempVector = getFileInVector(src);
+	for (size_t i = 0; i < tempVector.size(); i++)
+	{
+		line = stringWithoutComments(tempVector[i], commentDelimiter);
+		if (!isStringEmpty(line))
+			result += line;
 	}
 	src = result;
+}
+
+static std::vector<std::string>	getFileInVector(std::string src)
+{
+	std::vector<std::string>	result;
+	std::string					line;
+	std::size_t					pos = 0;
+	std::size_t					end;
+
+	while ((end = src.find('\n', pos)) != src.npos)
+	{
+        line = src.substr(pos, end - pos + 1);
+		result.push_back(line);
+        pos = end + 1;
+    }
+	return (result);
+}
+
+static bool	isInsideQuotes(std::string src, std::size_t index);
+
+static std::string	stringWithoutComments(std::string src, std::string delimiter)
+{
+	std::string result;
+	std::size_t	index = 0;
+	std::size_t	end;
+
+	while (1)
+	{
+		end = src.find(delimiter, index);
+		if (end == src.npos)
+			break;
+		if (!isInsideQuotes(src, end))
+		{
+			if (end != 0)
+			{
+				result = src.substr(0, end) + "\n";
+				if (isStringEmpty(result))
+					result.clear();
+			}
+			return (result);
+		}
+		index = end + 2;
+	}
+	return (src);
+}
+
+static bool	isInsideQuotes(std::string src, std::size_t index)
+{
+	std::size_t	nbrQuotes = 0;
+
+	if (index == 0)
+		return (false);
+	for (size_t i = 0; i < index; i++)
+	{
+		if (src[i] == '\"')
+			nbrQuotes++;
+	}
+	if (nbrQuotes % 2 != 0 && nbrQuotes != 0)
+		return (true);
+	return (false);
+}
+
+static bool	isStringEmpty(std::string src)
+{
+	if (src.find_first_not_of(WHITE_SPACE) == src.npos)
+		return (true);
+	return (false);
 }

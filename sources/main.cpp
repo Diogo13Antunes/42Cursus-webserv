@@ -26,6 +26,7 @@
 
 #include "MinificatorHTML.hpp"
 #include "MinificatorCSS.hpp"
+#include "MinificatorJS.hpp"
 
 void	minificateFiles(const std::string filename)
 {
@@ -35,13 +36,22 @@ void	minificateFiles(const std::string filename)
 	fileType = filename.substr(index, filename.size() - index);
 	if (fileType.compare("html") == 0)
 	{
-		MinificatorHTML	html(filename.c_str());
-		std::cout << html.getMinificatedHTML() << std::endl;
+		std::string	htmlMinificated;
+		htmlMinificated = MinificatorHTML::getMinificatedHTML(filename.c_str());
+		std::cout << htmlMinificated << std::endl;
 	}
 	else if (fileType.compare("css") == 0)
 	{
-		MinificatorCSS	css(filename.c_str());
-		std::cout << css.getMinificatedCSS() << std::endl;
+		std::string	cssMinificated;
+		cssMinificated = MinificatorCSS::getMinificatedCSS(filename.c_str());
+		std::cout << cssMinificated << std::endl;
+	}
+	else if (fileType.compare("js") == 0)
+	{
+		std::string	jsMinificated;
+		jsMinificated = MinificatorJS::getMinificatedJS(filename.c_str());
+		// std::cout << jsMinificated << std::endl;
+		std::cout << jsMinificated;
 	}
 }
 

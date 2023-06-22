@@ -1,23 +1,11 @@
 #include "MinificatorHTML.hpp"
 
-static void	removeNewLineChars(std::string &src);
-static void	removeComents(std::string &src);
-
-MinificatorHTML::MinificatorHTML(const char *file):
-	AMinificator(file)
+std::string	MinificatorHTML::getMinificatedHTML(const char *file)
 {
-	_minificatedFile = _fileContent;
+	std::string	minificatedFile;
 
-	MinificatorUtils::removeNewLineChars(_minificatedFile);
-	MinificatorUtils::removeComentsWithDelemiters(_minificatedFile, "<!--", "-->");
-}
-
-MinificatorHTML::~MinificatorHTML(void)
-{
-	//Default MinificatorHTML Destructor
-}
-
-std::string	MinificatorHTML::getMinificatedHTML(void)
-{
-	return (_minificatedFile);
+	minificatedFile = getFile(file);
+	MinificatorUtils::removeNewLineChars(minificatedFile);
+	MinificatorUtils::removeComentsWithDelemiters(minificatedFile, "<!--", "-->");
+	return (minificatedFile);
 }

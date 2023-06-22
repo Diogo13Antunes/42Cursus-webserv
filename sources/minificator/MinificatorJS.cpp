@@ -1,21 +1,13 @@
 #include "MinificatorJS.hpp"
 
-MinificatorJS::MinificatorJS(void)
+std::string	MinificatorJS::getMinificatedJS(const char *file)
 {
-	//Default MinificatorJS Constructor
-}
+	std::string	minificatedFile;
 
-MinificatorJS::MinificatorJS(const MinificatorJS &src)
-{
-	//MinificatorJS Copy Constructor
-}
+	minificatedFile = getFile(file);
 
-MinificatorJS::~MinificatorJS(void)
-{
-	//Default MinificatorJS Destructor
-}
-
-MinificatorJS &MinificatorJS::operator=(const MinificatorJS &src)
-{
-	//MinificatorJS Copy Assignment Operator
+	MinificatorUtils::removeInlineComents(minificatedFile, "//");
+	MinificatorUtils::removeNewLineChars(minificatedFile);
+	MinificatorUtils::removeComentsWithDelemiters(minificatedFile, "/*", "*/");
+	return (minificatedFile);
 }
