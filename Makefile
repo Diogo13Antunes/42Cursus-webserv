@@ -7,7 +7,7 @@ RM = rm -f
 
 $(VERBOSE).SILENT:
 
-INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request
+INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq
 
 SRC_PATH = ./sources
 
@@ -34,6 +34,9 @@ SRC_NAME =	main.cpp							\
 			request/RequestParserUtils.cpp		\
 			request/RequestData.cpp				\
 			request/RequestDataUtils.cpp		\
+			handleReq/HandleReq.cpp				\
+			handleReq/HeaderProcess.cpp			\
+			handleReq/HeaderDone.cpp			\
 			Terminal.cpp
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))
@@ -53,6 +56,7 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects/eventloop
 	mkdir -p objects/configs
 	mkdir -p objects/request
+	mkdir -p objects/handleReq
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $@
 
 clean:
