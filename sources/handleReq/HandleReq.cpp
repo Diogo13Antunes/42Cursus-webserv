@@ -6,41 +6,72 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:15:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/22 16:50:26 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/23 14:56:43 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HandleReq.hpp"
 
-HandleReq::HandleReq(void):
-    _state(NULL)
-{}
+HandleReq::HandleReq(void): _event(NULL)
+{
+	_stateMap.insert(std::make_pair(HEADER_GET_DATA, new HeaderGetData()));
+	_stateMap.insert(std::make_pair(HEADER_PROCESS, new HeaderProcess()));
+}
+
+HandleReq::HandleReq(Event *event): _event(event)
+{
+	_stateMap.insert(std::make_pair(HEADER_GET_DATA, new HeaderGetData()));
+	_stateMap.insert(std::make_pair(HEADER_PROCESS, new HeaderProcess()));
+}
 
 HandleReq::~HandleReq(void)
 {
-    if (_state)
-        delete _state;
+	std::map<StateType, IState*>::iterator	it;
+
+	it = _stateMap.begin();
+	while (it !=  _stateMap.end())
+	{
+		if (it->second)
+			delete it->second;
+		it++;
+	}
 }
 
-void HandleReq::handle(void)
+bool HandleReq::handle(void)
 {
-    /*IState  *stateBuff;
+	bool	keepHandling;
 
-    if (_state)
-       stateBuff = _state->handle();
-    if (stateBuff)
-        this->setState(stateBuff);
-    */
-   if (_state)
-       this->setState(_state->handle());
+	keepHandling = true;
+	while (keepHandling)
+		keepHandling = _changeState(_handleState(_state));
+
+	// maybe for remove and just turn void function
+	return (0);
 }
 
-void HandleReq::setState(IState *state)
+void HandleReq::setState(StateType state)
 {
-    if (state)
-    {
-       if (_state)
-            delete _state;
-        _state = state;
-    }
+	_state = state;
+}
+
+bool HandleReq::_changeState(StateType state)
+{
+	bool change;
+
+	if (_state == state)
+		change = false;
+	else 
+		change = true;
+	_state = state;
+	return (change);
+}
+
+StateType HandleReq::_handleState(StateType state)
+{
+	std::map<StateType, IState*>::iterator	it;
+
+	it = _stateMap.find(state);
+	if (it != _stateMap.end())
+		state = it->second->handle();
+	return (state);
 }

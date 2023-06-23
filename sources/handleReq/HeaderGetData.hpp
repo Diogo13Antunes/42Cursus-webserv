@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HeaderDone.hpp                                     :+:      :+:    :+:   */
+/*   HeaderGetData.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/22 15:55:11 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/22 16:23:26 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/06/23 11:50:02 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/06/23 12:56:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,13 @@
 
 #include "IState.hpp"
 
-class HeaderDone: public IState
+class HeaderGetData: public IState 
 {
-    private:
+	public:
+		HeaderGetData(void);
+		HeaderGetData(const HeaderGetData &src);
+		~HeaderGetData(void);
+		HeaderGetData &operator=(const HeaderGetData &src);
 
-    public:
-        IState* handle(void);
+		StateType handle(void);
 };

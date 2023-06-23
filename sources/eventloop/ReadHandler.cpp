@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/22 17:01:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/23 14:19:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 #include "HandleReq.hpp"
 #include "HeaderProcess.hpp"
+#include "HeaderGetData.hpp"
 
 
 ReadHandler::ReadHandler(void) {}
@@ -47,14 +48,15 @@ void ReadHandler::handleEvent(Event *event)
 	RequestParser	parser;
 	short			state;
 
-	HandleReq		hadleReq;
+	HandleReq		hadleReq(event);
 	
 	
-	hadleReq.setState(new HeaderProcess());
+	hadleReq.setState(HEADER_GET_DATA);
 	std::cout << "-------------TESTE-----------" << std::endl;
-	hadleReq.handle();
+	//while (hadleReq.handle());
 	hadleReq.handle();
 	std::cout << "-----------------------------" << std::endl;
+	
 
 	for(int i = 0; i < 20; i++)
 		buffer[i] = 0;

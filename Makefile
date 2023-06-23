@@ -35,8 +35,8 @@ SRC_NAME =	main.cpp							\
 			request/RequestData.cpp				\
 			request/RequestDataUtils.cpp		\
 			handleReq/HandleReq.cpp				\
+			handleReq/HeaderGetData.cpp			\
 			handleReq/HeaderProcess.cpp			\
-			handleReq/HeaderDone.cpp			\
 			Terminal.cpp
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))
