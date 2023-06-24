@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:15:09 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/23 14:49:07 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/24 16:34:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,13 @@
 #include "IState.hpp"
 #include "HeaderGetData.hpp"
 #include "HeaderProcess.hpp"
-
-
+#include "BodyProcess.hpp"
 
 class HandleReq 
 {
     private:
 		std::map<StateType, IState*>	_stateMap;
-		StateType						_state;
+		StateType						_state; 	//to remove 
 		Event							*_event;
 
 		bool _changeState(StateType state);
@@ -37,6 +36,10 @@ class HandleReq
 		HandleReq(Event *event);
 		~HandleReq(void);
 
+		// for remove
 		void setState(StateType state);
+		
 		bool handle(void);	
+
+		bool isProcessingComplete(void);
 };

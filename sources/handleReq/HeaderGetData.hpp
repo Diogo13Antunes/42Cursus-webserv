@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 11:50:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/23 12:56:07 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/23 19:18:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,5 @@ class HeaderGetData: public IState
 		~HeaderGetData(void);
 		HeaderGetData &operator=(const HeaderGetData &src);
 
-		StateType handle(void);
+		StateType handle(Event *event);
 };

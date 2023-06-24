@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/21 11:03:32 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/24 15:46:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "RequestData.hpp"
 #include "Configs.hpp"
 #include "ConfigsData.hpp"
+#include "StateType.hpp"
 
 
 //#define	NONE			0
@@ -33,10 +34,13 @@ class Event
 		std::string	_res;
 
 		std::string	_headerRaw;
+		std::string _bodyRaw;
 
 		int			_fd;
 		short		_state;
 		short		_parseState;
+
+		StateType	_reqState;
 
 
 	public:
@@ -68,4 +72,17 @@ class Event
 		bool		isBodyComplete(void);
 
 		void		createResponse(ConfigsData configsData);
+
+
+		//New
+		StateType			getReqState(void);
+		void				setReqState(StateType reqState);
+		void				updateReqRaw1(std::string req);
+		const std::string&  getReqRaw1(void);
+
+		void setHeaderRaw(std::string header);
+		void setBodyRaw(std::string body);
+		std::string getHeaderRaw1(void);
+		std::string getBodyRaw(void);
+		void setReqRaw1(std::string req);
 };

@@ -37,6 +37,7 @@ SRC_NAME =	main.cpp							\
 			handleReq/HandleReq.cpp				\
 			handleReq/HeaderGetData.cpp			\
 			handleReq/HeaderProcess.cpp			\
+			handleReq/BodyProcess.cpp			\
 			Terminal.cpp
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))

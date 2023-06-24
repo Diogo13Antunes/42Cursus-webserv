@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/23 14:19:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/24 17:21:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ ReadHandler &ReadHandler::operator=(const ReadHandler &src)
 }
 */
 
+/*
 void ReadHandler::handleEvent(Event *event)
 {
 	char			buffer[20];
@@ -48,15 +49,11 @@ void ReadHandler::handleEvent(Event *event)
 	RequestParser	parser;
 	short			state;
 
+
 	HandleReq		hadleReq(event);
 	
-	
-	hadleReq.setState(HEADER_GET_DATA);
-	std::cout << "-------------TESTE-----------" << std::endl;
-	//while (hadleReq.handle());
+	std::cout << "-----------------------" << std::endl;
 	hadleReq.handle();
-	std::cout << "-----------------------------" << std::endl;
-	
 
 	for(int i = 0; i < 20; i++)
 		buffer[i] = 0;
@@ -90,6 +87,26 @@ void ReadHandler::handleEvent(Event *event)
 		event->createResponse(_data);
 		event->setState(WRITE_EVENT);
 	}
+}
+*/
+
+void ReadHandler::handleEvent(Event *event)
+{
+	HandleReq		handleReq(event);
+	char			buffer[10000];
+	ssize_t			valread;
+
+	for(int i = 0; i < 10000; i++)
+		buffer[i] = 0;
+	valread = read(event->getFd(), buffer, 10000 - 1);
+
+	event->updateReqRaw1(buffer);
+	handleReq.handle();
+	if (!handleReq.isProcessingComplete())
+		return ;
+	event->createResponse(_data);
+	event->setState(WRITE_EVENT);
+	
 }
 
 EventType ReadHandler::getHandleType(void)

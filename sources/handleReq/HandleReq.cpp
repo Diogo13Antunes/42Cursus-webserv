@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:15:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/23 14:56:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/24 16:36:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,18 @@
 
 HandleReq::HandleReq(void): _event(NULL)
 {
+
 	_stateMap.insert(std::make_pair(HEADER_GET_DATA, new HeaderGetData()));
 	_stateMap.insert(std::make_pair(HEADER_PROCESS, new HeaderProcess()));
+	_stateMap.insert(std::make_pair(BODY_PROCESS, new BodyProcess()));
 }
 
 HandleReq::HandleReq(Event *event): _event(event)
 {
+	_state = _event->getReqState();
 	_stateMap.insert(std::make_pair(HEADER_GET_DATA, new HeaderGetData()));
 	_stateMap.insert(std::make_pair(HEADER_PROCESS, new HeaderProcess()));
+	_stateMap.insert(std::make_pair(BODY_PROCESS, new BodyProcess()));
 }
 
 HandleReq::~HandleReq(void)
@@ -63,6 +67,7 @@ bool HandleReq::_changeState(StateType state)
 	else 
 		change = true;
 	_state = state;
+	_event->setReqState(state);
 	return (change);
 }
 
@@ -70,8 +75,18 @@ StateType HandleReq::_handleState(StateType state)
 {
 	std::map<StateType, IState*>::iterator	it;
 
-	it = _stateMap.find(state);
-	if (it != _stateMap.end())
-		state = it->second->handle();
+	if (state != REQUEST_END)
+	{
+		it = _stateMap.find(state);
+		if (it != _stateMap.end())
+		state = it->second->handle(_event);
+	}
 	return (state);
+}
+
+bool HandleReq::isProcessingComplete(void)
+{
+	if (_event->getReqState() == REQUEST_END)
+		return (true);
+	return (false);
 }

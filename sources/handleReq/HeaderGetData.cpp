@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/23 11:50:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/23 12:57:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/24 14:40:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,17 @@ HeaderGetData &HeaderGetData::operator=(const HeaderGetData &src)
 }
 */
 
-StateType HeaderGetData::handle(void)
+StateType HeaderGetData::handle(Event *event)
 {
+	const std::string	req = event->getReqRaw1();
+	size_t				headerEndIdx;
+
 	std::cout << "HeaderGetData" << std::endl;
-    return (HEADER_PROCESS);
+	headerEndIdx = req.find("\r\n\r\n");
+	if (headerEndIdx != std::string::npos)
+	{
+		event->setHeaderRaw(req.substr(0, headerEndIdx + 4));
+		return (HEADER_PROCESS);
+	}
+    return (HEADER_GET_DATA);
 }

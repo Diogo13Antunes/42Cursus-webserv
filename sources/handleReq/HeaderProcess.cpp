@@ -6,15 +6,67 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/23 14:04:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/24 17:18:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
 #include "HeaderProcess.hpp"
+#include "RequestParser.hpp"
 
-StateType HeaderProcess::handle(void)
+
+HeaderProcess::HeaderProcess(void)
 {
-    std::cout << "HeaderProcess" << std::endl;
-    return (HEADER_PROCESS);
+	//Default HeaderProcess Constructor
+}
+
+HeaderProcess::HeaderProcess(const HeaderProcess &src)
+{
+	//HeaderProcess Copy Constructor
+}
+
+HeaderProcess::~HeaderProcess(void)
+{
+	//Default HeaderProcess Destructor
+}
+
+/*
+HeaderProcess &HeaderProcess::operator=(const HeaderProcess &src)
+{
+	//HeaderProcess Copy Assignment Operator
+}
+*/
+
+/*
+StateType HeaderProcess::handle(Event *event)
+{
+
+	std::cout << "HeaderProcess" << std::endl;
+
+	std::cout << "HEADER: " << event->getHeaderRaw1() << std::endl;
+
+	return (HEADER_PROCESS);
+}
+*/
+
+StateType HeaderProcess::handle(Event *event)
+{
+	const std::string	req = event->getReqRaw1();
+	size_t				headerEndIdx;
+	RequestParser		parser;
+	std::string			header;
+
+	std::cout << "HeaderProcess" << std::endl;
+	headerEndIdx = req.find("\r\n\r\n");
+	if (headerEndIdx == std::string::npos)
+		return (HEADER_PROCESS);
+	//event->setHeaderRaw(req.substr(0, headerEndIdx + 4));
+
+	header = req.substr(0, headerEndIdx + 4);
+	event->setReqRaw1(req.substr(headerEndIdx + 4));
+	parser.headerParse(header);
+	event->setResquestHeader(parser.getRequestLine(), parser.getRequestHeader());
+	if (!event->getBodySize())
+		return (REQUEST_END);
+	return (BODY_PROCESS);
 }

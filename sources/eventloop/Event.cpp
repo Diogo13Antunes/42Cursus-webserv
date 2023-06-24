@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/21 11:03:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/24 16:04:41 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ Event::Event(void) {}
 Event::Event(int fd, int state):
 	_fd(fd),
 	_state(state),
-	_parseState(HEADER_HANDLE)
+	_parseState(HEADER_HANDLE),
+	_reqState(HEADER_PROCESS)
 {}
 
 Event::Event(const Event &src) {}
@@ -163,6 +164,54 @@ void Event::createResponse(ConfigsData configsData)
 	std::cout << "respose: " << this->getResponse() << std::endl;
 }
 
+
+// New Methods
+StateType Event::getReqState(void)
+{
+	return (_reqState);
+}
+
+void Event::setReqState(StateType reqState)
+{
+	_reqState = reqState;
+}
+
+
+void Event::updateReqRaw1(std::string req)
+{
+	_reqRaw += req;
+}
+
+void Event::setReqRaw1(std::string req)
+{
+	_reqRaw = req;
+}
+
+const std::string&  Event::getReqRaw1(void)
+{
+	return (_reqRaw);
+}
+
+void Event::setHeaderRaw(std::string header)
+{
+	_headerRaw = header;
+}
+
+void Event::setBodyRaw(std::string body)
+{
+	_bodyRaw = body;
+}
+
+std::string Event::getHeaderRaw1(void)
+{
+	return (_headerRaw);
+}
+
+std::string Event::getBodyRaw(void)
+{
+	return (_bodyRaw);
+}
+
 static std::string createResponse1(std::string path, std::string contentType)
 {
 	std::string response;
@@ -232,3 +281,5 @@ static std::string getFileType(std::string path)
 		type = path.substr(dotIdx, path.size());
 	return (type);
 }
+
+
