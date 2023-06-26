@@ -6,10 +6,10 @@ cat << EOF > $1.hpp
 class $1
 {
 	public:
-		$1 &operator=(const $1 &src);
-		$1(const $1 &src);
 		$1(void);
+		$1(const $1 &src);
 		~$1(void);
+		$1 &operator=(const $1 &src);
 };
 EOF
 
@@ -36,5 +36,3 @@ $1 &$1::operator=(const $1 &src)
 	//$1 Copy Assignment Operator
 }
 EOF
-
-cd ..

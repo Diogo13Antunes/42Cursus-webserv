@@ -2,18 +2,38 @@ NAME = webserv
 
 CXX = c++
 # CXXFLAGS = -Wall -Werror -Wextra -g -fsanitize=address -std=c++98
-CXXFLAGS = -g -std=c++98 -O3 -fsanitize=address
+CXXFLAGS = -g -std=c++98 -Ofast -march=native -fsanitize=address
 RM = rm -f
 
 $(VERBOSE).SILENT:
 
-INC = -I ./sources -I ./sources/minificator
+INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/minificator
 
 SRC_PATH = ./sources
 
 OBJ_PATH = ./objects
 
 SRC_NAME =	main.cpp							\
+			connections/Connection.cpp			\
+			connections/Connections.cpp			\
+			messenger/AMessengerClient.cpp		\
+			messenger/Messenger.cpp				\
+			messenger/Message.cpp				\
+			messenger/ConnectionMessage.cpp		\
+			messenger/EventMessage.cpp			\
+			eventloop/EventLoop.cpp				\
+			eventloop/WriteHandler.cpp			\
+			eventloop/ReadHandler.cpp			\
+			eventloop/EventHandlerFactory.cpp	\
+			eventloop/Event.cpp					\
+			eventloop/EventDemux.cpp			\
+			configs/Configs.cpp					\
+			configs/ConfigsUtils.cpp			\
+			configs/ConfigsData.cpp				\
+			request/RequestParser.cpp			\
+			request/RequestParserUtils.cpp		\
+			request/RequestData.cpp				\
+			request/RequestDataUtils.cpp		\
 			minificator/AMinificator.cpp		\
 			minificator/MinificatorHTML.cpp		\
 			minificator/MinificatorCSS.cpp		\
@@ -33,6 +53,11 @@ $(NAME) : $(OBJS)
 
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects
+	mkdir -p objects/connections
+	mkdir -p objects/messenger
+	mkdir -p objects/eventloop
+	mkdir -p objects/configs
+	mkdir -p objects/request
 	mkdir -p objects/minificator
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $@
 
