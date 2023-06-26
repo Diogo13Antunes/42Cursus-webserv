@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:49:57 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/24 16:20:46 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/25 11:48:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,10 @@ StateType BodyProcess::handle(Event *event)
 	RequestParser		parser;
 	std::string			body;
 	
-	std::cout << "BodyProcess" << std::endl;
-
 	if (event->getBodySize() != req.size())
 		return (BODY_PROCESS);
 
+	//std::cout << req << std::endl;
 	body = req;
 	parser.bodyParse(body);
 	event->setResquestBody(parser.getRequestBody());

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/09 12:45:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/26 16:48:34 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,14 @@
 #include <sys/socket.h>
 
 #include "WriteHandler.hpp"
+#include "HandleRes.hpp"
 
 WriteHandler::WriteHandler(void) {}
+
+WriteHandler::WriteHandler(ConfigsData data):
+	IEventHandler(),
+	_data(data)
+{}
 
 WriteHandler::WriteHandler(const WriteHandler &src) {}
 
@@ -61,9 +67,17 @@ void send_response_test(Event *event)
 
 void WriteHandler::handleEvent(Event *event)
 {
-	//std::cout << "handle WRITE event " << event->getFd() << std::endl;
+	HandleRes	handleRes;
 
-	send_response_test(event);
+	//std::cout << "handle WRITE event " << event->getFd() << std::endl;
+	//event->createResponse(_data);
+
+
+	handleRes.handle(event, _data);
+	if (handleRes.isProcessingComplete(event))
+		event->setState(COMPLETE_EVENT);
+
+	//send_response_test(event);
 }
 
 EventType WriteHandler::getHandleType(void)

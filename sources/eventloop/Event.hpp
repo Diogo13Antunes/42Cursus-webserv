@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/24 15:46:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/26 16:55:43 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 #define	HEADER_DONE		1
 #define	BODY_HANDLE		2
 #define	BODY_DONE		3
- 
+
 
 class Event
 {
@@ -41,6 +41,9 @@ class Event
 		short		_parseState;
 
 		StateType	_reqState;
+
+
+		int			_resState;
 
 
 	public:
@@ -85,4 +88,8 @@ class Event
 		std::string getHeaderRaw1(void);
 		std::string getBodyRaw(void);
 		void setReqRaw1(std::string req);
+
+
+		void setResState(int resState);
+		int getResState(void);
 };

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/24 17:21:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/26 15:38:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@
 
 
 #include "HandleReq.hpp"
-#include "HeaderProcess.hpp"
-#include "HeaderGetData.hpp"
+//#include "HeaderProcess.hpp"
+
+#define BUFF_SIZE 100000
 
 
 ReadHandler::ReadHandler(void) {}
@@ -90,21 +91,22 @@ void ReadHandler::handleEvent(Event *event)
 }
 */
 
+
 void ReadHandler::handleEvent(Event *event)
 {
 	HandleReq		handleReq(event);
-	char			buffer[10000];
+	char			buffer[BUFF_SIZE];
 	ssize_t			valread;
 
-	for(int i = 0; i < 10000; i++)
+	for(int i = 0; i < BUFF_SIZE; i++)
 		buffer[i] = 0;
-	valread = read(event->getFd(), buffer, 10000 - 1);
+	valread = read(event->getFd(), buffer, BUFF_SIZE - 1);
 
 	event->updateReqRaw1(buffer);
 	handleReq.handle();
 	if (!handleReq.isProcessingComplete())
 		return ;
-	event->createResponse(_data);
+	//event->createResponse(_data);
 	event->setState(WRITE_EVENT);
 	
 }

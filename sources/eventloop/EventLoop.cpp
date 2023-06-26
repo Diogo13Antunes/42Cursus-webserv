@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/20 14:50:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/26 15:33:26 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,25 +61,45 @@ void EventLoop::unregisterEventHandler(IEventHandler *event)
 
 void EventLoop::handleEvents(void)
 {
+
+	//static int counter = 0;
+	
 	Event	*ev;
-	short	initState;
+	//short	initState; //have to be EventType
 
 	while (!_eventQueue.empty())
 	{		
 		ev = _eventQueue.front();
-		initState = ev->getState();
+		//initState = ev->getState();
+
+		//std::cout << "evento state: " << initState << std::endl;
+
 		//std::cout << ev->getState() << std::endl;
 		_handleEvent(ev);
 		_eventQueue.pop();
 		
-		sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), ev->getState()));
 
+		//sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), ev->getState()));
+
+		if (ev->getState() == COMPLETE_EVENT)
+		{
+			//std::cout << counter++ << " - Request/Response Complete" << std::endl;
+			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), READ_EVENT));
+			_eventMap.erase(ev->getFd());
+			delete ev;		
+		}
+		else
+			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), ev->getState()));
+
+		/*
 		if (initState == WRITE_EVENT)
 		{
 			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), READ_EVENT));
 			_eventMap.erase(ev->getFd());
 			delete ev;		
 		}
+		*/
+
 	}
 }
 
@@ -129,7 +149,7 @@ void EventLoop::_changeEvent(Event *ev, short status)
 }
 
 
-
+/*
 Event* EventLoop::_handleNextEvent(void)
 {
 	Event	*ev;
@@ -139,7 +159,7 @@ Event* EventLoop::_handleNextEvent(void)
 	_eventQueue.pop();
 	return (ev);
 }
-
+*/
 
 void EventLoop::_handleEvent(Event *ev)
 {

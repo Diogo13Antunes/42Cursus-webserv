@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/24 16:04:41 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/26 16:57:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ Event::Event(int fd, int state):
 	_fd(fd),
 	_state(state),
 	_parseState(HEADER_HANDLE),
-	_reqState(HEADER_PROCESS)
+	_reqState(HEADER_PROCESS),
+	_resState(0)
 {}
 
 Event::Event(const Event &src) {}
@@ -91,8 +92,6 @@ void Event::setResquestHeader(std::string reqLine, std::map<std::string, std::ve
 void Event::setResquestBody(std::string body)
 {
 	_reqParsed.setRequestBody(body);
-
-	std::cout << "body: " << _reqParsed.getRequestBody() << std::endl;
 }
 
 void Event::setParseState(int state)
@@ -145,7 +144,7 @@ void Event::createResponse(ConfigsData configsData)
 	std::string	contentType;
 
 	reqPath = _reqParsed.getPath();
-	std::cout << "path: " << reqPath << std::endl;
+	//std::cout << "path: " << reqPath << std::endl;
 
 	if (!reqPath.compare("/"))
 		filePath = configsData.getConfig("root");
@@ -161,7 +160,7 @@ void Event::createResponse(ConfigsData configsData)
 		this->setResponse(createResponse1(reqPath, contentType));
 	}
 
-	std::cout << "respose: " << this->getResponse() << std::endl;
+	//std::cout << "respose: " << this->getResponse() << std::endl;
 }
 
 
@@ -212,6 +211,18 @@ std::string Event::getBodyRaw(void)
 	return (_bodyRaw);
 }
 
+void Event::setResState(int resState)
+{
+	_resState = resState;
+}
+
+int Event::getResState(void)
+{
+	return (_resState);
+}
+
+
+// Static functions
 static std::string createResponse1(std::string path, std::string contentType)
 {
 	std::string response;

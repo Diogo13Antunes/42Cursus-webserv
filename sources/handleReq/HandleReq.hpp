@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:15:09 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/24 16:34:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/26 11:54:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #include "Event.hpp"
 #include "StateType.hpp"
 #include "IState.hpp"
-#include "HeaderGetData.hpp"
 #include "HeaderProcess.hpp"
 #include "BodyProcess.hpp"
 

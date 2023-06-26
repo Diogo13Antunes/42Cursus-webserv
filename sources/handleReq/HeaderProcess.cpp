@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/24 17:18:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/25 10:30:27 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ StateType HeaderProcess::handle(Event *event)
 	RequestParser		parser;
 	std::string			header;
 
-	std::cout << "HeaderProcess" << std::endl;
 	headerEndIdx = req.find("\r\n\r\n");
 	if (headerEndIdx == std::string::npos)
 		return (HEADER_PROCESS);

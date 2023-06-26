@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:54:59 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/08 20:52:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/26 12:07:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ class ReadHandler: public IEventHandler
 		ConfigsData	_data;
 
 	public:
-		ReadHandler &operator=(const ReadHandler &src);
-		ReadHandler(const ReadHandler &src);
 		ReadHandler(void);
 		ReadHandler(ConfigsData	data);
 		~ReadHandler(void);
+		ReadHandler(const ReadHandler &src);
+		ReadHandler &operator=(const ReadHandler &src);
 
 		void		handleEvent(Event *event);
 		EventType	getHandleType(void);

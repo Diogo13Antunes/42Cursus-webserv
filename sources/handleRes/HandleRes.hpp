@@ -1,26 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HeaderGetData.hpp                                  :+:      :+:    :+:   */
+/*   HandleRes.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/23 11:50:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/23 19:18:37 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/06/26 16:48:17 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "IState.hpp"
+#include "Event.hpp"
+#include "ConfigsData.hpp"
 
-class HeaderGetData: public IState 
+class HandleRes
 {
 	public:
-		HeaderGetData(void);
-		HeaderGetData(const HeaderGetData &src);
-		~HeaderGetData(void);
-		HeaderGetData &operator=(const HeaderGetData &src);
+		HandleRes(void);
+		HandleRes(const HandleRes &src);
+		~HandleRes(void);
+		HandleRes &operator=(const HandleRes &src);
 
-		StateType handle(Event *event);
+		void handle(Event *event, ConfigsData confData);
+		bool isProcessingComplete(Event *event);
+
 };
