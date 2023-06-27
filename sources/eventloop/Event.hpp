@@ -6,13 +6,14 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/27 08:45:15 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/27 12:40:47 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <string>
+#include <vector>
 #include "RequestData.hpp"
 #include "Configs.hpp"
 #include "ConfigsData.hpp"
@@ -45,6 +46,9 @@ class Event
 
 		int			_resState;
 
+		std::vector<std::string> _resVect;
+		ssize_t _numWrited;
+		int _idx;
 
 	public:
 		Event(void);
@@ -92,4 +96,19 @@ class Event
 
 		void setResState(int resState);
 		int getResState(void);
+
+		void setResVect(void);
+
+		void printVectDebug(void);
+
+		std::string& getNextRes(void);
+
+		void updateRes1(std::string res);
+
+		void updateIdx(void);
+
+		bool lastIdx(void);
+
+		ssize_t getNumWrited(void);
+		void updateNumWrited(ssize_t numWrited);
 };

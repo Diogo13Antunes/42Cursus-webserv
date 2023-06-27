@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/27 08:44:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/27 15:07:48 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,9 @@ Event::Event(int fd, int state):
 	_state(state),
 	_parseState(HEADER_HANDLE),
 	_reqState(HEADER_PROCESS),
-	_resState(0)
+	_resState(0),
+	_numWrited(0),
+	_idx(0)
 {}
 
 Event::Event(const Event &src) {}
@@ -221,6 +223,91 @@ int Event::getResState(void)
 	return (_resState);
 }
 
+void Event::setResVect(void)
+{
+	int maxSize;
+	int copyed;
+	int aux;
+
+	//maxSize = 2000000;
+	maxSize = 100000;
+	copyed = 0;
+	aux = 0;
+
+	while (true)
+	{
+		aux = _res.size() - copyed;
+
+		if (aux > maxSize)
+		{
+			_resVect.push_back(_res.substr(copyed, maxSize));
+			copyed += maxSize;
+		}
+		else
+		{
+			_resVect.push_back(_res.substr(copyed, aux));
+			copyed += aux;
+		}
+		if (copyed == _res.size())
+			break;
+	}
+}
+
+void Event::printVectDebug(void)
+{
+	std::cout << "############## Print Response ################" << std::endl;
+	for (int i = 0; i < _resVect.size(); i++)
+	{
+		std::cout << _resVect.at(i) << std::endl;
+	}
+}
+
+ssize_t Event::getNumWrited(void)
+{
+	return (_numWrited);
+}
+
+void Event::updateNumWrited(ssize_t numWrited)
+{
+	_numWrited += numWrited;
+}
+
+
+std::string& Event::getNextRes(void)
+{
+	//if (_resVect[_idx].empty() && _idx < _resVect.size() - 1)
+	//	_idx++;
+
+	//std::cout << "idx: " << _idx << std::endl;
+	//std::cout << "vec size: " << _resVect.size() << std::endl;
+
+	if (_idx >= _resVect.size())
+		return (_resVect[_resVect.size() - 1]);
+	return (_resVect[_idx]);
+}
+
+void Event::updateRes1(std::string res)
+{
+	if (_idx < _resVect.size())
+		_resVect[_idx] = res;
+}
+
+void Event::updateIdx(void)
+{
+	//if (_idx < _resVect.size() - 1)
+	//{
+		_idx++;
+	//}
+}
+
+bool Event::lastIdx(void)
+{
+	if (_idx >= _resVect.size())
+	{
+		return (true);
+	}
+	return (false);
+}
 
 // Static functions
 static std::string createResponse1(std::string path, std::string contentType)
