@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/26 16:57:30 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/27 08:44:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ short Event::getState(void)
 	return (_state);
 }
 
-std::string	Event::getResponse(void)
+std::string&	Event::getResponse(void)
 {
 	return (_res);
 }

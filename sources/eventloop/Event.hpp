@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/26 16:55:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/27 08:45:15 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ class Event
 
 		int			getFd(void);
 		short		getState(void);
-		std::string	getResponse(void);
+		std::string&	getResponse(void);
 		std::string getReqRaw(void);
 		std::string getHeaderRaw(void);
 		short		getParseState(void);

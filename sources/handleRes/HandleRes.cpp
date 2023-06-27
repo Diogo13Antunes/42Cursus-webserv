@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/26 17:51:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/27 08:56:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,14 +69,13 @@ void HandleRes::handle(Event *event, ConfigsData confData)
 	res = event->getResponse();
 
 
-	int buff = 1000000;
-
-	//nWrite = send(event->getFd(), res.c_str(), res.size(), 0);
+	/*int buff = 1000000;
 	if (res.size() < buff)
 		nWrite = send(event->getFd(), res.c_str(), res.size(), 0);
 	else 	
-		nWrite = send(event->getFd(), res.c_str(), buff, 0);
+		nWrite = send(event->getFd(), res.c_str(), buff, 0);*/
 	
+	nWrite = send(event->getFd(), res.c_str(), res.size(), 0);
 	if (nWrite == res.size())
 		event->setResState(2);
 	else
