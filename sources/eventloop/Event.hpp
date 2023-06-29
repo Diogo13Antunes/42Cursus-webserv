@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/27 12:40:47 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/29 14:35:41 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,4 +111,6 @@ class Event
 
 		ssize_t getNumWrited(void);
 		void updateNumWrited(ssize_t numWrited);
+
+		std::string getReqPath(void);
 };

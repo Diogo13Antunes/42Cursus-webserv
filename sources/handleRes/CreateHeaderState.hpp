@@ -1,36 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HandleRes.hpp                                      :+:      :+:    :+:   */
+/*   CreateHeaderState.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/29 15:48:49 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/06/29 11:43:05 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/06/29 14:48:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Event.hpp"
-#include "StateResType.hpp"
 #include "IStateRes.hpp"
-#include "CreateHeaderState.hpp"
 
-class HandleRes
+class CreateHeaderState: public IStateRes
 {
 	private:
-		std::map<StateResType, IStateRes*>	_stateMap;
-		Event								*_event;
+		std::string	_getFileName(std::string path);
+		size_t		_getBodySize(std::string fileName);
 
-		StateResType _handleState(StateResType state);
 	public:
-		HandleRes(void);
-		HandleRes(Event *event);
-		HandleRes(const HandleRes &src);
-		~HandleRes(void);
-		HandleRes &operator=(const HandleRes &src);
-		void setEvent(Event *event);
+		CreateHeaderState(void);
+		CreateHeaderState(const CreateHeaderState &src);
+		~CreateHeaderState(void);
+		CreateHeaderState &operator=(const CreateHeaderState &src);
 
-		void handle(void);
+		StateResType handle(Event *event);
 };

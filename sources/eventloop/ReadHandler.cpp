@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/26 15:38:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/29 16:48:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,30 @@
 #define BUFF_SIZE 100000
 
 
-ReadHandler::ReadHandler(void) {}
+ReadHandler::ReadHandler(void): IEventHandler()
+{
+	_handleReq = NULL;
+}
 
+ReadHandler::ReadHandler(HandleReq *handleReq): IEventHandler()
+{
+	_handleReq = handleReq;
+}
+
+/*
 ReadHandler::ReadHandler(ConfigsData data):
 	IEventHandler(),
 	_data(data)
 {}
+*/
 
 ReadHandler::ReadHandler(const ReadHandler &src) {}
 
-ReadHandler::~ReadHandler(void) {}
+ReadHandler::~ReadHandler(void) 
+{
+	if (_handleReq)
+		delete _handleReq;
+}
 
 /*
 ReadHandler &ReadHandler::operator=(const ReadHandler &src)
@@ -94,17 +108,18 @@ void ReadHandler::handleEvent(Event *event)
 
 void ReadHandler::handleEvent(Event *event)
 {
-	HandleReq		handleReq(event);
+	//HandleReq		handleReq(event);
 	char			buffer[BUFF_SIZE];
 	ssize_t			valread;
 
+	_handleReq->setEvent(event);
 	for(int i = 0; i < BUFF_SIZE; i++)
 		buffer[i] = 0;
 	valread = read(event->getFd(), buffer, BUFF_SIZE - 1);
 
 	event->updateReqRaw1(buffer);
-	handleReq.handle();
-	if (!handleReq.isProcessingComplete())
+	_handleReq->handle();
+	if (!_handleReq->isProcessingComplete())
 		return ;
 	//event->createResponse(_data);
 	event->setState(WRITE_EVENT);

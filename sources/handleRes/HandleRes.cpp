@@ -6,18 +6,26 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/27 15:26:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/29 15:48:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include <cstdlib> // para remover apenas de teste
+
 
 #include <iostream>
 #include <sys/socket.h>
 
 #include "HandleRes.hpp"
 
-HandleRes::HandleRes(void)
+HandleRes::HandleRes(void): _event(NULL)
 {
-	//Default HandleRes Constructor
+	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
+}
+
+HandleRes::HandleRes(Event *event): _event(event)
+{
+	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));	
 }
 
 HandleRes::HandleRes(const HandleRes &src)
@@ -27,7 +35,15 @@ HandleRes::HandleRes(const HandleRes &src)
 
 HandleRes::~HandleRes(void)
 {
-	//Default HandleRes Destructor
+	std::map<StateResType, IStateRes*>::iterator	it;
+
+	it = _stateMap.begin();
+	while (it !=  _stateMap.end())
+	{
+		if (it->second)
+			delete it->second;
+		it++;
+	}
 }
 
 /*
@@ -37,112 +53,26 @@ HandleRes &HandleRes::operator=(const HandleRes &src)
 }
 */
 
-/*
-void HandleRes::handle(Event *event, ConfigsData confData)
+void HandleRes::setEvent(Event *event)
 {
-	std::string res;
-
-	ssize_t	nWrite;
-
-	event->createResponse(confData);
-
-	res = event->getResponse();
-
-
-	//nWrite = send(event->getFd(), res.c_str(), res.size(), 0);
-	nWrite = send(event->getFd(), res.c_str(), 1000000, 0);
-	std::cout <<"size          : " << res.size() << std::endl;
-	std::cout <<"Bytes escritos: " << nWrite << std::endl;
-}
-*/
-
-/*
-void HandleRes::handle(Event *event, ConfigsData confData)
-{
-	std::string res;
-
-	ssize_t	nWrite;
-
-	if (event->getResState() == 0)
-		event->createResponse(confData);
-	
-	
-	res = event->getResponse();
-
-
-	//int buff = 1000000;
-	//if (res.size() < buff)
-	//	nWrite = send(event->getFd(), res.c_str(), res.size(), 0);
-	//else 	
-	//	nWrite = send(event->getFd(), res.c_str(), buff, 0);
-	
-	nWrite = send(event->getFd(), res.c_str(), res.size(), 0);
-	if (nWrite == res.size())
-		event->setResState(2);
-	else
-	{
-		event->setResState(1);
-		if (nWrite)
-			event->setResponse(res.substr(nWrite));
-	}
-	
-	std::cout <<"size          : " << res.size() << std::endl;
-	std::cout <<"Bytes escritos: " << nWrite << std::endl;
-}
-*/
-
-
-void HandleRes::handle(Event *event, ConfigsData confData)
-{
-	std::string res;
-	ssize_t	nWrite;
-
-	if (event->getResState() == 0)
-	{
-		event->createResponse(confData);
-		// preenche vector com a resposa partida
-		event->setResVect();
-		//event->printVectDebug();
-		event->setResState(1);
-	}
-	
-	res = event->getNextRes();
-
-	//std::cout << "res: " << res << std::endl;
-
-	nWrite = send(event->getFd(), res.c_str(), res.size(), 0);
-	//event->updateNumWrited(nWrite);
-	if (res.size() < nWrite)
-		event->updateRes1(res.substr(nWrite));
-	else
-		event->updateIdx(); // update idx
-
-
-	// tem de chegar ao último idx e tem de nWrite == res.size()
-	if (event->lastIdx() && res.size() == nWrite)
-	{
-		//std::cout << "TERMINA AQUI" << std::endl;
-		event->setResState(2);
-	}
-
-	
-	//res = event->getResponse();
-	
-	
-	
-	//std::cout <<"size          : " << res.size() << std::endl;
-	//std::cout <<"Bytes escritos: " << nWrite << std::endl;
+	_event = event;
 }
 
-
-// usar um estado no evento para verificar o response
-// usar um private event
-bool HandleRes::isProcessingComplete(Event *event)
+void HandleRes::handle(void)
 {
-	if (event->getResState() == 2)
+	_handleState(CREATE_HEADER);
+	exit(0);
+}
+
+StateResType HandleRes::_handleState(StateResType state)
+{
+	std::map<StateResType, IStateRes*>::iterator	it;
+
+	if (state != RESPONSE_END)
 	{
-		//std::cout << "isProcessingComplete" << std::endl;
-		return (true);
+		it = _stateMap.find(state);
+		if (it != _stateMap.end())
+			state = it->second->handle(_event);
 	}
-	return (false);
+	return (state);
 }

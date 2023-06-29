@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/26 16:48:34 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/29 16:47:35 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,30 @@
 #include "WriteHandler.hpp"
 #include "HandleRes.hpp"
 
-WriteHandler::WriteHandler(void) {}
+WriteHandler::WriteHandler(void): IEventHandler()
+{
+	_handleRes = NULL;
+}
 
+WriteHandler::WriteHandler(HandleRes *handleRes): IEventHandler()
+{
+	_handleRes = handleRes;
+}
+
+/*
 WriteHandler::WriteHandler(ConfigsData data):
 	IEventHandler(),
 	_data(data)
 {}
+*/
 
 WriteHandler::WriteHandler(const WriteHandler &src) {}
 
-WriteHandler::~WriteHandler(void) {}
+WriteHandler::~WriteHandler(void) 
+{
+	if (_handleRes)
+		delete _handleRes;
+}
 
 /*
 WriteHandler &WriteHandler::operator=(const WriteHandler &src)
@@ -57,6 +71,7 @@ void send_response_test(int socket_fd)
 }
 */
 
+/*
 void send_response_test(Event *event)
 {
 	std::string res;
@@ -64,21 +79,27 @@ void send_response_test(Event *event)
 	res = event->getResponse();
 	send(event->getFd(), res.c_str(), res.size(), 0);
 }
+*/
 
 void WriteHandler::handleEvent(Event *event)
 {
-	HandleRes	handleRes;
+	//HandleRes	handleRes(event);
 
 	//std::cout << "handle WRITE event " << event->getFd() << std::endl;
 	//event->createResponse(_data);
 
+	_handleRes->setEvent(event);
+	_handleRes->handle();
+	
 
-	handleRes.handle(event, _data);
-	if (handleRes.isProcessingComplete(event))
-		event->setState(COMPLETE_EVENT);
+	// No final passar para o estado COMPLETE_EVENT
+	//event->setState(COMPLETE_EVENT);
 
 	//send_response_test(event);
 }
+
+
+
 
 EventType WriteHandler::getHandleType(void)
 {
