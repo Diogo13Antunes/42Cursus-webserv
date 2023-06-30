@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/29 17:48:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/30 18:22:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,32 @@
 
 #include "HandleRes.hpp"
 
-HandleRes::HandleRes(void): _event(NULL)
+HandleRes::HandleRes(void):
+	_event(NULL),
+	_state(CREATE_HEADER)
 {
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
+	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
+	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
 
 HandleRes::HandleRes(ConfigsData configsData):
 	_event(NULL),
-	_configsData(configsData)
+	_configsData(configsData),
+	_state(CREATE_HEADER)
 {
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
+	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
+	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
 
-HandleRes::HandleRes(Event *event): _event(event)
+HandleRes::HandleRes(Event *event): 
+	_event(event),
+	_state(CREATE_HEADER)
 {
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
+	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
+	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
 
 HandleRes::HandleRes(const HandleRes &src)
@@ -67,8 +78,20 @@ void HandleRes::setEvent(Event *event)
 
 void HandleRes::handle(void)
 {
-	_handleState(CREATE_HEADER);
-	exit(0);
+	StateResType	state;
+	bool			loop;
+
+	loop = true;
+	while (loop && _event->getResState1() != RESPONSE_END)
+	{
+		if (_event->getResState1() == RESPONSE)
+			loop = false;
+		state = _handleState(_event->getResState1());
+		_event->setResState1(state);
+	}
+	//std::cout << "last State: " << state << std::endl;
+
+	//exit(0);
 }
 
 StateResType HandleRes::_handleState(StateResType state)
@@ -82,4 +105,11 @@ StateResType HandleRes::_handleState(StateResType state)
 			state = it->second->handle(_event, _configsData);
 	}
 	return (state);
+}
+
+bool HandleRes::isResProcessingComplete(void)
+{
+	if (_event->getResState1() == RESPONSE_END)
+		return (true);
+	return (false);
 }

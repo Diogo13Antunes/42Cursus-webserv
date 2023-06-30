@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/29 14:35:41 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/30 17:50:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "Configs.hpp"
 #include "ConfigsData.hpp"
 #include "StateType.hpp"
+#include "StateResType.hpp"
 
 
 //#define	NONE			0
@@ -49,6 +50,16 @@ class Event
 		std::vector<std::string> _resVect;
 		ssize_t _numWrited;
 		int _idx;
+
+		// for andleRes
+		std::string		_fileName;
+		size_t			_bodySize;   // talvez não seja necessário devido ao _resSize
+		size_t			_bytesReadBody;
+		size_t			_resSize;
+		size_t			_totalBytesSend;
+		StateResType	_resState1;
+		
+
 
 	public:
 		Event(void);
@@ -113,4 +124,32 @@ class Event
 		void updateNumWrited(ssize_t numWrited);
 
 		std::string getReqPath(void);
+
+
+		// for andleRes
+		std::string	getFileName(void);
+		void		setFileName(std::string fileName);
+
+		size_t		getBytesReadBody(void);
+		void		setBytesReadBody(size_t bytesReadBody);
+		void		updateBytesReadBody(size_t bytesReadBody);
+
+		size_t		getBodySize1(void);
+		void		setBodySize1(size_t bodySize);
+
+		const std::string&	getRes(void);
+		void				setRes(std::string res);
+		void				updateRes(std::string res);
+
+		size_t				getResSize(void);
+		void				setResSize(size_t resSize);
+
+		size_t				getTotalBytesSend(void);
+		void				setTotalBytesSend(size_t totalBytesSend);
+		void				updateTotalBytesSend(size_t totalBytesSend);
+
+		StateResType		getResState1(void);
+		void				setResState1(StateResType resState);
+
+
 };

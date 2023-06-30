@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/29 17:35:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/30 18:21:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include "StateResType.hpp"
 #include "IStateRes.hpp"
 #include "CreateHeaderState.hpp"
+#include "GetBodyState.hpp"
+#include "ResponseState.hpp"
 
 class HandleRes
 {
@@ -23,6 +25,7 @@ class HandleRes
 		std::map<StateResType, IStateRes*>	_stateMap;
 		ConfigsData							_configsData;
 		Event								*_event;
+		StateResType						_state;
 
 		StateResType _handleState(StateResType state);
 	public:
@@ -35,4 +38,5 @@ class HandleRes
 		void setEvent(Event *event);
 
 		void handle(void);
+		bool isResProcessingComplete(void);
 };

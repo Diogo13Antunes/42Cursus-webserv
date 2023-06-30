@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/30 10:50:48 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/30 17:59:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,10 @@ Event::Event(int fd, int state):
 	_reqState(HEADER_PROCESS),
 	_resState(0),
 	_numWrited(0),
-	_idx(0)
+	_idx(0),
+	_bytesReadBody(0),
+	_totalBytesSend(0),
+	_resState1(CREATE_HEADER)
 {}
 
 Event::Event(const Event &src) {}
@@ -384,4 +387,91 @@ static std::string getFileType(std::string path)
 	if (dotIdx < path.size())
 		type = path.substr(dotIdx, path.size());
 	return (type);
+}
+
+
+// Functions for Handle Response
+std::string Event::getFileName(void)
+{
+	return (_fileName);
+}
+
+void Event::setFileName(std::string fileName)
+{
+	_fileName = fileName;
+}
+
+size_t Event::getBytesReadBody(void)
+{
+	return (_bytesReadBody);
+}
+
+void Event::setBytesReadBody(size_t bytesReadBody)
+{
+	_bytesReadBody = bytesReadBody;
+}
+
+void Event::updateBytesReadBody(size_t bytesReadBody)
+{
+	_bytesReadBody += bytesReadBody;
+}
+
+size_t Event::getBodySize1(void)
+{
+	return (_bodySize);
+}
+
+void Event::setBodySize1(size_t bodySize)
+{
+	_bodySize = bodySize;
+}
+
+const std::string& Event::getRes(void)
+{
+	return (_res);
+}
+
+void Event::setRes(std::string res)
+{
+	_res = res;
+}
+
+void Event::updateRes(std::string res)
+{
+	_res += res;
+}
+
+size_t Event::getResSize(void)
+{
+	return (_resSize);
+}
+
+void Event::setResSize(size_t resSize)
+{
+	_resSize = resSize;
+}
+
+size_t Event::getTotalBytesSend(void)
+{
+	return (_totalBytesSend);
+}
+
+void Event::setTotalBytesSend(size_t totalBytesSend)
+{
+	_totalBytesSend = totalBytesSend;
+}
+
+void Event::updateTotalBytesSend(size_t totalBytesSend)
+{
+	_totalBytesSend += totalBytesSend;
+}
+
+StateResType Event::getResState1(void)
+{
+	return (_resState1);
+}
+
+void Event::setResState1(StateResType resState)
+{
+	_resState1 = resState;
 }

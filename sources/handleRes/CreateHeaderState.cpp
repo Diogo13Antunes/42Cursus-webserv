@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/30 11:35:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/30 18:28:55 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,17 +44,19 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 {
 	std::string fileName;
 	std::string	header;
+	size_t		fileSize;
 
-	std::cout << "CreateHeaderState" << std::endl;
+	//std::cout << "CreateHeaderState" << std::endl;
 
 	fileName = _getFileName(event->getReqPath(), configsData);
 	_isFileReadable(fileName);
-	_getFileSize(fileName);
+	fileSize = _getFileSize(fileName);
+	event->setBodySize1(fileSize);
 	_createHeader(header, fileName);
-	
-	std::cout << header << std::endl;
-
-	return (RESPONSE_END);
+	event->setFileName(fileName);
+	event->setRes(header);
+	event->setResSize(header.size() + fileSize);
+	return (GET_BODY);
 }
 
 std::string CreateHeaderState::_getFileName(std::string reqTarget, ConfigsData conf)
