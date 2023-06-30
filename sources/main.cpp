@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/29 16:43:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/29 17:40:49 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,7 @@ int main(int argc, char **argv)
 	
 	//eventLoop.registerEventHandler(factory.getEventHandler(READ_EVENT));
 	eventLoop.registerEventHandler(new ReadHandler(new HandleReq()));
-	eventLoop.registerEventHandler(new WriteHandler(new HandleRes()));
+	eventLoop.registerEventHandler(new WriteHandler(new HandleRes(data)));
 	//eventLoop.registerEventHandler(factory.getEventHandler(WRITE_EVENT));
 	
     while(1)

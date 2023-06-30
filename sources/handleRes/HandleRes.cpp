@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/29 15:48:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/29 17:48:35 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,16 @@ HandleRes::HandleRes(void): _event(NULL)
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
 }
 
+HandleRes::HandleRes(ConfigsData configsData):
+	_event(NULL),
+	_configsData(configsData)
+{
+	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
+}
+
 HandleRes::HandleRes(Event *event): _event(event)
 {
-	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));	
+	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
 }
 
 HandleRes::HandleRes(const HandleRes &src)
@@ -72,7 +79,7 @@ StateResType HandleRes::_handleState(StateResType state)
 	{
 		it = _stateMap.find(state);
 		if (it != _stateMap.end())
-			state = it->second->handle(_event);
+			state = it->second->handle(_event, _configsData);
 	}
 	return (state);
 }

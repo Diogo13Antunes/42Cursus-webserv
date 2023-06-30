@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/29 14:38:15 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/30 10:50:48 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -385,5 +385,3 @@ static std::string getFileType(std::string path)
 		type = path.substr(dotIdx, path.size());
 	return (type);
 }
-
-
