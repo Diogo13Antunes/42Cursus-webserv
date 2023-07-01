@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 11:43:43 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/30 16:47:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/01 16:16:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,14 @@
 
 #include "IStateRes.hpp"
 
+#define BUFF_SIZE 1000000
+
 class GetBodyState: public IStateRes
 {
 	private:
+		char _buff[BUFF_SIZE];
+		
 		size_t	_getBodyData(std::string& data, std::string fileName, size_t offset);
-		//bool	_isBodyFullyRead(size_t bytesRead, size_t bodySize);
 
 	public:
 		GetBodyState(void);

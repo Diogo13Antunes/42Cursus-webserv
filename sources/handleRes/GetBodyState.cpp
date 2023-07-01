@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 11:43:37 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/30 18:36:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/01 16:00:11 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ GetBodyState &GetBodyState::operator=(const GetBodyState &src)
 }
 */
 
+
 StateResType GetBodyState::handle(Event *event, ConfigsData configsData)
 {
 	std::string data; 
@@ -47,6 +48,7 @@ StateResType GetBodyState::handle(Event *event, ConfigsData configsData)
 
 	fileName = event->getFileName();
 	event->updateBytesReadBody(_getBodyData(data, fileName, event->getBytesReadBody()));
+
 	event->updateRes(data);
 
 	// This function will be transfered for response state
@@ -61,19 +63,20 @@ StateResType GetBodyState::handle(Event *event, ConfigsData configsData)
 }
 
 
+
 size_t GetBodyState::_getBodyData(std::string& data, std::string fileName, size_t offset)
 {
-	int buffSize = 1000000;
-    char buff[buffSize];
+	//int buffSize = 1000000;
+    //char buff[BUFF_SIZE];
 	size_t read;
 
     std::ifstream file(fileName.c_str());
     if (!file)
         return (0);
 	file.seekg(offset);
-	file.read(buff, buffSize);
+	file.read(_buff, BUFF_SIZE);
 	read = file.gcount();
-	data.assign(buff, read);
+	data.assign(_buff, read);
 	file.close();
 	return (read);
 }

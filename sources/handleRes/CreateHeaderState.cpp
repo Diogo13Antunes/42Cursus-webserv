@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/30 18:28:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/06/30 23:15:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,8 @@ std::string CreateHeaderState::_getMimeType(std::string fileExt)
 		mimeType = "image/x-png";
 	else if (!fileExt.compare("jpg"))
 		mimeType = "image/jpeg";
+	else if (!fileExt.compare("iso")) // just for test
+		mimeType = "text/plain";
 	return (mimeType);
 }
  

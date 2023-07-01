@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/30 18:29:09 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/01 16:07:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ ResponseState &ResponseState::operator=(const ResponseState &src)
 }
 */
 
+
 StateResType ResponseState::handle(Event *event, ConfigsData confiagsDta)
 {
 	ssize_t		numBytesSend;
@@ -51,7 +52,10 @@ StateResType ResponseState::handle(Event *event, ConfigsData confiagsDta)
 	res = event->getRes();
 	resSize = res.size();
 	numBytesSend = send(event->getFd(), res.c_str(), resSize, 0);
-	if (numBytesSend == resSize)
+	//std::cout << "------" << std::endl;
+	//std::cout << "numBytesSend: " << numBytesSend << std::endl;
+	//std::cout << "------" << std::endl;
+	if (numBytesSend >= resSize)
 		event->setRes("");
 	else
 		event->setRes(res.substr(numBytesSend));
@@ -68,3 +72,4 @@ bool ResponseState::_isResponseFullySend(size_t totalBytesSend, size_t resSize)
 		return (true);
 	return (false);
 }
+
