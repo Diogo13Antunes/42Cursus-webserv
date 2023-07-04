@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/04 16:41:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/04 18:00:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,12 +184,9 @@ void CreateHeaderState::_createHeaderDefaultError(std::string &header, int error
 	ErrorPageBuilder	errorBuilder(errorCode);
 	std::stringstream	bodySize;
 
-	std::cout << "phrase: " << errorBuilder.getReasonPhrase() << std::endl;
-
 	bodySize << errorBuilder.getErrorPageSize();
 	header = "HTTP/1.1 ";
-	header += errorBuilder.getErrorCodeToString() + " "; 
-	header += errorBuilder.getReasonPhrase();
+	header += errorBuilder.getCodeAndPhrase();
 	header += "\r\nContent-length: ";
 	header += bodySize.str();
 	header += "\r\n";

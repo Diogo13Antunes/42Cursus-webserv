@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 09:35:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/04 16:28:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/04 17:59:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,90 +78,43 @@ std::string ErrorPageBuilder::getErrorPageHtml(void)
 	std::string	errorPage;
 	int			idxCode;
 	int			idxPhrase;
+	int			idxTitle;
 
 	errorPage = "<!DOCTYPE html>\
-				<html lang=\"en\">\
+				<html>\
 				<head>\
-					<meta charset=\"UTF-8\">\
-					<title>error</title>\
+					<title></title>\
 					<style>\
-						h1{\
-							text-align: center;\
-							font-size: 6vw;\
-							margin: auto;\
-							padding-bottom: 0px;\
-						}\
-						h2 {\
-							text-align: center;\
-							font-size: 3vw;\
-							margin-top: 0px;\
-							padding-top: 0px;\
-							font-weight: normal;\
+						h1, h2, p {text-align: center; margin: 0px; padding: 0px;}\
+						h1 {font-size: 6vw;}\
+						h2 {font-size: 3vw; font-weight: normal;}\
+						p  {font-size: 1.5vw;}\
+						div {margin-top: 20px; margin-bottom: 20px; margin-left: 80px;\
+							margin-right: 80px; border-bottom: 2px solid #888;\
 						}\
 					</style>\
 				</head>\
 				<body>\
-					<h1></h1>\
-					<h2></h2>\
+						<h1></h1><h2></h2><div></div><p>webserv</p>\
 				</body>\
 				</html>";
 
-	idxCode = errorPage.find("<h1>") + 4;
+	idxTitle = errorPage.find("</title>");
+	errorPage.insert(idxTitle, this->getCodeAndPhrase());
+	idxCode = errorPage.find("</h1>");
 	errorPage.insert(idxCode, this->getErrorCodeToString());
-	idxPhrase = errorPage.find("<h2>") + 4;
+	idxPhrase = errorPage.find("</h2>");
 	errorPage.insert(idxPhrase, this->getReasonPhrase());
 	return (errorPage);
 }
 
-/*
-std::string ErrorPageBuilder::getErrorPageHtml(void)
+std::string	ErrorPageBuilder::getCodeAndPhrase(void)
 {
-	std::map<int, std::string>::iterator	it;
-	std::string								reasonPhrase;
-	std::string								errorHtml;
-	int										idxErrorCode;
-	int										idxErrorPhrase;
-	std::stringstream						code;
+	std::string statusAndPhrase;
 
-	it = _reasonPhrase.find(_errorCode);
-	if (it == _reasonPhrase.end())
-		return (errorHtml);
-
-	errorHtml = "<!DOCTYPE html>\
-				<html lang=\"en\">\
-				<head>\
-					<meta charset=\"UTF-8\">\
-					<title>error</title>\
-					<style>\
-						h1{\
-							text-align: center;\
-							font-size: 6vw;\
-							margin: auto;\
-							padding-bottom: 0px;\
-						}\
-						h2 {\
-							text-align: center;\
-							font-size: 3vw;\
-							margin-top: 0px;\
-							padding-top: 0px;\
-							font-weight: normal;\
-						}\
-					</style>\
-				</head>\
-				<body>\
-					<h1></h1>\
-					<h2></h2>\
-				</body>\
-				</html>";
-
-	idxErrorCode = errorHtml.find("<h1>");
-	idxErrorPhrase = errorHtml.find("<h2>");
-	code << it->first;
-	errorHtml.insert(idxErrorCode + 4, code.str());
-	errorHtml.insert(idxErrorPhrase + 4, it->second);
-	return (errorHtml);
+	statusAndPhrase = this->getErrorCodeToString() + " " + this->getReasonPhrase();
+	return (statusAndPhrase);
 }
-*/
 
 int ErrorPageBuilder::getErrorPageSize(void)
 {

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 09:35:09 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/04 15:29:01 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/04 17:54:31 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,6 @@ class ErrorPageBuilder
 		std::string	getReasonPhrase(void);
 		std::string	getErrorCodeToString(void);
 		std::string	getErrorPageHtml(void);
+		std::string	getCodeAndPhrase(void);
 		int			getErrorPageSize(void);
 };
