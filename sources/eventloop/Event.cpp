@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/30 17:59:39 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/04 16:01:34 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ Event::Event(int fd, int state):
 	_idx(0),
 	_bytesReadBody(0),
 	_totalBytesSend(0),
-	_resState1(CREATE_HEADER)
+	_resState1(CREATE_HEADER),
+	_errorCode(0)
 {}
 
 Event::Event(const Event &src) {}
@@ -474,4 +475,14 @@ StateResType Event::getResState1(void)
 void Event::setResState1(StateResType resState)
 {
 	_resState1 = resState;
+}
+
+int Event::getErrorCode(void)
+{
+	return (_errorCode);
+}
+
+void Event::setErrorCode(int errorCode)
+{
+	_errorCode = errorCode;
 }

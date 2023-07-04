@@ -6,13 +6,13 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/01 16:07:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/04 14:54:32 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ResponseState.hpp"
-#include <sys/socket.h>
 
+#include <sys/socket.h>
 #include <iostream>
 
 ResponseState::ResponseState(void)
@@ -44,17 +44,9 @@ StateResType ResponseState::handle(Event *event, ConfigsData confiagsDta)
 	size_t		resSize;
 	std::string	res;
 
-	//std::cout << "ResponseState" << std::endl;
-
-	//std::cout << "size: " << event->getRes().size() << std::endl;
-	//std::cout << event->getRes() << std::endl;
-
 	res = event->getRes();
 	resSize = res.size();
 	numBytesSend = send(event->getFd(), res.c_str(), resSize, 0);
-	//std::cout << "------" << std::endl;
-	//std::cout << "numBytesSend: " << numBytesSend << std::endl;
-	//std::cout << "------" << std::endl;
 	if (numBytesSend >= resSize)
 		event->setRes("");
 	else

@@ -7,40 +7,41 @@ RM = rm -f
 
 $(VERBOSE).SILENT:
 
-INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq -I ./sources/request -I ./sources/handleRes
+INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq -I ./sources/request -I ./sources/handleRes -I ./sources/errorPageBuilder
 
 SRC_PATH = ./sources
 
 OBJ_PATH = ./objects
 
-SRC_NAME =	main.cpp							\
-			connections/Connection.cpp			\
-			connections/Connections.cpp			\
-			messenger/AMessengerClient.cpp		\
-			messenger/Messenger.cpp				\
-			messenger/Message.cpp				\
-			messenger/ConnectionMessage.cpp		\
-			messenger/EventMessage.cpp			\
-			eventloop/EventLoop.cpp				\
-			eventloop/WriteHandler.cpp			\
-			eventloop/ReadHandler.cpp			\
-			eventloop/EventHandlerFactory.cpp	\
-			eventloop/Event.cpp					\
-			eventloop/EventDemux.cpp			\
-			configs/Configs.cpp					\
-			configs/ConfigsUtils.cpp			\
-			configs/ConfigsData.cpp				\
-			request/RequestParser.cpp			\
-			request/RequestParserUtils.cpp		\
-			request/RequestData.cpp				\
-			request/RequestDataUtils.cpp		\
-			handleReq/HandleReq.cpp				\
-			handleReq/HeaderProcess.cpp			\
-			handleReq/BodyProcess.cpp			\
-			handleRes/HandleRes.cpp				\
-			handleRes/CreateHeaderState.cpp		\
-			handleRes/GetBodyState.cpp			\
-			handleRes/ResponseState.cpp			\
+SRC_NAME =	main.cpp								\
+			connections/Connection.cpp				\
+			connections/Connections.cpp				\
+			messenger/AMessengerClient.cpp			\
+			messenger/Messenger.cpp					\
+			messenger/Message.cpp					\
+			messenger/ConnectionMessage.cpp			\
+			messenger/EventMessage.cpp				\
+			eventloop/EventLoop.cpp					\
+			eventloop/WriteHandler.cpp				\
+			eventloop/ReadHandler.cpp				\
+			eventloop/EventHandlerFactory.cpp		\
+			eventloop/Event.cpp						\
+			eventloop/EventDemux.cpp				\
+			configs/Configs.cpp						\
+			configs/ConfigsUtils.cpp				\
+			configs/ConfigsData.cpp					\
+			request/RequestParser.cpp				\
+			request/RequestParserUtils.cpp			\
+			request/RequestData.cpp					\
+			request/RequestDataUtils.cpp			\
+			handleReq/HandleReq.cpp					\
+			handleReq/HeaderProcess.cpp				\
+			handleReq/BodyProcess.cpp				\
+			handleRes/HandleRes.cpp					\
+			handleRes/CreateHeaderState.cpp			\
+			handleRes/GetBodyState.cpp				\
+			handleRes/ResponseState.cpp				\
+			errorPageBuilder/ErrorPageBuilder.cpp	\
 			Terminal.cpp
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))
@@ -62,6 +63,7 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects/request
 	mkdir -p objects/handleReq
 	mkdir -p objects/handleRes
+	mkdir -p objects/errorPageBuilder
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $@
 
 clean:

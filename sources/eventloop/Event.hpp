@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/30 17:50:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/04 16:00:16 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ class Event
 		size_t			_resSize;
 		size_t			_totalBytesSend;
 		StateResType	_resState1;
+		int				_errorCode;
 		
 
 
@@ -151,5 +152,7 @@ class Event
 		StateResType		getResState1(void);
 		void				setResState1(StateResType resState);
 
+		int					getErrorCode(void);
+		void				setErrorCode(int errorCode);
 
 };

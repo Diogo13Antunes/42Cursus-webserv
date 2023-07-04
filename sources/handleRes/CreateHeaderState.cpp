@@ -6,11 +6,13 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/30 23:15:06 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/04 16:41:40 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CreateHeaderState.hpp"
+
+#include "ErrorPageBuilder.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -38,8 +40,7 @@ CreateHeaderState &CreateHeaderState::operator=(const CreateHeaderState &src)
 }
 */
 
-
-
+/*
 StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 {
 	std::string fileName;
@@ -53,6 +54,41 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 	fileSize = _getFileSize(fileName);
 	event->setBodySize1(fileSize);
 	_createHeader(header, fileName);
+	event->setFileName(fileName);
+	event->setRes(header);
+	event->setResSize(header.size() + fileSize);
+	return (GET_BODY);
+}
+*/
+
+
+// Tem de ser reorganizado de outra forma
+StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
+{
+	std::string			fileName;
+	std::string			header;
+	size_t				fileSize;
+	int					errorCode = 0;
+	ErrorPageBuilder	errorBuilder;
+
+
+	fileName = _getFileName(event->getReqPath(), configsData);
+	if (_isFileReadable(fileName))
+		fileSize = _getFileSize(fileName);
+	else
+	{
+		errorCode = 404;
+		event->setErrorCode(errorCode);
+		errorBuilder.setErrorCode(errorCode);
+		fileSize = errorBuilder.getErrorPageSize();
+	}
+	event->setBodySize1(fileSize);
+
+	if (errorCode)
+		_createHeaderDefaultError(header, errorCode);
+	else
+		_createHeader(header, fileName);
+	
 	event->setFileName(fileName);
 	event->setRes(header);
 	event->setResSize(header.size() + fileSize);
@@ -133,12 +169,30 @@ std::string CreateHeaderState::_getMimeType(std::string fileExt)
  
 void CreateHeaderState::_createHeader(std::string &header, std::string fileName)
 {
-	std::stringstream bodySize;
+	std::stringstream	bodySize;
 
 	bodySize << _getFileSize(fileName);
 	header = "HTTP/1.1 200 OK\r\nContent-length: ";
 	header += bodySize.str();
 	header += "\r\n";
 	header += "Content-Type: " + _getMimeType(_getFileType(fileName));
+	header += "\r\n\r\n";
+}
+
+void CreateHeaderState::_createHeaderDefaultError(std::string &header, int errorCode)
+{
+	ErrorPageBuilder	errorBuilder(errorCode);
+	std::stringstream	bodySize;
+
+	std::cout << "phrase: " << errorBuilder.getReasonPhrase() << std::endl;
+
+	bodySize << errorBuilder.getErrorPageSize();
+	header = "HTTP/1.1 ";
+	header += errorBuilder.getErrorCodeToString() + " "; 
+	header += errorBuilder.getReasonPhrase();
+	header += "\r\nContent-length: ";
+	header += bodySize.str();
+	header += "\r\n";
+	header += "Content-Type: text/html";
 	header += "\r\n\r\n";
 }

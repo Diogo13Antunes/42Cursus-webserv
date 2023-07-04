@@ -6,11 +6,13 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 11:43:37 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/01 16:00:11 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/04 16:15:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "GetBodyState.hpp"
+
+#include "ErrorPageBuilder.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -41,23 +43,21 @@ GetBodyState &GetBodyState::operator=(const GetBodyState &src)
 
 StateResType GetBodyState::handle(Event *event, ConfigsData configsData)
 {
-	std::string data; 
-	std::string fileName;
+	std::string			data; 
+	std::string			fileName;
+	ErrorPageBuilder	errorBuilder;
 
-	//std::cout << "GetBodyState" << std::endl;
-
-	fileName = event->getFileName();
-	event->updateBytesReadBody(_getBodyData(data, fileName, event->getBytesReadBody()));
-
+	if (event->getErrorCode())
+	{
+		errorBuilder.setErrorCode(event->getErrorCode());
+		data = errorBuilder.getErrorPageHtml();
+	}
+	else
+	{
+		fileName = event->getFileName();
+		event->updateBytesReadBody(_getBodyData(data, fileName, event->getBytesReadBody()));
+	}
 	event->updateRes(data);
-
-	// This function will be transfered for response state
-	//if (_isBodyFullyRead(event->getBytesReadBody(), event->getBodySize1()))
-	//	std::cout << "Readed All Data" << std::endl;
-	
-	
-	//std::cout << event->getRes() << std::endl;
-	//std::cout << data << std::endl;
 
 	return (RESPONSE);
 }
@@ -66,8 +66,6 @@ StateResType GetBodyState::handle(Event *event, ConfigsData configsData)
 
 size_t GetBodyState::_getBodyData(std::string& data, std::string fileName, size_t offset)
 {
-	//int buffSize = 1000000;
-    //char buff[BUFF_SIZE];
 	size_t read;
 
     std::ifstream file(fileName.c_str());
@@ -80,12 +78,3 @@ size_t GetBodyState::_getBodyData(std::string& data, std::string fileName, size_
 	file.close();
 	return (read);
 }
-
-
-// This function will be transfered for response state
-/*bool GetBodyState::_isBodyFullyRead(size_t bytesRead, size_t bodySize)
-{
-	if (bytesRead >= bodySize)
-		return (true);
-	return (false);
-}*/
