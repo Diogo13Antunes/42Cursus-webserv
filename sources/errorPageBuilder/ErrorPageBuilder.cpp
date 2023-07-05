@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 09:35:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/05 08:45:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/05 09:16:15 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ std::string	ErrorPageBuilder::getCodeAndPhrase(void)
 
 int ErrorPageBuilder::getErrorPageSize(void)
 {
-	return (this->getErrorPageHtml()).size();
+	return (this->getErrorPageHtml().size());
 }
 
 void ErrorPageBuilder::_initErrorCodes(void)

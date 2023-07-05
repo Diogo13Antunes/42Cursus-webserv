@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/04 14:54:32 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/05 14:26:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,3 @@ bool ResponseState::_isResponseFullySend(size_t totalBytesSend, size_t resSize)
 		return (true);
 	return (false);
 }
-

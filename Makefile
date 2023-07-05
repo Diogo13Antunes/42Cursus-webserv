@@ -7,7 +7,7 @@ RM = rm -f
 
 $(VERBOSE).SILENT:
 
-INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq -I ./sources/request -I ./sources/handleRes -I ./sources/errorPageBuilder
+INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq -I ./sources/request -I ./sources/handleRes -I ./sources/errorPageBuilder -I ./sources/httpHeaderBuilder
 
 SRC_PATH = ./sources
 
@@ -42,6 +42,7 @@ SRC_NAME =	main.cpp								\
 			handleRes/GetBodyState.cpp				\
 			handleRes/ResponseState.cpp				\
 			errorPageBuilder/ErrorPageBuilder.cpp	\
+			httpHeaderBuilder/HttpHeaderBuilder.cpp	\
 			Terminal.cpp
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))
@@ -64,6 +65,7 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects/handleReq
 	mkdir -p objects/handleRes
 	mkdir -p objects/errorPageBuilder
+	mkdir -p objects/httpHeaderBuilder
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $@
 
 clean:

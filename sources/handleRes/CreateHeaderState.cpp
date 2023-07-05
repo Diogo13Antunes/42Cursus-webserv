@@ -6,13 +6,14 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/04 18:00:22 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/05 18:10:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CreateHeaderState.hpp"
 
 #include "ErrorPageBuilder.hpp"
+#include "HttpHeaderBuilder.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -154,7 +155,7 @@ std::string CreateHeaderState::_getMimeType(std::string fileExt)
 
 	if (!fileExt.compare("html"))
 		mimeType = "text/html";
-	else if (!fileExt.compare("html"))
+	else if (!fileExt.compare("css"))
 		mimeType = "text/css";
 	else if (!fileExt.compare("js"))
 		mimeType = "text/javascript";
@@ -166,7 +167,8 @@ std::string CreateHeaderState::_getMimeType(std::string fileExt)
 		mimeType = "text/plain";
 	return (mimeType);
 }
- 
+
+/* 
 void CreateHeaderState::_createHeader(std::string &header, std::string fileName)
 {
 	std::stringstream	bodySize;
@@ -177,6 +179,28 @@ void CreateHeaderState::_createHeader(std::string &header, std::string fileName)
 	header += "\r\n";
 	header += "Content-Type: " + _getMimeType(_getFileType(fileName));
 	header += "\r\n\r\n";
+}
+*/
+
+void CreateHeaderState::_createHeader(std::string &header, std::string fileName)
+{
+	HttpHeaderBuilder	httpHeader;
+	std::stringstream	bodySize;
+
+	bodySize << _getFileSize(fileName);
+	header = "HTTP/1.1 200 OK\r\nContent-length: ";
+	header += bodySize.str();
+	header += "\r\n";
+	header += "Content-Type: " + _getMimeType(_getFileType(fileName));
+	header += "\r\n\r\n";
+
+
+	httpHeader.setStatus("400 KO");
+	httpHeader.setContentLength(_getFileSize(fileName));
+	httpHeader.setContentType(_getMimeType(_getFileType(fileName)));
+	httpHeader.setServerName("webserv");
+
+	std::cout << httpHeader.getHeader() << std::endl;
 }
 
 void CreateHeaderState::_createHeaderDefaultError(std::string &header, int errorCode)
