@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 15:34:03 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/05 18:45:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/05 18:52:49 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,6 @@
 #include <iostream>
 #include <sstream>
 #include <ctime>
-
-/*
-HTTP/1.1 200 OK
-connection: keep-alive
-content-length: 1325
-content-type: text/html
-date: Wed, 05 Jul 2023 14:20:03 WEST
-last-modified: Wed, 14 Jun 2023 11:55:53 WEST
-server: Webserv/1.0
-*/
 
 HttpHeaderBuilder::HttpHeaderBuilder(void): 
 	_contentLength(0), 
