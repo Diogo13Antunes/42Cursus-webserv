@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 09:35:09 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/04 17:54:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/05 08:43:19 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ class ErrorPageBuilder
 	private:
 		std::map<int, std::string> _reasonPhrase;
 		int						   _errorCode;
+
+		void _initErrorCodes(void);
 
 	public:
 		ErrorPageBuilder(void);

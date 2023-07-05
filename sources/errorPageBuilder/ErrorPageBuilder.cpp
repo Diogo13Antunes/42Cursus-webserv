@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 09:35:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/04 17:59:13 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/05 08:45:43 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,12 @@
 
 ErrorPageBuilder::ErrorPageBuilder(void): _errorCode(0)
 {
-	_reasonPhrase.insert(std::make_pair(404, "Not Found"));
-	_reasonPhrase.insert(std::make_pair(400, "Bad Request"));
+	_initErrorCodes();
 }
 
 ErrorPageBuilder::ErrorPageBuilder(int errorCode): _errorCode(errorCode)
 {
-	_reasonPhrase.insert(std::make_pair(404, "Not Found"));
-	_reasonPhrase.insert(std::make_pair(400, "Bad Request"));
+	_initErrorCodes();
 }
 
 ErrorPageBuilder::ErrorPageBuilder(const ErrorPageBuilder &src)
@@ -119,4 +117,10 @@ std::string	ErrorPageBuilder::getCodeAndPhrase(void)
 int ErrorPageBuilder::getErrorPageSize(void)
 {
 	return (this->getErrorPageHtml()).size();
+}
+
+void ErrorPageBuilder::_initErrorCodes(void)
+{
+	_reasonPhrase.insert(std::make_pair(404, "Not Found"));
+	_reasonPhrase.insert(std::make_pair(400, "Bad Request"));	
 }
