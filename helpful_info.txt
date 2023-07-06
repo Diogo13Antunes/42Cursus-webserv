@@ -1,0 +1,26 @@
+In an HTTP server configuration file, there are various server attributes that can be defined to customize the server's behavior. Here are some common server attributes that can be specified:
+
+1.  Server name: The name of the server that will be used to identify it in log files and other places.
+2.  Listen: The IP address and port number the server should listen on.
+3.  Document root: The directory where the server should look for files to serve.
+4.  Error log: The file where the server should log errors.
+5.  Access log: The file where the server should log access to resources.
+6.  Directory index: The default file to serve when a client requests a directory.
+7.  MIME types: The mapping of file extensions to MIME types.
+8.  Virtual hosts: The ability to host multiple websites on the same server by specifying different configurations for each host.
+9.  SSL/TLS certificates: Configuration for securing connections using SSL/TLS certificates.
+10. Proxy configuration: Configuration for proxying requests to other servers.
+
+These attributes can be specified using various directives in the configuration file, such as:
+ServerName;
+Listen;
+DocumentRoot;
+ErrorLog;
+DirectoryIndex;
+Types;
+VirtualHost;
+
+Links to check RFC:
+ -> https://datatracker.ietf.org/doc/html/rfc9110
+
+Verificar a possibilidade ou não de ter content_length no Request
