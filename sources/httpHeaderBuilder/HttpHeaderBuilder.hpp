@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 15:34:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/05 18:34:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/06 12:23:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class HttpHeaderBuilder
 		std::string _date;
 		int			_contentLength;
 
-		std::string _getDateNow(void);
+		//std::string _getDateNow(void);
 
 	public:
 		HttpHeaderBuilder(void);
