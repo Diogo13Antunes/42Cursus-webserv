@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:33:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/06 15:31:25 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,32 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 	return (true);
 }
 
+std::string	readFile(const char *filename)
+{
+	std::ifstream	file(filename);
+	std::string		fileContent;
+
+	if (file.is_open())
+	{
+		std::string	line;
+		while (std::getline(file, line))
+			fileContent += line + "\n";
+		file.close();
+	}
+	else
+		std::cerr << "Invalid File" << std::endl;
+
+	return (fileContent);
+}
+
+int	printExceptionsMessages(const std::exception &e, std::string message)
+{
+	std::cerr << e.what() << std::endl;
+	if (!message.empty())
+		std::cerr << message << std::endl;
+	exit(1);
+}
+
 /* int main(int ac, char **av)
 {
 	ConfigsData	data;
@@ -94,12 +120,19 @@ int main1(int ac, char **av)
 		return (1);
 	}
 
-	fd1 = open(av[1], O_RDONLY);
-	if (fd1 < 0)
-	{
-		Terminal::printErrors("Invalid Request File");
+	std::string	requestContent = readFile(av[1]);
+	
+	if (requestContent.empty())
 		return (1);
-	}
+
+	RequestParser	parse;
+
+	std::string		head;
+	std::string		body;
+
+	size_t	index = requestContent.find("\r\n\r\n");
+	head = requestContent.substr(0, index + 4);
+	body = requestContent.substr(index + 4);
 
 	try
 	{
@@ -138,11 +171,48 @@ int main1(int ac, char **av)
 		data.setRequestHeader(requestHeader);
 		data.setRequestBody(requestBody);*/
 	}
-	catch(const std::exception& e)
+	catch(const RequestParser::BadRequestException &e)
 	{
-		std::cerr << e.what() << '\n';
-		return (1);
+		printExceptionsMessages(e, "Error Code: 400");
 	}
+
+	return (0);
+
+	std::string											requestLine;
+	std::map<std::string, std::vector<std::string> >	requestHeader;
+	std::string											requestBody;
+
+	requestLine = parse.getRequestLine();
+	requestHeader = parse.getRequestHeader();
+	requestBody = parse.getRequestBody();
+
+	std::cout << "Line: " << requestLine << std::endl;
+
+	std::cout << "[KEY] | [VALUE]" << std::endl;
+	std::map<std::string, std::vector<std::string> >::iterator	it;
+	std::vector<std::string>	elements;
+	for (it = requestHeader.begin(); it != requestHeader.end(); it++)
+	{
+		elements = (*it).second;
+		std::cout << "[" << (*it).first << "] | ";
+		for (size_t i = 0; i < elements.size(); i++)
+		{
+			std::cout << "[" << elements.at(i).c_str() << "]";
+			if (i < elements.size() - 1)
+				std::cout << " , ";
+		}
+		std::cout << std::endl;
+	}
+	
+	std::cout << "-------------------- BODY --------------------" << std::endl;
+	std::cout << requestBody;
+	std::cout << "----------------------------------------------" << std::endl;
+
+	RequestData data;
+
+	data.setRequestLine(requestLine);
+	data.setRequestHeader(requestHeader);
+	data.setRequestBody(requestBody);
 
 	std::vector<std::string>							line;
 	std::map<std::string, std::vector<std::string> >	header;
@@ -180,8 +250,6 @@ int main1(int ac, char **av)
 	std::cout << body;
 	std::cout << "----------------------------------------------" << std::endl;
 
-	return (0);
-}
 
 int main(int argc, char **argv)
 {

@@ -54,7 +54,7 @@ all: $(NAME)
 
 $(NAME) : $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INC) -o $(NAME)
-	@echo "\033[1;36m[COMPILED]\033[0m"
+	@echo -e "\033[1;36m[COMPILED]\033[0m"
 
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects
@@ -72,11 +72,11 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 
 clean:
 	rm -rf $(OBJ_PATH)
-	@echo "\033[1;33mAll $(NAME).o files are removed\033[0m"
+	@echo -e "\033[1;33mAll $(NAME).o files are removed\033[0m"
 
 fclean: clean
 	rm -f $(NAME)
-	@echo "\033[1;31m$(NAME) is deleted\033[0m"
+	@echo -e "\033[1;31m$(NAME) is deleted\033[0m"
 
 re: fclean all
 

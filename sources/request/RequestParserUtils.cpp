@@ -73,6 +73,16 @@ std::string	RequestParserUtils::getBody(std::vector<std::string> &src)
 	return (body);
 }
 
+bool	RequestParserUtils::isStringEmpty(std::string str)
+{
+	if (!str.empty())
+	{
+		if (str.find_first_not_of(WHITE_SPACE) != str.npos)
+			return (false);
+	}
+	return (true);
+}
+
 static std::pair<std::string, std::vector<std::string> >	getPair(std::string &src)
 {
 	std::string					key;

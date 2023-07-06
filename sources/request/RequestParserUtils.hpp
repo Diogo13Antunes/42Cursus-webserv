@@ -21,5 +21,6 @@ class RequestParserUtils
 		static std::vector<std::string>							getDataVector(std::string &src);
 		static std::map<std::string, std::vector<std::string> >	getRequestHeader(std::vector<std::string> &src);
 		static std::string										getBody(std::vector<std::string> &src);
+		static bool												isStringEmpty(std::string str);
 
 };

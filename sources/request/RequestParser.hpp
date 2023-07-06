@@ -1,10 +1,12 @@
 #pragma once
 
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include <vector>
 #include <map>
 #include <cctype>
+#include <set>
 
 #include "Terminal.hpp"
 #include "RequestParserUtils.hpp"
@@ -15,6 +17,8 @@ class RequestParser
 		std::string											_requestLine;
 		std::map<std::string, std::vector<std::string> >	_requestHeader;
 		std::string											_requestBody;
+
+		int													_getContentLen(void);
 
 	public:
 		RequestParser(void);
@@ -27,10 +31,18 @@ class RequestParser
 		void												headerParse(std::string	&header);
 		void												bodyParse(std::string &body);
 
+		bool												isValidHeader(void);
+		bool												checkContentLenght(void);
+
 		class EmptyRequestException: public std::exception
 		{
 			public:
 				const char *what() const throw();
 		};
 
+		class BadRequestException: public std::exception
+		{
+			public:
+				const char *what() const throw();
+		};
 };
