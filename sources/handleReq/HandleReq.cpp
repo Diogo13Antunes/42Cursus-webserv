@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:15:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/25 10:19:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/06 15:24:33 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,12 @@ HandleReq::~HandleReq(void)
 			delete it->second;
 		it++;
 	}
+}
+
+void HandleReq::setEvent(Event *event)
+{
+	_event = event;
+	_state = event->getReqState();
 }
 
 bool HandleReq::handle(void)
@@ -76,7 +82,7 @@ StateType HandleReq::_handleState(StateType state)
 	{
 		it = _stateMap.find(state);
 		if (it != _stateMap.end())
-		state = it->second->handle(_event);
+			state = it->second->handle(_event);
 	}
 	return (state);
 }

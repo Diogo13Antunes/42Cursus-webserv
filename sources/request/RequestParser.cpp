@@ -12,12 +12,6 @@ RequestParser::RequestParser(void)
 	_requestLine = RequestParserUtils::getRequestLine(requestContentVec);
 	_requestHeader = RequestParserUtils::getRequestHeader(requestContentVec);
 	_requestBody = RequestParserUtils::getBody(requestContentVec); */
-
-/*
-http spliting
-http smugling
-*/
-
 }
 
 RequestParser::~RequestParser(void)

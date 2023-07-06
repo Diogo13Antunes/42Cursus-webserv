@@ -1,33 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   WriteHandler.hpp                                   :+:      :+:    :+:   */
+/*   StateResType.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/17 17:30:30 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:39:22 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/06/29 11:31:44 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/07/04 16:08:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "IEventHandler.hpp"
-#include "HandleRes.hpp"
-#include "ConfigsData.hpp"
-
-class WriteHandler: public IEventHandler
+typedef enum 
 {
-	private:
-		HandleRes	*_handleRes;
+	CREATE_HEADER,
+	GET_BODY,
+	RESPONSE,
+	RESPONSE_END
+}	StateResType;
 
-	public:
-		WriteHandler(void);
-		WriteHandler(HandleRes *handleRes);
-		~WriteHandler(void);
-		WriteHandler(const WriteHandler &src);
-		WriteHandler &operator=(const WriteHandler &src);
-
-		void		handleEvent(Event *event);
-		EventType	getHandleType(void);
-};

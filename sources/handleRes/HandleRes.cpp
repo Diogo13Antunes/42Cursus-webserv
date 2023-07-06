@@ -6,18 +6,44 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/27 08:56:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/06 15:27:16 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include <cstdlib> // para remover apenas de teste
+
 
 #include <iostream>
 #include <sys/socket.h>
 
 #include "HandleRes.hpp"
 
-HandleRes::HandleRes(void)
+HandleRes::HandleRes(void):
+	_event(NULL),
+	_state(CREATE_HEADER)
 {
-	//Default HandleRes Constructor
+	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
+	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
+	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
+}
+
+HandleRes::HandleRes(ConfigsData configsData):
+	_event(NULL),
+	_configsData(configsData),
+	_state(CREATE_HEADER)
+{
+	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
+	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
+	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
+}
+
+HandleRes::HandleRes(Event *event): 
+	_event(event),
+	_state(CREATE_HEADER)
+{
+	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
+	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
+	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
 
 HandleRes::HandleRes(const HandleRes &src)
@@ -27,7 +53,15 @@ HandleRes::HandleRes(const HandleRes &src)
 
 HandleRes::~HandleRes(void)
 {
-	//Default HandleRes Destructor
+	std::map<StateResType, IStateRes*>::iterator	it;
+
+	it = _stateMap.begin();
+	while (it !=  _stateMap.end())
+	{
+		if (it->second)
+			delete it->second;
+		it++;
+	}
 }
 
 /*
@@ -37,64 +71,45 @@ HandleRes &HandleRes::operator=(const HandleRes &src)
 }
 */
 
-/*
-void HandleRes::handle(Event *event, ConfigsData confData)
+void HandleRes::setEvent(Event *event)
 {
-	std::string res;
-
-	ssize_t	nWrite;
-
-	event->createResponse(confData);
-
-	res = event->getResponse();
-
-
-	//nWrite = send(event->getFd(), res.c_str(), res.size(), 0);
-	nWrite = send(event->getFd(), res.c_str(), 1000000, 0);
-	std::cout <<"size          : " << res.size() << std::endl;
-	std::cout <<"Bytes escritos: " << nWrite << std::endl;
+	_event = event;
 }
-*/
 
-void HandleRes::handle(Event *event, ConfigsData confData)
+void HandleRes::handle(void)
 {
-	std::string res;
+	StateResType	state;
+	bool			loop;
 
-	ssize_t	nWrite;
-
-	if (event->getResState() == 0)
-		event->createResponse(confData);
-	
-	
-	res = event->getResponse();
-
-
-	/*int buff = 1000000;
-	if (res.size() < buff)
-		nWrite = send(event->getFd(), res.c_str(), res.size(), 0);
-	else 	
-		nWrite = send(event->getFd(), res.c_str(), buff, 0);*/
-	
-	nWrite = send(event->getFd(), res.c_str(), res.size(), 0);
-	if (nWrite == res.size())
-		event->setResState(2);
-	else
+	loop = true;
+	while (loop && _event->getResState1() != RESPONSE_END)
 	{
-		event->setResState(1);
-		if (nWrite)
-			event->setResponse(res.substr(nWrite));
+		if (_event->getResState1() == RESPONSE)
+			loop = false;
+		state = _handleState(_event->getResState1());
+		_event->setResState1(state);
 	}
-	
-	std::cout <<"size          : " << res.size() << std::endl;
-	std::cout <<"Bytes escritos: " << nWrite << std::endl;
+	//std::cout << "last State: " << state << std::endl;
+
+	//exit(0);
 }
 
-
-// usar um estado no evento para verificar o response
-// usar um private event
-bool HandleRes::isProcessingComplete(Event *event)
+StateResType HandleRes::_handleState(StateResType state)
 {
-	if (event->getResState() == 2)
+	std::map<StateResType, IStateRes*>::iterator	it;
+
+	if (state != RESPONSE_END)
+	{
+		it = _stateMap.find(state);
+		if (it != _stateMap.end())
+			state = it->second->handle(_event, _configsData);
+	}
+	return (state);
+}
+
+bool HandleRes::isResProcessingComplete(void)
+{
+	if (_event->getResState1() == RESPONSE_END)
 		return (true);
 	return (false);
 }

@@ -1,33 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   WriteHandler.hpp                                   :+:      :+:    :+:   */
+/*   GetBodyState.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/17 17:30:30 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:39:22 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/06/30 11:43:43 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/07/01 16:16:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "IEventHandler.hpp"
-#include "HandleRes.hpp"
-#include "ConfigsData.hpp"
+#include "IStateRes.hpp"
 
-class WriteHandler: public IEventHandler
+#define BUFF_SIZE 1000000
+
+class GetBodyState: public IStateRes
 {
 	private:
-		HandleRes	*_handleRes;
+		char _buff[BUFF_SIZE];
+		
+		size_t	_getBodyData(std::string& data, std::string fileName, size_t offset);
 
 	public:
-		WriteHandler(void);
-		WriteHandler(HandleRes *handleRes);
-		~WriteHandler(void);
-		WriteHandler(const WriteHandler &src);
-		WriteHandler &operator=(const WriteHandler &src);
+		GetBodyState(void);
+		GetBodyState(const GetBodyState &src);
+		~GetBodyState(void);
+		GetBodyState &operator=(const GetBodyState &src);
 
-		void		handleEvent(Event *event);
-		EventType	getHandleType(void);
+		StateResType handle(Event *event, ConfigsData configsData);
 };

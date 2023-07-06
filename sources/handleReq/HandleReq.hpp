@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:15:09 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/26 11:54:59 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/06 15:25:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ class HandleReq
 		HandleReq(void);
 		HandleReq(Event *event);
 		~HandleReq(void);
+
+		void setEvent(Event *event);
 
 		// for remove
 		void setState(StateType state);

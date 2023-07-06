@@ -1,33 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   WriteHandler.hpp                                   :+:      :+:    :+:   */
+/*   ResponseState.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/17 17:30:30 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:39:22 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/06/30 16:15:11 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/06/30 16:48:34 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "IEventHandler.hpp"
-#include "HandleRes.hpp"
-#include "ConfigsData.hpp"
+#include "IStateRes.hpp"
 
-class WriteHandler: public IEventHandler
+class ResponseState: public IStateRes
 {
 	private:
-		HandleRes	*_handleRes;
+		bool	_isResponseFullySend(size_t bytesRead, size_t bodySize);
 
 	public:
-		WriteHandler(void);
-		WriteHandler(HandleRes *handleRes);
-		~WriteHandler(void);
-		WriteHandler(const WriteHandler &src);
-		WriteHandler &operator=(const WriteHandler &src);
+		ResponseState(void);
+		ResponseState(const ResponseState &src);
+		~ResponseState(void);
+		ResponseState &operator=(const ResponseState &src);
 
-		void		handleEvent(Event *event);
-		EventType	getHandleType(void);
+		StateResType handle(Event *event, ConfigsData configsData);
 };
