@@ -18,13 +18,7 @@ EventLoop::EventLoop(const EventLoop &src) {}
 
 EventLoop::~EventLoop(void) {}
 
-/*
-EventLoop &EventLoop::operator=(const EventLoop &src)
-{
-	//EventLoop Copy Assignment Operator
-}
-*/
-
+// Mudar nome do parametro para "IEventHandler *eventHandler"
 void EventLoop::registerEventHandler(IEventHandler *event)
 {
 	EventType type;
@@ -38,68 +32,30 @@ void EventLoop::unregisterEventHandler(IEventHandler *event)
 	_handlers.erase(event->getHandleType());
 }
 
-
-// Isto tem de ser modificado a troca de estado não deve acontecer aqui
-/*void EventLoop::handleEvents(void)
-{
-	Event	*ev;
-
-	while (!_eventQueue.empty())
-	{
-		ev = _handleNextEvent();
-		// send messages to Event Demux
-		if ((EventType)ev->getState() == READ_EVENT)
-			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), WRITE_EVENT));
-		else if ((EventType)ev->getState() == WRITE_EVENT)
-		{
-			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), READ_EVENT));
-			_eventMap.erase(ev->getFd());
-			delete ev;
-		}
-	}
-}*/
-
 void EventLoop::handleEvents(void)
 {
-
-	//static int counter = 0;
-	
 	Event	*ev;
-	//short	initState; //have to be EventType
-
 	while (!_eventQueue.empty())
 	{		
 		ev = _eventQueue.front();
-		//initState = ev->getState();
 
-		//std::cout << "evento state: " << initState << std::endl;
-
-		//std::cout << ev->getState() << std::endl;
 		_handleEvent(ev);
 		_eventQueue.pop();
-		
 
-		//sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), ev->getState()));
 
 		if (ev->getState() == COMPLETE_EVENT)
 		{
-			//std::cout << counter++ << " - Request/Response Complete" << std::endl;
 			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), READ_EVENT));
 			_eventMap.erase(ev->getFd());
 			delete ev;		
+		}
+		else if (ev->getState() == CGI_EVENT)
+		{
+			
+			//sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), ev->getState()));
 		}
 		else
 			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), ev->getState()));
-
-		/*
-		if (initState == WRITE_EVENT)
-		{
-			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), READ_EVENT));
-			_eventMap.erase(ev->getFd());
-			delete ev;		
-		}
-		*/
-
 	}
 }
 
@@ -133,7 +89,7 @@ void EventLoop::_handleMessage(EventMessage *msg)
 	if (it == _eventMap.end())
 		_addNewEvent(new Event(fd, msg->getEvent()));
 	else 
-		_changeEvent(it->second, msg->getEvent());	
+		_changeEvent(it->second, msg->getEvent());
 }
 
 void EventLoop::_addNewEvent(Event *ev)
@@ -149,23 +105,7 @@ void EventLoop::_changeEvent(Event *ev, short status)
 }
 
 
-/*
-Event* EventLoop::_handleNextEvent(void)
-{
-	Event	*ev;
-
-	ev = _eventQueue.front();
-	_handlers.find((EventType)ev->getState())->second->handleEvent(ev);
-	_eventQueue.pop();
-	return (ev);
-}
-*/
-
 void EventLoop::_handleEvent(Event *ev)
 {
-	//Event	*ev;
-
-	//ev = _eventQueue.front();
 	_handlers.find((EventType)ev->getState())->second->handleEvent(ev);
-	//_eventQueue.pop();
 }

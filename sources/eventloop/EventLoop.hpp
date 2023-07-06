@@ -19,6 +19,7 @@
 #include "IEventHandler.hpp"
 #include "ReadHandler.hpp"
 #include "WriteHandler.hpp"
+#include "CGIHandler.hpp"
 #include "AMessengerClient.hpp"
 #include "Event.hpp"
 #include "EventMessage.hpp"

@@ -30,7 +30,8 @@ Event::Event(int fd, int state):
 	_bytesReadBody(0),
 	_totalBytesSend(0),
 	_resState1(CREATE_HEADER),
-	_errorCode(0)
+	_errorCode(0),
+	_cgiFlag(false)
 {}
 
 Event::Event(const Event &src) {}
@@ -485,4 +486,14 @@ int Event::getErrorCode(void)
 void Event::setErrorCode(int errorCode)
 {
 	_errorCode = errorCode;
+}
+
+bool Event::getCgiFlag(void)
+{
+	return (_cgiFlag);
+}
+
+void Event::setCgiFlag(bool cgiFlag)
+{
+	_cgiFlag = cgiFlag;
 }

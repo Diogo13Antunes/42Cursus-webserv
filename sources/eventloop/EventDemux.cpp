@@ -72,7 +72,10 @@ void EventDemux::receiveMessage(Message *msg)
 	if (connMsg)
 		_removeEvent(connMsg->getFd());
 	else if (eventMsg)
+	{
 		_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
+		std::cout << "EVENT DEMUX RECEBE: " << (EventType)eventMsg->getEvent() << std::endl;
+	}
 }
 
 void EventDemux::_addNewEvent(int fd)

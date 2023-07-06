@@ -63,7 +63,10 @@ void ReadHandler::handleEvent(Event *event)
 	_handleReq->handle();
 	if (!_handleReq->isProcessingComplete())
 		return ;
-	event->setState(WRITE_EVENT);
+	if (event->getCgiFlag())
+		event->setState(CGI_EVENT);
+	else
+		event->setState(WRITE_EVENT);
 }
 
 EventType ReadHandler::getHandleType(void)

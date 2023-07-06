@@ -59,6 +59,9 @@ class Event
 		size_t			_totalBytesSend;
 		StateResType	_resState1;
 		int				_errorCode;
+
+		//CGI
+		bool _cgiFlag;
 		
 
 
@@ -155,4 +158,8 @@ class Event
 		int					getErrorCode(void);
 		void				setErrorCode(int errorCode);
 
+		//CGI functions
+		bool getCgiFlag(void);
+		void setCgiFlag(bool cgiFlag);
+		
 };
