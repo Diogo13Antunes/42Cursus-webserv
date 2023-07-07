@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/07 11:20:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/07 12:39:25 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,54 +168,28 @@ std::string CreateHeaderState::_getMimeType(std::string fileExt)
 	return (mimeType);
 }
 
-/* 
-void CreateHeaderState::_createHeader(std::string &header, std::string fileName)
-{
-	std::stringstream	bodySize;
-
-	bodySize << _getFileSize(fileName);
-	header = "HTTP/1.1 200 OK\r\nContent-length: ";
-	header += bodySize.str();
-	header += "\r\n";
-	header += "Content-Type: " + _getMimeType(_getFileType(fileName));
-	header += "\r\n\r\n";
-}
-*/
-
 void CreateHeaderState::_createHeader(std::string &header, std::string fileName)
 {
 	HttpHeaderBuilder	httpHeader;
 	std::stringstream	bodySize;
-
-	bodySize << _getFileSize(fileName);
-	header = "HTTP/1.1 200 OK\r\nContent-length: ";
-	header += bodySize.str();
-	header += "\r\n";
-	header += "Content-Type: " + _getMimeType(_getFileType(fileName));
-	header += "\r\n\r\n";
-
 
 	httpHeader.setStatus("200 OK");
 	httpHeader.setContentLength(_getFileSize(fileName));
 	httpHeader.setContentType(_getMimeType(_getFileType(fileName)));
 	httpHeader.setServerName("webserv");
 	httpHeader.setConnection("keep-alive");
-	httpHeader.setTransferEncoding("chunked");
-
-	std::cout << httpHeader.getHeader() << std::endl;
+	header = httpHeader.getHeader();
 }
 
 void CreateHeaderState::_createHeaderDefaultError(std::string &header, int errorCode)
 {
 	ErrorPageBuilder	errorBuilder(errorCode);
-	std::stringstream	bodySize;
+	HttpHeaderBuilder	httpHeader;
 
-	bodySize << errorBuilder.getErrorPageSize();
-	header = "HTTP/1.1 ";
-	header += errorBuilder.getCodeAndPhrase();
-	header += "\r\nContent-length: ";
-	header += bodySize.str();
-	header += "\r\n";
-	header += "Content-Type: text/html";
-	header += "\r\n\r\n";
+	httpHeader.setStatus(errorBuilder.getCodeAndPhrase());
+	httpHeader.setContentLength(errorBuilder.getErrorPageSize());
+	httpHeader.setContentType(_getMimeType("text/html"));
+	httpHeader.setServerName("webserv");
+	httpHeader.setConnection("keep-alive");
+	header = httpHeader.getHeader();
 }
