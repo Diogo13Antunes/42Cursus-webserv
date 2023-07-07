@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:33:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/07 10:46:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 
 #include "EventDemux.hpp"
 
-#define PORT 8080
+#define PORT 4444
 
 #include "Configs.hpp"
 #include "ConfigsData.hpp"

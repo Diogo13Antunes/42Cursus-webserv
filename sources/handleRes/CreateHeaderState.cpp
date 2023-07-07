@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/05 18:10:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/07 11:20:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,10 +195,12 @@ void CreateHeaderState::_createHeader(std::string &header, std::string fileName)
 	header += "\r\n\r\n";
 
 
-	httpHeader.setStatus("400 KO");
+	httpHeader.setStatus("200 OK");
 	httpHeader.setContentLength(_getFileSize(fileName));
 	httpHeader.setContentType(_getMimeType(_getFileType(fileName)));
 	httpHeader.setServerName("webserv");
+	httpHeader.setConnection("keep-alive");
+	httpHeader.setTransferEncoding("chunked");
 
 	std::cout << httpHeader.getHeader() << std::endl;
 }
