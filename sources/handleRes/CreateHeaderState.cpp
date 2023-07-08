@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/07 12:39:25 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/08 14:46:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,29 +41,6 @@ CreateHeaderState &CreateHeaderState::operator=(const CreateHeaderState &src)
 }
 */
 
-/*
-StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
-{
-	std::string fileName;
-	std::string	header;
-	size_t		fileSize;
-
-	//std::cout << "CreateHeaderState" << std::endl;
-
-	fileName = _getFileName(event->getReqPath(), configsData);
-	_isFileReadable(fileName);
-	fileSize = _getFileSize(fileName);
-	event->setBodySize1(fileSize);
-	_createHeader(header, fileName);
-	event->setFileName(fileName);
-	event->setRes(header);
-	event->setResSize(header.size() + fileSize);
-	return (GET_BODY);
-}
-*/
-
-
-// Tem de ser reorganizado de outra forma
 StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 {
 	std::string			fileName;

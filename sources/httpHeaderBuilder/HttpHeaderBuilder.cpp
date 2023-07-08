@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 15:34:03 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/07 12:21:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/08 14:45:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,23 +113,3 @@ std::string	HttpHeaderBuilder::getHeader(void)
 	header += "\r\n";
 	return (header);
 }
-
-/*
-std::string	HttpHeaderBuilder::getHeader(void)
-{
-	std::string			header;
-	std::stringstream	contentLength;
-
-	contentLength << _contentLength;
-	header = "HTTP/1.1 " + _status + "\r\n";
-	header += "Content-length: " + contentLength.str() + "\r\n";
-	if (!_contentType.empty())
-		header += "Content-Type: " + _contentType + "\r\n";
-	if (!_serverName.empty())
-		header += "server: " + _serverName + "\r\n";
-	if (!_date.empty())
-		header += "date: " + _date + "\r\n";
-	header += "\r\n";
-	return (header);
-}
-*/

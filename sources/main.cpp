@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/07 10:46:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/08 14:27:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,14 @@
 
 #include "EventDemux.hpp"
 
-#define PORT 4444
+#define PORT 8080
 
 #include "Configs.hpp"
 #include "ConfigsData.hpp"
 #include "RequestParser.hpp"
 #include "RequestData.hpp"
 
+#include "Timer.hpp"
 
 // O configs pode receber o data e modificar o data dentro dele.
 bool	initConfigs(const char *filename, ConfigsData &data)
@@ -248,7 +249,7 @@ int main(int argc, char **argv)
 	eventLoop.registerEventHandler(new ReadHandler(new HandleReq()));
 	eventLoop.registerEventHandler(new WriteHandler(new HandleRes(data)));
 	//eventLoop.registerEventHandler(factory.getEventHandler(WRITE_EVENT));
-	
+
     while(1)
     {
 		conns.updateAllConnections();

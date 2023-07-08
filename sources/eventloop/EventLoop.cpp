@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/26 15:33:26 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/07 16:13:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,6 @@ EventLoop::EventLoop(void): AMessengerClient(NULL) {}
 EventLoop::EventLoop(const EventLoop &src) {}
 
 EventLoop::~EventLoop(void) {}
-
-/*
-EventLoop &EventLoop::operator=(const EventLoop &src)
-{
-	//EventLoop Copy Assignment Operator
-}
-*/
 
 void EventLoop::registerEventHandler(IEventHandler *event)
 {
