@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 16:06:33 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 18:13:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ class Event
 		int					getErrorCode(void);
 		void				setErrorCode(int errorCode);
 
-		bool				isRequestAndResponseTimeout(void);
+		bool				isEventTimeout(void);
 
 		bool				isConnectionClose(void);
 

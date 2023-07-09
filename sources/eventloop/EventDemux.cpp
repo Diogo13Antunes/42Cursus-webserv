@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 17:50:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 18:32:38 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,10 @@ void EventDemux::receiveMessage(Message *msg)
 	connMsg = dynamic_cast<ConnectionMessage*>(msg);
 	eventMsg = dynamic_cast<EventMessage*>(msg);
 	if (connMsg)
+	{
 		_removeEvent(connMsg->getFd());
+		std::cout << "EventDemux: Remove Evento: " << connMsg->getFd() << std::endl;
+	}
 	else if (eventMsg)
 		_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
 }

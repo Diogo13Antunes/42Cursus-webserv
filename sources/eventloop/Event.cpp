@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 16:35:44 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 18:40:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ Event::Event(int fd, int state):
 	_totalBytesSend(0),
 	_resState1(CREATE_HEADER),
 	_errorCode(0),
-	_timeoutSec(30),
+	_timeoutSec(120),
 	_creationTime(Timer::getActualTimeStamp())
 {}
 
@@ -491,7 +491,7 @@ void Event::setErrorCode(int errorCode)
 	_errorCode = errorCode;
 }
 
-bool Event::isRequestAndResponseTimeout(void)
+bool Event::isEventTimeout(void)
 {
 	return (Timer::isTimeoutExpired(_creationTime, _timeoutSec));
 }

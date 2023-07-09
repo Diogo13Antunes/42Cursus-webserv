@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 17:49:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 18:28:45 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@ void Connections::_handleMessage(ConnectionMessage *msg)
 			it->second->setWaitingState();
 		else if (msg->getState() == CLOSE_CONNECTION)
 		{
+			std::cout << "DEVE REMOVER O EVENTO EVENTDEMUX"  << std::endl;
+
 			sendMessage(new ConnectionMessage(EVENTDEMUX_ID, it->second->getFd(), CLOSE_CONNECTION));
 			_removeConnection(it);
 		}
