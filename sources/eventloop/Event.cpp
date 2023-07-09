@@ -6,11 +6,13 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:22:34 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/08 16:23:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Event.hpp"
+
+#include "Timer.hpp"
 
 static std::string createResponse1(std::string path, std::string contentType);
 static std::string getFileContent(std::string fileName);
@@ -30,7 +32,9 @@ Event::Event(int fd, int state):
 	_bytesReadBody(0),
 	_totalBytesSend(0),
 	_resState1(CREATE_HEADER),
-	_errorCode(0)
+	_errorCode(0),
+	_timeoutSec(30),
+	_creationTime(Timer::getActualTimeStamp())
 {}
 
 Event::Event(const Event &src) {}
@@ -485,4 +489,9 @@ int Event::getErrorCode(void)
 void Event::setErrorCode(int errorCode)
 {
 	_errorCode = errorCode;
+}
+
+bool Event::isRequestAndResponseTimeout(void)
+{
+	return (Timer::isTimeoutExpired(_creationTime, _timeoutSec));
 }

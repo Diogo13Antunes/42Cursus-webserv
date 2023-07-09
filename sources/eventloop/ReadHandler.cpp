@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:21:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/08 15:50:43 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ void ReadHandler::handleEvent(Event *event)
 {
 	char			buffer[BUFF_SIZE];
 	ssize_t			valread;
+
+	//std::cout << "read event ReadHandler: " << event->getFd() << std::endl;
 
 	_handleReq->setEvent(event);
 	for(int i = 0; i < BUFF_SIZE; i++)

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:23:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/08 16:20:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,10 @@ class Event
 		size_t			_totalBytesSend;
 		StateResType	_resState1;
 		int				_errorCode;
-		
+
+		//Timeout: time for handle all request and all response 
+		int 	_timeoutSec;
+		time_t	_creationTime;
 
 
 	public:
@@ -154,5 +157,7 @@ class Event
 
 		int					getErrorCode(void);
 		void				setErrorCode(int errorCode);
+
+		bool				isRequestAndResponseTimeout(void);
 
 };

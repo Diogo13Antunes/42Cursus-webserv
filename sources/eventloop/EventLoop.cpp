@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/07 16:13:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 15:03:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ void EventLoop::handleEvents(void)
 
 	//static int counter = 0;
 	
+	std::cout << "_eventMap size: " << _eventMap.size() << std::endl;
+
 	Event	*ev;
 	//short	initState; //have to be EventType
 
@@ -78,6 +80,7 @@ void EventLoop::handleEvents(void)
 		{
 			//std::cout << counter++ << " - Request/Response Complete" << std::endl;
 			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), READ_EVENT));
+			sendMessage(new ConnectionMessage(CONNECTIONS_ID, ev->getFd(), PAUSED));
 			_eventMap.erase(ev->getFd());
 			delete ev;		
 		}
@@ -95,7 +98,6 @@ void EventLoop::handleEvents(void)
 
 	}
 }
-
 
 ClientID EventLoop::getId(void)
 {
@@ -133,6 +135,7 @@ void EventLoop::_addNewEvent(Event *ev)
 {
 	_eventMap.insert(std::make_pair(ev->getFd(), ev));
 	_eventQueue.push(ev);
+	sendMessage(new ConnectionMessage(CONNECTIONS_ID, ev->getFd(), PROCESSING));
 }
 
 void EventLoop::_changeEvent(Event *ev, short status)

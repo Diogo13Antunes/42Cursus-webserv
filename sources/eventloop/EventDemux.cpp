@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 12:41:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 11:46:01 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,11 @@ void EventDemux::waitAndDispatchEvents(void)
 			eventFd = accept(_serverFd, (struct sockaddr *) &_address, &_addrlen);
 			_addNewEvent(eventFd);
 		}
-		else 
+		else
 			sendMessage(new EventMessage(EVENTLOOP_ID, eventFd, _getEventType(_events[i].events)));
-		sendMessage(new ConnectionMessage(CONNECTIONS_ID, eventFd));
+		sendMessage(new ConnectionMessage(CONNECTIONS_ID, eventFd, NEW_CONNECTION));
+
+		//std::cout << "fd: " << eventFd << " event: " << _events[i].events << std::endl;
 	}
 }
 

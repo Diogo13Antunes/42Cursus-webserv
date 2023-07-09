@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/08 14:50:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 12:10:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,14 @@
 
 Connection::Connection(int fd):
 	_fd(fd),
-	_keepAliveTimeout(10),
-	_lastRequestTime(Timer::getActualTimeStamp())
+	_keepAliveTimeout(2),
+	_lastRequestTime(Timer::getActualTimeStamp()),
+	_status(WAITING_EVENTS)
 {}
 
 Connection::~Connection(void)
 {
-	std::cout << "remove connection" << std::endl;
+	std::cout << "remove connection: " << _fd << std::endl;
 	close(_fd);
 }
 
@@ -32,12 +33,24 @@ int Connection::getFd(void)
 
 bool Connection::isKeepAliveTimeout(void)
 {
+	if (_status == PROCESSING_EVENTS)
+		resetKeepAliveTimeout();
 	return (Timer::isTimeoutExpired(_lastRequestTime, _keepAliveTimeout));
 }
 
 void Connection::resetKeepAliveTimeout(void)
 {
 	_lastRequestTime = time(NULL);
+}
+
+void Connection::setProcessingState(void)
+{
+	_status = PROCESSING_EVENTS;
+}
+
+void Connection::setWaitingState(void)
+{
+	_status = WAITING_EVENTS;
 }
 
 // Just for debug (remove when not necessary)
