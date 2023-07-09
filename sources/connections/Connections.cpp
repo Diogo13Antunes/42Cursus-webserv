@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 15:01:59 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 17:49:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,13 @@ void Connections::_handleMessage(ConnectionMessage *msg)
 			it->second->setProcessingState();
 		else if (msg->getState() == PAUSED)
 			it->second->setWaitingState();
+		else if (msg->getState() == CLOSE_CONNECTION)
+		{
+			sendMessage(new ConnectionMessage(EVENTDEMUX_ID, it->second->getFd(), CLOSE_CONNECTION));
+			_removeConnection(it);
+		}
 	}
+	
 }
 
 void Connections::_removeAllConnections(void)
@@ -92,4 +98,5 @@ void Connections::_removeConnection(std::map<int, Connection *>::iterator it)
 {
 	delete it->second;
 	_activeConnects.erase(it);
+
 }

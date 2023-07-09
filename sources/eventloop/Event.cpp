@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/08 16:23:13 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 16:35:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -494,4 +494,16 @@ void Event::setErrorCode(int errorCode)
 bool Event::isRequestAndResponseTimeout(void)
 {
 	return (Timer::isTimeoutExpired(_creationTime, _timeoutSec));
+}
+
+bool Event::isConnectionClose(void)
+{
+	std::vector<std::string> value;
+	// Lower case or Upper Case ?
+
+	value = _reqParsed.getHeaderValue("connection");
+
+	if (!value.empty() && !value[0].compare("close"))
+		return (true);
+	return (false);
 }

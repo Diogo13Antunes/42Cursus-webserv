@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/08 14:46:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 16:41:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,9 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 	event->setBodySize1(fileSize);
 
 	if (errorCode)
-		_createHeaderDefaultError(header, errorCode);
+		_createHeaderDefaultError(header, errorCode, event);
 	else
-		_createHeader(header, fileName);
+		_createHeader(header, fileName, event);
 	
 	event->setFileName(fileName);
 	event->setRes(header);
@@ -145,7 +145,7 @@ std::string CreateHeaderState::_getMimeType(std::string fileExt)
 	return (mimeType);
 }
 
-void CreateHeaderState::_createHeader(std::string &header, std::string fileName)
+void CreateHeaderState::_createHeader(std::string &header, std::string fileName, Event *event)
 {
 	HttpHeaderBuilder	httpHeader;
 	std::stringstream	bodySize;
@@ -154,11 +154,14 @@ void CreateHeaderState::_createHeader(std::string &header, std::string fileName)
 	httpHeader.setContentLength(_getFileSize(fileName));
 	httpHeader.setContentType(_getMimeType(_getFileType(fileName)));
 	httpHeader.setServerName("webserv");
-	httpHeader.setConnection("keep-alive");
+	if (event->isConnectionClose())
+		httpHeader.setConnection("close");
+	else
+		httpHeader.setConnection("keep-alive");
 	header = httpHeader.getHeader();
 }
 
-void CreateHeaderState::_createHeaderDefaultError(std::string &header, int errorCode)
+void CreateHeaderState::_createHeaderDefaultError(std::string &header, int errorCode, Event *event)
 {
 	ErrorPageBuilder	errorBuilder(errorCode);
 	HttpHeaderBuilder	httpHeader;
@@ -167,6 +170,9 @@ void CreateHeaderState::_createHeaderDefaultError(std::string &header, int error
 	httpHeader.setContentLength(errorBuilder.getErrorPageSize());
 	httpHeader.setContentType(_getMimeType("text/html"));
 	httpHeader.setServerName("webserv");
-	httpHeader.setConnection("keep-alive");
+	if (event->isConnectionClose())
+		httpHeader.setConnection("close");
+	else
+		httpHeader.setConnection("keep-alive");
 	header = httpHeader.getHeader();
 }

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 15:03:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 16:43:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,16 @@ void EventLoop::handleEvents(void)
 
 		if (ev->getState() == COMPLETE_EVENT)
 		{
+			
+
 			//std::cout << counter++ << " - Request/Response Complete" << std::endl;
 			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), READ_EVENT));
-			sendMessage(new ConnectionMessage(CONNECTIONS_ID, ev->getFd(), PAUSED));
+			if (ev->isConnectionClose())
+				sendMessage(new ConnectionMessage(CONNECTIONS_ID, ev->getFd(), CLOSE_CONNECTION));
+			else
+				sendMessage(new ConnectionMessage(CONNECTIONS_ID, ev->getFd(), PAUSED));
 			_eventMap.erase(ev->getFd());
-			delete ev;		
+			delete ev;	
 		}
 		else
 			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), ev->getState()));
