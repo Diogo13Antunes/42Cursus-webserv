@@ -7,7 +7,7 @@ RM = rm -f
 
 $(VERBOSE).SILENT:
 
-INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq -I ./sources/request -I ./sources/handleRes -I ./sources/errorPageBuilder -I ./sources/httpHeaderBuilder -I ./sources/utils
+INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq -I ./sources/request -I ./sources/handleRes -I ./sources/errorPageBuilder -I ./sources/CGIExecuter -I ./sources/httpHeaderBuilder -I ./sources/utils
 
 SRC_PATH = ./sources
 
@@ -42,6 +42,7 @@ SRC_NAME =	main.cpp								\
 			handleRes/CreateHeaderState.cpp			\
 			handleRes/GetBodyState.cpp				\
 			handleRes/ResponseState.cpp				\
+			CGIExecuter/CGIExecuter.cpp				\
 			errorPageBuilder/ErrorPageBuilder.cpp	\
 			httpHeaderBuilder/HttpHeaderBuilder.cpp	\
 			utils/TimeDate.cpp						\
@@ -69,6 +70,7 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects/handleRes
 	mkdir -p objects/errorPageBuilder
 	mkdir -p objects/httpHeaderBuilder
+	mkdir -p objects/CGIExecuter
 	mkdir -p objects/utils
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $@
 

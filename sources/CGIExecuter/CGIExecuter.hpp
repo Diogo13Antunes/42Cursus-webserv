@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-#define BUFFER_SIZE	1024
+#define BUFFER_LEN	1024
 #define WHITE_SPACE	"\n\t\r "
 
 class CGIExecuter
@@ -23,6 +23,9 @@ class CGIExecuter
 
 		bool				_initPipes(void);
 		std::string			_getScriptInterpreter(void);
+
+		void				_closeAllFds(void);
+		void				_closeFd(int *fd);
 
 	public:
 		CGIExecuter(void);

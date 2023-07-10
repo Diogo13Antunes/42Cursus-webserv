@@ -45,8 +45,9 @@ class EventDemux: public AMessengerClient
 		void		_addNewEvent(int fd);
 		void		_removeEvent(int fd);
 		void		_changeEvent(int fd, EventType eventType);
-		EventType		_getEventType(uint32_t events);
+		EventType	_getEventType(uint32_t events);
 		uint32_t	_getEventsMask(EventType eventType);
+		bool		_existEvent(int fd);
 		
 	public:
 		EventDemux(void);

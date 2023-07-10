@@ -3,11 +3,14 @@
 CGIExecuter::CGIExecuter(void)
 {
 	// Default CGIExecuter Constructor
+	if (!_initPipes())
+		throw FailToIinitPipesException();
 }
 
 CGIExecuter::~CGIExecuter(void)
 {
 	// Default CGIExecuter Destructor
+	_closeAllFds();
 }
 
 void	CGIExecuter::execute(std::string script, std::string message)
@@ -20,17 +23,14 @@ void	CGIExecuter::execute(std::string script, std::string message)
 
 	const char *av[] = {_scriptInterpreter.c_str(), _scriptName.c_str(), NULL};
 
-	if (!_initPipes())
-		throw FailToIinitPipesException();
-
 	_pid = fork();
 	if (_pid == -1)
 		throw FailToCreateChildProcessException();
 
 	if (_pid == 0)
 	{
-		close(_pipe1[1]);
-		close(_pipe2[0]);
+		_closeFd(&_pipe1[1]);
+		_closeFd(&_pipe2[0]);
 
 		dup2(_pipe1[0], STDIN_FILENO);
 		dup2(_pipe2[1], STDOUT_FILENO);
@@ -41,13 +41,11 @@ void	CGIExecuter::execute(std::string script, std::string message)
 	}
 	else
 	{
-		int i;
-		i = write(_pipe1[1], message.c_str(), message.size());
-		(void)i;
+		write(_pipe1[1], message.c_str(), message.size());
 
-		close(_pipe1[0]);
-		close(_pipe1[1]);
-		close(_pipe2[1]);
+		_closeFd(&_pipe1[0]);
+		_closeFd(&_pipe1[1]);
+		_closeFd(&_pipe2[1]);
 	}
 }
 
@@ -65,15 +63,15 @@ int	CGIExecuter::getReadFD(void)
 
 std::string	CGIExecuter::getResult(void)
 {
-	char        buffer[BUFFER_SIZE];
+	char        buffer[BUFFER_LEN];
     std::string res;
     size_t      nbrbytes;
 	int			fd = _pipe2[0];
 
     while (1)
     {
-        bzero(buffer, BUFFER_SIZE);
-        nbrbytes = read(fd, buffer, BUFFER_SIZE - 1);
+        bzero(buffer, BUFFER_LEN);
+        nbrbytes = read(fd, buffer, BUFFER_LEN - 1);
         if (nbrbytes < 1)
         	break;
         res += buffer;
@@ -123,6 +121,23 @@ std::string	CGIExecuter::_getScriptInterpreter(void)
 		result = line.substr(line.find_first_not_of("#!"));
 	}
 	return (result);
+}
+
+void	CGIExecuter::_closeFd(int *fd)
+{
+	if (*fd != -1)
+	{
+		close(*fd);
+		*fd = -1;
+	}
+}
+
+void	CGIExecuter::_closeAllFds(void)
+{
+	_closeFd(&_pipe1[0]);
+	_closeFd(&_pipe1[1]);
+	_closeFd(&_pipe2[0]);
+	_closeFd(&_pipe2[1]);
 }
 
 static void stringTrim(std::string &str)

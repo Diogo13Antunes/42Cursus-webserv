@@ -19,6 +19,7 @@
 #include "ConfigsData.hpp"
 #include "StateType.hpp"
 #include "StateResType.hpp"
+#include "CGIExecuter.hpp"
 
 
 //#define	NONE			0
@@ -61,7 +62,8 @@ class Event
 		int				_errorCode;
 
 		//CGI
-		bool _cgiFlag;
+		bool		_cgiFlag;
+		CGIExecuter	*_cgiEx;
 		
 		//Timeout: time for handle all request and all response 
 		int 	_timeoutSec;
@@ -169,4 +171,7 @@ class Event
 
 		bool				isConnectionClose(void);
 
+		CGIExecuter*		getCgiEx(void);
+		void				setCgiEx(CGIExecuter *cgiEx);
+		int					getCgiFd(void);
 };

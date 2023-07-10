@@ -16,6 +16,11 @@ CGIHandler::~CGIHandler(void)
 void CGIHandler::handleEvent(Event *event)
 {
 	std::cout << "CGI Handler" << std::endl;
+	/*
+		Executar o script
+		Verificar se existem dados até terminar o script
+		Mudar o estado para escrita
+	*/
 }
 
 EventType CGIHandler::getHandleType(void)

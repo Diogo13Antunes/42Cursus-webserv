@@ -12,6 +12,8 @@
 
 #include "EventLoop.hpp"
 
+#include "CGIExecuter.hpp"
+
 EventLoop::EventLoop(void): AMessengerClient(NULL) {}
 
 EventLoop::EventLoop(const EventLoop &src) {}
@@ -34,10 +36,7 @@ void EventLoop::unregisterEventHandler(IEventHandler *event)
 
 void EventLoop::handleEvents(void)
 {
-
-	//static int counter = 0;
-	
-	std::cout << "_eventMap size: " << _eventMap.size() << std::endl;
+	// std::cout << "_eventMap size: " << _eventMap.size() << std::endl;
 
 	Event	*ev;
 	while (!_eventQueue.empty())
@@ -59,11 +58,8 @@ void EventLoop::handleEvents(void)
 		_handleEvent(ev);
 		_eventQueue.pop();
 
-
 		if (ev->getState() == COMPLETE_EVENT)
 		{
-			
-
 			//std::cout << counter++ << " - Request/Response Complete" << std::endl;
 			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), READ_EVENT));
 			if (ev->isConnectionClose())
@@ -75,8 +71,15 @@ void EventLoop::handleEvents(void)
 		}
 		else if (ev->getState() == CGI_EVENT)
 		{
-			
-			//sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), ev->getState()));
+			if (ev->getCgiFd() == -1)
+			{
+				ev->setCgiEx(new CGIExecuter());
+				std::cout << "FD CGI: " << ev->getCgiFd() << std::endl;
+				_eventMap.insert(std::make_pair(ev->getCgiFd(), ev));
+				_eventQueue.push(ev);
+				sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getCgiFd(), READ_EVENT));
+			}
+			//ev->setState(CGI_EXECUTION);
 		}
 		else
 			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), ev->getState()));

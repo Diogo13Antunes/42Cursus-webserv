@@ -35,12 +35,17 @@ Event::Event(int fd, int state):
 	_errorCode(0),
 	_cgiFlag(false),
 	_timeoutSec(120),
-	_creationTime(Timer::getActualTimeStamp())
+	_creationTime(Timer::getActualTimeStamp()),
+	_cgiEx(NULL)
 {}
 
 Event::Event(const Event &src) {}
 
-Event::~Event(void) {}
+Event::~Event(void)
+{
+	if (_cgiEx)
+		delete _cgiEx;
+}
 
 /*
 Event &Event::operator=(const Event &src)
@@ -517,3 +522,21 @@ bool Event::isConnectionClose(void)
 		return (true);
 	return (false);
 }
+
+CGIExecuter* Event::getCgiEx(void)
+{
+	return (_cgiEx);
+}
+
+void Event::setCgiEx(CGIExecuter *cgiEx)
+{
+	_cgiEx = cgiEx;
+}
+
+int Event::getCgiFd(void)
+{
+	if (_cgiEx)
+		return (_cgiEx->getReadFD());
+	return (-1);
+}
+

@@ -78,8 +78,13 @@ void EventDemux::receiveMessage(Message *msg)
 	}
 	else if (eventMsg)
 	{
-		_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
-		std::cout << "EVENT DEMUX RECEBE: " << (EventType)eventMsg->getEvent() << std::endl;
+		if (_existEvent(eventMsg->getFd()))
+			_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
+		else
+		{
+			_addNewEvent(eventMsg->getFd());
+			std::cout << "FD: " << eventMsg->getFd() << " EVENT DEMUX RECEBE: " << (EventType)eventMsg->getEvent() << std::endl;
+		}
 	}
 }
 
@@ -134,4 +139,15 @@ uint32_t EventDemux::_getEventsMask(EventType eventType)
 	if (eventType == WRITE_EVENT)
 		events = EPOLLOUT;
 	return (events);
+}
+
+
+bool EventDemux::_existEvent(int fd)
+{
+	for (int i = 0; i < N_MAX_EVENTS; i++)
+	{
+		if (_events[i].data.fd == fd)
+			return (true);
+	}
+	return (false);
 }

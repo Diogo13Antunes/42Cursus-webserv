@@ -17,5 +17,6 @@ typedef enum
     READ_EVENT,
     WRITE_EVENT,
     CGI_EVENT,
+    CGI_EXECUTION,
     COMPLETE_EVENT
 }	EventType;
