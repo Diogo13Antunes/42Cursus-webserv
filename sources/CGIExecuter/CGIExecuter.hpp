@@ -1,5 +1,6 @@
 #pragma once
 
+#include <fstream>
 #include <string>
 #include <cstring>
 #include <iostream>
@@ -7,12 +8,13 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE	1024
+#define WHITE_SPACE	"\n\t\r "
 
 class CGIExecuter
 {
 	private:
-		const std::string	_scriptExecutor;
+		std::string			_scriptInterpreter;
 		std::string			_scriptName;
 		std::string			_scriptInput;
 		int					_pipe1[2];
@@ -20,6 +22,7 @@ class CGIExecuter
 		int					_pid;
 
 		bool				_initPipes(void);
+		std::string			_getScriptInterpreter(void);
 
 	public:
 		CGIExecuter(void);

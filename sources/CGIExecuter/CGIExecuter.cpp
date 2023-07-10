@@ -1,6 +1,6 @@
 #include "CGIExecuter.hpp"
 
-CGIExecuter::CGIExecuter(void): _scriptExecutor("/usr/bin/python3")
+CGIExecuter::CGIExecuter(void)
 {
 	// Default CGIExecuter Constructor
 }
@@ -13,7 +13,12 @@ CGIExecuter::~CGIExecuter(void)
 void	CGIExecuter::execute(std::string script, std::string message)
 {
 	_scriptName = script;
-	const char *av[] = {_scriptExecutor.c_str(), _scriptName.c_str(), NULL};
+	_scriptInterpreter = _getScriptInterpreter();
+
+	if (_scriptInterpreter.empty())
+		throw ExecutionErrorException();
+
+	const char *av[] = {_scriptInterpreter.c_str(), _scriptName.c_str(), NULL};
 
 	if (!_initPipes())
 		throw FailToIinitPipesException();
@@ -30,7 +35,7 @@ void	CGIExecuter::execute(std::string script, std::string message)
 		dup2(_pipe1[0], STDIN_FILENO);
 		dup2(_pipe2[1], STDOUT_FILENO);
 
-		execve(_scriptExecutor.c_str(), const_cast<char**>(av), NULL);
+		execve(_scriptInterpreter.c_str(), const_cast<char**>(av), NULL);
 
 		throw ExecutionErrorException();
 	}
@@ -101,4 +106,35 @@ bool	CGIExecuter::_initPipes(void)
 	if (pipe(_pipe1) == -1 || pipe(_pipe2) == -1)
 		return (false);
 	return (true);
+}
+
+static void stringTrim(std::string &str);
+
+std::string	CGIExecuter::_getScriptInterpreter(void)
+{
+	std::ifstream	file(_scriptName.c_str());
+	std::string		result;
+	std::string		line;
+
+	if (file.is_open())
+	{
+		std::getline(file, line);
+		stringTrim(line);
+		result = line.substr(line.find_first_not_of("#!"));
+	}
+	return (result);
+}
+
+static void stringTrim(std::string &str)
+{
+	std::string	trimmed;
+	size_t		start;
+	size_t		end;
+	size_t		len;
+
+	start = str.find_first_not_of(WHITE_SPACE);
+	end = str.find_last_not_of(WHITE_SPACE);
+	len = end - start + 1;
+	trimmed = str.substr(start, len);
+	str = trimmed;
 }
