@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/20 14:46:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 09:43:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include "AMessengerClient.hpp"
 #include "Event.hpp"
 #include "EventMessage.hpp"
+#include "ConnectionMessage.hpp"
 
 class EventLoop: public AMessengerClient
 {

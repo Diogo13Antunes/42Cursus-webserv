@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/31 17:04:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 18:28:45 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void Connections::updateAllConnections(void)
 	{
 		if (it->second->isKeepAliveTimeout())
 		{
-			sendMessage(new ConnectionMessage(EVENTDEMUX_ID, it->second->getFd()));
+			sendMessage(new ConnectionMessage(EVENTDEMUX_ID, it->second->getFd(), CLOSE_CONNECTION));
 			_removeConnection(it);
 			break;
 		}
@@ -71,7 +71,21 @@ void Connections::_handleMessage(ConnectionMessage *msg)
 	if (it == _activeConnects.end())
 		_activeConnects.insert(std::make_pair(fd, new Connection(fd)));
 	else
+	{
 		it->second->resetKeepAliveTimeout();
+		if (msg->getState() == PROCESSING)
+			it->second->setProcessingState();
+		else if (msg->getState() == PAUSED)
+			it->second->setWaitingState();
+		else if (msg->getState() == CLOSE_CONNECTION)
+		{
+			std::cout << "DEVE REMOVER O EVENTO EVENTDEMUX"  << std::endl;
+
+			sendMessage(new ConnectionMessage(EVENTDEMUX_ID, it->second->getFd(), CLOSE_CONNECTION));
+			_removeConnection(it);
+		}
+	}
+	
 }
 
 void Connections::_removeAllConnections(void)
@@ -86,4 +100,5 @@ void Connections::_removeConnection(std::map<int, Connection *>::iterator it)
 {
 	delete it->second;
 	_activeConnects.erase(it);
+
 }

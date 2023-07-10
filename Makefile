@@ -45,6 +45,7 @@ SRC_NAME =	main.cpp								\
 			errorPageBuilder/ErrorPageBuilder.cpp	\
 			httpHeaderBuilder/HttpHeaderBuilder.cpp	\
 			utils/TimeDate.cpp						\
+			utils/Timer.cpp							\
 			Terminal.cpp
 
 OBJS = $(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))

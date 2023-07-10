@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/05 18:10:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 16:41:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,29 +41,6 @@ CreateHeaderState &CreateHeaderState::operator=(const CreateHeaderState &src)
 }
 */
 
-/*
-StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
-{
-	std::string fileName;
-	std::string	header;
-	size_t		fileSize;
-
-	//std::cout << "CreateHeaderState" << std::endl;
-
-	fileName = _getFileName(event->getReqPath(), configsData);
-	_isFileReadable(fileName);
-	fileSize = _getFileSize(fileName);
-	event->setBodySize1(fileSize);
-	_createHeader(header, fileName);
-	event->setFileName(fileName);
-	event->setRes(header);
-	event->setResSize(header.size() + fileSize);
-	return (GET_BODY);
-}
-*/
-
-
-// Tem de ser reorganizado de outra forma
 StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 {
 	std::string			fileName;
@@ -86,9 +63,9 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 	event->setBodySize1(fileSize);
 
 	if (errorCode)
-		_createHeaderDefaultError(header, errorCode);
+		_createHeaderDefaultError(header, errorCode, event);
 	else
-		_createHeader(header, fileName);
+		_createHeader(header, fileName, event);
 	
 	event->setFileName(fileName);
 	event->setRes(header);
@@ -168,52 +145,34 @@ std::string CreateHeaderState::_getMimeType(std::string fileExt)
 	return (mimeType);
 }
 
-/* 
-void CreateHeaderState::_createHeader(std::string &header, std::string fileName)
-{
-	std::stringstream	bodySize;
-
-	bodySize << _getFileSize(fileName);
-	header = "HTTP/1.1 200 OK\r\nContent-length: ";
-	header += bodySize.str();
-	header += "\r\n";
-	header += "Content-Type: " + _getMimeType(_getFileType(fileName));
-	header += "\r\n\r\n";
-}
-*/
-
-void CreateHeaderState::_createHeader(std::string &header, std::string fileName)
+void CreateHeaderState::_createHeader(std::string &header, std::string fileName, Event *event)
 {
 	HttpHeaderBuilder	httpHeader;
 	std::stringstream	bodySize;
 
-	bodySize << _getFileSize(fileName);
-	header = "HTTP/1.1 200 OK\r\nContent-length: ";
-	header += bodySize.str();
-	header += "\r\n";
-	header += "Content-Type: " + _getMimeType(_getFileType(fileName));
-	header += "\r\n\r\n";
-
-
-	httpHeader.setStatus("400 KO");
+	httpHeader.setStatus("200 OK");
 	httpHeader.setContentLength(_getFileSize(fileName));
 	httpHeader.setContentType(_getMimeType(_getFileType(fileName)));
 	httpHeader.setServerName("webserv");
-
-	std::cout << httpHeader.getHeader() << std::endl;
+	if (event->isConnectionClose())
+		httpHeader.setConnection("close");
+	else
+		httpHeader.setConnection("keep-alive");
+	header = httpHeader.getHeader();
 }
 
-void CreateHeaderState::_createHeaderDefaultError(std::string &header, int errorCode)
+void CreateHeaderState::_createHeaderDefaultError(std::string &header, int errorCode, Event *event)
 {
 	ErrorPageBuilder	errorBuilder(errorCode);
-	std::stringstream	bodySize;
+	HttpHeaderBuilder	httpHeader;
 
-	bodySize << errorBuilder.getErrorPageSize();
-	header = "HTTP/1.1 ";
-	header += errorBuilder.getCodeAndPhrase();
-	header += "\r\nContent-length: ";
-	header += bodySize.str();
-	header += "\r\n";
-	header += "Content-Type: text/html";
-	header += "\r\n\r\n";
+	httpHeader.setStatus(errorBuilder.getCodeAndPhrase());
+	httpHeader.setContentLength(errorBuilder.getErrorPageSize());
+	httpHeader.setContentType(_getMimeType("text/html"));
+	httpHeader.setServerName("webserv");
+	if (event->isConnectionClose())
+		httpHeader.setConnection("close");
+	else
+		httpHeader.setConnection("keep-alive");
+	header = httpHeader.getHeader();
 }

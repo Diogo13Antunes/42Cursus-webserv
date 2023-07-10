@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/04 15:02:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 16:38:17 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ class CreateHeaderState: public IStateRes
 		std::string	_getFileName(std::string reqTarget, ConfigsData conf);
 		size_t		_getFileSize(std::string fileName);
 		bool		_isFileReadable(std::string fileName);
-		void		_createHeader(std::string &header, std::string fileName);
-		void		_createHeaderDefaultError(std::string &header, int errorCode);
+		void		_createHeader(std::string &header, std::string fileName, Event *event);
+		void		_createHeaderDefaultError(std::string &header, int errorCode, Event *event);
 		std::string	_getFileType(std::string fileName);
 		std::string _getMimeType(std::string fileExt);
 

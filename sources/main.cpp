@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:33:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/08 14:27:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@
 #include "RequestParser.hpp"
 #include "RequestData.hpp"
 
+#include "Timer.hpp"
 
 // O configs pode receber o data e modificar o data dentro dele.
 bool	initConfigs(const char *filename, ConfigsData &data)

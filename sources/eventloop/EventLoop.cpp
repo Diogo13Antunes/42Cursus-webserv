@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/26 15:33:26 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 18:25:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,27 @@ void EventLoop::unregisterEventHandler(IEventHandler *event)
 
 void EventLoop::handleEvents(void)
 {
+
+	//static int counter = 0;
+	
+	std::cout << "_eventMap size: " << _eventMap.size() << std::endl;
+
 	Event	*ev;
 	while (!_eventQueue.empty())
 	{		
 		ev = _eventQueue.front();
+
+		if (ev->isEventTimeout())
+		{
+			std::cout << "Event Time Out: " << ev->getFd() << std::endl;
+			sendMessage(new ConnectionMessage(CONNECTIONS_ID, ev->getFd(), CLOSE_CONNECTION));
+			_eventQueue.pop();
+			_eventMap.erase(ev->getFd());
+			delete ev;
+			continue;
+		}
+
+		//initState = ev->getState();
 
 		_handleEvent(ev);
 		_eventQueue.pop();
@@ -45,9 +62,16 @@ void EventLoop::handleEvents(void)
 
 		if (ev->getState() == COMPLETE_EVENT)
 		{
+			
+
+			//std::cout << counter++ << " - Request/Response Complete" << std::endl;
 			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), READ_EVENT));
+			if (ev->isConnectionClose())
+				sendMessage(new ConnectionMessage(CONNECTIONS_ID, ev->getFd(), CLOSE_CONNECTION));
+			else
+				sendMessage(new ConnectionMessage(CONNECTIONS_ID, ev->getFd(), PAUSED));
 			_eventMap.erase(ev->getFd());
-			delete ev;		
+			delete ev;	
 		}
 		else if (ev->getState() == CGI_EVENT)
 		{
@@ -58,7 +82,6 @@ void EventLoop::handleEvents(void)
 			sendMessage(new EventMessage(EVENTDEMUX_ID, ev->getFd(), ev->getState()));
 	}
 }
-
 
 ClientID EventLoop::getId(void)
 {
@@ -96,6 +119,7 @@ void EventLoop::_addNewEvent(Event *ev)
 {
 	_eventMap.insert(std::make_pair(ev->getFd(), ev));
 	_eventQueue.push(ev);
+	sendMessage(new ConnectionMessage(CONNECTIONS_ID, ev->getFd(), PROCESSING));
 }
 
 void EventLoop::_changeEvent(Event *ev, short status)
@@ -103,7 +127,6 @@ void EventLoop::_changeEvent(Event *ev, short status)
 	ev->setState(status);
 	_eventQueue.push(ev);
 }
-
 
 void EventLoop::_handleEvent(Event *ev)
 {

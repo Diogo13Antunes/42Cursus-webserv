@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:23:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/09 18:13:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@ class Event
 		//CGI
 		bool _cgiFlag;
 		
+		//Timeout: time for handle all request and all response 
+		int 	_timeoutSec;
+		time_t	_creationTime;
 
 
 	public:
@@ -162,4 +165,8 @@ class Event
 		bool getCgiFlag(void);
 		void setCgiFlag(bool cgiFlag);
 		
+		bool				isEventTimeout(void);
+
+		bool				isConnectionClose(void);
+
 };
