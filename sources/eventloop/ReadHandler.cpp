@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ReadHandler.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/08 15:50:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/11 17:40:23 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void ReadHandler::handleEvent(Event *event)
 	char			buffer[BUFF_SIZE];
 	ssize_t			valread;
 
-	//std::cout << "read event ReadHandler: " << event->getFd() << std::endl;
+	// std::cout << "read event ReadHandler: " << event->getFd() << std::endl;
 
 	_handleReq->setEvent(event);
 	for(int i = 0; i < BUFF_SIZE; i++)
@@ -66,7 +66,10 @@ void ReadHandler::handleEvent(Event *event)
 	if (!_handleReq->isProcessingComplete())
 		return ;
 	if (event->getCgiFlag())
+	{
+		std::cout << "Coloca CGI STATE" << std::endl;
 		event->setState(CGI_EVENT);
+	}
 	else
 		event->setState(WRITE_EVENT);
 }

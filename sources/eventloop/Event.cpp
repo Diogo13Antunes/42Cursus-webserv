@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 18:40:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/11 14:05:00 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ Event::Event(int fd, int state):
 	_resState1(CREATE_HEADER),
 	_errorCode(0),
 	_cgiFlag(false),
+	_cgiState(EXEC_CGI),
 	_timeoutSec(120),
 	_creationTime(Timer::getActualTimeStamp()),
 	_cgiEx(NULL)
@@ -523,6 +524,9 @@ bool Event::isConnectionClose(void)
 	return (false);
 }
 
+
+// CGI Functions
+
 CGIExecuter* Event::getCgiEx(void)
 {
 	return (_cgiEx);
@@ -540,3 +544,22 @@ int Event::getCgiFd(void)
 	return (-1);
 }
 
+StateCgiType	Event::getCgiState(void)
+{
+	return (_cgiState);
+}
+
+void	Event::setCgiState(StateCgiType state)
+{
+	_cgiState = state;
+}
+
+std::string		Event::getCgiScriptResult(void)
+{
+	return (_cgiScriptResult);
+}
+
+void	Event::updateCgiScriptResult(std::string src)
+{
+	_cgiScriptResult += src;
+}

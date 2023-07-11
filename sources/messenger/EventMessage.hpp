@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventMessage.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 13:49:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 10:52:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/11 16:11:59 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,27 @@
 
 #include "Message.hpp"
 
+typedef enum 
+{
+    NEW_EVENT,
+    CHANGE_EVENT
+} EventAction;
+
 class EventMessage: public Message
 {
 	private:
-		int		_fd;
-		short	_event;
-		
+		EventAction	_action;
+		int			_fd;
+		short		_event;
+
 	public:
 		EventMessage(void);
-		EventMessage(int dst, int fd, short event);
+		EventMessage(int dst, int fd, short event, EventAction action);
 		EventMessage(const EventMessage &src);
 		~EventMessage(void);
 		EventMessage &operator=(const EventMessage &src);
 		
-		int		getFd(void);
-		short	getEvent(void);	
+		int			getFd(void);
+		short		getEvent(void);	
+		EventAction	getAction(void);
 };

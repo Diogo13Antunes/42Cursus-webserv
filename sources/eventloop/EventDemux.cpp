@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventDemux.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 18:32:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/11 17:27:02 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ EventDemux &EventDemux::operator=(const EventDemux &src)
 }
 */
 
+#include <cstdlib>
+
 void EventDemux::waitAndDispatchEvents(void)
 {
 	int		numEvents;
@@ -52,10 +54,28 @@ void EventDemux::waitAndDispatchEvents(void)
 			_addNewEvent(eventFd);
 		}
 		else
-			sendMessage(new EventMessage(EVENTLOOP_ID, eventFd, _getEventType(_events[i].events)));
+			sendMessage(new EventMessage(EVENTLOOP_ID, eventFd, _getEventType(_events[i].events), CHANGE_EVENT));
 		sendMessage(new ConnectionMessage(CONNECTIONS_ID, eventFd, NEW_CONNECTION));
 
 		//std::cout << "fd: " << eventFd << " event: " << _events[i].events << std::endl;
+
+		//if (eventFd == 8 && _events[i].events == EPOLLIN)
+		//	std::cout << "fd: " << eventFd << " event: " << _events[i].events << std::endl;
+
+		/*if (eventFd == 8)
+		{
+			std::cout << "fd: " << eventFd << " event: " << _events[i].events << std::endl;
+			if (_events[i].events == EPOLLHUP)
+				std::cout << "EPOLLHUP"<< std::endl;
+			std::exit(0);
+		}*/
+		/*if (eventFd == 9)
+		{
+			std::cout << "fd: " << eventFd << " event: " << _events[i].events << std::endl;
+			if (_events[i].events == EPOLLHUP)
+				std::cout << "EPOLLHUP"<< std::endl;
+			std::exit(0);
+		}*/
 	}
 }
 
@@ -78,13 +98,20 @@ void EventDemux::receiveMessage(Message *msg)
 	}
 	else if (eventMsg)
 	{
-		if (_existEvent(eventMsg->getFd()))
+		/*if (_existEvent(eventMsg->getFd()))
 			_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
 		else
 		{
 			_addNewEvent(eventMsg->getFd());
 			std::cout << "FD: " << eventMsg->getFd() << " EVENT DEMUX RECEBE: " << (EventType)eventMsg->getEvent() << std::endl;
+		}*/
+		if (eventMsg->getAction() == NEW_EVENT)
+		{
+			_addNewEvent(eventMsg->getFd());
+			std::cout << "Fd foi adicionado: " << eventMsg->getFd() << std::endl;
 		}
+		else
+			_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
 	}
 }
 
@@ -141,7 +168,7 @@ uint32_t EventDemux::_getEventsMask(EventType eventType)
 	return (events);
 }
 
-
+// Para remover
 bool EventDemux::_existEvent(int fd)
 {
 	for (int i = 0; i < N_MAX_EVENTS; i++)

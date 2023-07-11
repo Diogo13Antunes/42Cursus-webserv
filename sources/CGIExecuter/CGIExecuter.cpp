@@ -45,7 +45,6 @@ void	CGIExecuter::execute(std::string script, std::string message)
 
 		_closeFd(&_pipe1[0]);
 		_closeFd(&_pipe1[1]);
-		_closeFd(&_pipe2[1]);
 	}
 }
 

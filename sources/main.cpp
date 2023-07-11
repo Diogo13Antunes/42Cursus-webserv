@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/08 14:27:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/11 12:07:32 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,9 +132,9 @@ int main(int argc, char **argv)
 	//eventLoop.registerEventHandler(factory.getEventHandler(READ_EVENT));
 	eventLoop.registerEventHandler(new ReadHandler(new HandleReq()));
 	eventLoop.registerEventHandler(new WriteHandler(new HandleRes(data)));
-	eventLoop.registerEventHandler(new CGIHandler());
+	eventLoop.registerEventHandler(new CGIHandler(new HandleCgi()));
 	//eventLoop.registerEventHandler(factory.getEventHandler(WRITE_EVENT));
-	
+
 	std::cout << "Server started at port: " << PORT << std::endl;
     while(1)
     {

@@ -7,7 +7,7 @@ RM = rm -f
 
 $(VERBOSE).SILENT:
 
-INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq -I ./sources/request -I ./sources/handleRes -I ./sources/errorPageBuilder -I ./sources/CGIExecuter -I ./sources/httpHeaderBuilder -I ./sources/utils
+INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq -I ./sources/handleCgi -I ./sources/request -I ./sources/handleRes -I ./sources/errorPageBuilder -I ./sources/CGIExecuter -I ./sources/httpHeaderBuilder -I ./sources/utils
 
 SRC_PATH = ./sources
 
@@ -42,6 +42,9 @@ SRC_NAME =	main.cpp								\
 			handleRes/CreateHeaderState.cpp			\
 			handleRes/GetBodyState.cpp				\
 			handleRes/ResponseState.cpp				\
+			handleCgi/HandleCgi.cpp					\
+			handleCgi/ExecCgiState.cpp				\
+			handleCgi/GettingDataCgiState.cpp		\
 			CGIExecuter/CGIExecuter.cpp				\
 			errorPageBuilder/ErrorPageBuilder.cpp	\
 			httpHeaderBuilder/HttpHeaderBuilder.cpp	\
@@ -68,6 +71,7 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects/request
 	mkdir -p objects/handleReq
 	mkdir -p objects/handleRes
+	mkdir -p objects/handleCgi
 	mkdir -p objects/errorPageBuilder
 	mkdir -p objects/httpHeaderBuilder
 	mkdir -p objects/CGIExecuter
