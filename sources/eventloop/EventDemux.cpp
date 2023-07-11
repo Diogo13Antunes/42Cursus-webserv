@@ -6,11 +6,13 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 18:32:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/11 08:22:18 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventDemux.hpp"
+
+#include <cstdlib>
 
 EventDemux::EventDemux(void): AMessengerClient(NULL) {}
 
@@ -40,6 +42,9 @@ void EventDemux::waitAndDispatchEvents(void)
 	int		numEvents;
 	int		eventFd;
 
+
+	std::string eventStr;
+
 	//std::cout << "wait events" << std::endl;
 	numEvents = epoll_wait(_epollFd, _events, N_MAX_EVENTS, 1000);
 	for (int i = 0; i < numEvents; i++) 
@@ -54,8 +59,6 @@ void EventDemux::waitAndDispatchEvents(void)
 		else
 			sendMessage(new EventMessage(EVENTLOOP_ID, eventFd, _getEventType(_events[i].events)));
 		sendMessage(new ConnectionMessage(CONNECTIONS_ID, eventFd, NEW_CONNECTION));
-
-		//std::cout << "fd: " << eventFd << " event: " << _events[i].events << std::endl;
 	}
 }
 
@@ -84,7 +87,7 @@ void EventDemux::_addNewEvent(int fd)
 {
 	struct epoll_event	ev;
 	int					flags;
-		
+
 	ev.data.fd = fd;
     ev.events = EPOLLIN;
 	flags = fcntl(fd, F_GETFL, 0);
@@ -105,7 +108,7 @@ void EventDemux::_changeEvent(int fd, EventType eventType)
 	struct epoll_event	ev;
 
     ev.data.fd = fd;
-    ev.events = _getEventsMask(eventType);
+    ev.events = _getEventsMask(eventType) | EPOLLIN;
 	if (epoll_ctl(_epollFd, EPOLL_CTL_MOD, fd, &ev) == -1)
 		std::cerr << "Failed to modify socket to epoll." << std::endl;
 }

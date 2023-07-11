@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 18:13:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/11 08:42:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@ class Event
 		//Timeout: time for handle all request and all response 
 		int 	_timeoutSec;
 		time_t	_creationTime;
+
+
+		bool	_clientClosed;
 
 
 	public:
@@ -161,5 +164,8 @@ class Event
 		bool				isEventTimeout(void);
 
 		bool				isConnectionClose(void);
+
+		bool				isClientClosed(void);
+		void				setClientClosed(void);
 
 };

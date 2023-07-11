@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 18:25:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/11 08:45:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void EventLoop::handleEvents(void)
 	{		
 		ev = _eventQueue.front();
 
-		if (ev->isEventTimeout())
+		if (ev->isEventTimeout() || ev->isClientClosed())
 		{
 			std::cout << "Event Time Out: " << ev->getFd() << std::endl;
 			sendMessage(new ConnectionMessage(CONNECTIONS_ID, ev->getFd(), CLOSE_CONNECTION));

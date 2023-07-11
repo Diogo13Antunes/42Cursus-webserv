@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 18:40:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/11 08:45:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ Event::Event(int fd, int state):
 	_resState1(CREATE_HEADER),
 	_errorCode(0),
 	_timeoutSec(120),
-	_creationTime(Timer::getActualTimeStamp())
+	_creationTime(Timer::getActualTimeStamp()),
+	_clientClosed(false)
 {}
 
 Event::Event(const Event &src) {}
@@ -506,4 +507,14 @@ bool Event::isConnectionClose(void)
 	if (!value.empty() && !value[0].compare("close"))
 		return (true);
 	return (false);
+}
+
+bool Event::isClientClosed(void)
+{
+	return (_clientClosed);
+}
+
+void Event::setClientClosed(void)
+{
+	_clientClosed = true;
 }
