@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CreateHeaderState.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 16:41:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/12 15:28:45 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ void CreateHeaderState::_createHeaderDefaultError(std::string &header, int error
 
 	httpHeader.setStatus(errorBuilder.getCodeAndPhrase());
 	httpHeader.setContentLength(errorBuilder.getErrorPageSize());
-	httpHeader.setContentType(_getMimeType("text/html"));
+	httpHeader.setContentType(_getMimeType("html"));
 	httpHeader.setServerName("webserv");
 	if (event->isConnectionClose())
 		httpHeader.setConnection("close");
