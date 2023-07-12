@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseState.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/05 14:26:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/12 16:56:35 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

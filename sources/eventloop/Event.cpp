@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/11 14:05:00 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/07/12 16:29:43 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -509,7 +509,9 @@ void Event::setCgiFlag(bool cgiFlag)
 }
 bool Event::isEventTimeout(void)
 {
-	return (Timer::isTimeoutExpired(_creationTime, _timeoutSec));
+	//std::cout << "EVENT TIME OUT" << std::endl;
+	//return (Timer::isTimeoutExpired(_creationTime, _timeoutSec));
+	return (false);
 }
 
 bool Event::isConnectionClose(void)

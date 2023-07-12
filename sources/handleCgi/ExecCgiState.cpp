@@ -22,7 +22,6 @@ StateCgiType ExecCgiState::handle(Event *event)
 	CGIExecuter	*ex;
 
 	ex = event->getCgiEx();
-	Terminal::printMessages("Exec CGI Handle");
 
 	ex->execute("cgi-bin/cgi_script.py", "Hi From Python");
 

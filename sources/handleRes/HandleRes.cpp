@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleRes.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:27:16 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/12 16:58:24 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,21 @@ void HandleRes::handle(void)
 	StateResType	state;
 	bool			loop;
 
-	loop = true;
-	while (loop && _event->getResState1() != RESPONSE_END)
+	if (!_event->getCgiScriptResult().empty())
 	{
-		if (_event->getResState1() == RESPONSE)
-			loop = false;
-		state = _handleState(_event->getResState1());
-		_event->setResState1(state);
+		_event->setResState1(RESPONSE_END);
+		send(_event->getFd(), _event->getCgiScriptResult().c_str(), _event->getCgiScriptResult().size(), 0);
+	}
+	else
+	{	
+		loop = true;
+		while (loop && _event->getResState1() != RESPONSE_END)
+		{
+			if (_event->getResState1() == RESPONSE)
+				loop = false;
+			state = _handleState(_event->getResState1());
+			_event->setResState1(state);
+		}
 	}
 	//std::cout << "last State: " << state << std::endl;
 

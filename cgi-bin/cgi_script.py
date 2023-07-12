@@ -26,11 +26,17 @@ print("From Python -> Hi! I am the python script. =)")
 print("-----------------------------------------------------------------")
 """
 
-# print(message)
-print(message)
-time.sleep(1)
-print("hello")
-time.sleep(1)
-print("facking")
-time.sleep(1)
-print("world")
+htmlfile = "<!DOCTYPE html> <html> <body> <h1> Hello World </h1> " 
+htmlfile += "<h1> " + message + " </h1>"
+htmlfile += " </body> </html>"
+
+out = "HTTP/1.1 200 OK\r\n"
+out += "Server: webserv\r\n"
+out += "Connection: keep-alive\r\n"
+out += "Content-Lemgth: " + str(len(htmlfile)) + "\r\n"
+out += "\r\n"
+out += htmlfile
+
+print(out)
+
+exit(0)

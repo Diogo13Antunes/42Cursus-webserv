@@ -10,14 +10,15 @@ GettingDataCgiState::~GettingDataCgiState(void)
 	//Default GettingDataCgiState Destructor
 }
 
-#include <cstdlib>
 StateCgiType GettingDataCgiState::handle(Event *event)
 {
+	CGIExecuter	*cgi;
 	int			fd;
 	char		buffer[SIZE_BUFFER];
 	int			nRead;
 	std::string	src;
 
+	cgi = event->getCgiEx();
 	fd = event->getCgiFd();
 
 	bzero(buffer, SIZE_BUFFER);
@@ -26,19 +27,9 @@ StateCgiType GettingDataCgiState::handle(Event *event)
 
 	event->updateCgiScriptResult(src);
 
-	std::cout << event->getCgiScriptResult() << std::endl;
-
-	/* if (nRead <= 0)
+	if (cgi->isEnded())
 	{
-		std::cout << "Terminou de ler o FD" << std::endl;
-		std::exit(0);
-		return (END_CGI);
-	} */
-
-	if (event->getCgiEx()->isEnded())
-	{
-		std::cout << "Terminou de ler o FD" << std::endl;
-		std::exit(0);
+		close(fd);
 		return (END_CGI);
 	}
 	return (event->getCgiState());

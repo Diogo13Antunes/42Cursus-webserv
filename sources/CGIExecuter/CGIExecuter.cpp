@@ -29,15 +29,18 @@ void	CGIExecuter::execute(std::string script, std::string message)
 
 	if (_pid == 0)
 	{
-		_closeFd(&_pipe1[1]);
-		_closeFd(&_pipe2[0]);
+		// _closeFd(&_pipe1[1]);
+		// _closeFd(&_pipe2[0]);
 
 		dup2(_pipe1[0], STDIN_FILENO);
 		dup2(_pipe2[1], STDOUT_FILENO);
 
+		_closeAllFds();
+
 		execve(_scriptInterpreter.c_str(), const_cast<char**>(av), NULL);
 
 		throw ExecutionErrorException();
+		return ;
 	}
 	else
 	{
@@ -45,12 +48,17 @@ void	CGIExecuter::execute(std::string script, std::string message)
 
 		_closeFd(&_pipe1[0]);
 		_closeFd(&_pipe1[1]);
+		_closeFd(&_pipe2[1]);
 	}
 }
 
 bool	CGIExecuter::isEnded(void)
 {
-	if (waitpid(_pid, NULL, WNOHANG) > 0)
+	int status;
+
+	waitpid(_pid, &status, WNOHANG);
+
+	if (WIFEXITED(status))
 		return (true);
 	return (false);
 }
