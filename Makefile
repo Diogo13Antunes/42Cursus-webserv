@@ -7,7 +7,7 @@ RM = rm -f
 
 $(VERBOSE).SILENT:
 
-INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq -I ./sources/request -I ./sources/handleRes -I ./sources/errorPageBuilder -I ./sources/httpHeaderBuilder -I ./sources/utils
+INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq -I ./sources/handleCgi -I ./sources/request -I ./sources/handleRes -I ./sources/errorPageBuilder -I ./sources/CGIExecuter -I ./sources/httpHeaderBuilder -I ./sources/utils
 
 SRC_PATH = ./sources
 
@@ -24,6 +24,7 @@ SRC_NAME =	main.cpp								\
 			eventloop/EventLoop.cpp					\
 			eventloop/WriteHandler.cpp				\
 			eventloop/ReadHandler.cpp				\
+			eventloop/CGIHandler.cpp				\
 			eventloop/EventHandlerFactory.cpp		\
 			eventloop/Event.cpp						\
 			eventloop/EventDemux.cpp				\
@@ -41,6 +42,10 @@ SRC_NAME =	main.cpp								\
 			handleRes/CreateHeaderState.cpp			\
 			handleRes/GetBodyState.cpp				\
 			handleRes/ResponseState.cpp				\
+			handleCgi/HandleCgi.cpp					\
+			handleCgi/ExecCgiState.cpp				\
+			handleCgi/GettingDataCgiState.cpp		\
+			CGIExecuter/CGIExecuter.cpp				\
 			errorPageBuilder/ErrorPageBuilder.cpp	\
 			httpHeaderBuilder/HttpHeaderBuilder.cpp	\
 			utils/TimeDate.cpp						\
@@ -55,7 +60,7 @@ all: $(NAME)
 
 $(NAME) : $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) $(INC) -o $(NAME)
-	@echo -e "\033[1;36m[COMPILED]\033[0m"
+	@echo "\033[1;36m[COMPILED]\033[0m"
 
 $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects
@@ -66,18 +71,20 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects/request
 	mkdir -p objects/handleReq
 	mkdir -p objects/handleRes
+	mkdir -p objects/handleCgi
 	mkdir -p objects/errorPageBuilder
 	mkdir -p objects/httpHeaderBuilder
+	mkdir -p objects/CGIExecuter
 	mkdir -p objects/utils
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $@
 
 clean:
 	rm -rf $(OBJ_PATH)
-	@echo -e "\033[1;33mAll $(NAME).o files are removed\033[0m"
+	@echo "\033[1;33mAll $(NAME).o files are removed\033[0m"
 
 fclean: clean
 	rm -f $(NAME)
-	@echo -e "\033[1;31m$(NAME) is deleted\033[0m"
+	@echo "\033[1;31m$(NAME) is deleted\033[0m"
 
 re: fclean all
 

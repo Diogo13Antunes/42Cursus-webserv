@@ -19,6 +19,7 @@
 #include "IEventHandler.hpp"
 #include "ReadHandler.hpp"
 #include "WriteHandler.hpp"
+#include "CGIHandler.hpp"
 #include "AMessengerClient.hpp"
 #include "Event.hpp"
 #include "EventMessage.hpp"
@@ -34,7 +35,7 @@ class EventLoop: public AMessengerClient
 		void	_handleMessage(EventMessage *msg);
 		void	_addNewEvent(Event *ev);
 		void	_changeEvent(Event *ev, short status);
-		Event*	_handleNextEvent(void);
+		//Event*	_handleNextEvent(void);
 		void	_handleEvent(Event *ev);
 
 	public:

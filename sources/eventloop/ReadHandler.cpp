@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/11 08:48:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/13 15:44:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void ReadHandler::handleEvent(Event *event)
 	char			buffer[BUFF_SIZE];
 	ssize_t			valread;
 
-	//std::cout << "read event ReadHandler: " << event->getFd() << std::endl;
+	// std::cout << "read event ReadHandler: " << event->getFd() << std::endl;
 
 	_handleReq->setEvent(event);
 	for(int i = 0; i < BUFF_SIZE; i++)
@@ -72,7 +72,13 @@ void ReadHandler::handleEvent(Event *event)
 	_handleReq->handle();
 	if (!_handleReq->isProcessingComplete())
 		return ;
-	event->setState(WRITE_EVENT);
+	if (event->getCgiFlag())
+	{
+		std::cout << "Coloca CGI STATE" << std::endl;
+		event->setState(CGI_EVENT);
+	}
+	else
+		event->setState(WRITE_EVENT);
 }
 
 EventType ReadHandler::getHandleType(void)

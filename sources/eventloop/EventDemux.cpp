@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/11 08:22:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/13 15:41:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ EventDemux &EventDemux::operator=(const EventDemux &src)
 }
 */
 
+#include <cstdlib>
+
 void EventDemux::waitAndDispatchEvents(void)
 {
 	int		numEvents;
@@ -57,7 +59,7 @@ void EventDemux::waitAndDispatchEvents(void)
 			_addNewEvent(eventFd);
 		}
 		else
-			sendMessage(new EventMessage(EVENTLOOP_ID, eventFd, _getEventType(_events[i].events)));
+			sendMessage(new EventMessage(EVENTLOOP_ID, eventFd, _getEventType(_events[i].events), CHANGE_EVENT));
 		sendMessage(new ConnectionMessage(CONNECTIONS_ID, eventFd, NEW_CONNECTION));
 	}
 }
@@ -80,7 +82,22 @@ void EventDemux::receiveMessage(Message *msg)
 		std::cout << "EventDemux: Remove Evento: " << connMsg->getFd() << std::endl;
 	}
 	else if (eventMsg)
-		_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
+	{
+		/*if (_existEvent(eventMsg->getFd()))
+			_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
+		else
+		{
+			_addNewEvent(eventMsg->getFd());
+			std::cout << "FD: " << eventMsg->getFd() << " EVENT DEMUX RECEBE: " << (EventType)eventMsg->getEvent() << std::endl;
+		}*/
+		if (eventMsg->getAction() == NEW_EVENT)
+		{
+			_addNewEvent(eventMsg->getFd());
+			std::cout << "Fd foi adicionado: " << eventMsg->getFd() << std::endl;
+		}
+		else
+			_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
+	}
 }
 
 void EventDemux::_addNewEvent(int fd)
@@ -134,4 +151,15 @@ uint32_t EventDemux::_getEventsMask(EventType eventType)
 	if (eventType == WRITE_EVENT)
 		events = EPOLLOUT;
 	return (events);
+}
+
+// Para remover
+bool EventDemux::_existEvent(int fd)
+{
+	for (int i = 0; i < N_MAX_EVENTS; i++)
+	{
+		if (_events[i].data.fd == fd)
+			return (true);
+	}
+	return (false);
 }

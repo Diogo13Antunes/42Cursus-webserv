@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventMessage.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 13:49:27 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 10:53:16 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/11 16:12:47 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 
 EventMessage::EventMessage(void): Message() {}
 
-EventMessage::EventMessage(int dst, int fd, short event):
+EventMessage::EventMessage(int dst, int fd, short event, EventAction action):
 	Message(dst),
 	_fd(fd),
-	_event(event)
+	_event(event),
+	_action(action)
 {}
 
 EventMessage::EventMessage(const EventMessage &src) {}
@@ -39,4 +40,9 @@ int EventMessage::getFd(void)
 short EventMessage::getEvent(void)
 {
 	return (_event);
+}
+
+EventAction	EventMessage::getAction(void)
+{
+	return (_action);
 }

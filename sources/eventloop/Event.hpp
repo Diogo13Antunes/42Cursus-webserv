@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/11 08:42:44 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/13 15:40:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 #include "ConfigsData.hpp"
 #include "StateType.hpp"
 #include "StateResType.hpp"
-
+#include "StateCgiType.hpp"
+#include "CGIExecuter.hpp"
 
 //#define	NONE			0
 #define HEADER_HANDLE	0
@@ -44,7 +45,6 @@ class Event
 
 		StateType	_reqState;
 
-
 		int			_resState;
 
 		std::vector<std::string> _resVect;
@@ -59,6 +59,13 @@ class Event
 		size_t			_totalBytesSend;
 		StateResType	_resState1;
 		int				_errorCode;
+
+		//CGI
+		bool			_cgiFlag;
+		CGIExecuter		*_cgiEx;
+		StateCgiType	_cgiState;
+
+		std::string		_cgiScriptResult;
 
 		//Timeout: time for handle all request and all response 
 		int 	_timeoutSec;
@@ -161,6 +168,16 @@ class Event
 		int					getErrorCode(void);
 		void				setErrorCode(int errorCode);
 
+		//CGI functions
+		bool			getCgiFlag(void);
+		void			setCgiFlag(bool cgiFlag);
+
+		StateCgiType	getCgiState(void);
+		void			setCgiState(StateCgiType state);
+
+		std::string		getCgiScriptResult(void);
+		void			updateCgiScriptResult(std::string src);
+
 		bool				isEventTimeout(void);
 
 		bool				isConnectionClose(void);
@@ -168,4 +185,7 @@ class Event
 		bool				isClientClosed(void);
 		void				setClientClosed(void);
 
+		CGIExecuter*		getCgiEx(void);
+		void				setCgiEx(CGIExecuter *cgiEx);
+		int					getCgiFd(void);
 };
