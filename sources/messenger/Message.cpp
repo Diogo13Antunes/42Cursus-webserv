@@ -6,28 +6,31 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 12:06:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 10:42:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/14 16:18:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Message.hpp"
 
-Message::Message(void) {}
+Message::Message(int dst, int fd, MessageType type):
+	_dst(dst),
 
-Message::Message(int dst): _dst(dst) {}
-
-Message::Message(const Message &src) {}
+	_type(type)
+{}
 
 Message::~Message(void) {}
 
-/*
-Message &Message::operator=(const Message &src)
+MessageType	Message::getType(void)
 {
-	//IMessage Copy Assignment Operator
+	return (_type);
 }
-*/
 
 int Message::getDst(void)
 {
 	return (_dst);
+}
+
+int Message::getFd(void)
+{
+	return (_fd);
 }

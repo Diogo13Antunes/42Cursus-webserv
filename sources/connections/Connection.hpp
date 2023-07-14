@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:28 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 12:09:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/14 16:13:19 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,11 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/poll.h>
-#include <ctime>
-
 
 typedef enum 
 {
-    PROCESSING_EVENTS,
-    WAITING_EVENTS,
+    TIMER_PAUSED,
+    TIMER_ACTIVE,
 }	ConnectionStatus;
 
 class Connection
@@ -37,11 +35,11 @@ class Connection
 		Connection(int fd);
 		~Connection(void);
 
-		int				getFd(void);
-		bool			isKeepAliveTimeout(void);
-		void			resetKeepAliveTimeout(void);
-		void			setProcessingState(void);
-		void			setWaitingState(void);
+		int		getFd(void);
+		bool	isKeepAliveTimeout(void);
+		void	resetKeepAliveTimeout(void);
+		void	startTimer(void);
+		void	pauseTimer(void);
 		
 		// Just for debug
 		void			showDataConnection(void);

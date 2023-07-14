@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 17:50:39 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/14 16:15:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Connection::Connection(int fd):
 	_fd(fd),
 	_keepAliveTimeout(15),
 	_lastRequestTime(Timer::getActualTimeStamp()),
-	_status(WAITING_EVENTS)
+	_status(TIMER_ACTIVE)
 {}
 
 Connection::~Connection(void)
@@ -33,24 +33,26 @@ int Connection::getFd(void)
 
 bool Connection::isKeepAliveTimeout(void)
 {
-	if (_status == PROCESSING_EVENTS)
-		resetKeepAliveTimeout();
-	return (Timer::isTimeoutExpired(_lastRequestTime, _keepAliveTimeout));
+	if (_status == TIMER_ACTIVE)
+		return (Timer::isTimeoutExpired(_lastRequestTime, _keepAliveTimeout));
+	else
+		return (false);
 }
 
 void Connection::resetKeepAliveTimeout(void)
 {
-	_lastRequestTime = time(NULL);
+	_lastRequestTime = Timer::getActualTimeStamp();
 }
 
-void Connection::setProcessingState(void)
+void Connection::startTimer(void)
 {
-	_status = PROCESSING_EVENTS;
+	this->resetKeepAliveTimeout();
+	_status = TIMER_ACTIVE;
 }
 
-void Connection::setWaitingState(void)
+void Connection::pauseTimer(void)
 {
-	_status = WAITING_EVENTS;
+	_status = TIMER_PAUSED;
 }
 
 // Just for debug (remove when not necessary)

@@ -19,8 +19,6 @@ SRC_NAME =	main.cpp								\
 			messenger/AMessengerClient.cpp			\
 			messenger/Messenger.cpp					\
 			messenger/Message.cpp					\
-			messenger/ConnectionMessage.cpp			\
-			messenger/EventMessage.cpp				\
 			eventloop/EventLoop.cpp					\
 			eventloop/WriteHandler.cpp				\
 			eventloop/ReadHandler.cpp				\

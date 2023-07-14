@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/31 17:04:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/14 16:17:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,20 @@
 
 #include "Connection.hpp"
 #include "AMessengerClient.hpp"
-#include "ConnectionMessage.hpp"
 
 class Connections: public AMessengerClient
 {
 	private:
 		std::map<int, Connection *> _activeConnects;
 
-		void	_handleMessage(ConnectionMessage *msg);
-		void	_removeAllConnections(void);
-		void	_removeConnection(std::map<int, Connection *>::iterator it);
+		Connection *	_getConnection(int fd);
+		void			_removeAllConnections(void);
+		void			_removeConnection(std::map<int, Connection *>::iterator it);
+		void 			_removeConnection(int fd);
+		void			_addNewConnection(int fd);
+		void			_pauseKeepAliveTimer(int fd);
+		void			_restartKeepAliveTimer(int fd);
+		void			_resetKeepAliveTimer(int fd);
 
 	public:
 		Connections(void);

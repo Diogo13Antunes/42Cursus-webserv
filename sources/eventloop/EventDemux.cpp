@@ -6,13 +6,11 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/13 15:41:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/14 16:03:35 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventDemux.hpp"
-
-#include <cstdlib>
 
 EventDemux::EventDemux(void): AMessengerClient(NULL) {}
 
@@ -26,78 +24,66 @@ EventDemux::EventDemux(int serverFd, struct sockaddr_in address, socklen_t addrl
 	_addNewEvent(serverFd);
 }
 
-EventDemux::EventDemux(const EventDemux &src) {}
-
 EventDemux::~EventDemux(void){}
-
-/*
-EventDemux &EventDemux::operator=(const EventDemux &src)
-{
-	//EventDemultiplexer Copy Assignment Operator
-}
-*/
-
-#include <cstdlib>
-
-void EventDemux::waitAndDispatchEvents(void)
-{
-	int		numEvents;
-	int		eventFd;
-
-
-	std::string eventStr;
-
-	//std::cout << "wait events" << std::endl;
-	numEvents = epoll_wait(_epollFd, _events, N_MAX_EVENTS, 1000);
-	for (int i = 0; i < numEvents; i++) 
-	{
-		eventFd = _events[i].data.fd;
-		if (eventFd == _serverFd)
-		{
-			// needs to check if it returns error
-			eventFd = accept(_serverFd, (struct sockaddr *) &_address, &_addrlen);
-			_addNewEvent(eventFd);
-		}
-		else
-			sendMessage(new EventMessage(EVENTLOOP_ID, eventFd, _getEventType(_events[i].events), CHANGE_EVENT));
-		sendMessage(new ConnectionMessage(CONNECTIONS_ID, eventFd, NEW_CONNECTION));
-	}
-}
 
 ClientID EventDemux::getId(void)
 {
 	return (EVENTDEMUX_ID);
 }
 
-void EventDemux::receiveMessage(Message *msg)
+void EventDemux::waitAndDispatchEvents(void)
 {
-	ConnectionMessage	*connMsg;
-	EventMessage		*eventMsg;
+	int		numEvents;
+	int		eventFd;
+	int		timeOutMs;
 
-	connMsg = dynamic_cast<ConnectionMessage*>(msg);
-	eventMsg = dynamic_cast<EventMessage*>(msg);
-	if (connMsg)
+	timeOutMs = 1000;
+	numEvents = epoll_wait(_epollFd, _events, N_MAX_EVENTS, timeOutMs);
+	for (int i = 0; i < numEvents; i++) 
 	{
-		_removeEvent(connMsg->getFd());
-		std::cout << "EventDemux: Remove Evento: " << connMsg->getFd() << std::endl;
-	}
-	else if (eventMsg)
-	{
-		/*if (_existEvent(eventMsg->getFd()))
-			_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
-		else
+		eventFd = _events[i].data.fd;
+		if (eventFd == _serverFd)
 		{
-			_addNewEvent(eventMsg->getFd());
-			std::cout << "FD: " << eventMsg->getFd() << " EVENT DEMUX RECEBE: " << (EventType)eventMsg->getEvent() << std::endl;
-		}*/
-		if (eventMsg->getAction() == NEW_EVENT)
-		{
-			_addNewEvent(eventMsg->getFd());
-			std::cout << "Fd foi adicionado: " << eventMsg->getFd() << std::endl;
+			eventFd = accept(_serverFd, (struct sockaddr *) &_address, &_addrlen);
+			if (eventFd != -1)
+			{
+				_addNewEvent(eventFd);
+				sendMessage(new Message(CONNECTIONS_ID, eventFd, CONNECTION_ADD_NEW));
+			}
 		}
 		else
-			_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
+		{
+			if (_getEventType(_events[i].events) == READ_EVENT)
+			{
+				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_READ_TRIGGERED));
+				sendMessage(new Message(CONNECTIONS_ID, eventFd, CONNECTION_RESET_TIMER));
+			}
+			else if (_getEventType(_events[i].events) == WRITE_EVENT)
+			{
+				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_WRITE_TRIGGERED));
+				sendMessage(new Message(CONNECTIONS_ID, eventFd, CONNECTION_RESET_TIMER));
+			}
+			else
+				; //error provavelmente fechar a ligação 
+		}
 	}
+}
+
+void EventDemux::receiveMessage(Message *msg)
+{
+	MessageType	type;
+	int			fd;
+
+	type = msg->getType();
+	fd = msg->getFd();
+	if (type == EVENT_ADD_NEW)
+		_addNewEvent(fd);
+	else if (type == EVENT_CHANGE_TO_READ)
+		_changeEvent(fd, READ_EVENT);
+	else if (type == EVENT_CHANGE_TO_WRITE)
+		_changeEvent(fd, WRITE_EVENT);
+	else if (type == EVENT_REMOVE)
+		_removeEvent(fd);
 }
 
 void EventDemux::_addNewEvent(int fd)
@@ -151,15 +137,4 @@ uint32_t EventDemux::_getEventsMask(EventType eventType)
 	if (eventType == WRITE_EVENT)
 		events = EPOLLOUT;
 	return (events);
-}
-
-// Para remover
-bool EventDemux::_existEvent(int fd)
-{
-	for (int i = 0; i < N_MAX_EVENTS; i++)
-	{
-		if (_events[i].data.fd == fd)
-			return (true);
-	}
-	return (false);
 }
