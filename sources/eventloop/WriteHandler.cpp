@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WriteHandler.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/12 16:50:58 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/07/16 09:40:12 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void WriteHandler::handleEvent(Event *event)
 	_handleRes->setEvent(event);
 	_handleRes->handle();
 	if (_handleRes->isResProcessingComplete())
-		event->setState(COMPLETE_EVENT);
+		event->setState(WRITE_EVENT_COMPLETE);
 }
 
 EventType WriteHandler::getHandleType(void)

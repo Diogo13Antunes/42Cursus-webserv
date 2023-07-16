@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/14 16:03:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/16 12:17:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,15 +53,15 @@ void EventDemux::waitAndDispatchEvents(void)
 		}
 		else
 		{
-			if (_getEventType(_events[i].events) == READ_EVENT)
+			if (_isReadEvent(_events[i].events))
 			{
 				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_READ_TRIGGERED));
-				sendMessage(new Message(CONNECTIONS_ID, eventFd, CONNECTION_RESET_TIMER));
+				//sendMessage(new Message(CONNECTIONS_ID, eventFd, CONNECTION_RESET_TIMER));
 			}
-			else if (_getEventType(_events[i].events) == WRITE_EVENT)
+			else if (_isWriteEvent(_events[i].events))
 			{
 				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_WRITE_TRIGGERED));
-				sendMessage(new Message(CONNECTIONS_ID, eventFd, CONNECTION_RESET_TIMER));
+				//sendMessage(new Message(CONNECTIONS_ID, eventFd, CONNECTION_RESET_TIMER));
 			}
 			else
 				; //error provavelmente fechar a ligação 
@@ -79,9 +79,9 @@ void EventDemux::receiveMessage(Message *msg)
 	if (type == EVENT_ADD_NEW)
 		_addNewEvent(fd);
 	else if (type == EVENT_CHANGE_TO_READ)
-		_changeEvent(fd, READ_EVENT);
+		_changeEvent(fd, EPOLLIN);
 	else if (type == EVENT_CHANGE_TO_WRITE)
-		_changeEvent(fd, WRITE_EVENT);
+		_changeEvent(fd, EPOLLOUT);
 	else if (type == EVENT_REMOVE)
 		_removeEvent(fd);
 }
@@ -92,7 +92,8 @@ void EventDemux::_addNewEvent(int fd)
 	int					flags;
 
 	ev.data.fd = fd;
-    ev.events = EPOLLIN;
+    //ev.events = EPOLLIN | EPOLLOUT;
+	ev.events = EPOLLIN;
 	flags = fcntl(fd, F_GETFL, 0);
     fcntl(fd, F_SETFL, flags | O_NONBLOCK);
 	if (epoll_ctl(_epollFd, EPOLL_CTL_ADD, fd, &ev) == -1)
@@ -106,35 +107,27 @@ void EventDemux::_removeEvent(int fd)
 	}	
 }
 
-void EventDemux::_changeEvent(int fd, EventType eventType)
+void EventDemux::_changeEvent(int fd, uint32_t eventMask)
 {
 	struct epoll_event	ev;
 
     ev.data.fd = fd;
-    ev.events = _getEventsMask(eventType) | EPOLLIN;
+    //ev.events = EPOLLIN | EPOLLOUT;
+	ev.events = eventMask;
 	if (epoll_ctl(_epollFd, EPOLL_CTL_MOD, fd, &ev) == -1)
 		std::cerr << "Failed to modify socket to epoll." << std::endl;
 }
 
-EventType EventDemux::_getEventType(uint32_t events)
+bool EventDemux::_isReadEvent(uint32_t eventMask)
 {
-	EventType evType;
-
-	if (events & EPOLLIN)
-		evType = READ_EVENT;
-	else if (events & EPOLLOUT)
-		evType = WRITE_EVENT;
-	return (evType);
+	if (eventMask & EPOLLIN)
+		return (true);
+	return (false);
 }
 
-uint32_t EventDemux::_getEventsMask(EventType eventType)
+bool EventDemux::_isWriteEvent(uint32_t eventMask)
 {
-	uint32_t events;
-
-	events = 0;
-	if (eventType == READ_EVENT)
-		events = EPOLLIN;
-	if (eventType == WRITE_EVENT)
-		events = EPOLLOUT;
-	return (events);
+	if (eventMask & EPOLLOUT)
+		return (true);
+	return (false);
 }
