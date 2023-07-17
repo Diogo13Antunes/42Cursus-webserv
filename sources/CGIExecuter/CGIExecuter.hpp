@@ -34,7 +34,7 @@ class CGIExecuter
 		int			getReadFD(void);
 		std::string	getResult(void);
 
-		void		execute(std::string script, std::string message);
+		void		execute(std::string script, std::string message, char **env);
 		bool		isEnded(void);
 
 		class ExecutionErrorException: public std::exception

@@ -28,8 +28,6 @@ void CGIHandler::handleEvent(Event *event)
 
 	_handleCgi->setEvent(event);
 
-	std::cout << "Query String: \'" << event->getQueryString() << "\'\n";
-
 	_handleCgi->handle();
 
 	if (_handleCgi->isCgiFinished())

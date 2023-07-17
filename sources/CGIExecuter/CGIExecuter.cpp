@@ -13,7 +13,7 @@ CGIExecuter::~CGIExecuter(void)
 	_closeAllFds();
 }
 
-void	CGIExecuter::execute(std::string script, std::string message)
+void	CGIExecuter::execute(std::string script, std::string message, char **env)
 {
 	_scriptName = script;
 	_scriptInterpreter = _getScriptInterpreter();
@@ -35,7 +35,7 @@ void	CGIExecuter::execute(std::string script, std::string message)
 
 		_closeAllFds();
 
-		execve(_scriptInterpreter.c_str(), const_cast<char**>(av), NULL);
+		execve(_scriptInterpreter.c_str(), const_cast<char**>(av), env);
 
 		throw ExecutionErrorException();
 		return ;

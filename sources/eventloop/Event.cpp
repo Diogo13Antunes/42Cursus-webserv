@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/17 16:11:55 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/07/17 19:00:37 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -571,4 +571,14 @@ void	Event::updateCgiScriptResult(std::string src)
 std::string	Event::getQueryString(void)
 {
 	return (_reqParsed.getQueryString());
+}
+
+std::vector<std::string>	Event::getRequestHeaderValue(std::string key)
+{
+	return (_reqParsed.getHeaderValue(key));
+}
+
+std::string	Event::getReqMethod(void)
+{
+	return (_reqParsed.getRequestLine().at(0));
 }
