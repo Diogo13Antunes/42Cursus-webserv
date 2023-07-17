@@ -7,7 +7,7 @@ RM = rm -f
 
 $(VERBOSE).SILENT:
 
-INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq -I ./sources/handleCgi -I ./sources/request -I ./sources/handleRes -I ./sources/errorPageBuilder -I ./sources/CGIExecuter -I ./sources/httpHeaderBuilder -I ./sources/utils
+INC := $(addprefix -I, $(shell find sources -type d))
 
 SRC_PATH = ./sources
 

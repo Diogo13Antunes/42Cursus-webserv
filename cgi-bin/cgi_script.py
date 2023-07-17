@@ -33,7 +33,7 @@ htmlfile += " </body> </html>"
 out = "HTTP/1.1 200 OK\r\n"
 out += "Server: webserv\r\n"
 out += "Connection: keep-alive\r\n"
-out += "Content-Lemgth: " + str(len(htmlfile)) + "\r\n"
+out += "Content-Length: " + str(len(htmlfile)) + "\r\n"
 out += "\r\n"
 out += htmlfile
 

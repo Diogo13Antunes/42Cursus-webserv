@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/11 14:07:13 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/07/17 16:11:42 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,4 +182,6 @@ class Event
 		CGIExecuter*		getCgiEx(void);
 		void				setCgiEx(CGIExecuter *cgiEx);
 		int					getCgiFd(void);
+
+		std::string			getQueryString(void);
 };

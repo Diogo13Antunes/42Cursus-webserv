@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/12 16:29:43 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/07/17 16:11:55 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -564,4 +564,11 @@ std::string		Event::getCgiScriptResult(void)
 void	Event::updateCgiScriptResult(std::string src)
 {
 	_cgiScriptResult += src;
+}
+
+/* Getters for RequestData */
+
+std::string	Event::getQueryString(void)
+{
+	return (_reqParsed.getQueryString());
 }

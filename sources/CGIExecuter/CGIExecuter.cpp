@@ -29,8 +29,6 @@ void	CGIExecuter::execute(std::string script, std::string message)
 
 	if (_pid == 0)
 	{
-		// _closeFd(&_pipe1[1]);
-		// _closeFd(&_pipe2[0]);
 
 		dup2(_pipe1[0], STDIN_FILENO);
 		dup2(_pipe2[1], STDOUT_FILENO);

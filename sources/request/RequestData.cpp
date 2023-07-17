@@ -39,8 +39,8 @@ void	RequestData::setRequestLine(std::string &src)
 			throw InvalidRequestLineException();
 		}
 	}
-	// if (!RequestDataUtils::isValidRequestLine(_requestLine))
-		// throw InvalidRequestLineException();
+
+	_requestPath = RequestDataUtils::getPath(element[1]);
 }
 
 void	RequestData::setRequestHeader(std::map<std::string, std::vector<std::string> > &src)
@@ -70,7 +70,7 @@ std::string	RequestData::getRequestBody(void)
 
 std::string RequestData::getPath(void)
 {
-	return (_requestLine.at(1));
+	return (_requestPath);
 }
 
 size_t	RequestData::getContentLenght(void)
@@ -96,6 +96,28 @@ std::vector<std::string>	RequestData::getHeaderValue(std::string	element)
 	if (it != _requestHeader.end())
 		value = it->second;
 	return (value);
+}
+
+std::string	RequestData::getQueryString(void)
+{
+	std::string	method;
+	std::string	res;
+	std::string	contentType;
+
+	if (_queryString.empty())
+	{
+		method = _requestLine.at(REQUEST_METHOD);
+
+		if (!method.compare("GET"))
+			_queryString = RequestDataUtils::getQueryStringURL(_requestLine.at(REQUEST_URL));
+		else if (!method.compare("POST"))
+		{
+			contentType = getHeaderValue("content-type").at(0);
+			if (!contentType.compare("application/x-www-form-urlencoded"))
+				_queryString = RequestDataUtils::stringTrim(_requestBody);
+		}
+	}
+	return (_queryString);
 }
 
 /* Exceptions */
