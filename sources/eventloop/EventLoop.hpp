@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/16 09:29:49 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/17 09:33:18 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ class EventLoop: public AMessengerClient
 		void	_registerReadEvent(int fd);
 		void	_registerWriteEvent(int fd);
 		void	_deleteEvent(int fd);
+		void	_removeEventFromMap(int fd);
 		void	_handleEventStates(Event *event);
 
 	public:

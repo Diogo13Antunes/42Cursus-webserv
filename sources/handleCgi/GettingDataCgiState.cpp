@@ -29,7 +29,7 @@ StateCgiType GettingDataCgiState::handle(Event *event)
 
 	if (cgi->isEnded())
 	{
-		close(fd);
+		//close(fd);
 		return (END_CGI);
 	}
 	return (event->getCgiState());

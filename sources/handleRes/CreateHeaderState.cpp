@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CreateHeaderState.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/12 15:28:45 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/17 08:53:35 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,7 @@ void CreateHeaderState::_createHeader(std::string &header, std::string fileName,
 	httpHeader.setContentLength(_getFileSize(fileName));
 	httpHeader.setContentType(_getMimeType(_getFileType(fileName)));
 	httpHeader.setServerName("webserv");
+	httpHeader.setConnection("keep-alive");
 	if (event->isConnectionClose())
 		httpHeader.setConnection("close");
 	else

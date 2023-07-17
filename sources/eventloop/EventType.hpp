@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 12:35:40 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/15 20:09:12 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/17 09:23:19 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ typedef enum
     WRITE_EVENT,
     WRITE_EVENT_COMPLETE,
     CGI_EVENT,
-    CGI_EXECUTION,
+    CGI_EXECUTION, // Não está a ser usado
     CGI_EVENT_COMPLETE,
     CLOSED_EVENT,
 }	EventType;

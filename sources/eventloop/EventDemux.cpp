@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/16 12:17:44 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/17 09:51:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,15 +54,9 @@ void EventDemux::waitAndDispatchEvents(void)
 		else
 		{
 			if (_isReadEvent(_events[i].events))
-			{
 				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_READ_TRIGGERED));
-				//sendMessage(new Message(CONNECTIONS_ID, eventFd, CONNECTION_RESET_TIMER));
-			}
 			else if (_isWriteEvent(_events[i].events))
-			{
 				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_WRITE_TRIGGERED));
-				//sendMessage(new Message(CONNECTIONS_ID, eventFd, CONNECTION_RESET_TIMER));
-			}
 			else
 				; //error provavelmente fechar a ligação 
 		}
@@ -102,6 +96,7 @@ void EventDemux::_addNewEvent(int fd)
 
 void EventDemux::_removeEvent(int fd)
 {
+	std::cout << "EventDemux: Remove evento fd: " << fd << std::endl;
 	if (epoll_ctl(_epollFd, EPOLL_CTL_DEL, fd, NULL) == -1) {
 		std::cerr << "Failed to remove event from epoll" << std::endl;
 	}	

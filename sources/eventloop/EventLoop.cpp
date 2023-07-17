@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/16 10:35:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/17 10:03:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,8 @@ void EventLoop::_handleEvent(Event *ev)
 {
 	std::map<EventType, IEventHandler*>::iterator it;
 	
+	//std::cout << "Handler get state: " << ev->getState() << std::endl;
+
 	it = _handlers.find((EventType)ev->getState());
 	if (it != _handlers.end())
 		it->second->handleEvent(ev);
@@ -249,6 +251,15 @@ void EventLoop::_deleteEvent(int fd)
 	}
 }
 
+void EventLoop::_removeEventFromMap(int fd)
+{
+	Event*	event;
+
+	event = _getEventFromMap(fd);
+	if (event)
+		_eventMap.erase(fd);	
+}
+
 void EventLoop::_handleEventStates(Event *event)
 {
 	int fd;
@@ -261,12 +272,38 @@ void EventLoop::_handleEventStates(Event *event)
 	}
 	else if (event->getState() == WRITE_EVENT_COMPLETE)
 	{
+		if (event->isConnectionClose())
+		{
+			sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
+			sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));		
+		}
+		else
+		{
+			sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_READ));
+			sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_RESTART_TIMER));
+		}
 		_deleteEvent(event->getFd());
-		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_READ));
-		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_RESTART_TIMER));
 	}
-	else if (event->getState() == CGI_EVENT_COMPLETE)
-		; // Pass event to Write and remove from map
+	else if(event->getState() == CGI_EVENT)
+	{
+		if (event->getCgiFd() == -1)
+		{
+			event->setCgiEx(new CGIExecuter());
+			std::cout << "FD CGI: " << event->getCgiFd() << std::endl;
+			_eventMap.insert(std::make_pair(event->getCgiFd(), event));
+			_eventQueue.push(event);
+			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiFd(), EVENT_ADD_NEW));
+		}
+		//Pass event to Write and remove from map
+	}
+	else if(event->getState() == CGI_EVENT_COMPLETE)
+	{
+		std::cout << "CGI completo" << std::endl;
+		event->setState(WRITE_EVENT);
+		_removeEventFromMap(event->getCgiFd());
+		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiFd(), EVENT_REMOVE));
+		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_WRITE));
+	}
 	else if (event->getState() == CLOSED_EVENT)
 	{
 		_deleteEvent(event->getFd());

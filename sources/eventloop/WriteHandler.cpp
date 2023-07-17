@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/16 09:40:12 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/16 12:35:01 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ WriteHandler &WriteHandler::operator=(const WriteHandler &src)
 
 void WriteHandler::handleEvent(Event *event)
 {
-	std::cout << "Evento de escrita: " << event->getFd() << std::endl;
+	//std::cout << "Evento de escrita: " << event->getFd() << std::endl;
 
 	// Terminal::printMessages("--------------------------------");
 	// std::cout << event->getCgiScriptResult() << std::endl;

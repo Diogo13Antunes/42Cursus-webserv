@@ -33,7 +33,7 @@ void CGIHandler::handleEvent(Event *event)
 	if (_handleCgi->isCgiFinished())
 	{
 		Terminal::printMessages("Terminou CGI");	
-		event->setState(WRITE_EVENT);
+		event->setState(CGI_EVENT_COMPLETE);
 	}
 }
 
