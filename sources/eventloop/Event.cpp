@@ -6,13 +6,15 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/13 15:44:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/17 16:09:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Event.hpp"
 
 #include "Timer.hpp"
+
+#define TIMEOUT_SEC	200
 
 static std::string createResponse1(std::string path, std::string contentType);
 static std::string getFileContent(std::string fileName);
@@ -35,7 +37,7 @@ Event::Event(int fd, int state):
 	_errorCode(0),
 	_cgiFlag(false),
 	_cgiState(EXEC_CGI),
-	_timeoutSec(120),
+	_timeoutSec(TIMEOUT_SEC),
 	_creationTime(Timer::getActualTimeStamp()),
 	_clientClosed(false),
 	_cgiEx(NULL)
@@ -511,14 +513,13 @@ void Event::setCgiFlag(bool cgiFlag)
 bool Event::isEventTimeout(void)
 {
 	//std::cout << "EVENT TIME OUT" << std::endl;
-	//return (Timer::isTimeoutExpired(_creationTime, _timeoutSec));
-	return (false);
+	return (Timer::isTimeoutExpired(_creationTime, _timeoutSec));
+	//return (true);
 }
 
 bool Event::isConnectionClose(void)
 {
 	std::vector<std::string> value;
-	// Lower case or Upper Case ?
 
 	value = _reqParsed.getHeaderValue("connection");
 

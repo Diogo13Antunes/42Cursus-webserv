@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/17 09:33:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/17 15:15:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,7 @@ class EventLoop: public AMessengerClient
 		std::map<int, Event*>				_eventMap;
 		std::queue<Event*>					_eventQueue;
 
-		//void	_handleMessage(EventMessage *msg);
-		//void	_addNewEvent(Event *ev);
-
-
 		void	_changeEvent(Event *ev, short status);
-		//Event*	_handleNextEvent(void);
 		void	_handleEvent(Event *ev);
 		Event*	_getEventFromMap(int fd);
 		void	_addEventToMap(Event *event);
@@ -52,8 +47,8 @@ class EventLoop: public AMessengerClient
 		~EventLoop(void);
 		EventLoop &operator=(const EventLoop &src);
 
-		void		registerEventHandler(IEventHandler *event);
-		void		unregisterEventHandler(IEventHandler *event);
+		void		registerEventHandler(IEventHandler *eventHandler);
+		void		unregisterEventHandler(IEventHandler *eventHandler);
 		void		handleEvents(void);
 
 		ClientID	getId(void);
