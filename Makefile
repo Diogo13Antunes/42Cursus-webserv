@@ -7,7 +7,7 @@ RM = rm -f
 
 $(VERBOSE).SILENT:
 
-INC =	-I ./sources -I ./sources/connections -I ./sources/messenger -I ./sources/eventloop -I ./sources/configs -I ./sources/request -I ./sources/handleReq -I ./sources/handleCgi -I ./sources/request -I ./sources/handleRes -I ./sources/errorPageBuilder -I ./sources/CGIExecuter -I ./sources/httpHeaderBuilder -I ./sources/utils
+INC := $(addprefix -I, $(shell find sources -type d))
 
 SRC_PATH = ./sources
 
@@ -25,7 +25,7 @@ SRC_NAME =	main.cpp								\
 			eventloop/CGIHandler.cpp				\
 			eventloop/EventHandlerFactory.cpp		\
 			eventloop/Event.cpp						\
-			eventloop/EventDemux.cpp				\
+			eventdemux/EventDemux.cpp				\
 			configs/Configs.cpp						\
 			configs/ConfigsUtils.cpp				\
 			configs/ConfigsData.cpp					\
@@ -74,6 +74,7 @@ $(OBJ_PATH)/%.o : $(SRC_PATH)/%.cpp
 	mkdir -p objects/httpHeaderBuilder
 	mkdir -p objects/CGIExecuter
 	mkdir -p objects/utils
+	mkdir -p objects/eventdemux
 	$(CXX) -c $(CXXFLAGS) $(INC) $< -o $@
 
 clean:
