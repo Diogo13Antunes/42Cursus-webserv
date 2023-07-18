@@ -5,8 +5,9 @@
 class ExecCgiState: public IStateCGI
 {
 	private:
-		char	**_getEnvVariables(Event *event);
-		void	_freeEnv(char **env);
+		char**		_getEnvVariables(Event *event, std::string data);
+		void		_freeEnv(char **env);
+		std::string	_sizeToString(size_t number);
 
 	public:
 		ExecCgiState(void);

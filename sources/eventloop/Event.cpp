@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/17 19:00:37 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/07/18 14:06:40 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -581,4 +581,18 @@ std::vector<std::string>	Event::getRequestHeaderValue(std::string key)
 std::string	Event::getReqMethod(void)
 {
 	return (_reqParsed.getRequestLine().at(0));
+}
+
+std::string	Event::getServerProtocol(void)
+{
+	return (_reqParsed.getRequestLine().at(2));
+}
+
+std::string	Event::getReqContentType(void)
+{
+	std::string	contentType;
+
+	if (!_reqParsed.getHeaderValue("content-type").empty())
+		contentType = _reqParsed.getHeaderValue("content-type").at(0);
+	return (contentType);
 }

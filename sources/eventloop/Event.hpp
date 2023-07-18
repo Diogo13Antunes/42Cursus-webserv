@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/17 19:00:40 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/07/18 14:02:06 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,5 +186,7 @@ class Event
 		std::string					getQueryString(void);
 		std::vector<std::string>	getRequestHeaderValue(std::string key);
 		std::string					getReqMethod(void);
+		std::string					getServerProtocol(void);
+		std::string					getReqContentType(void);
 
 };
