@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/17 16:00:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/18 15:14:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void EventLoop::unregisterEventHandler(IEventHandler *eventHandler)
 void EventLoop::handleEvents(void)
 {
 	Event	*event;
+	
 	while (!_eventQueue.empty())
 	{		
 		event = _eventQueue.front();
@@ -43,6 +44,8 @@ void EventLoop::handleEvents(void)
 		_eventQueue.pop();
 		_handleEventStates(event);
 	}
+	_checkIfCgiScriptsFinished();
+	_closeTimeoutEvents();
 }
 
 ClientID EventLoop::getId(void)
@@ -70,7 +73,6 @@ void EventLoop::_handleEvent(Event *ev)
 	if (it != _handlers.end())
 		it->second->handleEvent(ev);
 }
-
 
 Event* EventLoop::_getEventFromMap(int fd)
 {
@@ -146,14 +148,22 @@ void EventLoop::_handleEventStates(Event *event)
 
 	fd = event->getFd();
 
-	if (event->isEventTimeout())
+	// tem de ser feito num loop
+	/*if (event->isEventTimeout())
 	{
 		std::cout << "TIMEOUT CONEXÃO" << std::endl;
+		if (event->getCgiFd() > 0)
+		{
+			_removeEventFromMap(event->getCgiFd());
+			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiFd(), EVENT_REMOVE));
+		}
 		_deleteEvent(event->getFd());
 		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
 		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
 		return ;
-	}
+	}*/
+
+
 
 	if (event->getState() == READ_EVENT_COMPLETE)
 	{
@@ -195,8 +205,65 @@ void EventLoop::_handleEventStates(Event *event)
 	}
 	else if (event->getState() == CLOSED_EVENT)
 	{
+		if (event->getCgiFd() > 0)
+		{
+			_removeEventFromMap(event->getCgiFd());
+			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiFd(), EVENT_REMOVE));
+		}
 		_deleteEvent(event->getFd());
 		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
 		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
+	}
+}
+
+
+// Para não dar erro fazer depois de a queue estar vazia
+void EventLoop::_closeTimeoutEvents(void)
+{
+	std::map<int, Event*>::iterator	it;
+	Event							*event;
+	int								fd;
+	int								fdCgi;
+
+	if (_eventMap.empty())
+		return ;
+	for (it = _eventMap.begin(); it != _eventMap.end(); it++)
+	{
+		event = it->second;
+		fd = event->getFd();
+		fdCgi = event->getCgiFd();
+		if (fdCgi == it->first)
+			continue ;
+		if (event->isEventTimeout())
+		{
+			if (fdCgi)
+			{
+				_eventMap.erase(fdCgi);
+				sendMessage(new Message(EVENTDEMUX_ID, fdCgi, EVENT_REMOVE));
+			}
+			_deleteEvent(fd);
+			sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
+			sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
+		}
+	}
+}
+
+void EventLoop::_checkIfCgiScriptsFinished(void)
+{
+	std::map<int, Event*>::iterator	it;
+	Event							*event;
+
+	if (_eventMap.empty())
+		return ;
+	for (it = _eventMap.begin(); it != _eventMap.end(); it++)
+	{
+		event = it->second;
+		if (event->isCgiScriptEnd())
+		{
+			event->setState(WRITE_EVENT);
+			sendMessage(new Message(EVENTDEMUX_ID, event->getFd(), EVENT_CHANGE_TO_WRITE));
+			_eventMap.erase(event->getCgiFd());
+			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiFd(), EVENT_REMOVE));
+		}
 	}
 }

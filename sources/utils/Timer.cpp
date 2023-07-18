@@ -6,11 +6,13 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/08 12:23:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/08 14:18:16 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/18 09:00:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Timer.hpp"
+
+#include <iostream>
 
 time_t Timer::getActualTimeStamp(void)
 {

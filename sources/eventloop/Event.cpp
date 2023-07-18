@@ -6,13 +6,13 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/17 16:09:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/18 15:32:43 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Event.hpp"
-
 #include "Timer.hpp"
+#include "EventType.hpp"
 
 #define TIMEOUT_SEC	200
 
@@ -574,4 +574,14 @@ std::string		Event::getCgiScriptResult(void)
 void	Event::updateCgiScriptResult(std::string src)
 {
 	_cgiScriptResult += src;
+}
+
+bool Event::isCgiScriptEnd(void)
+{
+	if (this->getCgiFd() > 0 && _state == CGI_EVENT)
+	{
+		if (_cgiEx->isEnded())
+			return (true);
+	}
+	return (false);
 }

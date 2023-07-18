@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/13 15:40:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/18 14:10:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,4 +188,6 @@ class Event
 		CGIExecuter*		getCgiEx(void);
 		void				setCgiEx(CGIExecuter *cgiEx);
 		int					getCgiFd(void);
+
+		bool				isCgiScriptEnd(void);
 };

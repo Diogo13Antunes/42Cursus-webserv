@@ -1,5 +1,9 @@
 #include "CGIExecuter.hpp"
 
+#include <signal.h>
+
+#include <cstdlib>
+
 CGIExecuter::CGIExecuter(void)
 {
 	// Default CGIExecuter Constructor
@@ -10,6 +14,16 @@ CGIExecuter::CGIExecuter(void)
 CGIExecuter::~CGIExecuter(void)
 {
 	// Default CGIExecuter Destructor
+
+	//std::cout << "Destrutor do CGIExecuter" << std::endl;
+
+	if (!this->isEnded())
+	{
+		std::cout << "Tenta fazer o kill" << std::endl;
+		if (kill(_pid, SIGTERM) == -1)
+			std::cout << "Webserv: Error terminating SGI script" << std::endl;
+
+	}
 	_closeAllFds();
 }
 
@@ -29,16 +43,35 @@ void	CGIExecuter::execute(std::string script, std::string message)
 
 	if (_pid == 0)
 	{
-		// _closeFd(&_pipe1[1]);
-		// _closeFd(&_pipe2[0]);
+		//_pid = getpid();
+
+		//std::cout << "PID CHILD: " << _pid << std::endl;
 
 		dup2(_pipe1[0], STDIN_FILENO);
 		dup2(_pipe2[1], STDOUT_FILENO);
-
+		//_closeFd(&_pipe1[1]);
+		//_closeFd(&_pipe2[0]);
 		_closeAllFds();
 
-		execve(_scriptInterpreter.c_str(), const_cast<char**>(av), NULL);
+		/*
+		std::string s;
 
+		char **env;// = {"key=value", "key=teste"};
+
+		env = (char**) malloc(sizeof(char *) * 3);
+
+		env[0] = (char *) malloc(sizeof(char) * strlen("key=value") + 1);
+		env[1] = (char *) malloc(sizeof(char) * strlen("key=value") + 1);
+		env[2] = NULL;
+
+		s = "key=value";
+
+		strcpy(env[0], s.c_str());
+		strcpy(env[1], s.c_str());
+
+		//env[0] = "key=value\0";*/
+
+		execve(_scriptInterpreter.c_str(), const_cast<char**>(av), NULL);
 		throw ExecutionErrorException();
 		return ;
 	}
@@ -51,40 +84,46 @@ void	CGIExecuter::execute(std::string script, std::string message)
 		_closeFd(&_pipe2[1]);
 	}
 }
-
+/*
 bool	CGIExecuter::isEnded(void)
 {
 	int status;
+	int res;
 
-	waitpid(_pid, &status, WNOHANG);
+	res = waitpid(_pid, &status, WNOHANG);
 
-	if (WIFEXITED(status))
+	std::cout << "Status: " << status << std::endl;
+	std::cout << "Result: " << res << std::endl;
+
+	if (status == 0)
 		return (true);
+
+	//if (WIFEXITED(status))
+	//	return (true);
 	return (false);
 }
+*/
+
+bool CGIExecuter::isEnded(void)
+{
+	//std::cout << "PID TESTE FECHAMENTO: " << _pid << std::endl;
+	int res;
+
+	res = waitpid(_pid, NULL, WNOHANG);
+
+	//std::cout << "Retorno do waitpid: " << res << std::endl;
+	if (res == _pid || res < 0)
+	{
+		//std::cout << "terminou: pid: "  << _pid << " res: " << res << std::endl;
+		return (true);
+	}
+	return (false);
+}
+
 
 int	CGIExecuter::getReadFD(void)
 {
 	return (_pipe2[0]);
-}
-
-std::string	CGIExecuter::getResult(void)
-{
-	char        buffer[BUFFER_LEN];
-    std::string res;
-    size_t      nbrbytes;
-	int			fd = _pipe2[0];
-
-    while (1)
-    {
-        bzero(buffer, BUFFER_LEN);
-        nbrbytes = read(fd, buffer, BUFFER_LEN - 1);
-        if (nbrbytes < 1)
-        	break;
-        res += buffer;
-    }
-    close(fd);
-    return (res);
 }
 
 /* Exceptions */

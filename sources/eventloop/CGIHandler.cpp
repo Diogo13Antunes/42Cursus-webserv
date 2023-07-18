@@ -24,7 +24,7 @@ CGIHandler::~CGIHandler(void)
 
 void CGIHandler::handleEvent(Event *event)
 {
-	std::cout << "CGI Handler" << std::endl;
+	//std::cout << "CGI Handler" << std::endl;
 
 	_handleCgi->setEvent(event);
 

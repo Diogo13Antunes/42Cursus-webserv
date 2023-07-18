@@ -3,6 +3,7 @@
 import time
 import sys
 
+
 class Unbuffered(object):
    def __init__(self, stream):
        self.stream = stream
@@ -17,6 +18,7 @@ class Unbuffered(object):
 
 sys.stdout = Unbuffered(sys.stdout)
 
+
 message = input()
 
 """
@@ -30,6 +32,8 @@ htmlfile = "<!DOCTYPE html> <html> <body> <h1> Hello World </h1> "
 htmlfile += "<h1> " + message + " </h1>"
 htmlfile += " </body> </html>"
 
+#time.sleep(10)
+
 out = "HTTP/1.1 200 OK\r\n"
 out += "Server: webserv\r\n"
 out += "Connection: keep-alive\r\n"
@@ -38,5 +42,15 @@ out += "\r\n"
 out += htmlfile
 
 print(out)
+
+'''time.sleep(1)
+print(out)
+time.sleep(1)
+print(out)
+time.sleep(1)
+print(out)'''
+
+#time.sleep(10)
+#sys.stderr.write('Dentro do script: Tem de terminar aqui\n')
 
 exit(0)
