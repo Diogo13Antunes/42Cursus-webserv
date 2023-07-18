@@ -1,36 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   EventType.hpp                                      :+:      :+:    :+:   */
+/*   Timer.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/01 12:35:40 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/17 09:23:19 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/07/08 12:23:36 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/07/18 09:00:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "Timer.hpp"
 
-/*
-typedef enum 
-{
-    READ_EVENT,
-    WRITE_EVENT,
-    CGI_EVENT,
-    CGI_EXECUTION,
-    COMPLETE_EVENT
-}	EventType;
-*/
+#include <iostream>
 
-typedef enum 
+time_t Timer::getActualTimeStamp(void)
 {
-    READ_EVENT,
-    READ_EVENT_COMPLETE,
-    WRITE_EVENT,
-    WRITE_EVENT_COMPLETE,
-    CGI_EVENT,
-    CGI_EXECUTION, // Não está a ser usado
-    CGI_EVENT_COMPLETE,
-    CLOSED_EVENT,
-}	EventType;
+	return (time(NULL));
+}
+
+bool Timer::isTimeoutExpired(time_t savedTime, int timeoutSec)
+{
+	time_t	timePassed;
+
+	timePassed = time(NULL) - savedTime;
+	if(timePassed >= timeoutSec)
+		return (true);
+	return (false);
+}

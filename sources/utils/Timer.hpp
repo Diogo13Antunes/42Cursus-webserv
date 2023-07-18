@@ -1,30 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ConnectionMessage.hpp                              :+:      :+:    :+:   */
+/*   Timer.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/29 15:49:45 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 10:49:22 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/07/08 12:23:40 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/07/08 14:09:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Message.hpp"
+#include <ctime>
 
-class ConnectionMessage: public Message
+class Timer
 {
-	private:
-		int	_fd;
-
 	public:
-		ConnectionMessage(void);
-		ConnectionMessage(int dst, int fd);
-		ConnectionMessage(const ConnectionMessage &src);
-		~ConnectionMessage(void);
-		ConnectionMessage &operator=(const ConnectionMessage &src);
-		
-		int	getFd(void);
+		static time_t	getActualTimeStamp(void);
+		static bool		isTimeoutExpired(time_t savedTime, int timeoutSec);
 };

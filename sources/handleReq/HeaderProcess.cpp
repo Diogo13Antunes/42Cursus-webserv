@@ -59,12 +59,12 @@ StateType HeaderProcess::handle(Event *event)
 	headerEndIdx = req.find("\r\n\r\n");
 	if (headerEndIdx == std::string::npos)
 		return (HEADER_PROCESS);
-	//event->setHeaderRaw(req.substr(0, headerEndIdx + 4));
-
 	header = req.substr(0, headerEndIdx + 4);
 	event->setReqRaw1(req.substr(headerEndIdx + 4));
 	parser.headerParse(header);
 	event->setResquestHeader(parser.getRequestLine(), parser.getRequestHeader());
+	if (!event->getReqPath().compare("cgi"))
+		event->setCgiFlag(true);
 	if (!event->getBodySize())
 		return (REQUEST_END);
 	return (BODY_PROCESS);

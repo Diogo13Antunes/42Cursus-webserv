@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:09:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 12:39:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/16 12:16:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,19 +19,8 @@
 #include <fcntl.h>
 
 #include "AMessengerClient.hpp"
-#include "ConnectionMessage.hpp"
-#include "EventMessage.hpp"
-#include "EventType.hpp"
 
-#define N_MAX_EVENTS	1024
-
-/*
-typedef enum 
-{
-    READ = 0,
-    WRITE
-}	Type;
-*/
+#define N_MAX_EVENTS	100000
 
 class EventDemux: public AMessengerClient
 {
@@ -42,18 +31,16 @@ class EventDemux: public AMessengerClient
 		socklen_t			_addrlen;
 		struct sockaddr_in	_address;
 
-		void		_addNewEvent(int fd);
-		void		_removeEvent(int fd);
-		void		_changeEvent(int fd, EventType eventType);
-		EventType		_getEventType(uint32_t events);
-		uint32_t	_getEventsMask(EventType eventType);
-		
+		void	_addNewEvent(int fd);
+		void	_removeEvent(int fd);
+		void	_changeEvent(int fd, uint32_t eventMask);
+		bool	_isReadEvent(uint32_t eventMask);
+		bool	_isWriteEvent(uint32_t eventMask);
+
 	public:
 		EventDemux(void);
 		EventDemux(int serverFd, struct sockaddr_in address, socklen_t addrlen);
-		EventDemux(const EventDemux &src);
 		~EventDemux(void);
-		EventDemux &operator=(const EventDemux &src);
 
 		void		waitAndDispatchEvents(void);
 		ClientID	getId(void);

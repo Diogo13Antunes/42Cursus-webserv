@@ -6,11 +6,15 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:22:34 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/18 16:24:02 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Event.hpp"
+#include "Timer.hpp"
+#include "EventType.hpp"
+
+#define TIMEOUT_SEC	200
 
 static std::string createResponse1(std::string path, std::string contentType);
 static std::string getFileContent(std::string fileName);
@@ -30,12 +34,22 @@ Event::Event(int fd, int state):
 	_bytesReadBody(0),
 	_totalBytesSend(0),
 	_resState1(CREATE_HEADER),
-	_errorCode(0)
+	_errorCode(0),
+	_cgiFlag(false),
+	_cgiState(EXEC_CGI),
+	_timeoutSec(TIMEOUT_SEC),
+	_creationTime(Timer::getActualTimeStamp()),
+	_clientClosed(false),
+	_cgiEx(NULL)
 {}
 
 Event::Event(const Event &src) {}
 
-Event::~Event(void) {}
+Event::~Event(void)
+{
+	if (_cgiEx)
+		delete _cgiEx;
+}
 
 /*
 Event &Event::operator=(const Event &src)
@@ -485,4 +499,119 @@ int Event::getErrorCode(void)
 void Event::setErrorCode(int errorCode)
 {
 	_errorCode = errorCode;
+}
+
+bool Event::getCgiFlag(void)
+{
+	return (_cgiFlag);
+}
+
+void Event::setCgiFlag(bool cgiFlag)
+{
+	_cgiFlag = cgiFlag;
+}
+bool Event::isEventTimeout(void)
+{
+	//std::cout << "EVENT TIME OUT" << std::endl;
+	return (Timer::isTimeoutExpired(_creationTime, _timeoutSec));
+	//return (true);
+}
+
+bool Event::isConnectionClose(void)
+{
+	std::vector<std::string> value;
+
+	value = _reqParsed.getHeaderValue("connection");
+
+	if (!value.empty() && !value[0].compare("close"))
+		return (true);
+	return (false);
+}
+
+bool Event::isClientClosed(void)
+{
+	return (_clientClosed);
+}
+
+void Event::setClientClosed(void)
+{
+	_clientClosed = true;
+}
+
+// CGI Functions
+CGIExecuter* Event::getCgiEx(void)
+{
+	return (_cgiEx);
+}
+
+void Event::setCgiEx(CGIExecuter *cgiEx)
+{
+	_cgiEx = cgiEx;
+}
+
+int Event::getCgiFd(void)
+{
+	if (_cgiEx)
+		return (_cgiEx->getReadFD());
+	return (-1);
+}
+
+StateCgiType	Event::getCgiState(void)
+{
+	return (_cgiState);
+}
+
+void	Event::setCgiState(StateCgiType state)
+{
+	_cgiState = state;
+}
+
+std::string		Event::getCgiScriptResult(void)
+{
+	return (_cgiScriptResult);
+}
+
+void	Event::updateCgiScriptResult(std::string src)
+{
+	_cgiScriptResult += src;
+}
+
+bool Event::isCgiScriptEnd(void)
+{
+	if (this->getCgiFd() > 0 && _state == CGI_EVENT)
+	{
+		if (_cgiEx->isEnded())
+			return (true);
+	}
+	return (false);
+}
+/* Getters for RequestData */
+
+std::string	Event::getQueryString(void)
+{
+	return (_reqParsed.getQueryString());
+}
+
+std::vector<std::string>	Event::getRequestHeaderValue(std::string key)
+{
+	return (_reqParsed.getHeaderValue(key));
+}
+
+std::string	Event::getReqMethod(void)
+{
+	return (_reqParsed.getRequestLine().at(0));
+}
+
+std::string	Event::getServerProtocol(void)
+{
+	return (_reqParsed.getRequestLine().at(2));
+}
+
+std::string	Event::getReqContentType(void)
+{
+	std::string	contentType;
+
+	if (!_reqParsed.getHeaderValue("content-type").empty())
+		contentType = _reqParsed.getHeaderValue("content-type").at(0);
+	return (contentType);
 }

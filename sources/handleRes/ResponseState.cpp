@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/05 14:26:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/16 12:03:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include <sys/socket.h>
 #include <iostream>
+#include <EventType.hpp>
 
 ResponseState::ResponseState(void)
 {
@@ -47,6 +48,11 @@ StateResType ResponseState::handle(Event *event, ConfigsData confiagsDta)
 	res = event->getRes();
 	resSize = res.size();
 	numBytesSend = send(event->getFd(), res.c_str(), resSize, 0);
+	if (numBytesSend <= 0)
+	{
+		event->setState(CLOSED_EVENT);
+		return (RESPONSE_END);
+	}
 	if (numBytesSend >= resSize)
 		event->setRes("");
 	else

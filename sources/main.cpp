@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:33:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/11 12:07:32 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@
 #include "RequestParser.hpp"
 #include "RequestData.hpp"
 
+#include "Timer.hpp"
 
 // O configs pode receber o data e modificar o data dentro dele.
 bool	initConfigs(const char *filename, ConfigsData &data)
@@ -65,122 +66,6 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 		return (false);
 	}
 	return (true);
-}
-
-/* int main(int ac, char **av)
-{
-	ConfigsData	data;
-
-	if (ac != 2)
-	{
-		Terminal::printErrors("Invalid number of Arguments");
-		return (1);
-	}
-
-	if (!initConfigs(av[1], data))
-		return (1);
-
-	return (0);
-} */
-
-int main1(int ac, char **av)
-{
-	int	fd1;
-	RequestData	data;
-
-	if (ac < 2)
-	{
-		Terminal::printErrors("Invalid number of Arguments");
-		return (1);
-	}
-
-	fd1 = open(av[1], O_RDONLY);
-	if (fd1 < 0)
-	{
-		Terminal::printErrors("Invalid Request File");
-		return (1);
-	}
-
-	try
-	{
-		/*RequestParser 										request1(fd1);
-		std::string											requestLine;
-		std::map<std::string, std::vector<std::string> >	requestHeader;
-		std::string											requestBody;
-
-		requestLine = request1.getRequestLine();
-		requestHeader = request1.getRequestHeader();
-		requestBody = request1.getRequestBody();
-
-		// std::cout << "Line: " << requestLine << std::endl;
-
-		// std::cout << "[KEY] | [VALUE]" << std::endl;
-		// std::map<std::string, std::vector<std::string> >::iterator	it;
-		// std::vector<std::string>									elements;
-		// for (it = requestHeader.begin(); it != requestHeader.end(); it++)
-		// {
-			// elements = (*it).second;
-			// std::cout << "[" << (*it).first << "] | ";
-			// for (size_t i = 0; i < elements.size(); i++)
-			// {
-				// std::cout << "[" << elements.at(i).c_str() << "]";
-				// if (i < elements.size() - 1)
-					// std::cout << " , ";
-			// }
-			// std::cout << std::endl;
-		// }
-
-		// std::cout << "-------------------- BODY --------------------" << std::endl;
-		// std::cout << requestBody;
-		// std::cout << "----------------------------------------------" << std::endl;
-
-		data.setRequestLine(requestLine);
-		data.setRequestHeader(requestHeader);
-		data.setRequestBody(requestBody);*/
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-		return (1);
-	}
-
-	std::vector<std::string>							line;
-	std::map<std::string, std::vector<std::string> >	header;
-	std::string											body;
-
-	line = data.getRequestLine();
-	header = data.getRequestHeader();
-	body = data.getRequestBody();
-
-
-	std::cout << "---------- LINE ----------" << std::endl;
-	for (size_t i = 0; i < line.size(); i++)
-		std::cout << "\'" << line.at(i).c_str() << "\'" << std::endl; 
-	std::cout << "--------------------------" << std::endl;
-
-	std::cout << "-------------------- HEADER --------------------" << std::endl;
-	std::cout << "[KEY] | [VALUE]" << std::endl;
-	std::map<std::string, std::vector<std::string> >::iterator	it;
-	std::vector<std::string>									elements;
-	for (it = header.begin(); it != header.end(); it++)
-	{
-		elements = (*it).second;
-		std::cout << "[" << (*it).first << "] | ";
-		for (size_t i = 0; i < elements.size(); i++)
-		{
-			std::cout << "[" << elements.at(i).c_str() << "]";
-			if (i < elements.size() - 1)
-				std::cout << " , ";
-		}
-		std::cout << std::endl;
-	}
-	std::cout << "------------------------------------------------" << std::endl;
-
-	std::cout << "-------------------- BODY --------------------" << std::endl;
-	std::cout << body;
-	std::cout << "----------------------------------------------" << std::endl;
-
-	return (0);
 }
 
 int main(int argc, char **argv)
@@ -247,8 +132,10 @@ int main(int argc, char **argv)
 	//eventLoop.registerEventHandler(factory.getEventHandler(READ_EVENT));
 	eventLoop.registerEventHandler(new ReadHandler(new HandleReq()));
 	eventLoop.registerEventHandler(new WriteHandler(new HandleRes(data)));
+	eventLoop.registerEventHandler(new CGIHandler(new HandleCgi()));
 	//eventLoop.registerEventHandler(factory.getEventHandler(WRITE_EVENT));
-	
+
+	std::cout << "Server started at port: " << PORT << std::endl;
     while(1)
     {
 		conns.updateAllConnections();

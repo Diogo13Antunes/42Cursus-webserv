@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:21:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/16 10:38:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,16 +54,32 @@ void ReadHandler::handleEvent(Event *event)
 	char			buffer[BUFF_SIZE];
 	ssize_t			valread;
 
+	// std::cout << "read event ReadHandler: " << event->getFd() << std::endl;
+
 	_handleReq->setEvent(event);
 	for(int i = 0; i < BUFF_SIZE; i++)
 		buffer[i] = 0;
 	valread = read(event->getFd(), buffer, BUFF_SIZE - 1);
 
+	if (valread == 0 || valread == -1)
+	{
+		std::cout << "FECHOU O NAVEGADOR: " << valread << std::endl;
+		event->setState(CLOSED_EVENT);
+		event->setClientClosed();
+		return ;
+	}
+
 	event->updateReqRaw1(buffer);
 	_handleReq->handle();
 	if (!_handleReq->isProcessingComplete())
 		return ;
-	event->setState(WRITE_EVENT);
+	if (event->getCgiFlag())
+	{
+		std::cout << "Coloca CGI STATE" << std::endl;
+		event->setState(CGI_EVENT);
+	}
+	else
+		event->setState(READ_EVENT_COMPLETE);//event->setState(WRITE_EVENT);
 }
 
 EventType ReadHandler::getHandleType(void)

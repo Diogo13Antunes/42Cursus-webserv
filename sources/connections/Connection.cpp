@@ -6,22 +6,23 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/07 09:45:11 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/17 10:11:40 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connection.hpp"
-
+#include "Timer.hpp"
 
 Connection::Connection(int fd):
 	_fd(fd),
-	_keepAliveTimeout(100), 
-	_lastRequestTime(time(NULL))
+	_keepAliveTimeout(15),
+	_lastRequestTime(Timer::getActualTimeStamp()),
+	_status(TIMER_ACTIVE)
 {}
 
 Connection::~Connection(void)
 {
-	std::cout << "remove connection" << std::endl;
+	std::cout << "remove connection: " << _fd << std::endl;
 	close(_fd);
 }
 
@@ -32,19 +33,27 @@ int Connection::getFd(void)
 
 bool Connection::isKeepAliveTimeout(void)
 {
-	int		elapsedTime;
-
-	elapsedTime = (int)(time(NULL) - _lastRequestTime);
-	if (elapsedTime >= _keepAliveTimeout)
-		return (true);
-	return (false);
+	if (_status == TIMER_ACTIVE)
+		return (Timer::isTimeoutExpired(_lastRequestTime, _keepAliveTimeout));
+	else
+		return (false);
 }
 
 void Connection::resetKeepAliveTimeout(void)
 {
-	_lastRequestTime = time(NULL);
+	_lastRequestTime = Timer::getActualTimeStamp();
 }
 
+void Connection::startTimer(void)
+{
+	this->resetKeepAliveTimeout();
+	_status = TIMER_ACTIVE;
+}
+
+void Connection::pauseTimer(void)
+{
+	_status = TIMER_PAUSED;
+}
 
 // Just for debug (remove when not necessary)
 // Remove

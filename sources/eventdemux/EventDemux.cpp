@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 12:41:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/18 15:44:45 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,64 +24,70 @@ EventDemux::EventDemux(int serverFd, struct sockaddr_in address, socklen_t addrl
 	_addNewEvent(serverFd);
 }
 
-EventDemux::EventDemux(const EventDemux &src) {}
-
 EventDemux::~EventDemux(void){}
-
-/*
-EventDemux &EventDemux::operator=(const EventDemux &src)
-{
-	//EventDemultiplexer Copy Assignment Operator
-}
-*/
-
-void EventDemux::waitAndDispatchEvents(void)
-{
-	int		numEvents;
-	int		eventFd;
-
-	//std::cout << "wait events" << std::endl;
-	numEvents = epoll_wait(_epollFd, _events, N_MAX_EVENTS, 1000);
-	for (int i = 0; i < numEvents; i++) 
-	{
-		eventFd = _events[i].data.fd;
-		if (eventFd == _serverFd)
-		{
-			// needs to check if it returns error
-			eventFd = accept(_serverFd, (struct sockaddr *) &_address, &_addrlen);
-			_addNewEvent(eventFd);
-		}
-		else 
-			sendMessage(new EventMessage(EVENTLOOP_ID, eventFd, _getEventType(_events[i].events)));
-		sendMessage(new ConnectionMessage(CONNECTIONS_ID, eventFd));
-	}
-}
 
 ClientID EventDemux::getId(void)
 {
 	return (EVENTDEMUX_ID);
 }
 
+void EventDemux::waitAndDispatchEvents(void)
+{
+	int		numEvents;
+	int		eventFd;
+	int		timeOutMs;
+
+	timeOutMs = 100;
+	numEvents = epoll_wait(_epollFd, _events, N_MAX_EVENTS, timeOutMs);
+	for (int i = 0; i < numEvents; i++) 
+	{
+		eventFd = _events[i].data.fd;
+		if (eventFd == _serverFd)
+		{
+			eventFd = accept(_serverFd, (struct sockaddr *) &_address, &_addrlen);
+			if (eventFd != -1)
+			{
+				_addNewEvent(eventFd);
+				sendMessage(new Message(CONNECTIONS_ID, eventFd, CONNECTION_ADD_NEW));
+			}
+		}
+		else
+		{
+			if (_isReadEvent(_events[i].events))
+				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_READ_TRIGGERED));
+			else if (_isWriteEvent(_events[i].events))
+				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_WRITE_TRIGGERED));
+			else
+				; //error provavelmente fechar a ligação 
+		}
+	}
+}
+
 void EventDemux::receiveMessage(Message *msg)
 {
-	ConnectionMessage	*connMsg;
-	EventMessage		*eventMsg;
+	MessageType	type;
+	int			fd;
 
-	connMsg = dynamic_cast<ConnectionMessage*>(msg);
-	eventMsg = dynamic_cast<EventMessage*>(msg);
-	if (connMsg)
-		_removeEvent(connMsg->getFd());
-	else if (eventMsg)
-		_changeEvent(eventMsg->getFd(), (EventType)eventMsg->getEvent());
+	type = msg->getType();
+	fd = msg->getFd();
+	if (type == EVENT_ADD_NEW)
+		_addNewEvent(fd);
+	else if (type == EVENT_CHANGE_TO_READ)
+		_changeEvent(fd, EPOLLIN);
+	else if (type == EVENT_CHANGE_TO_WRITE)
+		_changeEvent(fd, EPOLLOUT);
+	else if (type == EVENT_REMOVE)
+		_removeEvent(fd);
 }
 
 void EventDemux::_addNewEvent(int fd)
 {
 	struct epoll_event	ev;
 	int					flags;
-		
+
 	ev.data.fd = fd;
-    ev.events = EPOLLIN;
+    //ev.events = EPOLLIN | EPOLLOUT;
+	ev.events = EPOLLIN;
 	flags = fcntl(fd, F_GETFL, 0);
     fcntl(fd, F_SETFL, flags | O_NONBLOCK);
 	if (epoll_ctl(_epollFd, EPOLL_CTL_ADD, fd, &ev) == -1)
@@ -90,40 +96,33 @@ void EventDemux::_addNewEvent(int fd)
 
 void EventDemux::_removeEvent(int fd)
 {
+	std::cout << "EventDemux: Remove evento fd: " << fd << std::endl;
 	if (epoll_ctl(_epollFd, EPOLL_CTL_DEL, fd, NULL) == -1) {
 		std::cerr << "Failed to remove event from epoll" << std::endl;
 	}	
 }
 
-void EventDemux::_changeEvent(int fd, EventType eventType)
+void EventDemux::_changeEvent(int fd, uint32_t eventMask)
 {
 	struct epoll_event	ev;
 
     ev.data.fd = fd;
-    ev.events = _getEventsMask(eventType);
+    //ev.events = EPOLLIN | EPOLLOUT;
+	ev.events = eventMask;
 	if (epoll_ctl(_epollFd, EPOLL_CTL_MOD, fd, &ev) == -1)
 		std::cerr << "Failed to modify socket to epoll." << std::endl;
 }
 
-EventType EventDemux::_getEventType(uint32_t events)
+bool EventDemux::_isReadEvent(uint32_t eventMask)
 {
-	EventType evType;
-
-	if (events & EPOLLIN)
-		evType = READ_EVENT;
-	else if (events & EPOLLOUT)
-		evType = WRITE_EVENT;
-	return (evType);
+	if (eventMask & EPOLLIN)
+		return (true);
+	return (false);
 }
 
-uint32_t EventDemux::_getEventsMask(EventType eventType)
+bool EventDemux::_isWriteEvent(uint32_t eventMask)
 {
-	uint32_t events;
-
-	events = 0;
-	if (eventType == READ_EVENT)
-		events = EPOLLIN;
-	if (eventType == WRITE_EVENT)
-		events = EPOLLOUT;
-	return (events);
+	if (eventMask & EPOLLOUT)
+		return (true);
+	return (false);
 }

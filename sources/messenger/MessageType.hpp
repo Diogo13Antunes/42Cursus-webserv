@@ -1,32 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   EventMessage.hpp                                   :+:      :+:    :+:   */
+/*   MessageType.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/29 13:49:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 10:52:58 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/07/13 16:02:38 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/07/14 15:50:43 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Message.hpp"
-
-class EventMessage: public Message
+typedef enum 
 {
-	private:
-		int		_fd;
-		short	_event;
-		
-	public:
-		EventMessage(void);
-		EventMessage(int dst, int fd, short event);
-		EventMessage(const EventMessage &src);
-		~EventMessage(void);
-		EventMessage &operator=(const EventMessage &src);
-		
-		int		getFd(void);
-		short	getEvent(void);	
-};
+    EVENT_ADD_NEW,
+    EVENT_REMOVE,
+    EVENT_CHANGE_TO_READ,
+    EVENT_CHANGE_TO_WRITE,
+    EVENT_READ_TRIGGERED,
+    EVENT_WRITE_TRIGGERED,
+    CONNECTION_ADD_NEW,
+    CONNECTION_REMOVE,
+    CONNECTION_PAUSE_TIMER,
+    CONNECTION_RESTART_TIMER,
+    CONNECTION_RESET_TIMER
+} MessageType;

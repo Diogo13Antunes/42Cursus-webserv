@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 15:34:03 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 12:25:25 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/08 14:45:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 #include <iostream>
 #include <sstream>
 #include <ctime>
+
+
+#define HTTP_VERSION "HTTP/1.1"
 
 HttpHeaderBuilder::HttpHeaderBuilder(void): 
 	_contentLength(0), 
@@ -62,73 +65,51 @@ void  HttpHeaderBuilder::setDate(std::string date)
 	_date = date;
 }
 
+void HttpHeaderBuilder::setConnection(std::string connection)
+{
+	_connection = connection;
+}
+
+void HttpHeaderBuilder::setTransferEncoding(std::string transferEncoding)
+{
+	_transferEncoding = transferEncoding;
+}
+
 void HttpHeaderBuilder::setContentLength(int contentLength)
 {
 	_contentLength = contentLength;
 }
 
+/*
+< HTTP/1.1 200 OK
+< Server: nginx
+< Date: Fri, 07 Jul 2023 08:38:49 GMT
+< Content-Type: text/html; charset=utf-8
+< Content-Length: 65099
+< Connection: keep-alive
+< Transfer-Encoding: chunked
+*/
+
 std::string	HttpHeaderBuilder::getHeader(void)
 {
 	std::string			header;
+	std::string			httpVersion;
 	std::stringstream	contentLength;
 
+	httpVersion = HTTP_VERSION;
 	contentLength << _contentLength;
-	header = "HTTP/1.1 " + _status + "\r\n";
-	header += "Content-length: " + contentLength.str() + "\r\n";
+	header = httpVersion + " " + _status + "\r\n";
+	if (!_serverName.empty())
+		header += "Server: " + _serverName + "\r\n";
+	if (!_date.empty())
+		header += "Date: " + _date + "\r\n";
 	if (!_contentType.empty())
 		header += "Content-Type: " + _contentType + "\r\n";
-	if (!_serverName.empty())
-		header += "server: " + _serverName + "\r\n";
-	if (!_date.empty())
-		header += "date: " + _date + "\r\n";
+	header += "Content-Length: " + contentLength.str() + "\r\n";
+	if (!_connection.empty())
+		header += "Connection: " + _connection + "\r\n";
+	if (!_transferEncoding.empty())
+		header += "Transfer-Encoding: " + _transferEncoding + "\r\n";
 	header += "\r\n";
 	return (header);
 }
-
-
-//Criar class que devolve em imf-fixdate format now and in the date I wanted
-
-/*
-std::string HttpHeaderBuilder::_getDateNow(void)
-{
-	std::string timeStr;
-	time_t		now;
-	struct tm	*gmt;
-
-	now = time(NULL);
-	gmt = gmtime(&now);
-
-	//std::cout << TimeDate::getDayOfWeekToString(gmt->tm_wday) << std::endl;
-
-	std::cout << TimeDate::getTimeDateIMFfixdateFormat() << std::endl;
-
-	//std::cout << now << std::endl;
-	std::cout << asctime(gmt) << std::endl;
-	return (timeStr);
-}
-*/
-
-/*
-HTTP/1.1 200 OK
-Date: Wed, 05 Jul 2023 20:16:07 GMT
-Server: Apache
-Last-Modified: Wed, 08 Jun 2011 16:38:33 GMT
-ETag: "b22017-167-4a535f79db440"
-Accept-Ranges: bytes
-Content-Length: 359
-Keep-Alive: timeout=2, max=135
-Connection: Keep-Alive
-Content-Type: image/png
-*/
-
-/*
-HTTP/1.1 404 Not Found
-Date: Wed, 05 Jul 2023 20:18:05 GMT
-Server: Apache
-Vary: Accept-Encoding
-Content-Encoding: gzip
-Content-Length: 180
-Keep-Alive: timeout=2, max=150
-Connection: Keep-Alive
-Content-Type: text/html; charset=iso-8859-1
-*/

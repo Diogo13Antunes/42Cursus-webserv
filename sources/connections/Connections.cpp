@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/31 17:04:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/14 16:17:26 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void Connections::updateAllConnections(void)
 	{
 		if (it->second->isKeepAliveTimeout())
 		{
-			sendMessage(new ConnectionMessage(EVENTDEMUX_ID, it->second->getFd()));
+			sendMessage(new Message(EVENTDEMUX_ID, it->second->getFd(), EVENT_REMOVE));
 			_removeConnection(it);
 			break;
 		}
@@ -43,12 +43,21 @@ ClientID Connections::getId(void)
 
 void Connections::receiveMessage(Message *msg)
 {
-	ConnectionMessage	*m;
+	MessageType	type;
+	int			fd;
 
-	m = dynamic_cast<ConnectionMessage*>(msg);
-	if (!m)
-		return ;
-	_handleMessage(m);
+	type = msg->getType();
+	fd = msg->getFd();
+	if (type == CONNECTION_ADD_NEW)
+		_addNewConnection(fd);
+	else if (type == CONNECTION_REMOVE)
+		_removeConnection(fd);
+	else if (type == CONNECTION_PAUSE_TIMER)
+		_pauseKeepAliveTimer(fd);
+	else if (type == CONNECTION_RESTART_TIMER)
+		_restartKeepAliveTimer(fd);
+	else if (type == CONNECTION_RESET_TIMER)
+		_resetKeepAliveTimer(fd);
 }
 
 // Just for debug (remove when not necessary)
@@ -61,17 +70,14 @@ void Connections::showConnections(void)
 		it->second->showDataConnection();
 }
 
-void Connections::_handleMessage(ConnectionMessage *msg)
+Connection * Connections::_getConnection(int fd)
 {
-	std::map<int, Connection *>::iterator	it;
-	int										fd;
+	std::map<int, Connection *>::iterator it;
 
-	fd = msg->getFd();
 	it = _activeConnects.find(fd);
-	if (it == _activeConnects.end())
-		_activeConnects.insert(std::make_pair(fd, new Connection(fd)));
-	else
-		it->second->resetKeepAliveTimeout();
+	if (it != _activeConnects.end())
+		return (it->second);
+	return (NULL);
 }
 
 void Connections::_removeAllConnections(void)
@@ -86,4 +92,48 @@ void Connections::_removeConnection(std::map<int, Connection *>::iterator it)
 {
 	delete it->second;
 	_activeConnects.erase(it);
+}
+
+void Connections::_removeConnection(int fd)
+{
+	std::map<int, Connection *>::iterator it;
+	
+	it = _activeConnects.find(fd);
+	if (it != _activeConnects.end())
+	{
+		delete it->second;
+		_activeConnects.erase(it);
+	}
+}
+
+void Connections::_addNewConnection(int fd)
+{
+	_activeConnects.insert(std::make_pair(fd, new Connection(fd)));
+}
+
+void Connections::_pauseKeepAliveTimer(int fd)
+{
+	Connection * con;
+
+	con = _getConnection(fd);
+	if (con)
+		con->pauseTimer();
+}
+
+void Connections::_restartKeepAliveTimer(int fd)
+{
+	Connection * con;
+
+	con = _getConnection(fd);
+	if (con)
+		con->startTimer();
+}
+
+void Connections::_resetKeepAliveTimer(int fd)
+{
+	Connection * con;
+
+	con = _getConnection(fd);
+	if (con)
+		con->resetKeepAliveTimeout();
 }
