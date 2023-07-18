@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/18 15:32:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/18 16:24:02 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -584,4 +584,34 @@ bool Event::isCgiScriptEnd(void)
 			return (true);
 	}
 	return (false);
+}
+/* Getters for RequestData */
+
+std::string	Event::getQueryString(void)
+{
+	return (_reqParsed.getQueryString());
+}
+
+std::vector<std::string>	Event::getRequestHeaderValue(std::string key)
+{
+	return (_reqParsed.getHeaderValue(key));
+}
+
+std::string	Event::getReqMethod(void)
+{
+	return (_reqParsed.getRequestLine().at(0));
+}
+
+std::string	Event::getServerProtocol(void)
+{
+	return (_reqParsed.getRequestLine().at(2));
+}
+
+std::string	Event::getReqContentType(void)
+{
+	std::string	contentType;
+
+	if (!_reqParsed.getHeaderValue("content-type").empty())
+		contentType = _reqParsed.getHeaderValue("content-type").at(0);
+	return (contentType);
 }

@@ -8,7 +8,6 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 
-#define BUFFER_LEN	1024
 #define WHITE_SPACE	"\n\t\r "
 
 class CGIExecuter
@@ -33,7 +32,7 @@ class CGIExecuter
 	
 		int			getReadFD(void);
 
-		void		execute(std::string script, std::string message);
+		void		execute(std::string script, std::string message, char **env);
 		bool		isEnded(void);
 
 		class ExecutionErrorException: public std::exception

@@ -39,6 +39,30 @@ std::string	RequestDataUtils::getRequestLineElement(const std::string &src, size
 	return (result);
 }
 
+std::string	RequestDataUtils::getPath(std::string &src)
+{
+	std::string res;
+	std::size_t	index;
+
+	index = src.find_first_of('?');
+	if (index != src.npos)
+		res = src.substr(0, index);
+	else
+		res = src;
+	return (res);
+}
+
+std::string	RequestDataUtils::getQueryStringURL(std::string &src)
+{
+	std::string res;
+	std::size_t	index;
+
+	index = src.find_first_of('?');
+	if (index != src.npos)
+		res = src.substr(index + 1);
+	return (res);
+}
+
 /*
 Alterar caso seja preciso adicionar mais metodos
 Metodos:

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-import time
 import sys
+import os
 
 
 class Unbuffered(object):
@@ -21,15 +21,14 @@ sys.stdout = Unbuffered(sys.stdout)
 
 message = input()
 
-"""
-print("-----------------------------------------------------------------")
-print("From C++    -> " + message)
-print("From Python -> Hi! I am the python script. =)")
-print("-----------------------------------------------------------------")
-"""
+RequestMethod = os.environ.get("REQUEST_METHOD")
 
 htmlfile = "<!DOCTYPE html> <html> <body> <h1> Hello World </h1> " 
 htmlfile += "<h1> " + message + " </h1>"
+htmlfile += "<h2> " + " ---- Env Variables ---- " + " </h2>"
+for key, value in os.environ.items():
+	if key != 'LC_CTYPE':
+		htmlfile += "<p> " + str(key) + " -> " + str(value) + " </p>"
 htmlfile += " </body> </html>"
 
 #time.sleep(10)

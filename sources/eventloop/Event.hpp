@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/18 14:10:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/18 16:33:55 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,4 +190,9 @@ class Event
 		int					getCgiFd(void);
 
 		bool				isCgiScriptEnd(void);
+		std::string					getQueryString(void);
+		std::vector<std::string>	getRequestHeaderValue(std::string key);
+		std::string					getReqMethod(void);
+		std::string					getServerProtocol(void);
+		std::string					getReqContentType(void);
 };
