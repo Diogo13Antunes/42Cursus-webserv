@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:54:59 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:20:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/19 09:39:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,15 @@
 #include "Configs.hpp"
 #include "ConfigsData.hpp"
 
+#define BUFF_SIZE1 100000
+
 class ReadHandler: public IEventHandler
 {
 	private:
 
 		HandleReq	*_handleReq;
+		char		_buffer[BUFF_SIZE1];
+		
 
 	public:
 		ReadHandler(void);

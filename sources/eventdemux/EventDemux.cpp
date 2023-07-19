@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/18 15:44:45 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/19 09:41:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void EventDemux::_addNewEvent(int fd)
 
 void EventDemux::_removeEvent(int fd)
 {
-	std::cout << "EventDemux: Remove evento fd: " << fd << std::endl;
+	//std::cout << "EventDemux: Remove evento fd: " << fd << std::endl;
 	if (epoll_ctl(_epollFd, EPOLL_CTL_DEL, fd, NULL) == -1) {
 		std::cerr << "Failed to remove event from epoll" << std::endl;
 	}	
