@@ -62,20 +62,3 @@ std::string	RequestDataUtils::getQueryStringURL(std::string &src)
 		res = src.substr(index + 1);
 	return (res);
 }
-
-/*
-Alterar caso seja preciso adicionar mais metodos
-Metodos:
--> GET
--> POST
--> DELETE
-*/
-/* bool	RequestDataUtils::isValidRequestLine(std::vector<std::string> &requestLine)
-{
-	std::string	method;
-
-	method = requestLine.at(0).c_str();
-	if (method.compare("GET") != 0 && method.compare("POST") != 0 && method.compare("DELETE") != 0)
-		return (false);
-	return (true);
-} */

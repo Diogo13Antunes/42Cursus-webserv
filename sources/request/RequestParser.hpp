@@ -7,9 +7,9 @@
 #include <map>
 #include <cctype>
 #include <set>
+#include <sstream>
 
 #include "Terminal.hpp"
-#include "RequestParserUtils.hpp"
 
 class RequestParser
 {
@@ -19,6 +19,7 @@ class RequestParser
 		std::string											_requestBody;
 
 		int													_getContentLen(void);
+		std::pair<std::string, std::vector<std::string> >	_getHeaderFieldPair(std::string &src);
 
 	public:
 		RequestParser(void);

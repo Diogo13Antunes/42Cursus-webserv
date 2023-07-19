@@ -1,5 +1,5 @@
 #include "RequestData.hpp"
-
+#include "StringUtils.hpp"
 #include <sstream>
 
 RequestData::RequestData(void)
@@ -114,7 +114,7 @@ std::string	RequestData::getQueryString(void)
 		{
 			contentType = getHeaderValue("content-type").at(0);
 			if (!contentType.compare("application/x-www-form-urlencoded"))
-				_queryString = RequestDataUtils::stringTrim(_requestBody);
+				_queryString = StringUtils::stringTrim(_requestBody);
 		}
 	}
 	return (_queryString);

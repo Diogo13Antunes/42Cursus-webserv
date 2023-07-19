@@ -1,4 +1,9 @@
 #include "RequestParser.hpp"
+#include "StringUtils.hpp"
+
+static std::vector<std::string>	getElementValue(const std::string &src);
+static bool						isValidNumberOfQuotes(const std::string &src);
+static std::string				getReadyValue(const std::string &src, size_t index1, size_t index2);
 
 RequestParser::RequestParser(void) {}
 
@@ -6,12 +11,23 @@ RequestParser::~RequestParser(void) {}
 
 void	RequestParser::headerParse(std::string &header)
 {
-	std::vector<std::string>	requestHeaderVec;
+	std::istringstream	iss(header);
+	std::string			line;
+	bool				isFirstLine = true;
 
-	requestHeaderVec = RequestParserUtils::getDataVector(header);
-	_requestLine = RequestParserUtils::getRequestLine(requestHeaderVec);
-	_requestHeader = RequestParserUtils::getRequestHeader(requestHeaderVec);
-
+	while (std::getline(iss, line))
+	{
+		line += "\n";
+		if (line.find_first_not_of("\r\n") == line.npos)
+			break;
+		if (isFirstLine)
+		{
+			_requestLine = StringUtils::stringTrim(line);
+			isFirstLine = false;
+		}
+		else
+			_requestHeader.insert(_getHeaderFieldPair(line));
+	}
 	if (isValidHeader() != true || checkContentLenght() != true)
 		throw BadRequestException();
 }
@@ -29,7 +45,7 @@ bool	RequestParser::isValidHeader(void)
 	for (it = _requestHeader.begin(); it != _requestHeader.end(); it++)
 	{
 		key = (*it).first;
-		if (RequestParserUtils::isStringEmpty(key))
+		if (StringUtils::isStringEmptyOrSpaces(key))
 			return (false);
 	}
 	return (true);
@@ -103,4 +119,80 @@ int	RequestParser::_getContentLen(void)
 			len = std::atoi((*it).second.at(0).c_str());
 	}
 	return (len);
+}
+
+std::pair<std::string, std::vector<std::string> >	RequestParser::_getHeaderFieldPair(std::string &src)
+{
+	std::string					key;
+	std::vector<std::string>	value;
+	std::string					temp;
+	size_t						index;
+
+	index = src.find_first_of(":");
+	if (index != src.npos)
+	{
+		if (src.find_last_not_of(WHITE_SPACE, index - 1) != src.npos)
+		{
+			key = src.substr(0, index);
+			StringUtils::stringToLower(key);
+		}
+		if (src.find_first_not_of(WHITE_SPACE, index + 1) != src.npos)
+		{
+			temp = src.substr(src.find_first_of(":") + 1, src.size());
+			temp = StringUtils::stringTrim(temp);
+			value = getElementValue(temp);
+		}
+	}
+	return (std::make_pair(key, value));
+}
+
+static std::vector<std::string>	getElementValue(const std::string &src)
+{
+	std::vector<std::string>	elements;
+	std::string					temp;
+	size_t						nbrQuotes = 0;
+	size_t						j = 0;
+
+	if (isValidNumberOfQuotes(src))
+	{
+		for (size_t i = 0; i < src.size(); i++)
+		{
+			if (src[i] == '\"')
+				nbrQuotes++;
+			if (i == src.size() - 1 || (src[i] == ',' && nbrQuotes % 2 == 0))
+			{
+				temp = getReadyValue(src, i, j);
+				elements.push_back(temp);
+				j = i + 1;
+			}
+		}
+	}
+	return (elements);
+}
+
+static bool	isValidNumberOfQuotes(const std::string &src)
+{
+	size_t	nbrQuotes = 0;
+
+	for (size_t i = 0; i < src.size(); i++)
+	{
+		if (src[i] == '\"')
+			nbrQuotes++;
+	}
+	if (nbrQuotes % 2 != 0)
+		return (false);
+	return (true);
+}
+
+static std::string	getReadyValue(const std::string &src, size_t index1, size_t index2)
+{
+	const std::string	notValueChars = "\n\r\t\", ";
+	std::string			result;
+	size_t				i1 = 0;
+	size_t				i2 = 0;
+
+	i1 = src.find_first_not_of(notValueChars, index2);
+	i2 = src.find_last_not_of(notValueChars, index1);
+	result = src.substr(i1, i2 - i1 + 1);
+	return (result);
 }
