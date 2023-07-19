@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/18 16:24:02 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/19 09:56:48 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,7 @@ void Event::setReqState(StateType reqState)
 }
 
 
-void Event::updateReqRaw1(std::string req)
+void Event::updateReqRaw1(std::string &req)
 {
 	_reqRaw += req;
 }

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/18 16:33:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/19 09:56:40 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ class Event
 		//New
 		StateType			getReqState(void);
 		void				setReqState(StateType reqState);
-		void				updateReqRaw1(std::string req);
+		void				updateReqRaw1(std::string &req);
 		const std::string&  getReqRaw1(void);
 
 		void setHeaderRaw(std::string header);
