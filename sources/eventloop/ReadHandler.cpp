@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/19 09:58:27 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/19 10:09:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,6 @@ void ReadHandler::handleEvent(Event *event)
 
 	_handleReq->setEvent(event);
 	valread = read(event->getFd(), _buffer, BUFF_SIZE1 - 1);
-	/*
-	if (valread > 0)
-		_buffer[valread] = 0;
-	*/
 	if (valread == 0 || valread == -1)
 	{
 		std::cout << "FECHOU O NAVEGADOR: " << valread << std::endl;
