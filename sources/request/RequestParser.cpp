@@ -4,6 +4,8 @@
 static std::vector<std::string>	getElementValue(const std::string &src);
 static bool						isValidNumberOfQuotes(const std::string &src);
 static std::string				getReadyValue(const std::string &src, size_t index1, size_t index2);
+static std::string				getRequestLineElement(const std::string &src, size_t i1, size_t i2);
+static std::string				getPath(std::string &src);
 
 RequestParser::RequestParser(void) {}
 
@@ -23,6 +25,7 @@ void	RequestParser::headerParse(std::string &header)
 		if (isFirstLine)
 		{
 			_requestLine = StringUtils::stringTrim(line);
+			// RequestLineParser -> preencher atributos privados
 			isFirstLine = false;
 		}
 		else
@@ -105,6 +108,11 @@ const char *RequestParser::BadRequestException::what(void) const throw()
 	return ("BadRequestException: Bad Request");
 }
 
+const char *RequestParser::InvalidRequestLineException::what(void) const throw()
+{
+	return ("InvalidRequestLineException: The request line is invalid or badly formatted.");
+}
+
 /* Class Private Functions */
 
 int	RequestParser::_getContentLen(void)
@@ -144,6 +152,37 @@ std::pair<std::string, std::vector<std::string> >	RequestParser::_getHeaderField
 		}
 	}
 	return (std::make_pair(key, value));
+}
+
+void	RequestParser::_requestLineParser(void)
+{
+	size_t		index_1;
+	size_t		index_2;
+	std::string	element[3];
+
+	index_1 = _requestLine.find_first_of(" ");
+	index_2 = _requestLine.find_last_of(" ");
+	if (index_1 == index_2 || index_1 == _requestLine.npos || index_2 == _requestLine.npos)
+		throw InvalidRequestLineException();
+	_reqLineMethod = getRequestLineElement(_requestLine, 0, index_1);
+	_reqLineTarget = getRequestLineElement(_requestLine, index_1, index_2);
+	_reqLineHttpVersion = getRequestLineElement(_requestLine, index_2, _requestLine.size());
+	
+	if (_reqLineMethod.empty() || _reqLineTarget.empty() || _reqLineHttpVersion.empty())
+		throw InvalidRequestLineException();
+
+	_requestTargetParser();
+}
+
+void	RequestParser::_requestTargetParser(void)
+{
+	if (_reqLineTarget.size() > 1)
+	{
+		StringUtils::removeConsecutiveChars(_reqLineTarget, '/');
+		_reqLinePath = getPath(_reqLineTarget);
+	}
+	else
+		_reqLinePath = _reqLineTarget;
 }
 
 static std::vector<std::string>	getElementValue(const std::string &src)
@@ -195,4 +234,30 @@ static std::string	getReadyValue(const std::string &src, size_t index1, size_t i
 	i2 = src.find_last_not_of(notValueChars, index1);
 	result = src.substr(i1, i2 - i1 + 1);
 	return (result);
+}
+
+static std::string	getRequestLineElement(const std::string &src, size_t i1, size_t i2)
+{
+	std::string	result;
+	size_t		len;
+
+	len = i2 - i1 + 1;
+	if (len > 0 && i1 < src.length())
+	{
+		result = src.substr(i1, len);
+		result = StringUtils::stringTrim(result);
+	}
+	return (result);
+}
+
+static std::string	getPath(std::string &src)
+{
+	std::string path;
+	size_t		index;
+
+	path = src;
+	index = path.find_first_of('?');
+	if (index != src.npos)
+		path = path.substr(0, index);
+	return (path);
 }

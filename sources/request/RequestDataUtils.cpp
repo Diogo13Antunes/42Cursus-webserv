@@ -29,7 +29,6 @@ std::string	RequestDataUtils::getRequestLineElement(const std::string &src, size
 	std::string	result;
 	size_t		len;
 
-	result.clear();
 	len = i2 - i1 + 1;
 	if (len > 0 && i1 < src.length())
 	{

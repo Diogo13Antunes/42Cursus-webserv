@@ -18,8 +18,17 @@ class RequestParser
 		std::map<std::string, std::vector<std::string> >	_requestHeader;
 		std::string											_requestBody;
 
+		std::string											_reqLineTarget;
+		std::string											_reqLineHttpVersion;
+		std::string											_reqLineMethod;
+		std::string											_reqLinePath;
+
+		std::string											_queryString;
+
 		int													_getContentLen(void);
 		std::pair<std::string, std::vector<std::string> >	_getHeaderFieldPair(std::string &src);
+		void												_requestLineParser(void);
+		void												_requestTargetParser(void);
 
 	public:
 		RequestParser(void);
@@ -42,6 +51,12 @@ class RequestParser
 		};
 
 		class BadRequestException: public std::exception
+		{
+			public:
+				const char *what() const throw();
+		};
+
+		class InvalidRequestLineException: public std::exception
 		{
 			public:
 				const char *what() const throw();

@@ -36,3 +36,25 @@ bool	StringUtils::isStringEmptyOrSpaces(std::string str)
 	}
 	return (true);
 }
+
+void	StringUtils::removeConsecutiveChars(std::string &src, char c)
+{
+    std::string output;
+    bool 		lastWasChar = false;
+
+	for (size_t i = 0; i < src.size(); i++)
+	{
+		if (src[i] == c && lastWasChar)
+			continue;
+		output.push_back(src[i]);
+		lastWasChar = areCharsEqual(src[i], c);
+	}
+	src = output;
+}
+
+bool	StringUtils::areCharsEqual(char c1, char c2)
+{
+	if (c1 == c2)
+		return (true);
+	return (false);
+}
