@@ -11,7 +11,7 @@ RequestParser::RequestParser(void) {}
 
 RequestParser::~RequestParser(void) {}
 
-void	RequestParser::headerParse(std::string &header)
+bool	RequestParser::headerParse(std::string &header)
 {
 	std::istringstream	iss(header);
 	std::string			line;
@@ -25,14 +25,22 @@ void	RequestParser::headerParse(std::string &header)
 		if (isFirstLine)
 		{
 			_requestLine = StringUtils::stringTrim(line);
-			// RequestLineParser -> preencher atributos privados
+			try
+			{
+				_requestLineParser();
+			}
+			catch(const std::exception& e)
+			{
+				return (false);
+			}
 			isFirstLine = false;
 		}
 		else
 			_requestHeader.insert(_getHeaderFieldPair(line));
 	}
 	if (isValidHeader() != true || checkContentLenght() != true)
-		throw BadRequestException();
+		return (false);
+	return (true);
 }
 
 void	RequestParser::bodyParse(std::string &body)
@@ -95,6 +103,37 @@ std::map<std::string, std::vector<std::string> >	RequestParser::getRequestHeader
 {
 	return (_requestHeader);
 }
+
+std::string RequestParser::getReqLineTarget(void)
+{
+	return (_reqLineTarget);
+}
+
+std::string RequestParser::getReqLineHttpVersion(void)
+{
+	return (_reqLineHttpVersion);
+}
+
+std::string RequestParser::getReqLineMethod(void)
+{
+	return (_reqLineMethod);
+}
+
+std::string RequestParser::getReqLinePath(void)
+{
+	return (_reqLinePath);
+}
+
+std::vector<std::string> RequestParser::getHeaderField(std::string fieldName)
+{
+	std::map<std::string, std::vector<std::string> >::iterator it;
+
+	it = _requestHeader.find("fieldName");
+	if (it != _requestHeader.end())
+		return (it->second);
+	return (std::vector<std::string>());
+}
+
 
 /* Exceptions */
 

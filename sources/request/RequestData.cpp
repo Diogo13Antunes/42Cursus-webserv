@@ -87,6 +87,7 @@ size_t	RequestData::getContentLenght(void)
 	return (lenght);
 }
 
+//deprecated
 std::vector<std::string>	RequestData::getHeaderValue(std::string	element)
 {
 	std::map<std::string, std::vector<std::string> >::iterator	it;

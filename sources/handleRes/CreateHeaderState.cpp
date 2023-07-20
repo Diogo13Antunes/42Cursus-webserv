@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CreateHeaderState.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/17 08:53:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/20 15:29:09 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 	ErrorPageBuilder	errorBuilder;
 
 
-	fileName = _getFileName(event->getReqPath(), configsData);
+	std::cout << "CreateHeaderState: reqLinePath: " << event->getReqLinePath() << std::endl;
+
+	//fileName = _getFileName(event->getReqPath(), configsData);
+	fileName = _getFileName(event->getReqLinePath(), configsData);
 	if (_isFileReadable(fileName))
 		fileSize = _getFileSize(fileName);
 	else
@@ -81,7 +84,7 @@ std::string CreateHeaderState::_getFileName(std::string reqTarget, ConfigsData c
 	if (!reqTarget.compare("/"))
 		fileName = conf.getConfig("root");
 	else
-		fileName = conf.getConfig(reqTarget);
+		fileName = conf.getConfig(reqTarget.substr(1));
 
 	// Path configuration is expected to be a valid file path pointing to the location of the pages.
 	path = conf.getConfig("path");

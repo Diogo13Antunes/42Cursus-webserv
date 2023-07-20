@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/18 16:24:02 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/20 15:52:58 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -614,4 +614,35 @@ std::string	Event::getReqContentType(void)
 	if (!_reqParsed.getHeaderValue("content-type").empty())
 		contentType = _reqParsed.getHeaderValue("content-type").at(0);
 	return (contentType);
+}
+
+std::string	Event::getReqLineTarget(void)
+{
+	return (_reqParser.getReqLineTarget());
+}
+
+std::string	Event::getReqLineHttpVersion(void)
+{
+	return (_reqParser.getReqLineHttpVersion());
+}
+
+std::string	Event::getReqLineMethod(void)
+{
+	return (_reqParser.getReqLineMethod());
+}
+
+std::string	Event::getReqLinePath(void)
+{
+	return (_reqParser.getReqLinePath());
+}
+
+void Event::parseHeader(std::string &header)
+{
+	//Função devolva true or false
+
+	if (!_reqParser.headerParse(header))
+		std::cout << "---------400 Bad Request---------" << std::endl;
+
+	//if (!_reqParser.headerParse(header))
+	//colocar status event.setStatusCode(400) 
 }

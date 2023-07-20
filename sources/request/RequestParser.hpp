@@ -38,7 +38,13 @@ class RequestParser
 		std::string 										getRequestBody(void);
 		std::map<std::string, std::vector<std::string> >	getRequestHeader(void);
 
-		void												headerParse(std::string	&header);
+		std::string											getReqLineTarget(void);
+		std::string											getReqLineHttpVersion(void);
+		std::string											getReqLineMethod(void);
+		std::string											getReqLinePath(void);
+		std::vector<std::string>							getHeaderField(std::string fieldName);
+
+		bool												headerParse(std::string	&header);
 		void												bodyParse(std::string &body);
 
 		bool												isValidHeader(void);
