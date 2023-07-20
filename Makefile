@@ -30,7 +30,6 @@ SRC_NAME =	main.cpp								\
 			configs/ConfigsUtils.cpp				\
 			configs/ConfigsData.cpp					\
 			request/RequestParser.cpp				\
-			request/RequestParserUtils.cpp			\
 			request/RequestData.cpp					\
 			request/RequestDataUtils.cpp			\
 			handleReq/HandleReq.cpp					\
@@ -46,6 +45,7 @@ SRC_NAME =	main.cpp								\
 			CGIExecuter/CGIExecuter.cpp				\
 			errorPageBuilder/ErrorPageBuilder.cpp	\
 			httpHeaderBuilder/HttpHeaderBuilder.cpp	\
+			utils/StringUtils.cpp					\
 			utils/TimeDate.cpp						\
 			utils/Timer.cpp							\
 			Terminal.cpp

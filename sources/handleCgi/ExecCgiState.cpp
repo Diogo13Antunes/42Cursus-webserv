@@ -44,6 +44,9 @@ char	**ExecCgiState::_getEnvVariables(Event *event, std::string data)
 			aux[3] = "CONTENT_TYPE=" + event->getReqContentType();
 		aux[4] = "QUERY_STRING=" + event->getQueryString();
 	}
+
+	
+
 	for (size_t i = 0; i < 5; i++)
 		if (!aux[i].empty())
 			temp.push_back(aux[i]);

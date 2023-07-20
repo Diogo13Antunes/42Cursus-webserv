@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HeaderProcess.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/25 10:30:27 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/20 15:42:42 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,18 @@ StateType HeaderProcess::handle(Event *event)
 	if (headerEndIdx == std::string::npos)
 		return (HEADER_PROCESS);
 	header = req.substr(0, headerEndIdx + 4);
+
+	// guarda parte do corpo que foi lido se houver fazer de outra maneira e mudar nome de funcao
 	event->setReqRaw1(req.substr(headerEndIdx + 4));
+
+	// para remover manter por agora so para teste
 	parser.headerParse(header);
 	event->setResquestHeader(parser.getRequestLine(), parser.getRequestHeader());
-	if (!event->getReqPath().compare("cgi"))
+	//-----------------------------------------------
+
+	// nova funcao
+	event->parseHeader(header);
+	if (!event->getReqLinePath().compare("/cgi"))
 		event->setCgiFlag(true);
 	if (!event->getBodySize())
 		return (REQUEST_END);

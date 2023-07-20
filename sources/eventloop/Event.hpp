@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/19 09:56:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/20 18:08:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include "RequestData.hpp"
+#include "RequestParser.hpp"
 #include "Configs.hpp"
 #include "ConfigsData.hpp"
 #include "StateType.hpp"
@@ -32,9 +33,10 @@
 class Event
 {
 	private:
-		std::string	_reqRaw;
-		RequestData	_reqParsed;
-		std::string	_res;
+		std::string		_reqRaw;
+		RequestData		_reqParsed;
+		RequestParser 	_reqParser;
+		std::string		_res;
 
 		std::string	_headerRaw;
 		std::string _bodyRaw;
@@ -195,4 +197,12 @@ class Event
 		std::string					getReqMethod(void);
 		std::string					getServerProtocol(void);
 		std::string					getReqContentType(void);
+
+		
+		//New functions of request parser
+		std::string	getReqLineTarget(void);
+		std::string	getReqLineHttpVersion(void);
+		std::string	getReqLineMethod(void);
+		std::string	getReqLinePath(void);
+		void		parseHeader(std::string &header);
 };

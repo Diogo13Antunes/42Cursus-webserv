@@ -1,19 +1,46 @@
 #include "RequestParser.hpp"
+#include "StringUtils.hpp"
+
+static std::vector<std::string>	getElementValue(const std::string &src);
+static bool						isValidNumberOfQuotes(const std::string &src);
+static std::string				getReadyValue(const std::string &src, size_t index1, size_t index2);
+static std::string				getRequestLineElement(const std::string &src, size_t i1, size_t i2);
+static std::string				getPath(std::string &src);
 
 RequestParser::RequestParser(void) {}
 
 RequestParser::~RequestParser(void) {}
 
-void	RequestParser::headerParse(std::string &header)
+bool	RequestParser::headerParse(std::string &header)
 {
-	std::vector<std::string>	requestHeaderVec;
+	std::istringstream	iss(header);
+	std::string			line;
+	bool				isFirstLine = true;
 
-	requestHeaderVec = RequestParserUtils::getDataVector(header);
-	_requestLine = RequestParserUtils::getRequestLine(requestHeaderVec);
-	_requestHeader = RequestParserUtils::getRequestHeader(requestHeaderVec);
-
+	while (std::getline(iss, line))
+	{
+		line += "\n";
+		if (line.find_first_not_of("\r\n") == line.npos)
+			break;
+		if (isFirstLine)
+		{
+			_requestLine = StringUtils::stringTrim(line);
+			try
+			{
+				_requestLineParser();
+			}
+			catch(const std::exception& e)
+			{
+				return (false);
+			}
+			isFirstLine = false;
+		}
+		else
+			_requestHeader.insert(_getHeaderFieldPair(line));
+	}
 	if (isValidHeader() != true || checkContentLenght() != true)
-		throw BadRequestException();
+		return (false);
+	return (true);
 }
 
 void	RequestParser::bodyParse(std::string &body)
@@ -29,7 +56,7 @@ bool	RequestParser::isValidHeader(void)
 	for (it = _requestHeader.begin(); it != _requestHeader.end(); it++)
 	{
 		key = (*it).first;
-		if (RequestParserUtils::isStringEmpty(key))
+		if (StringUtils::isStringEmptyOrSpaces(key))
 			return (false);
 	}
 	return (true);
@@ -77,6 +104,37 @@ std::map<std::string, std::vector<std::string> >	RequestParser::getRequestHeader
 	return (_requestHeader);
 }
 
+std::string RequestParser::getReqLineTarget(void)
+{
+	return (_reqLineTarget);
+}
+
+std::string RequestParser::getReqLineHttpVersion(void)
+{
+	return (_reqLineHttpVersion);
+}
+
+std::string RequestParser::getReqLineMethod(void)
+{
+	return (_reqLineMethod);
+}
+
+std::string RequestParser::getReqLinePath(void)
+{
+	return (_reqLinePath);
+}
+
+std::vector<std::string> RequestParser::getHeaderField(std::string fieldName)
+{
+	std::map<std::string, std::vector<std::string> >::iterator it;
+
+	it = _requestHeader.find("fieldName");
+	if (it != _requestHeader.end())
+		return (it->second);
+	return (std::vector<std::string>());
+}
+
+
 /* Exceptions */
 
 const char *RequestParser::EmptyRequestException::what(void) const throw()
@@ -87,6 +145,11 @@ const char *RequestParser::EmptyRequestException::what(void) const throw()
 const char *RequestParser::BadRequestException::what(void) const throw()
 {
 	return ("BadRequestException: Bad Request");
+}
+
+const char *RequestParser::InvalidRequestLineException::what(void) const throw()
+{
+	return ("InvalidRequestLineException: The request line is invalid or badly formatted.");
 }
 
 /* Class Private Functions */
@@ -103,4 +166,137 @@ int	RequestParser::_getContentLen(void)
 			len = std::atoi((*it).second.at(0).c_str());
 	}
 	return (len);
+}
+
+std::pair<std::string, std::vector<std::string> >	RequestParser::_getHeaderFieldPair(std::string &src)
+{
+	std::string					key;
+	std::vector<std::string>	value;
+	std::string					temp;
+	size_t						index;
+
+	index = src.find_first_of(":");
+	if (index != src.npos)
+	{
+		if (src.find_last_not_of(WHITE_SPACE, index - 1) != src.npos)
+		{
+			key = src.substr(0, index);
+			StringUtils::stringToLower(key);
+		}
+		if (src.find_first_not_of(WHITE_SPACE, index + 1) != src.npos)
+		{
+			temp = src.substr(src.find_first_of(":") + 1, src.size());
+			temp = StringUtils::stringTrim(temp);
+			value = getElementValue(temp);
+		}
+	}
+	return (std::make_pair(key, value));
+}
+
+void	RequestParser::_requestLineParser(void)
+{
+	size_t		index_1;
+	size_t		index_2;
+	std::string	element[3];
+
+	index_1 = _requestLine.find_first_of(" ");
+	index_2 = _requestLine.find_last_of(" ");
+	if (index_1 == index_2 || index_1 == _requestLine.npos || index_2 == _requestLine.npos)
+		throw InvalidRequestLineException();
+	_reqLineMethod = getRequestLineElement(_requestLine, 0, index_1);
+	_reqLineTarget = getRequestLineElement(_requestLine, index_1, index_2);
+	_reqLineHttpVersion = getRequestLineElement(_requestLine, index_2, _requestLine.size());
+	
+	if (_reqLineMethod.empty() || _reqLineTarget.empty() || _reqLineHttpVersion.empty())
+		throw InvalidRequestLineException();
+
+	_requestTargetParser();
+}
+
+void	RequestParser::_requestTargetParser(void)
+{
+	if (_reqLineTarget.size() > 1)
+	{
+		StringUtils::removeConsecutiveChars(_reqLineTarget, '/');
+		_reqLinePath = getPath(_reqLineTarget);
+	}
+	else
+		_reqLinePath = _reqLineTarget;
+}
+
+static std::vector<std::string>	getElementValue(const std::string &src)
+{
+	std::vector<std::string>	elements;
+	std::string					temp;
+	size_t						nbrQuotes = 0;
+	size_t						j = 0;
+
+	if (isValidNumberOfQuotes(src))
+	{
+		for (size_t i = 0; i < src.size(); i++)
+		{
+			if (src[i] == '\"')
+				nbrQuotes++;
+			if (i == src.size() - 1 || (src[i] == ',' && nbrQuotes % 2 == 0))
+			{
+				temp = getReadyValue(src, i, j);
+				elements.push_back(temp);
+				j = i + 1;
+			}
+		}
+	}
+	return (elements);
+}
+
+static bool	isValidNumberOfQuotes(const std::string &src)
+{
+	size_t	nbrQuotes = 0;
+
+	for (size_t i = 0; i < src.size(); i++)
+	{
+		if (src[i] == '\"')
+			nbrQuotes++;
+	}
+	if (nbrQuotes % 2 != 0)
+		return (false);
+	return (true);
+}
+
+static std::string	getReadyValue(const std::string &src, size_t index1, size_t index2)
+{
+	const std::string	notValueChars = "\n\r\t\", ";
+	std::string			result;
+	size_t				i1 = 0;
+	size_t				i2 = 0;
+
+	i1 = src.find_first_not_of(notValueChars, index2);
+	i2 = src.find_last_not_of(notValueChars, index1);
+	result = src.substr(i1, i2 - i1 + 1);
+	return (result);
+}
+
+static std::string	getRequestLineElement(const std::string &src, size_t i1, size_t i2)
+{
+	std::string	result;
+	size_t		len;
+
+	len = i2 - i1 + 1;
+	if (len > 0 && i1 < src.length())
+	{
+		result = src.substr(i1, len);
+		result = StringUtils::stringTrim(result);
+	}
+	return (result);
+}
+
+static std::string	getPath(std::string &src)
+{
+	std::string path;
+	size_t		index;
+
+	path = src;
+	index = path.find_first_of('?');
+	if (index != src.npos)
+		path = path.substr(0, index);
+	return (path);
 }
