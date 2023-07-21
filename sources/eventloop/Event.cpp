@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/20 18:08:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/21 14:45:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -607,13 +607,28 @@ std::string	Event::getServerProtocol(void)
 	return (_reqParsed.getRequestLine().at(2));
 }
 
-std::string	Event::getReqContentType(void)
+
+// Alterar esta funcao para o novo parser
+/*std::string	Event::getReqContentType(void)
 {
 	std::string	contentType;
 
 	if (!_reqParsed.getHeaderValue("content-type").empty())
 		contentType = _reqParsed.getHeaderValue("content-type").at(0);
 	return (contentType);
+}*/
+
+std::string	Event::getReqContentType(void)
+{
+	std::vector<std::string> contentType;
+
+	contentType = _reqParser.getHeaderField("content-type");
+	if (!contentType.empty())
+	{
+		std::cout << "Não vazio getHeaderField()" << std::endl;
+		return (contentType.at(0));
+	}
+	return (std::string());
 }
 
 std::string	Event::getReqLineTarget(void)

@@ -128,12 +128,11 @@ std::vector<std::string> RequestParser::getHeaderField(std::string fieldName)
 {
 	std::map<std::string, std::vector<std::string> >::iterator it;
 
-	it = _requestHeader.find("fieldName");
+	it = _requestHeader.find(fieldName);
 	if (it != _requestHeader.end())
 		return (it->second);
 	return (std::vector<std::string>());
 }
-
 
 /* Exceptions */
 

@@ -2,7 +2,6 @@
 
 HandleCgi::HandleCgi(void)
 {
-	//Default HandleCgi Constructor
 	_stateMap.insert(std::make_pair(EXEC_CGI, new ExecCgiState()));
 	_stateMap.insert(std::make_pair(GETTING_DATA_CGI, new GettingDataCgiState()));
 }
@@ -18,12 +17,12 @@ HandleCgi::~HandleCgi(void)
 	}
 }
 
-void	HandleCgi::setEvent(Event *event)
+void HandleCgi::setEvent(Event *event)
 {
 	_event = event;
 }
 
-void	HandleCgi::handle(void)
+void HandleCgi::handle(void)
 {
 	std::map<StateCgiType, IStateCGI*>::iterator	it;
 	StateCgiType									state;
@@ -37,7 +36,7 @@ void	HandleCgi::handle(void)
 	_event->setCgiState(state);
 }
 
-bool	HandleCgi::isCgiFinished(void)
+bool HandleCgi::isCgiFinished(void)
 {
 	if (_event->getCgiState() == END_CGI)
 		return (true);

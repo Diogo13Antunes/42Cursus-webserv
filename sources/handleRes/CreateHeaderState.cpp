@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CreateHeaderState.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/20 15:29:09 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/07/21 09:35:31 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,6 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 	size_t				fileSize;
 	int					errorCode = 0;
 	ErrorPageBuilder	errorBuilder;
-
-
-	std::cout << "CreateHeaderState: reqLinePath: " << event->getReqLinePath() << std::endl;
 
 	//fileName = _getFileName(event->getReqPath(), configsData);
 	fileName = _getFileName(event->getReqLinePath(), configsData);
