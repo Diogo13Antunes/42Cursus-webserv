@@ -1,17 +1,36 @@
 #include "RequestParser.hpp"
 #include "StringUtils.hpp"
 
+#define DIGITS					"0123456789"
+#define MAX_REQUEST_TARGET_LEN	8000
+
+typedef enum
+{
+	SUCCESSFULL_REQUEST = 0,
+	BAD_REQUEST = 400,
+	LENGTH_REQUEIRED = 411,
+	URI_TOO_LONG = 414,
+	NOT_IMPLEMENTED = 501
+}	RequestStatusCode;
+
 static std::vector<std::string>	getElementValue(const std::string &src);
 static bool						isValidNumberOfQuotes(const std::string &src);
 static std::string				getReadyValue(const std::string &src, size_t index1, size_t index2);
 static std::string				getRequestLineElement(const std::string &src, size_t i1, size_t i2);
 static std::string				getPath(std::string &src);
+static bool						isURITooLong(std::string &uri);
+static bool						hasURIWhiteSpaces(std::string &uri);
 
-RequestParser::RequestParser(void) {}
+RequestParser::RequestParser(void): _statusCode(SUCCESSFULL_REQUEST)
+{
+	_implementedMethods.push_back("GET");
+	_implementedMethods.push_back("POST");
+	_implementedMethods.push_back("DELETE");
+}
 
 RequestParser::~RequestParser(void) {}
 
-bool	RequestParser::headerParse(std::string &header)
+int	RequestParser::headerParse(std::string &header)
 {
 	std::istringstream	iss(header);
 	std::string			line;
@@ -25,22 +44,24 @@ bool	RequestParser::headerParse(std::string &header)
 		if (isFirstLine)
 		{
 			_requestLine = StringUtils::stringTrim(line);
-			try
-			{
-				_requestLineParser();
-			}
-			catch(const std::exception& e)
-			{
-				return (false);
-			}
+			_statusCode = _requestLineParser();
 			isFirstLine = false;
 		}
 		else
-			_requestHeader.insert(_getHeaderFieldPair(line));
+		{
+			_statusCode = _addHeaderElement(line);
+		}
+		if (_statusCode != 0)
+			return (_statusCode);
 	}
-	if (isValidHeader() != true || checkContentLenght() != true)
-		return (false);
-	return (true);
+
+	_statusCode = isValidHeader();
+	if (!_statusCode)
+		_statusCode = checkContentLenght();
+
+	
+
+	return (_statusCode);
 }
 
 void	RequestParser::bodyParse(std::string &body)
@@ -48,45 +69,67 @@ void	RequestParser::bodyParse(std::string &body)
 	_requestBody = body;
 }
 
-bool	RequestParser::isValidHeader(void)
+// Apenas para debugging.
+// Remover após todo o debugging. 
+void	printHeader(std::map<std::string, std::vector<std::string> > &src)
 {
-	std::map<std::string, std::vector<std::string> >::iterator	it;
-	std::string													key;
+	std::cout << "-------------------------------------------" << std::endl;
+	for (std::map<std::string, std::vector<std::string> >::const_iterator it = src.begin(); it != src.end(); ++it) {
+        std::cout << it->first << " -> ";
+        const std::vector<std::string>& values = it->second;
+		if (values.size() != 0)
+		{
+			for (std::vector<std::string>::const_iterator vecIt = values.begin(); vecIt != values.end(); ++vecIt)
+			{
+				std::cout << "[";
+				std::cout << *vecIt;
+				std::cout << "]";
+			}
+		}
+		else
+			std::cout << "NULL";
+		std::cout << std::endl;
+    }
+	std::cout << "-------------------------------------------" << std::endl;
+}
+
+int	RequestParser::isValidHeader(void)
+{
+	std::map<std::string, std::vector<std::string> >::const_iterator	it;
+	std::string															key;
+	std::vector<std::string>											value;
+
+	// printHeader(_requestHeader);
 
 	for (it = _requestHeader.begin(); it != _requestHeader.end(); it++)
 	{
 		key = (*it).first;
+		value = (*it).second;
 		if (StringUtils::isStringEmptyOrSpaces(key))
-			return (false);
+			return (BAD_REQUEST);
 	}
-	return (true);
+	return (SUCCESSFULL_REQUEST);
 }
 
-static std::string	getRequestLineMethod(std::string requestLine)
+int	RequestParser::checkContentLenght(void)
 {
-	std::string	res;
-	size_t		index;
+	std::map<std::string, std::vector<std::string> >::iterator	it;
+	std::string	contentLen;
 
-	index = requestLine.find_first_of(WHITE_SPACE);
-	if (index != requestLine.npos)
-		res = requestLine.substr(0, index);
-	return (res);
-}
-
-bool	RequestParser::checkContentLenght(void)
-{
-	std::string	method;
-	int			contentLen = 0;
-
-	method = getRequestLineMethod(_requestLine);
-	if (method.empty())
-		return (false);
-
-	contentLen = _getContentLen();
-	if (contentLen == -1 && !method.compare("POST"))
-		return (false);
-
-	return (true);
+	it = _requestHeader.find("content-length");
+	if (it != _requestHeader.end())
+	{
+		if ((*it).second.size() == 1)
+			contentLen = (*it).second.at(0).c_str();
+		else
+			return (BAD_REQUEST);
+	}
+	if (!contentLen.empty())
+	{
+		if (contentLen.find_first_not_of(DIGITS) != contentLen.npos)
+			return (BAD_REQUEST);
+	}
+	return (SUCCESSFULL_REQUEST);
 }
 
 std::string RequestParser::getRequestLine(void)
@@ -137,19 +180,19 @@ std::vector<std::string> RequestParser::getHeaderField(std::string fieldName)
 
 /* Exceptions */
 
-const char *RequestParser::EmptyRequestException::what(void) const throw()
-{
-	return ("EmptyRequestException: Request file is empty");
-}
-
 const char *RequestParser::BadRequestException::what(void) const throw()
 {
 	return ("BadRequestException: Bad Request");
 }
 
-const char *RequestParser::InvalidRequestLineException::what(void) const throw()
+const char *RequestParser::URITooLongException::what(void) const throw()
 {
-	return ("InvalidRequestLineException: The request line is invalid or badly formatted.");
+	return ("URITooLongException: The request-target is too long.");
+}
+
+const char *RequestParser::NotImplementedException::what(void) const throw()
+{
+	return ("NotImplementedException: The request method is not implemented.");
 }
 
 /* Class Private Functions */
@@ -178,11 +221,8 @@ std::pair<std::string, std::vector<std::string> >	RequestParser::_getHeaderField
 	index = src.find_first_of(":");
 	if (index != src.npos)
 	{
-		if (src.find_last_not_of(WHITE_SPACE, index - 1) != src.npos)
-		{
-			key = src.substr(0, index);
-			StringUtils::stringToLower(key);
-		}
+		key = src.substr(0, index);
+		StringUtils::stringToLower(key);
 		if (src.find_first_not_of(WHITE_SPACE, index + 1) != src.npos)
 		{
 			temp = src.substr(src.find_first_of(":") + 1, src.size());
@@ -193,24 +233,30 @@ std::pair<std::string, std::vector<std::string> >	RequestParser::_getHeaderField
 	return (std::make_pair(key, value));
 }
 
-void	RequestParser::_requestLineParser(void)
+int	RequestParser::_requestLineParser(void)
 {
 	size_t		index_1;
 	size_t		index_2;
-	std::string	element[3];
 
 	index_1 = _requestLine.find_first_of(" ");
 	index_2 = _requestLine.find_last_of(" ");
 	if (index_1 == index_2 || index_1 == _requestLine.npos || index_2 == _requestLine.npos)
-		throw InvalidRequestLineException();
+		return (BAD_REQUEST);
 	_reqLineMethod = getRequestLineElement(_requestLine, 0, index_1);
 	_reqLineTarget = getRequestLineElement(_requestLine, index_1, index_2);
 	_reqLineHttpVersion = getRequestLineElement(_requestLine, index_2, _requestLine.size());
-	
 	if (_reqLineMethod.empty() || _reqLineTarget.empty() || _reqLineHttpVersion.empty())
-		throw InvalidRequestLineException();
+		return (BAD_REQUEST);
+
+	if (!_isImplementedRequestMethod())
+		return (NOT_IMPLEMENTED);;
+	if (hasURIWhiteSpaces(_reqLineTarget))
+		return (BAD_REQUEST);
+	if (isURITooLong(_reqLineTarget))
+		return (URI_TOO_LONG);
 
 	_requestTargetParser();
+	return (SUCCESSFULL_REQUEST);
 }
 
 void	RequestParser::_requestTargetParser(void)
@@ -223,6 +269,32 @@ void	RequestParser::_requestTargetParser(void)
 	else
 		_reqLinePath = _reqLineTarget;
 }
+
+bool	RequestParser::_isImplementedRequestMethod()
+{
+	for (size_t i = 0; i < _implementedMethods.size(); i++)
+	{
+		if (!_implementedMethods.at(i).compare(_reqLineMethod))
+			return (true);
+	}
+	return (false);
+}
+
+int	RequestParser::_addHeaderElement(std::string &line)
+{
+	std::pair<std::string, std::vector<std::string> >	header;
+
+	header = _getHeaderFieldPair(line);
+	if (StringUtils::hasWhiteSpaces(header.first))
+	{
+		_requestHeader.clear();
+		return (BAD_REQUEST);
+	}
+	_requestHeader.insert(header);
+	return (SUCCESSFULL_REQUEST);
+}
+
+/* Static Functions */
 
 static std::vector<std::string>	getElementValue(const std::string &src)
 {
@@ -299,4 +371,18 @@ static std::string	getPath(std::string &src)
 	if (index != src.npos)
 		path = path.substr(0, index);
 	return (path);
+}
+
+static bool	isURITooLong(std::string &uri)
+{
+	if (uri.size() > MAX_REQUEST_TARGET_LEN)
+		return (true);
+	return (false);
+}
+
+static bool	hasURIWhiteSpaces(std::string &uri)
+{
+	if (uri.find("%20") != uri.npos)
+		return (true);
+	return (false);
 }

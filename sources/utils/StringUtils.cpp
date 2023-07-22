@@ -58,3 +58,10 @@ bool	StringUtils::areCharsEqual(char c1, char c2)
 		return (true);
 	return (false);
 }
+
+bool	StringUtils::hasWhiteSpaces(std::string &str)
+{
+	if (str.find_first_of(WHITE_SPACE) != str.npos)
+		return (true);
+	return (false);
+}

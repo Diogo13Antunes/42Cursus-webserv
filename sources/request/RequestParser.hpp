@@ -14,6 +14,8 @@
 class RequestParser
 {
 	private:
+
+		std::vector<std::string>							_implementedMethods;
 		std::string											_requestLine;
 		std::map<std::string, std::vector<std::string> >	_requestHeader;
 		std::string											_requestBody;
@@ -25,10 +27,14 @@ class RequestParser
 
 		std::string											_queryString;
 
+		int													_statusCode;
+
 		int													_getContentLen(void);
 		std::pair<std::string, std::vector<std::string> >	_getHeaderFieldPair(std::string &src);
-		void												_requestLineParser(void);
+		int													_requestLineParser(void);
+		int													_addHeaderElement(std::string &line);
 		void												_requestTargetParser(void);
+		bool												_isImplementedRequestMethod(void);
 
 	public:
 		RequestParser(void);
@@ -44,17 +50,11 @@ class RequestParser
 		std::string											getReqLinePath(void);
 		std::vector<std::string>							getHeaderField(std::string fieldName);
 
-		bool												headerParse(std::string	&header);
+		int													headerParse(std::string	&header);
 		void												bodyParse(std::string &body);
 
-		bool												isValidHeader(void);
-		bool												checkContentLenght(void);
-
-		class EmptyRequestException: public std::exception
-		{
-			public:
-				const char *what() const throw();
-		};
+		int													isValidHeader(void);
+		int													checkContentLenght(void);
 
 		class BadRequestException: public std::exception
 		{
@@ -62,9 +62,16 @@ class RequestParser
 				const char *what() const throw();
 		};
 
-		class InvalidRequestLineException: public std::exception
+		class URITooLongException: public std::exception
 		{
 			public:
 				const char *what() const throw();
 		};
+
+		class NotImplementedException: public std::exception
+		{
+			public:
+				const char *what() const throw();
+		};
+
 };

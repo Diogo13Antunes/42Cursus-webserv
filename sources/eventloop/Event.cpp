@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/20 15:52:58 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/07/22 17:56:48 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -640,8 +640,29 @@ void Event::parseHeader(std::string &header)
 {
 	//Função devolva true or false
 
-	if (!_reqParser.headerParse(header))
-		std::cout << "---------400 Bad Request---------" << std::endl;
+	int	statusCode;
+
+	statusCode = _reqParser.headerParse(header);
+	switch (statusCode)
+	{
+		case 0:
+			std::cout << "---------- SUCCESS ----------" << std::endl;
+			break;
+		case 400:
+			std::cout << "---------- 400 BAD_REQUEST ----------" << std::endl;
+			break;
+		case 411:
+			std::cout << "---------- 411 LENGTH_REQUEIRED ----------" << std::endl;
+			break;
+		case 414:
+			std::cout << "---------- 414 URI_TOO_LONG ----------" << std::endl;
+			break;
+		case 501:
+			std::cout << "---------- 501 NOT_IMPLEMENTED ----------" << std::endl;
+			break;
+		default:
+			break;
+	}
 
 	//if (!_reqParser.headerParse(header))
 	//colocar status event.setStatusCode(400) 
