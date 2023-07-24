@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/16 10:38:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/21 09:40:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include "HandleReq.hpp"
 
 
-#define BUFF_SIZE 100000
+//#define BUFF_SIZE 100000
 
 
 ReadHandler::ReadHandler(void): IEventHandler()
@@ -51,25 +51,20 @@ ReadHandler &ReadHandler::operator=(const ReadHandler &src)
 
 void ReadHandler::handleEvent(Event *event)
 {
-	char			buffer[BUFF_SIZE];
-	ssize_t			valread;
-
-	// std::cout << "read event ReadHandler: " << event->getFd() << std::endl;
+	ssize_t		valread;
+	std::string	buff;	
 
 	_handleReq->setEvent(event);
-	for(int i = 0; i < BUFF_SIZE; i++)
-		buffer[i] = 0;
-	valread = read(event->getFd(), buffer, BUFF_SIZE - 1);
-
+	valread = read(event->getFd(), _buffer, BUFF_SIZE1 - 1);
 	if (valread == 0 || valread == -1)
 	{
-		std::cout << "FECHOU O NAVEGADOR: " << valread << std::endl;
+		//std::cout << "FECHOU O NAVEGADOR: " << valread << std::endl;
 		event->setState(CLOSED_EVENT);
 		event->setClientClosed();
 		return ;
 	}
-
-	event->updateReqRaw1(buffer);
+	buff.assign(_buffer, valread);
+	event->updateReqRaw1(buff);
 	_handleReq->handle();
 	if (!_handleReq->isProcessingComplete())
 		return ;

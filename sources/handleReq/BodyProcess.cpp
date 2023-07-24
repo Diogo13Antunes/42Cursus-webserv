@@ -6,34 +6,16 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:49:57 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/25 11:48:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/21 10:08:40 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BodyProcess.hpp"
 #include "RequestParser.hpp"
 
-BodyProcess::BodyProcess(void)
-{
-	//Default BodyProcess Constructor
-}
+BodyProcess::BodyProcess(void) {}
 
-BodyProcess::BodyProcess(const BodyProcess &src)
-{
-	//BodyProcess Copy Constructor
-}
-
-BodyProcess::~BodyProcess(void)
-{
-	//Default BodyProcess Destructor
-}
-
-/*
-BodyProcess &BodyProcess::operator=(const BodyProcess &src)
-{
-	//BodyProcess Copy Assignment Operator
-}
-*/
+BodyProcess::~BodyProcess(void) {}
 
 StateType BodyProcess::handle(Event *event)
 {
@@ -44,9 +26,8 @@ StateType BodyProcess::handle(Event *event)
 	if (event->getBodySize() != req.size())
 		return (BODY_PROCESS);
 
-	//std::cout << req << std::endl;
 	body = req;
-	parser.bodyParse(body);
+	parser.bodyParse(body);//provavelmente tem de ser alterado
 	event->setResquestBody(parser.getRequestBody());
 	
 	return (REQUEST_END);

@@ -171,12 +171,11 @@ std::vector<std::string> RequestParser::getHeaderField(std::string fieldName)
 {
 	std::map<std::string, std::vector<std::string> >::iterator it;
 
-	it = _requestHeader.find("fieldName");
+	it = _requestHeader.find(fieldName);
 	if (it != _requestHeader.end())
 		return (it->second);
 	return (std::vector<std::string>());
 }
-
 
 /* Exceptions */
 
@@ -249,8 +248,8 @@ int	RequestParser::_requestLineParser(void)
 		return (BAD_REQUEST);
 
 	if (!_isImplementedRequestMethod())
-		return (NOT_IMPLEMENTED);;
-	if (hasURIWhiteSpaces(_reqLineTarget))
+		return (NOT_IMPLEMENTED);
+	if (StringUtils::hasWhiteSpaces(_reqLineTarget))
 		return (BAD_REQUEST);
 	if (isURITooLong(_reqLineTarget))
 		return (URI_TOO_LONG);
@@ -376,13 +375,6 @@ static std::string	getPath(std::string &src)
 static bool	isURITooLong(std::string &uri)
 {
 	if (uri.size() > MAX_REQUEST_TARGET_LEN)
-		return (true);
-	return (false);
-}
-
-static bool	hasURIWhiteSpaces(std::string &uri)
-{
-	if (uri.find("%20") != uri.npos)
 		return (true);
 	return (false);
 }

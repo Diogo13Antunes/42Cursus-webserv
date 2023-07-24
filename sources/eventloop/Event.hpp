@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/20 14:56:10 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/07/20 18:08:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ class Event
 		//New
 		StateType			getReqState(void);
 		void				setReqState(StateType reqState);
-		void				updateReqRaw1(std::string req);
+		void				updateReqRaw1(std::string &req);
 		const std::string&  getReqRaw1(void);
 
 		void setHeaderRaw(std::string header);

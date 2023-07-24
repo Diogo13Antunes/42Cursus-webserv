@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/22 17:56:48 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/07/24 12:38:07 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,7 +196,7 @@ void Event::setReqState(StateType reqState)
 }
 
 
-void Event::updateReqRaw1(std::string req)
+void Event::updateReqRaw1(std::string &req)
 {
 	_reqRaw += req;
 }
@@ -607,13 +607,28 @@ std::string	Event::getServerProtocol(void)
 	return (_reqParsed.getRequestLine().at(2));
 }
 
-std::string	Event::getReqContentType(void)
+
+// Alterar esta funcao para o novo parser
+/*std::string	Event::getReqContentType(void)
 {
 	std::string	contentType;
 
 	if (!_reqParsed.getHeaderValue("content-type").empty())
 		contentType = _reqParsed.getHeaderValue("content-type").at(0);
 	return (contentType);
+}*/
+
+std::string	Event::getReqContentType(void)
+{
+	std::vector<std::string> contentType;
+
+	contentType = _reqParser.getHeaderField("content-type");
+	if (!contentType.empty())
+	{
+		std::cout << "Não vazio getHeaderField()" << std::endl;
+		return (contentType.at(0));
+	}
+	return (std::string());
 }
 
 std::string	Event::getReqLineTarget(void)
@@ -651,16 +666,11 @@ void Event::parseHeader(std::string &header)
 		case 400:
 			std::cout << "---------- 400 BAD_REQUEST ----------" << std::endl;
 			break;
-		case 411:
-			std::cout << "---------- 411 LENGTH_REQUEIRED ----------" << std::endl;
-			break;
 		case 414:
 			std::cout << "---------- 414 URI_TOO_LONG ----------" << std::endl;
 			break;
 		case 501:
 			std::cout << "---------- 501 NOT_IMPLEMENTED ----------" << std::endl;
-			break;
-		default:
 			break;
 	}
 
