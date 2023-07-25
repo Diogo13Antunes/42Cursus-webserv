@@ -42,6 +42,7 @@ class RequestParser
 		std::string											getReqLineHttpVersion(void);
 		std::string											getReqLineMethod(void);
 		std::string											getReqLinePath(void);
+		std::string											getConnectionField(void);
 		std::vector<std::string>							getHeaderField(std::string fieldName);
 
 		bool												headerParse(std::string	&header);

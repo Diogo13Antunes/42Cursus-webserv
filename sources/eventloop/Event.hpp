@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/20 18:08:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 12:26:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,9 @@
 #include "StateResType.hpp"
 #include "StateCgiType.hpp"
 #include "CGIExecuter.hpp"
+
+#include "EventType.hpp"
+
 
 //#define	NONE			0
 #define HEADER_HANDLE	0
@@ -73,8 +76,16 @@ class Event
 		int 	_timeoutSec;
 		time_t	_creationTime;
 
-
 		bool	_clientClosed;
+
+
+		EventType _oldState;
+		EventType _actualState;
+
+		bool	_finished;
+
+		short	_connectionClosed;
+
 
 
 	public:
@@ -205,4 +216,11 @@ class Event
 		std::string	getReqLineMethod(void);
 		std::string	getReqLinePath(void);
 		void		parseHeader(std::string &header);
+
+		EventType	getOldState(void);
+		EventType	getActualState(void);
+		void		setActualState(EventType actualState);
+
+		bool	isFinished(void);
+		void	setAsFinished(void);
 };

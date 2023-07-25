@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/21 14:45:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 14:57:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 #include "Timer.hpp"
 #include "EventType.hpp"
 
-#define TIMEOUT_SEC	200
+#define TIMEOUT_SEC				200
+#define CONNECTION_CLOSED		1
+#define CONNECTION_KEEPALIVE	0
 
 static std::string createResponse1(std::string path, std::string contentType);
 static std::string getFileContent(std::string fileName);
@@ -40,7 +42,10 @@ Event::Event(int fd, int state):
 	_timeoutSec(TIMEOUT_SEC),
 	_creationTime(Timer::getActualTimeStamp()),
 	_clientClosed(false),
-	_cgiEx(NULL)
+	_cgiEx(NULL),
+	_actualState(READ_EVENT),
+	_finished(false),
+	_connectionClosed(-1)
 {}
 
 Event::Event(const Event &src) {}
@@ -519,15 +524,19 @@ bool Event::isEventTimeout(void)
 
 bool Event::isConnectionClose(void)
 {
-	std::vector<std::string> value;
-
-	value = _reqParsed.getHeaderValue("connection");
-
-	if (!value.empty() && !value[0].compare("close"))
+	if (_connectionClosed == -1)
+	{
+		if (!(_reqParser.getConnectionField().compare("close")))
+			_connectionClosed = CONNECTION_CLOSED;
+		else
+			_connectionClosed = CONNECTION_KEEPALIVE;
+	}
+	if (_connectionClosed)
 		return (true);
 	return (false);
 }
 
+// Não usado
 bool Event::isClientClosed(void)
 {
 	return (_clientClosed);
@@ -660,4 +669,31 @@ void Event::parseHeader(std::string &header)
 
 	//if (!_reqParser.headerParse(header))
 	//colocar status event.setStatusCode(400) 
+}
+
+
+EventType Event::getOldState(void)
+{
+	return (_oldState);
+}
+
+EventType Event::getActualState(void)
+{
+	return (_actualState);
+}
+
+void Event::setActualState(EventType newState)
+{
+	_oldState = _actualState;
+	_actualState = newState;
+}
+
+bool Event::isFinished(void)
+{
+	return (_finished);
+}
+
+void Event::setAsFinished(void)
+{
+	_finished = true;
 }

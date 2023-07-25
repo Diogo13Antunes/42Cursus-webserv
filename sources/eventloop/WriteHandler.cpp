@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/16 12:35:01 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 12:33:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,9 @@ void WriteHandler::handleEvent(Event *event)
 	_handleRes->setEvent(event);
 	_handleRes->handle();
 	if (_handleRes->isResProcessingComplete())
-		event->setState(WRITE_EVENT_COMPLETE);
+		event->setActualState(STATE_TRANSITION);
+	//if (_handleRes->isResProcessingComplete())
+	//	event->setState(WRITE_EVENT_COMPLETE);
 }
 
 EventType WriteHandler::getHandleType(void)

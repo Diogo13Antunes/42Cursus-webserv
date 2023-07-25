@@ -124,6 +124,16 @@ std::string RequestParser::getReqLinePath(void)
 	return (_reqLinePath);
 }
 
+std::string RequestParser::getConnectionField(void)
+{
+	std::vector<std::string> connection;
+
+	connection = this->getHeaderField("connection");
+	if (!connection.empty())
+		return (connection.at(0));
+	return (std::string()); 
+}
+
 std::vector<std::string> RequestParser::getHeaderField(std::string fieldName)
 {
 	std::map<std::string, std::vector<std::string> >::iterator it;

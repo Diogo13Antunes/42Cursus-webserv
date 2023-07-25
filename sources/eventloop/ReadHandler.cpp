@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/21 09:40:00 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/23 14:40:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void ReadHandler::handleEvent(Event *event)
 		event->setState(CGI_EVENT);
 	}
 	else
-		event->setState(READ_EVENT_COMPLETE);//event->setState(WRITE_EVENT);
+		event->setActualState(STATE_TRANSITION);//event->setState(READ_EVENT_COMPLETE);//event->setState(WRITE_EVENT);
 }
 
 EventType ReadHandler::getHandleType(void)

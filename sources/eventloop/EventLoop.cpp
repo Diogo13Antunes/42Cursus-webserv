@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/18 15:14:24 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 12:07:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,17 @@ void EventLoop::handleEvents(void)
 	Event	*event;
 	
 	while (!_eventQueue.empty())
-	{		
+	{	
 		event = _eventQueue.front();
 		_handleEvent(event);
 		_eventQueue.pop();
-		_handleEventStates(event);
+		if (event && event->getActualState() == STATE_TRANSITION)
+			_eventQueue.push(event);
+		if (event->isFinished())
+			_finalizeEvent(event);
 	}
-	_checkIfCgiScriptsFinished();
-	_closeTimeoutEvents();
+	//_checkIfCgiScriptsFinished();
+	//_closeTimeoutEvents();
 }
 
 ClientID EventLoop::getId(void)
@@ -68,11 +71,28 @@ void EventLoop::receiveMessage(Message *msg)
 
 void EventLoop::_handleEvent(Event *ev)
 {
+	std::map<EventType, IEventHandler*>::iterator	it;
+	EventType										type;
+
+
+	//getActualType()
+	type = ev->getActualState();
+	it = _handlers.find(type);
+	if (it != _handlers.end())
+		it->second->handleEvent(ev);
+	if (type == STATE_TRANSITION)
+		_sendMessages(ev->getFd(), ev->getActualState());// mensagens relacionadas com type transition (mudar nome)
+}
+
+/*
+void EventLoop::_handleEvent(Event *ev)
+{
 	std::map<EventType, IEventHandler*>::iterator it;
 	it = _handlers.find((EventType)ev->getState());
 	if (it != _handlers.end())
 		it->second->handleEvent(ev);
 }
+*/
 
 Event* EventLoop::_getEventFromMap(int fd)
 {
@@ -97,6 +117,7 @@ void EventLoop::_addEventToQueue(Event *event)
 	_eventQueue.push(event);
 }
 
+/*
 void EventLoop::_registerReadEvent(int fd)
 {
 	Event*	event;
@@ -118,6 +139,31 @@ void EventLoop::_registerWriteEvent(int fd)
 
 	event = _getEventFromMap(fd);
 	if (event && event->getState() == WRITE_EVENT)
+		_addEventToQueue(event);
+}
+*/
+
+void EventLoop::_registerReadEvent(int fd)
+{
+	Event*	event;
+
+	event = _getEventFromMap(fd);
+	if (!event)
+	{
+		event = new Event(fd, READ_EVENT);
+		_addEventToMap(event);
+		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
+	}
+	if (event->getActualState() == READ_EVENT || event->getActualState() == CGI_EVENT)
+		_addEventToQueue(event);
+}
+
+void EventLoop::_registerWriteEvent(int fd)
+{
+	Event*	event;
+
+	event = _getEventFromMap(fd);
+	if (event && event->getActualState() == WRITE_EVENT)
 		_addEventToQueue(event);
 }
 
@@ -216,7 +262,6 @@ void EventLoop::_handleEventStates(Event *event)
 	}
 }
 
-
 // Para não dar erro fazer depois de a queue estar vazia
 void EventLoop::_closeTimeoutEvents(void)
 {
@@ -266,4 +311,28 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiFd(), EVENT_REMOVE));
 		}
 	}
+}
+
+void EventLoop::_sendMessages(int fd, EventType newType)
+{
+	if (newType == WRITE_EVENT)
+		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_WRITE));
+	if (newType == READ_EVENT)
+	{
+		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_READ));
+		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_RESTART_TIMER));
+	}
+}
+
+void EventLoop::_finalizeEvent(Event *event)
+{
+	int	fd;
+	
+	fd = event->getFd();
+	if (event->isConnectionClose())
+	{
+		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
+		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
+	}
+	_deleteEvent(fd);
 }
