@@ -46,20 +46,17 @@ int RequestParser::headerParse(std::string &header)
 		line += "\n";
 		if (line.find_first_not_of("\r\n") == line.npos)
 			break;
-		if (isFirstLine)
-		{
-			if (line.size() > MAX_REQUEST_TARGET_LEN)
+		if (line.size() > MAX_REQUEST_TARGET_LEN)
 				_statusCode = BAD_REQUEST;
-			else
-			{
-				_requestLine = StringUtils::stringTrim(line);
-				_statusCode = _requestLineParser();
-				isFirstLine = false;
-			}
+		else if (isFirstLine)
+		{
+			_requestLine = StringUtils::stringTrim(line);
+			_statusCode = _requestLineParser();
+			isFirstLine = false;
 		}
 		else
 			_statusCode = _addHeaderElement(line);
-		if (_statusCode != 0)
+		if (_statusCode)
 			return (_statusCode);
 	}
 	_statusCode = _isValidRequestHeader();
@@ -70,31 +67,6 @@ void RequestParser::bodyParse(std::string &body)
 {
 	_requestBody = body;
 }
-
-// Apenas para debugging.
-// Remover após todo o debugging.
-/* void printHeader(std::map<std::string, std::vector<std::string> > &src)
-{
-	std::cout << "-------------------------------------------" << std::endl;
-	for (std::map<std::string, std::vector<std::string> >::const_iterator it = src.begin(); it != src.end(); ++it)
-	{
-		std::cout << it->first << " -> ";
-		const std::vector<std::string> &values = it->second;
-		if (values.size() != 0)
-		{
-			for (std::vector<std::string>::const_iterator vecIt = values.begin(); vecIt != values.end(); ++vecIt)
-			{
-				std::cout << "[";
-				std::cout << *vecIt;
-				std::cout << "]";
-			}
-		}
-		else
-			std::cout << "NULL";
-		std::cout << std::endl;
-	}
-	std::cout << "-------------------------------------------" << std::endl;
-} */
 
 int RequestParser::_isValidRequestHeader(void)
 {
@@ -186,8 +158,6 @@ int RequestParser::_isValidHeader(void)
 	std::map<std::string, std::vector<std::string> >::const_iterator it;
 	std::string key;
 	std::vector<std::string> value;
-
-	// printHeader(_requestHeader);
 
 	for (it = _requestHeader.begin(); it != _requestHeader.end(); it++)
 	{
