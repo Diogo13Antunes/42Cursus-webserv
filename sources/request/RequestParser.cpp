@@ -1,27 +1,27 @@
 #include "RequestParser.hpp"
 #include "StringUtils.hpp"
 
-#define DIGITS					"0123456789"
-#define MAX_REQUEST_TARGET_LEN	8000
+#define DIGITS "0123456789"
+#define MAX_REQUEST_TARGET_LEN 8000
 
 typedef enum
 {
-	SUCCESSFULL_REQUEST = 0,
+	SUCCESSFULL_HEADER = 0,
 	BAD_REQUEST = 400,
 	LENGTH_REQUEIRED = 411,
 	URI_TOO_LONG = 414,
 	NOT_IMPLEMENTED = 501
-}	RequestStatusCode;
+} RequestStatusCode;
 
-static std::vector<std::string>	getElementValue(const std::string &src);
-static bool						isValidNumberOfQuotes(const std::string &src);
-static std::string				getReadyValue(const std::string &src, size_t index1, size_t index2);
-static std::string				getRequestLineElement(const std::string &src, size_t i1, size_t i2);
-static std::string				getPath(std::string &src);
-static bool						isURITooLong(std::string &uri);
-static bool						hasURIWhiteSpaces(std::string &uri);
+static std::vector<std::string> getElementValue(const std::string &src);
+static bool isValidNumberOfQuotes(const std::string &src);
+static std::string getReadyValue(const std::string &src, size_t index1, size_t index2);
+static std::string getRequestLineElement(const std::string &src, size_t i1, size_t i2);
+static std::string getPath(std::string &src);
+static bool isURITooLong(std::string &uri);
+static bool hasURIWhiteSpaces(std::string &uri);
 
-RequestParser::RequestParser(void): _statusCode(SUCCESSFULL_REQUEST)
+RequestParser::RequestParser(void) : _statusCode(SUCCESSFULL_HEADER)
 {
 	_implementedMethods.push_back("GET");
 	_implementedMethods.push_back("POST");
@@ -30,11 +30,11 @@ RequestParser::RequestParser(void): _statusCode(SUCCESSFULL_REQUEST)
 
 RequestParser::~RequestParser(void) {}
 
-int	RequestParser::headerParse(std::string &header)
+int RequestParser::headerParse(std::string &header)
 {
-	std::istringstream	iss(header);
-	std::string			line;
-	bool				isFirstLine = true;
+	std::istringstream iss(header);
+	std::string line;
+	bool isFirstLine = true;
 
 	while (std::getline(iss, line))
 	{
@@ -48,35 +48,30 @@ int	RequestParser::headerParse(std::string &header)
 			isFirstLine = false;
 		}
 		else
-		{
 			_statusCode = _addHeaderElement(line);
-		}
 		if (_statusCode != 0)
 			return (_statusCode);
 	}
 
-	_statusCode = isValidHeader();
-	if (!_statusCode)
-		_statusCode = checkContentLenght();
-
-	
+	_statusCode = _isValidRequestHeader();
 
 	return (_statusCode);
 }
 
-void	RequestParser::bodyParse(std::string &body)
+void RequestParser::bodyParse(std::string &body)
 {
 	_requestBody = body;
 }
 
 // Apenas para debugging.
-// Remover após todo o debugging. 
-void	printHeader(std::map<std::string, std::vector<std::string> > &src)
+// Remover após todo o debugging.
+void printHeader(std::map<std::string, std::vector<std::string> > &src)
 {
 	std::cout << "-------------------------------------------" << std::endl;
-	for (std::map<std::string, std::vector<std::string> >::const_iterator it = src.begin(); it != src.end(); ++it) {
-        std::cout << it->first << " -> ";
-        const std::vector<std::string>& values = it->second;
+	for (std::map<std::string, std::vector<std::string> >::const_iterator it = src.begin(); it != src.end(); ++it)
+	{
+		std::cout << it->first << " -> ";
+		const std::vector<std::string> &values = it->second;
 		if (values.size() != 0)
 		{
 			for (std::vector<std::string>::const_iterator vecIt = values.begin(); vecIt != values.end(); ++vecIt)
@@ -89,15 +84,30 @@ void	printHeader(std::map<std::string, std::vector<std::string> > &src)
 		else
 			std::cout << "NULL";
 		std::cout << std::endl;
-    }
+	}
 	std::cout << "-------------------------------------------" << std::endl;
 }
 
-int	RequestParser::isValidHeader(void)
+int RequestParser::_isValidRequestHeader(void)
 {
-	std::map<std::string, std::vector<std::string> >::const_iterator	it;
-	std::string															key;
-	std::vector<std::string>											value;
+	if (!_statusCode)
+	{
+		_statusCode = isValidHeader();
+		if (!_statusCode)
+			_statusCode = checkContentLenght();
+		if (!_statusCode)
+			_statusCode = _hasContentLengthAndTransferEncoded();
+		if (!_statusCode)
+			_statusCode = _isValidTransferEncodingValue();
+	}
+	return (_statusCode);
+}
+
+int RequestParser::isValidHeader(void)
+{
+	std::map<std::string, std::vector<std::string> >::const_iterator it;
+	std::string key;
+	std::vector<std::string> value;
 
 	// printHeader(_requestHeader);
 
@@ -108,13 +118,13 @@ int	RequestParser::isValidHeader(void)
 		if (StringUtils::isStringEmptyOrSpaces(key))
 			return (BAD_REQUEST);
 	}
-	return (SUCCESSFULL_REQUEST);
+	return (SUCCESSFULL_HEADER);
 }
 
-int	RequestParser::checkContentLenght(void)
+int RequestParser::checkContentLenght(void)
 {
-	std::map<std::string, std::vector<std::string> >::iterator	it;
-	std::string	contentLen;
+	std::map<std::string, std::vector<std::string> >::iterator it;
+	std::string contentLen;
 
 	it = _requestHeader.find("content-length");
 	if (it != _requestHeader.end())
@@ -129,7 +139,7 @@ int	RequestParser::checkContentLenght(void)
 		if (contentLen.find_first_not_of(DIGITS) != contentLen.npos)
 			return (BAD_REQUEST);
 	}
-	return (SUCCESSFULL_REQUEST);
+	return (SUCCESSFULL_HEADER);
 }
 
 std::string RequestParser::getRequestLine(void)
@@ -142,7 +152,7 @@ std::string RequestParser::getRequestBody(void)
 	return (_requestBody);
 }
 
-std::map<std::string, std::vector<std::string> >	RequestParser::getRequestHeader(void)
+std::map<std::string, std::vector<std::string> > RequestParser::getRequestHeader(void)
 {
 	return (_requestHeader);
 }
@@ -196,10 +206,10 @@ const char *RequestParser::NotImplementedException::what(void) const throw()
 
 /* Class Private Functions */
 
-int	RequestParser::_getContentLen(void)
+int RequestParser::_getContentLen(void)
 {
-	std::map<std::string, std::vector<std::string> >::iterator	it;
-	int	len = -1;
+	std::map<std::string, std::vector<std::string> >::iterator it;
+	int len = -1;
 
 	it = _requestHeader.find("content-length");
 	if (it != _requestHeader.end())
@@ -210,12 +220,12 @@ int	RequestParser::_getContentLen(void)
 	return (len);
 }
 
-std::pair<std::string, std::vector<std::string> >	RequestParser::_getHeaderFieldPair(std::string &src)
+std::pair<std::string, std::vector<std::string> > RequestParser::_getHeaderFieldPair(std::string &src)
 {
-	std::string					key;
-	std::vector<std::string>	value;
-	std::string					temp;
-	size_t						index;
+	std::string key;
+	std::vector<std::string> value;
+	std::string temp;
+	size_t index;
 
 	index = src.find_first_of(":");
 	if (index != src.npos)
@@ -232,10 +242,10 @@ std::pair<std::string, std::vector<std::string> >	RequestParser::_getHeaderField
 	return (std::make_pair(key, value));
 }
 
-int	RequestParser::_requestLineParser(void)
+int RequestParser::_requestLineParser(void)
 {
-	size_t		index_1;
-	size_t		index_2;
+	size_t index_1;
+	size_t index_2;
 
 	index_1 = _requestLine.find_first_of(" ");
 	index_2 = _requestLine.find_last_of(" ");
@@ -255,10 +265,10 @@ int	RequestParser::_requestLineParser(void)
 		return (URI_TOO_LONG);
 
 	_requestTargetParser();
-	return (SUCCESSFULL_REQUEST);
+	return (SUCCESSFULL_HEADER);
 }
 
-void	RequestParser::_requestTargetParser(void)
+void RequestParser::_requestTargetParser(void)
 {
 	if (_reqLineTarget.size() > 1)
 	{
@@ -269,7 +279,7 @@ void	RequestParser::_requestTargetParser(void)
 		_reqLinePath = _reqLineTarget;
 }
 
-bool	RequestParser::_isImplementedRequestMethod()
+bool RequestParser::_isImplementedRequestMethod()
 {
 	for (size_t i = 0; i < _implementedMethods.size(); i++)
 	{
@@ -279,9 +289,9 @@ bool	RequestParser::_isImplementedRequestMethod()
 	return (false);
 }
 
-int	RequestParser::_addHeaderElement(std::string &line)
+int RequestParser::_addHeaderElement(std::string &line)
 {
-	std::pair<std::string, std::vector<std::string> >	header;
+	std::pair<std::string, std::vector<std::string>  > header;
 
 	header = _getHeaderFieldPair(line);
 	if (StringUtils::hasWhiteSpaces(header.first))
@@ -290,17 +300,41 @@ int	RequestParser::_addHeaderElement(std::string &line)
 		return (BAD_REQUEST);
 	}
 	_requestHeader.insert(header);
-	return (SUCCESSFULL_REQUEST);
+	return (SUCCESSFULL_HEADER);
+}
+
+int RequestParser::_hasContentLengthAndTransferEncoded(void)
+{
+	std::map<std::string, std::vector<std::string> >::iterator it1;
+	std::map<std::string, std::vector<std::string> >::iterator it2;
+
+	it1 = _requestHeader.find("content-length");
+	it2 = _requestHeader.find("transfer-encoding");
+	if (it1 != _requestHeader.end() && it2 != _requestHeader.end())
+		return (BAD_REQUEST);
+	return (SUCCESSFULL_HEADER);
+}
+
+bool RequestParser::_isValidTransferEncodingValue(void)
+{
+	std::vector<std::string>	header;
+
+	header = getHeaderField("transfer-encoding");
+	if (header.empty())
+		return (SUCCESSFULL_HEADER);
+	if (header.size() != 1 || header.at(0).compare("chunked"))
+		return (NOT_IMPLEMENTED);
+	return (SUCCESSFULL_HEADER);
 }
 
 /* Static Functions */
 
-static std::vector<std::string>	getElementValue(const std::string &src)
+static std::vector<std::string> getElementValue(const std::string &src)
 {
-	std::vector<std::string>	elements;
-	std::string					temp;
-	size_t						nbrQuotes = 0;
-	size_t						j = 0;
+	std::vector<std::string> elements;
+	std::string temp;
+	size_t nbrQuotes = 0;
+	size_t j = 0;
 
 	if (isValidNumberOfQuotes(src))
 	{
@@ -319,9 +353,9 @@ static std::vector<std::string>	getElementValue(const std::string &src)
 	return (elements);
 }
 
-static bool	isValidNumberOfQuotes(const std::string &src)
+static bool isValidNumberOfQuotes(const std::string &src)
 {
-	size_t	nbrQuotes = 0;
+	size_t nbrQuotes = 0;
 
 	for (size_t i = 0; i < src.size(); i++)
 	{
@@ -333,12 +367,12 @@ static bool	isValidNumberOfQuotes(const std::string &src)
 	return (true);
 }
 
-static std::string	getReadyValue(const std::string &src, size_t index1, size_t index2)
+static std::string getReadyValue(const std::string &src, size_t index1, size_t index2)
 {
-	const std::string	notValueChars = "\n\r\t\", ";
-	std::string			result;
-	size_t				i1 = 0;
-	size_t				i2 = 0;
+	const std::string notValueChars = "\n\r\t\", ";
+	std::string result;
+	size_t i1 = 0;
+	size_t i2 = 0;
 
 	i1 = src.find_first_not_of(notValueChars, index2);
 	i2 = src.find_last_not_of(notValueChars, index1);
@@ -346,10 +380,10 @@ static std::string	getReadyValue(const std::string &src, size_t index1, size_t i
 	return (result);
 }
 
-static std::string	getRequestLineElement(const std::string &src, size_t i1, size_t i2)
+static std::string getRequestLineElement(const std::string &src, size_t i1, size_t i2)
 {
-	std::string	result;
-	size_t		len;
+	std::string result;
+	size_t len;
 
 	len = i2 - i1 + 1;
 	if (len > 0 && i1 < src.length())
@@ -360,10 +394,10 @@ static std::string	getRequestLineElement(const std::string &src, size_t i1, size
 	return (result);
 }
 
-static std::string	getPath(std::string &src)
+static std::string getPath(std::string &src)
 {
 	std::string path;
-	size_t		index;
+	size_t index;
 
 	path = src;
 	index = path.find_first_of('?');
@@ -372,7 +406,7 @@ static std::string	getPath(std::string &src)
 	return (path);
 }
 
-static bool	isURITooLong(std::string &uri)
+static bool isURITooLong(std::string &uri)
 {
 	if (uri.size() > MAX_REQUEST_TARGET_LEN)
 		return (true);

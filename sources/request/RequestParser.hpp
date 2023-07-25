@@ -35,6 +35,9 @@ class RequestParser
 		int													_addHeaderElement(std::string &line);
 		void												_requestTargetParser(void);
 		bool												_isImplementedRequestMethod(void);
+		int													_hasContentLengthAndTransferEncoded(void);
+		int													_isValidRequestHeader(void);
+		bool												_isValidTransferEncodingValue(void);
 
 	public:
 		RequestParser(void);
