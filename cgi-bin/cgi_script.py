@@ -3,7 +3,6 @@
 import sys
 import os
 
-
 class Unbuffered(object):
    def __init__(self, stream):
        self.stream = stream
@@ -18,13 +17,13 @@ class Unbuffered(object):
 
 sys.stdout = Unbuffered(sys.stdout)
 
-
 message = input()
 
 RequestMethod = os.environ.get("REQUEST_METHOD")
 
 htmlfile = "<!DOCTYPE html> <html> <body> <h1> Hello World </h1> " 
-htmlfile += "<h1> " + message + " </h1>"
+htmlfile += "<h2> " + " ---- Body Message ---- " + " </h2>"
+htmlfile += "<p> " + message + " </p>"
 htmlfile += "<h2> " + " ---- Env Variables ---- " + " </h2>"
 for key, value in os.environ.items():
 	if key != 'LC_CTYPE':

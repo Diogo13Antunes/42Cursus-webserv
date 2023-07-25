@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/24 12:38:07 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/07/25 14:59:57 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -589,7 +589,7 @@ bool Event::isCgiScriptEnd(void)
 
 std::string	Event::getQueryString(void)
 {
-	return (_reqParsed.getQueryString());
+	return (_reqParser.getQueryString());
 }
 
 std::vector<std::string>	Event::getRequestHeaderValue(std::string key)

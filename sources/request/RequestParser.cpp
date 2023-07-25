@@ -20,7 +20,7 @@ static bool						isValidNumberOfQuotes(const std::string &src);
 static std::string				getReadyValue(const std::string &src, size_t index1, size_t index2);
 static std::string				getRequestLineElement(const std::string &src, size_t i1, size_t i2);
 static std::string				getPath(std::string &src);
-static std::string				getQueryString(std::string &src);
+static std::string				getQueryStr(std::string &src);
 static bool						isValidServerName(std::string &serverName);
 static bool						withConsecutiveChars(std::string &src, char c);
 
@@ -141,6 +141,11 @@ std::string RequestParser::getReqLinePath(void)
 	return (_reqLinePath);
 }
 
+std::string RequestParser::getQueryString(void)
+{
+	return (_queryString);
+}
+
 std::vector<std::string> RequestParser::getHeaderField(std::string fieldName)
 {
 	std::map<std::string, std::vector<std::string> >::iterator it;
@@ -235,7 +240,7 @@ void RequestParser::_requestTargetParser(void)
 	{
 		StringUtils::removeConsecutiveChars(_reqLineTarget, '/');
 		_reqLinePath = getPath(_reqLineTarget);
-		_queryString = getQueryString(_reqLineTarget);
+		_queryString = getQueryStr(_reqLineTarget);
 	}
 	else
 		_reqLinePath = _reqLineTarget;
@@ -382,14 +387,14 @@ static std::string getPath(std::string &src)
 	return (path);
 }
 
-static std::string	getQueryString(std::string &src)
+static std::string	getQueryStr(std::string &src)
 {
 	std::string	queryString;
 	size_t		i;
 
 	i = src.find_first_of("?");
 	if (i != src.npos)
-		queryString = src.substr(i);
+		queryString = src.substr(i + 1);
 	return (queryString);
 }
 

@@ -55,6 +55,7 @@ class RequestParser
 		std::string											getReqLineMethod(void);
 		std::string											getReqLinePath(void);
 		std::vector<std::string>							getHeaderField(std::string fieldName);
+		std::string											getQueryString(void);
 
 		int													headerParse(std::string	&header);
 		void												bodyParse(std::string &body);
