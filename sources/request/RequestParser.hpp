@@ -29,6 +29,7 @@ class RequestParser
 
 		int													_statusCode;
 
+		int													_isValidHeader(void);
 		int													_getContentLen(void);
 		std::pair<std::string, std::vector<std::string> >	_getHeaderFieldPair(std::string &src);
 		int													_requestLineParser(void);
@@ -37,7 +38,9 @@ class RequestParser
 		bool												_isImplementedRequestMethod(void);
 		int													_hasContentLengthAndTransferEncoded(void);
 		int													_isValidRequestHeader(void);
-		bool												_isValidTransferEncodingValue(void);
+		int													_isValidTransferEncodingValue(void);
+		int													_isValidHost(void);
+		int													_isValidContentLenght(void);
 
 	public:
 		RequestParser(void);
@@ -55,26 +58,5 @@ class RequestParser
 
 		int													headerParse(std::string	&header);
 		void												bodyParse(std::string &body);
-
-		int													isValidHeader(void);
-		int													checkContentLenght(void);
-
-		class BadRequestException: public std::exception
-		{
-			public:
-				const char *what() const throw();
-		};
-
-		class URITooLongException: public std::exception
-		{
-			public:
-				const char *what() const throw();
-		};
-
-		class NotImplementedException: public std::exception
-		{
-			public:
-				const char *what() const throw();
-		};
 
 };
