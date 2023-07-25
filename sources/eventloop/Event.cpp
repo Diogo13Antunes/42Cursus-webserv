@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 14:57:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 15:59:40 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ Event::Event(int fd, int state):
 	_cgiEx(NULL),
 	_actualState(READ_EVENT),
 	_finished(false),
-	_connectionClosed(-1)
+	_connectionClosed(-1),
+	_clientDisconnect(false)
 {}
 
 Event::Event(const Event &src) {}
@@ -696,4 +697,14 @@ bool Event::isFinished(void)
 void Event::setAsFinished(void)
 {
 	_finished = true;
+}
+
+bool Event::isClientDisconnect(void)
+{
+	return (_clientDisconnect);
+}
+
+void Event::setClientDisconnected(void)
+{
+	_clientDisconnect = true;
 }

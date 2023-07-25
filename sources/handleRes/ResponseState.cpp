@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/16 12:03:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 16:12:09 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,8 @@ StateResType ResponseState::handle(Event *event, ConfigsData confiagsDta)
 	numBytesSend = send(event->getFd(), res.c_str(), resSize, 0);
 	if (numBytesSend <= 0)
 	{
-		event->setState(CLOSED_EVENT);
+		//event->setState(CLOSED_EVENT);
+		event->setClientDisconnected();
 		return (RESPONSE_END);
 	}
 	if (numBytesSend >= resSize)

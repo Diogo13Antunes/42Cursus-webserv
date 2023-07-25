@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 12:07:06 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 16:20:01 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,13 @@ void EventLoop::handleEvents(void)
 		event = _eventQueue.front();
 		_handleEvent(event);
 		_eventQueue.pop();
-		if (event && event->getActualState() == STATE_TRANSITION)
+		if (event && event->getActualState() == TYPE_TRANSITION)
 			_eventQueue.push(event);
+		
 		if (event->isFinished())
 			_finalizeEvent(event);
+		else if (event->isClientDisconnect())
+			_handleClientDisconnect(event);
 	}
 	//_checkIfCgiScriptsFinished();
 	//_closeTimeoutEvents();
@@ -80,7 +83,7 @@ void EventLoop::_handleEvent(Event *ev)
 	it = _handlers.find(type);
 	if (it != _handlers.end())
 		it->second->handleEvent(ev);
-	if (type == STATE_TRANSITION)
+	if (type == TYPE_TRANSITION)
 		_sendMessages(ev->getFd(), ev->getActualState());// mensagens relacionadas com type transition (mudar nome)
 }
 
@@ -334,5 +337,15 @@ void EventLoop::_finalizeEvent(Event *event)
 		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
 		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
 	}
+	_deleteEvent(fd);
+}
+
+void EventLoop::_handleClientDisconnect(Event *event)
+{
+	int	fd;
+
+	fd = event->getFd();
+	sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
+	sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
 	_deleteEvent(fd);
 }

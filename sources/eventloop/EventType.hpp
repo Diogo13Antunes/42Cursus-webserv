@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 12:35:40 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/23 14:22:24 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 15:17:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ typedef enum
     CGI_EXECUTION, // Não está a ser usado
     CGI_EVENT_COMPLETE,
     CLOSED_EVENT,
-    STATE_TRANSITION
+    TYPE_TRANSITION
 }	EventType;
 
 // No final deve ficar

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/23 14:40:06 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 16:11:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,9 @@ void ReadHandler::handleEvent(Event *event)
 	if (valread == 0 || valread == -1)
 	{
 		//std::cout << "FECHOU O NAVEGADOR: " << valread << std::endl;
-		event->setState(CLOSED_EVENT);
-		event->setClientClosed();
+		//event->setState(CLOSED_EVENT);
+		//event->setClientClosed();
+		event->setClientDisconnected();
 		return ;
 	}
 	buff.assign(_buffer, valread);
@@ -74,7 +75,7 @@ void ReadHandler::handleEvent(Event *event)
 		event->setState(CGI_EVENT);
 	}
 	else
-		event->setActualState(STATE_TRANSITION);//event->setState(READ_EVENT_COMPLETE);//event->setState(WRITE_EVENT);
+		event->setActualState(TYPE_TRANSITION);//event->setState(READ_EVENT_COMPLETE);//event->setState(WRITE_EVENT);
 }
 
 EventType ReadHandler::getHandleType(void)

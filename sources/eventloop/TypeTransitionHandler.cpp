@@ -1,24 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   StateTransitionHandler.cpp                         :+:      :+:    :+:   */
+/*   TypeTransitionHandler.cpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 12:05:09 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 16:28:29 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "StateTransitionHandler.hpp"
+#include "TypeTransitionHandler.hpp"
 #include "iostream"
 
-StateTransitionHandler::StateTransitionHandler(void) {}
+TypeTransitionHandler::TypeTransitionHandler(void) {}
 
 
-StateTransitionHandler::~StateTransitionHandler(void) {}
+TypeTransitionHandler::~TypeTransitionHandler(void) {}
 
-void StateTransitionHandler::handleEvent(Event *event)
+void TypeTransitionHandler::handleEvent(Event *event)
 {
 	//std::cout << "StateTransitionHandler" << std::endl;
 
@@ -31,7 +31,7 @@ void StateTransitionHandler::handleEvent(Event *event)
 	}
 }
 
-EventType StateTransitionHandler::getHandleType(void)
+EventType TypeTransitionHandler::getHandleType(void)
 {
-	return (STATE_TRANSITION);
+	return (TYPE_TRANSITION);
 }

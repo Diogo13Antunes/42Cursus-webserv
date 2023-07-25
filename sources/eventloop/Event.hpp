@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 12:26:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 15:54:27 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ class Event
 		bool	_finished;
 
 		short	_connectionClosed;
-
+		bool	_clientDisconnect;
 
 
 	public:
@@ -223,4 +223,7 @@ class Event
 
 		bool	isFinished(void);
 		void	setAsFinished(void);
+
+		bool	isClientDisconnect(void);
+		void	setClientDisconnected(void);
 };

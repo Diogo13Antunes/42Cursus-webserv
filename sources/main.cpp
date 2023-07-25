@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/22 16:09:12 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 16:29:11 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ int main(int argc, char **argv)
 	eventLoop.registerEventHandler(new ReadHandler(new HandleReq()));
 	eventLoop.registerEventHandler(new WriteHandler(new HandleRes(data)));
 	eventLoop.registerEventHandler(new CGIHandler(new HandleCgi()));
-	eventLoop.registerEventHandler(new StateTransitionHandler());
+	eventLoop.registerEventHandler(new TypeTransitionHandler());
 	//eventLoop.registerEventHandler(factory.getEventHandler(WRITE_EVENT));
 
 	std::cout << "Server started at port: " << PORT << std::endl;
