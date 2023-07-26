@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 16:02:24 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 19:08:41 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include "ReadHandler.hpp"
 #include "WriteHandler.hpp"
 #include "CGIHandler.hpp"
+#include "ReadCgiHandler.hpp"
+#include "WriteCgiHandler.hpp"
 #include "TypeTransitionHandler.hpp"
 #include "AMessengerClient.hpp"
 #include "Event.hpp"
@@ -44,7 +46,7 @@ class EventLoop: public AMessengerClient
 		void	_closeTimeoutEvents(void);
 		void 	_checkIfCgiScriptsFinished(void);
 
-		void	_sendMessages(int fd, EventType newType);
+		void	_sendMessages(Event *event);
 
 		void _finalizeEvent(Event *event);
 		void _handleClientDisconnect(Event *event);

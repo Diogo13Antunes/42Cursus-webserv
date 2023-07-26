@@ -1,28 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MessageType.hpp                                    :+:      :+:    :+:   */
+/*   ReadCgiHandler.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/13 16:02:38 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/26 08:41:00 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/07/25 17:38:17 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/07/25 18:02:12 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "ReadCgiHandler.hpp"
 
-typedef enum 
+#include <iostream>
+
+ReadCgiHandler::ReadCgiHandler(void)
 {
-    EVENT_ADD_NEW,
-    EVENT_REMOVE,
-    EVENT_CHANGE_TO_READ,
-    EVENT_CHANGE_TO_WRITE,
-    EVENT_READ_TRIGGERED,
-    EVENT_WRITE_TRIGGERED,
-    CONNECTION_ADD_NEW,
-    CONNECTION_REMOVE,
-    CONNECTION_PAUSE_TIMER,
-    CONNECTION_RESTART_TIMER,
-    CONNECTION_RESET_TIMER
-} MessageType;
+
+}
+
+ReadCgiHandler::~ReadCgiHandler(void)
+{
+
+}
+
+void ReadCgiHandler::handleEvent(Event *event)
+{
+	std::cout << "ReadCgiHandler" << std::endl;
+}
+
+EventType ReadCgiHandler::getHandleType(void)
+{
+	return (READ_CGI);
+}

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 15:54:27 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 19:22:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,9 +198,13 @@ class Event
 		bool				isClientClosed(void);
 		void				setClientClosed(void);
 
+		// Important Criar uma função para eliminar o CGI (Fazer delete) Verificar se já é feito
 		CGIExecuter*		getCgiEx(void);
 		void				setCgiEx(CGIExecuter *cgiEx);
 		int					getCgiFd(void);
+
+		int					getCgiWriteFd(void);
+		int					getCgiReadFd(void);
 
 		bool				isCgiScriptEnd(void);
 		std::string					getQueryString(void);

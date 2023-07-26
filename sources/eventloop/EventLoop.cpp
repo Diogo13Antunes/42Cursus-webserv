@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 16:20:01 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/26 11:32:40 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,90 @@ void EventLoop::receiveMessage(Message *msg)
 
 	type = msg->getType();
 	fd = msg->getFd();
+
+	//std::cout << "Receive message: FD: " << fd  << " " << type << std::endl;
+
 	if (type == EVENT_READ_TRIGGERED)
 		_registerReadEvent(fd);
 	else if (type == EVENT_WRITE_TRIGGERED)
 		_registerWriteEvent(fd);
 }
+
+void EventLoop::_registerReadEvent(int fd)
+{
+	Event*	event;
+
+	event = _getEventFromMap(fd);
+	if (!event)
+	{
+		event = new Event(fd, READ_EVENT);
+		_addEventToMap(event);
+		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
+	}
+	if (event->getActualState() == READ_EVENT && event->getFd() == fd)
+		_addEventToQueue(event);
+	else if (event->getActualState() == READ_CGI && event->getCgiReadFd() == fd)
+		_addEventToQueue(event);
+	else
+		; // É porque ouve um pedido de fechar a ligacao fechar a ligação
+
+	//if (event->getActualState() == READ_EVENT || event->getActualState() == CGI_EVENT)
+	//	_addEventToQueue(event);
+}
+
+void EventLoop::_registerWriteEvent(int fd)
+{
+	Event*		event;
+	EventType	type;
+
+	event = _getEventFromMap(fd);
+	if (!event)
+		return ;
+	type = event->getActualState();
+	if ((type == WRITE_EVENT && fd == event->getFd())
+		|| (type == WRITE_CGI && fd == event->getCgiWriteFd()))
+		_addEventToQueue(event);
+
+	
+	
+	/*
+	if (type == WRITE_EVENT && fd == event->getFd())
+		_addEventToQueue(event);
+	else if (type == WRITE_CGI && fd == event->getCgiWriteFd())
+		_addEventToQueue(event);
+		*/
+
+	//if ((type == WRITE_EVENT || type == WRITE_CGI))
+	//	_addEventToQueue(event);
+}
+
+/*
+void EventLoop::_registerReadEvent(int fd)
+{
+	Event*	event;
+
+	event = _getEventFromMap(fd);
+	if (!event)
+	{
+		event = new Event(fd, READ_EVENT);
+		_addEventToMap(event);
+		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
+	}
+	if (event->getActualState() == READ_EVENT || event->getActualState() == CGI_EVENT)
+		_addEventToQueue(event);
+}
+*/
+
+/*
+void EventLoop::_registerWriteEvent(int fd)
+{
+	Event*	event;
+
+	event = _getEventFromMap(fd);
+	if (event && event->getActualState() == WRITE_EVENT)
+		_addEventToQueue(event);
+}
+*/
 
 void EventLoop::_handleEvent(Event *ev)
 {
@@ -84,7 +163,8 @@ void EventLoop::_handleEvent(Event *ev)
 	if (it != _handlers.end())
 		it->second->handleEvent(ev);
 	if (type == TYPE_TRANSITION)
-		_sendMessages(ev->getFd(), ev->getActualState());// mensagens relacionadas com type transition (mudar nome)
+		_sendMessages(ev);
+		//_sendMessages(ev->getFd(), ev->getActualState());// mensagens relacionadas com type transition (mudar nome)
 }
 
 /*
@@ -146,29 +226,7 @@ void EventLoop::_registerWriteEvent(int fd)
 }
 */
 
-void EventLoop::_registerReadEvent(int fd)
-{
-	Event*	event;
 
-	event = _getEventFromMap(fd);
-	if (!event)
-	{
-		event = new Event(fd, READ_EVENT);
-		_addEventToMap(event);
-		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
-	}
-	if (event->getActualState() == READ_EVENT || event->getActualState() == CGI_EVENT)
-		_addEventToQueue(event);
-}
-
-void EventLoop::_registerWriteEvent(int fd)
-{
-	Event*	event;
-
-	event = _getEventFromMap(fd);
-	if (event && event->getActualState() == WRITE_EVENT)
-		_addEventToQueue(event);
-}
 
 void EventLoop::_deleteEvent(int fd)
 {
@@ -316,14 +374,38 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 	}
 }
 
-void EventLoop::_sendMessages(int fd, EventType newType)
+
+
+// NEW FUNCTIONS
+
+void EventLoop::_sendMessages(Event *event)
 {
-	if (newType == WRITE_EVENT)
+	EventType	type;
+	int			fd;
+	
+	type = event->getActualState(); // getActualType() mudar nome
+	fd = event->getFd();
+
+	if (type == WRITE_EVENT)
 		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_WRITE));
-	if (newType == READ_EVENT)
+	else if (type == READ_EVENT)
 	{
 		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_READ));
 		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_RESTART_TIMER));
+	}
+	else if (type == WRITE_CGI)
+	{
+		std::cout << "Init CGI WRITE_CGI" << std::endl;
+
+		event->setCgiEx(new CGIExecuter());
+		std::cout << "CGI Write FD: " << event->getCgiWriteFd() << std::endl;
+		_eventMap.insert(std::make_pair(event->getCgiWriteFd(), event));
+		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_ADD_NEW));
+		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_CHANGE_TO_WRITE));
+
+		
+		// tem de adicionar o fd de escrita ao mapa
+		// tem de enviar menssagens para o EVENTDEMUX_ID para adicionar o evento 
 	}
 }
 

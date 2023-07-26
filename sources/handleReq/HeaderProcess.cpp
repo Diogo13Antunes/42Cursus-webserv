@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/21 10:01:33 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 18:26:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ StateType HeaderProcess::handle(Event *event)
 
 	// não deve ser feito aqui
 	//cgi deixou de funcionar devido ao novo parser do header resolver depois
-	if (!event->getReqLinePath().compare("/cgi"))
-		event->setCgiFlag(true);
+	//if (!event->getReqLinePath().compare("/cgi"))
+	//	event->setCgiFlag(true);
 	// não deve ser feito aqui
 	if (!event->getBodySize())
 		return (REQUEST_END);

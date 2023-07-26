@@ -22,8 +22,10 @@ SRC_NAME =	main.cpp								\
 			eventloop/EventLoop.cpp					\
 			eventloop/WriteHandler.cpp				\
 			eventloop/ReadHandler.cpp				\
+			eventloop/WriteCgiHandler.cpp			\
+			eventloop/ReadCgiHandler.cpp			\
 			eventloop/CGIHandler.cpp				\
-			eventloop/TypeTransitionHandler.cpp	\
+			eventloop/TypeTransitionHandler.cpp		\
 			eventloop/EventHandlerFactory.cpp		\
 			eventloop/Event.cpp						\
 			eventdemux/EventDemux.cpp				\

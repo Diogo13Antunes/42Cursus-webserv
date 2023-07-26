@@ -1,28 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   MessageType.hpp                                    :+:      :+:    :+:   */
+/*   WriteCgiHandler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/13 16:02:38 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/26 08:41:00 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/07/25 17:39:35 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/07/26 11:31:48 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "WriteCgiHandler.hpp"
 
-typedef enum 
+WriteCgiHandler::WriteCgiHandler(void)
 {
-    EVENT_ADD_NEW,
-    EVENT_REMOVE,
-    EVENT_CHANGE_TO_READ,
-    EVENT_CHANGE_TO_WRITE,
-    EVENT_READ_TRIGGERED,
-    EVENT_WRITE_TRIGGERED,
-    CONNECTION_ADD_NEW,
-    CONNECTION_REMOVE,
-    CONNECTION_PAUSE_TIMER,
-    CONNECTION_RESTART_TIMER,
-    CONNECTION_RESET_TIMER
-} MessageType;
+
+}
+
+WriteCgiHandler::~WriteCgiHandler(void)
+{
+
+}
+
+void WriteCgiHandler::handleEvent(Event *event)
+{
+	std::cout << "WriteCgiHandler" << std::endl;
+}
+
+EventType WriteCgiHandler::getHandleType(void)
+{
+	return (WRITE_CGI);
+}

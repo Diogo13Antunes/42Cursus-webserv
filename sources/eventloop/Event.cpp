@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 15:59:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 18:56:11 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -559,12 +559,28 @@ void Event::setCgiEx(CGIExecuter *cgiEx)
 	_cgiEx = cgiEx;
 }
 
+// Deprecated
 int Event::getCgiFd(void)
 {
 	if (_cgiEx)
 		return (_cgiEx->getReadFD());
 	return (-1);
 }
+
+int Event::getCgiWriteFd(void)
+{
+	if (_cgiEx)
+		return (_cgiEx->getWriteFD());
+	return (-1);
+}
+
+int Event::getCgiReadFd(void)
+{
+	if (_cgiEx)
+		return (_cgiEx->getReadFD());
+	return (-1);
+}
+
 
 StateCgiType	Event::getCgiState(void)
 {

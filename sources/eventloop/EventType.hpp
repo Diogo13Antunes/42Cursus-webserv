@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 12:35:40 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 15:17:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 17:52:01 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,35 +15,37 @@
 /*
 typedef enum 
 {
-    READ_EVENT,
-    WRITE_EVENT,
-    CGI_EVENT,
-    CGI_EXECUTION,
-    COMPLETE_EVENT
+	READ_EVENT,
+	WRITE_EVENT,
+	CGI_EVENT,
+	CGI_EXECUTION,
+	COMPLETE_EVENT
 }	EventType;
 */
 
 typedef enum 
 {
-    READ_EVENT,
-    READ_EVENT_COMPLETE,
-    WRITE_EVENT,
-    WRITE_EVENT_COMPLETE,
-    CGI_EVENT,
-    CGI_EXECUTION, // Não está a ser usado
-    CGI_EVENT_COMPLETE,
-    CLOSED_EVENT,
-    TYPE_TRANSITION
+	READ_EVENT,
+	READ_EVENT_COMPLETE,
+	WRITE_EVENT,
+	WRITE_EVENT_COMPLETE,
+	CGI_EVENT,
+	CGI_EXECUTION, // Não está a ser usado
+	CGI_EVENT_COMPLETE,
+	CLOSED_EVENT,
+	READ_CGI,
+	WRITE_CGI,
+	TYPE_TRANSITION
 }	EventType;
 
 // No final deve ficar
 /*
 typedef enum 
 {
-    READ_SOCKET,
-    WRITE_SOCKET,
-    READ_CGI,
-    WRITE_CGI,
-    STATE_TRANSITION
+	READ_SOCKET,
+	WRITE_SOCKET,
+	READ_CGI,
+	WRITE_CGI,
+	TYPE_TRANSITION
 }	EventType;
 */

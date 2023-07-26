@@ -1,13 +1,20 @@
 #include "CGIExecuter.hpp"
 
 #include <signal.h>
-
 #include <cstdlib>
+
+/*CGIExecuter::CGIExecuter(void)
+{
+	if (!_initPipes())
+		throw FailToIinitPipesException();
+}*/
 
 CGIExecuter::CGIExecuter(void)
 {
 	if (!_initPipes())
 		throw FailToIinitPipesException();
+
+	// _execute();
 }
 
 CGIExecuter::~CGIExecuter(void)
@@ -68,6 +75,11 @@ bool CGIExecuter::isEnded(void)
 int	CGIExecuter::getReadFD(void)
 {
 	return (_pipe2[0]);
+}
+
+int	CGIExecuter::getWriteFD(void)
+{
+	return (_pipe1[1]);
 }
 
 /* Exceptions */

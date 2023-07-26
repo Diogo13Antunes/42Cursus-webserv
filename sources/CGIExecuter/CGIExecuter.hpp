@@ -31,6 +31,7 @@ class CGIExecuter
 		~CGIExecuter(void);
 	
 		int			getReadFD(void);
+		int			getWriteFD(void);
 
 		void		execute(std::string script, std::string message, char **env);
 		bool		isEnded(void);

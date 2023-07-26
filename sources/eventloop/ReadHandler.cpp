@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 16:11:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/25 18:28:32 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,16 @@ void ReadHandler::handleEvent(Event *event)
 	_handleReq->handle();
 	if (!_handleReq->isProcessingComplete())
 		return ;
-	if (event->getCgiFlag())
+	event->setActualState(TYPE_TRANSITION);
+
+	/*if (event->getCgiFlag())
 	{
-		std::cout << "Coloca CGI STATE" << std::endl;
+		//std::cout << "Coloca CGI STATE" << std::endl;
 		event->setState(CGI_EVENT);
 	}
 	else
 		event->setActualState(TYPE_TRANSITION);//event->setState(READ_EVENT_COMPLETE);//event->setState(WRITE_EVENT);
+	*/
 }
 
 EventType ReadHandler::getHandleType(void)
