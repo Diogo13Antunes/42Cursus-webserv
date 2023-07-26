@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 19:22:30 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/26 15:18:54 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,4 +230,9 @@ class Event
 
 		bool	isClientDisconnect(void);
 		void	setClientDisconnected(void);
+
+
+		void	cgiExecute(void);
+		int		writeToCgi(std::string &str);
+		int		readFromCgi(std::string &str);
 };

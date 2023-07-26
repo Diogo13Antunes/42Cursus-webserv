@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/26 11:32:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/26 17:51:47 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,6 @@ void EventLoop::_registerReadEvent(int fd)
 		_addEventToQueue(event);
 	else
 		; // É porque ouve um pedido de fechar a ligacao fechar a ligação
-
-	//if (event->getActualState() == READ_EVENT || event->getActualState() == CGI_EVENT)
-	//	_addEventToQueue(event);
 }
 
 void EventLoop::_registerWriteEvent(int fd)
@@ -110,17 +107,6 @@ void EventLoop::_registerWriteEvent(int fd)
 		|| (type == WRITE_CGI && fd == event->getCgiWriteFd()))
 		_addEventToQueue(event);
 
-	
-	
-	/*
-	if (type == WRITE_EVENT && fd == event->getFd())
-		_addEventToQueue(event);
-	else if (type == WRITE_CGI && fd == event->getCgiWriteFd())
-		_addEventToQueue(event);
-		*/
-
-	//if ((type == WRITE_EVENT || type == WRITE_CGI))
-	//	_addEventToQueue(event);
 }
 
 /*
@@ -395,10 +381,9 @@ void EventLoop::_sendMessages(Event *event)
 	}
 	else if (type == WRITE_CGI)
 	{
-		std::cout << "Init CGI WRITE_CGI" << std::endl;
-
-		event->setCgiEx(new CGIExecuter());
-		std::cout << "CGI Write FD: " << event->getCgiWriteFd() << std::endl;
+		//std::cout << "Execute CGI WRITE_CGI" << std::endl;
+		event->cgiExecute();
+		//std::cout << "CGI Write FD: " << event->getCgiWriteFd() << std::endl;
 		_eventMap.insert(std::make_pair(event->getCgiWriteFd(), event));
 		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_ADD_NEW));
 		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_CHANGE_TO_WRITE));
@@ -406,6 +391,13 @@ void EventLoop::_sendMessages(Event *event)
 		
 		// tem de adicionar o fd de escrita ao mapa
 		// tem de enviar menssagens para o EVENTDEMUX_ID para adicionar o evento 
+	}
+	else if (type == READ_CGI)
+	{
+		_removeEventFromMap(event->getCgiWriteFd());
+		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
+		_eventMap.insert(std::make_pair(event->getCgiReadFd(), event));
+		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_ADD_NEW));
 	}
 }
 

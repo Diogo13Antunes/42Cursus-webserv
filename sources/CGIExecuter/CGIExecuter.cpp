@@ -2,6 +2,7 @@
 
 #include <signal.h>
 #include <cstdlib>
+#include <fcntl.h>
 
 /*CGIExecuter::CGIExecuter(void)
 {
@@ -9,12 +10,13 @@
 		throw FailToIinitPipesException();
 }*/
 
+
+// O construtor precisa de receber como parametro o que necessita de entrar dentro do _execute()
 CGIExecuter::CGIExecuter(void)
 {
 	if (!_initPipes())
 		throw FailToIinitPipesException();
-
-	// _execute();
+	_execute(NULL, "cgi-bin/cgi_script.py");
 }
 
 CGIExecuter::~CGIExecuter(void)
@@ -80,6 +82,26 @@ int	CGIExecuter::getReadFD(void)
 int	CGIExecuter::getWriteFD(void)
 {
 	return (_pipe1[1]);
+}
+
+int CGIExecuter::writeToScript(std::string &str)
+{
+	int	fd;
+
+	fd = this->getWriteFD();
+	return (write(fd, str.c_str(), str.size()));
+}
+
+int CGIExecuter::readFromScript(std::string &str)
+{
+	char	buffer[500000];
+	int		fd;
+	int		nRead;
+
+	fd = this->getReadFD();
+	nRead = read(fd, buffer, 500000);
+	str.assign(buffer, nRead);
+	return (nRead);
 }
 
 /* Exceptions */
@@ -154,4 +176,29 @@ static void stringTrim(std::string &str)
 	len = end - start + 1;
 	trimmed = str.substr(start, len);
 	str = trimmed;
+}
+
+void CGIExecuter::_execute(char **env, std::string path)
+{
+	_scriptName = path;
+	_scriptInterpreter = _getScriptInterpreter();
+
+	if (_scriptInterpreter.empty())
+		throw ExecutionErrorException();
+
+	const char *av[] = {_scriptInterpreter.c_str(), _scriptName.c_str(), NULL};
+
+	_pid = fork();
+	if (_pid == -1)
+		throw FailToCreateChildProcessException();
+
+	if (_pid == 0)
+	{
+		dup2(_pipe1[0], STDIN_FILENO);
+		dup2(_pipe2[1], STDOUT_FILENO);
+		_closeAllFds();
+		execve(_scriptInterpreter.c_str(), const_cast<char**>(av), env);
+		throw ExecutionErrorException();
+		return ;
+	}
 }

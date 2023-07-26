@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:38:17 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 18:02:12 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/26 18:12:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,13 @@ ReadCgiHandler::~ReadCgiHandler(void)
 
 void ReadCgiHandler::handleEvent(Event *event)
 {
-	std::cout << "ReadCgiHandler" << std::endl;
+	std::string str;
+	int			nRead;
+
+	nRead = event->readFromCgi(str);
+	if (nRead > 0)
+		event->updateCgiScriptResult(str);
+	event->setActualState(TYPE_TRANSITION);
 }
 
 EventType ReadCgiHandler::getHandleType(void)
