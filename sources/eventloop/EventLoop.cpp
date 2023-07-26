@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/26 17:51:47 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/26 18:31:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -373,7 +373,15 @@ void EventLoop::_sendMessages(Event *event)
 	fd = event->getFd();
 
 	if (type == WRITE_EVENT)
+	{
+		// Não pode ser assim tem de ter função de verificação se os cgi terminaram mas para já resolve sem erro
+		if (event->getCgiReadFd() > 0)
+		{
+			_removeEventFromMap(event->getCgiReadFd());
+			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_REMOVE));
+		}
 		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_WRITE));
+	}
 	else if (type == READ_EVENT)
 	{
 		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_READ));
