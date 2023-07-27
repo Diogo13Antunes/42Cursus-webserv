@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ReadCgiHandler.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:38:17 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/27 11:17:07 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 17:36:34 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

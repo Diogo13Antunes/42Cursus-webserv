@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WriteCgiHandler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:39:35 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/26 17:34:09 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 16:37:11 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,26 @@ WriteCgiHandler::~WriteCgiHandler(void)
 
 void WriteCgiHandler::handleEvent(Event *event)
 {
-
-	std::string str;
+	const char*	bodyStr;
+	size_t		bodySize;
+	size_t		sentChars;
 	int			nwrite;
 
-	str = "Write to script from the std server\r\n";
-	nwrite = event->writeToCgi(str);
-	event->setActualState(TYPE_TRANSITION);
+	bodyStr = event->getReqBody().c_str();
+	bodySize = event->getReqBody().size();
+	sentChars = event->getCgiSentChars();
+	if (sentChars < bodySize)
+	{
+		bodyStr += sentChars;
+		nwrite = event->writeToCgi(bodyStr);
+		// Se falhar tem de ser mandado um 501 Internal Server Error
+		event->updateCgiSentChars(nwrite);
+	}
+	else
+	{
+		event->writeToCgi("\n");
+		event->setActualState(TYPE_TRANSITION);
+	}
 }
 
 EventType WriteCgiHandler::getHandleType(void)

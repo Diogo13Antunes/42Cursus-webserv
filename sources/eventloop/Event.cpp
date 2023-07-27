@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/27 11:40:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 16:34:14 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ Event::Event(int fd, int state):
 	_finished(false),
 	_connectionClosed(-1),
 	_clientDisconnect(false),
-	_cgiExitStatus(NO_EXIT_STATUS)
+	_cgiExitStatus(NO_EXIT_STATUS),
+	_cgiSentChars(0)
 {}
 
 Event::Event(const Event &src) {}
@@ -116,9 +117,15 @@ void Event::setResquestHeader(std::string reqLine, std::map<std::string, std::ve
 	_reqParsed.setRequestHeader(reqHeader);
 }
 
+// Deprecated , é para apagar esta merda ;)
 void Event::setResquestBody(std::string body)
 {
 	_reqParsed.setRequestBody(body);
+}
+
+void Event::setReqBody(std::string body)
+{
+	_reqParser.bodyParse(body);
 }
 
 void Event::setParseState(int state)
@@ -668,6 +675,22 @@ std::string	Event::getReqContentType(void)
 	return (std::string());
 }
 
+size_t	Event::getReqContentLength(void)
+{
+	std::vector<std::string>	contentLength;
+	size_t						len;
+
+	contentLength = _reqParser.getHeaderField("content-length");
+	if (!contentLength.empty())
+	{
+		std::istringstream	ss(contentLength.at(0));
+		if (!(ss >> len))
+			return (0);
+		return (len);
+	}
+	return (0);
+}
+
 std::string	Event::getReqLineTarget(void)
 {
 	return (_reqParser.getReqLineTarget());
@@ -686,6 +709,11 @@ std::string	Event::getReqLineMethod(void)
 std::string	Event::getReqLinePath(void)
 {
 	return (_reqParser.getReqLinePath());
+}
+
+std::string& Event::getReqBody(void)
+{
+	return (_reqParser.getRequestBodyRef());
 }
 
 void Event::parseHeader(std::string &header)
@@ -759,7 +787,7 @@ void Event::cgiExecute(void)
 		_cgiEx = new CGIExecuter();
 }
 
-int Event::writeToCgi(std::string &str)
+int Event::writeToCgi(const char *str)
 {
 	if (_cgiEx)
 		return (_cgiEx->writeToScript(str));
@@ -781,4 +809,14 @@ void Event::setCgiExitStatus(int cgiExitStatus)
 int Event::getCgiExitStatus(void)
 {
 	return (_cgiExitStatus);
+}
+
+void	Event::updateCgiSentChars(size_t value)
+{
+	_cgiSentChars += value;
+}
+
+size_t	Event::getCgiSentChars(void)
+{
+	return (_cgiSentChars);
 }
