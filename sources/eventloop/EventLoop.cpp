@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/27 11:13:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 17:23:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,7 @@
 
 #include "CGIExecuter.hpp"
 
-EventLoop::EventLoop(void): AMessengerClient(NULL)
-{
-	_cgiReadFdsVec.reserve(1000);
-
-	/*
-	_cgiReadFdsVec.push_back(1);
-	_cgiReadFdsVec.push_back(2);
-	_cgiReadFdsVec.push_back(3);
-
-	std::vector<int>::iterator it;
-	for (it = _cgiReadFdsVec.begin(); it != _cgiReadFdsVec.end(); it++)
-		std::cout << "valor vect: " << *it << std::endl;
-	*/
-}
+EventLoop::EventLoop(void): AMessengerClient(NULL) {}
 
 EventLoop::EventLoop(const EventLoop &src) {}
 
@@ -63,6 +50,7 @@ void EventLoop::handleEvents(void)
 		else if (event->isClientDisconnect())
 			_handleClientDisconnect(event);
 	}
+	_checkIfCgiScriptsFinished();
 	//_checkIfCgiScriptsFinished();
 	//_closeTimeoutEvents();
 }
@@ -353,6 +341,7 @@ void EventLoop::_closeTimeoutEvents(void)
 	}
 }
 
+/*
 void EventLoop::_checkIfCgiScriptsFinished(void)
 {
 	std::map<int, Event*>::iterator	it;
@@ -372,7 +361,45 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 		}
 	}
 }
+*/
 
+void EventLoop::_checkIfCgiScriptsFinished(void)
+{
+	std::map<int, Event*>::iterator	itMap;
+	std::list<int>::iterator		itList;
+	Event							*event;
+	int								fd;
+
+	if (_cgiEventList.empty())
+		return ;
+	itList = _cgiEventList.begin();
+	while (itList != _cgiEventList.end())
+	{
+		fd = *itList;
+		itMap = _eventMap.find(fd);
+		if (itMap == _eventMap.end())
+		{
+			_cgiEventList.erase(itList);
+			break;
+		}
+		else
+		{
+			event = itMap->second;
+			if (event->getCgiExitStatus() == NO_EXIT_STATUS)
+				event->isCgiScriptEnd();
+			else
+			{
+				event->setActualState(TYPE_TRANSITION);
+				_eventQueue.push(event);
+				_cgiEventList.erase(itList);
+				break;
+			}
+
+		}
+		itList++;
+	}
+	//std::cout << "tamanho lista: " << _cgiEventList.size() << std::endl;
+}
 
 
 // NEW FUNCTIONS
@@ -403,6 +430,9 @@ void EventLoop::_sendMessages(Event *event)
 	else if (type == WRITE_CGI)
 	{
 		//std::cout << "Execute CGI WRITE_CGI" << std::endl;
+
+		//Adicionar à lista de cgi verificar se o cgi falha
+		_cgiEventList.push_back(fd);
 		event->cgiExecute();
 		//std::cout << "CGI Write FD: " << event->getCgiWriteFd() << std::endl;
 		_eventMap.insert(std::make_pair(event->getCgiWriteFd(), event));
@@ -445,4 +475,3 @@ void EventLoop::_handleClientDisconnect(Event *event)
 	sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
 	_deleteEvent(fd);
 }
-

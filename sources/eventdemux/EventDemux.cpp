@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/19 09:41:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 17:03:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void EventDemux::waitAndDispatchEvents(void)
 	int		eventFd;
 	int		timeOutMs;
 
-	timeOutMs = 100;
+	timeOutMs = 5;
 	numEvents = epoll_wait(_epollFd, _events, N_MAX_EVENTS, timeOutMs);
 	for (int i = 0; i < numEvents; i++) 
 	{

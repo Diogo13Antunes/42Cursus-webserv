@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/27 11:40:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 17:05:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -698,7 +698,7 @@ void Event::parseHeader(std::string &header)
 	switch (statusCode)
 	{
 		case 0:
-			std::cout << "---------- SUCCESS ----------" << std::endl;
+			//std::cout << "---------- SUCCESS ----------" << std::endl;
 			break;
 		case 400:
 			std::cout << "---------- 400 BAD_REQUEST ----------" << std::endl;

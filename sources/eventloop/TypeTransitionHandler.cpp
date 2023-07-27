@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/26 17:56:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 17:05:34 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void TypeTransitionHandler::handleEvent(Event *event)
 	{
 		if (!event->getReqLinePath().compare(CGI_PATH))
 		{
-			std::cout << "TypeTransitionHandler: CGI" << std::endl;
+			//std::cout << "TypeTransitionHandler: CGI" << std::endl;
 			event->setActualState(WRITE_CGI);
 		}
 		else
