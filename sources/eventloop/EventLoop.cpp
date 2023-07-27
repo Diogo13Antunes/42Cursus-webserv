@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/26 18:31:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 11:13:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,20 @@
 
 #include "CGIExecuter.hpp"
 
-EventLoop::EventLoop(void): AMessengerClient(NULL) {}
+EventLoop::EventLoop(void): AMessengerClient(NULL)
+{
+	_cgiReadFdsVec.reserve(1000);
+
+	/*
+	_cgiReadFdsVec.push_back(1);
+	_cgiReadFdsVec.push_back(2);
+	_cgiReadFdsVec.push_back(3);
+
+	std::vector<int>::iterator it;
+	for (it = _cgiReadFdsVec.begin(); it != _cgiReadFdsVec.end(); it++)
+		std::cout << "valor vect: " << *it << std::endl;
+	*/
+}
 
 EventLoop::EventLoop(const EventLoop &src) {}
 
@@ -406,6 +419,7 @@ void EventLoop::_sendMessages(Event *event)
 		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
 		_eventMap.insert(std::make_pair(event->getCgiReadFd(), event));
 		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_ADD_NEW));
+		//_cgiReadFdsVec.a
 	}
 }
 
@@ -431,3 +445,4 @@ void EventLoop::_handleClientDisconnect(Event *event)
 	sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
 	_deleteEvent(fd);
 }
+

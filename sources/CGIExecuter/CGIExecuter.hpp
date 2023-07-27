@@ -19,6 +19,7 @@ class CGIExecuter
 		int					_pipe1[2];
 		int					_pipe2[2];
 		int					_pid;
+		int					_statusCode;
 
 		bool				_initPipes(void);
 		std::string			_getScriptInterpreter(void);
@@ -37,7 +38,8 @@ class CGIExecuter
 		int			readFromScript(std::string &str);
 
 		void		execute(std::string script, std::string message, char **env);
-		bool		isEnded(void);
+		//bool		isEnded(void);
+		int			isEnded(void);
 
 		class ExecutionErrorException: public std::exception
 		{

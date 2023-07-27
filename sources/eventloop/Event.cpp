@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/26 15:18:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 10:24:18 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ Event::Event(int fd, int state):
 	_actualState(READ_EVENT),
 	_finished(false),
 	_connectionClosed(-1),
-	_clientDisconnect(false)
+	_clientDisconnect(false),
+	_cgiExitStatus(NO_EXIT_STATUS)
 {}
 
 Event::Event(const Event &src) {}
@@ -602,6 +603,7 @@ void	Event::updateCgiScriptResult(std::string src)
 	_cgiScriptResult += src;
 }
 
+/*
 bool Event::isCgiScriptEnd(void)
 {
 	if (this->getCgiFd() > 0 && _state == CGI_EVENT)
@@ -611,6 +613,15 @@ bool Event::isCgiScriptEnd(void)
 	}
 	return (false);
 }
+*/
+
+int Event::isCgiScriptEnd(void)
+{
+	if (_cgiEx && _cgiExitStatus == NO_EXIT_STATUS)
+		_cgiExitStatus = _cgiEx->isEnded();
+	return (_cgiExitStatus);
+}
+
 /* Getters for RequestData */
 
 std::string	Event::getQueryString(void)
@@ -744,4 +755,14 @@ int Event::readFromCgi(std::string &str)
 	if (_cgiEx)
 		return (_cgiEx->readFromScript(str));
 	return (-1);
+}
+
+void Event::setCgiExitStatus(int cgiExitStatus)
+{
+	_cgiExitStatus = cgiExitStatus;
+}
+
+int Event::getCgiExitStatus(void)
+{
+	return (_cgiExitStatus);
 }

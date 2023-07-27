@@ -4,6 +4,9 @@
 #include <cstdlib>
 #include <fcntl.h>
 
+#define	NO_EXIT_STATUS	256
+#define GENERIC_ERROR	1
+
 /*CGIExecuter::CGIExecuter(void)
 {
 	if (!_initPipes())
@@ -12,7 +15,7 @@
 
 
 // O construtor precisa de receber como parametro o que necessita de entrar dentro do _execute()
-CGIExecuter::CGIExecuter(void)
+CGIExecuter::CGIExecuter(void): _statusCode(0)
 {
 	if (!_initPipes())
 		throw FailToIinitPipesException();
@@ -64,6 +67,7 @@ void	CGIExecuter::execute(std::string script, std::string message, char **env)
 	}
 }
 
+/*
 bool CGIExecuter::isEnded(void)
 {
 	int res;
@@ -72,6 +76,21 @@ bool CGIExecuter::isEnded(void)
 	if (res == _pid || res < 0)
 		return (true);
 	return (false);
+}
+*/
+
+int CGIExecuter::isEnded(void)
+{
+	int res;
+	int	status;
+
+	status = NO_EXIT_STATUS;
+	res = waitpid(_pid, &status, WNOHANG);
+	if (res == _pid)
+		status = WEXITSTATUS(status);
+	else if (res < 0)
+		status = res;
+	return (status);
 }
 
 int	CGIExecuter::getReadFD(void)
@@ -164,6 +183,7 @@ void	CGIExecuter::_closeAllFds(void)
 	_closeFd(&_pipe2[1]);
 }
 
+//depercated acho que já existe outra string trim nos utils
 static void stringTrim(std::string &str)
 {
 	std::string	trimmed;

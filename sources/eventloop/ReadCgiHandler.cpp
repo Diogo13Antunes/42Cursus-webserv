@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:38:17 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/26 18:12:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 11:17:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,10 @@ void ReadCgiHandler::handleEvent(Event *event)
 	nRead = event->readFromCgi(str);
 	if (nRead > 0)
 		event->updateCgiScriptResult(str);
+	
+	//for(int i = 0; i < 99999999; i++);
+	//std::cout << "CGI status code: " << event->isCgiScriptEnd() << std::endl;
+
 	event->setActualState(TYPE_TRANSITION);
 }
 

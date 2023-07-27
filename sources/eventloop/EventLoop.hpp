@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 19:08:41 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 11:14:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include <map>
 #include <queue>
-#include <set>
+#include <vector>
 
 #include "IEventHandler.hpp"
 #include "ReadHandler.hpp"
@@ -32,6 +32,7 @@ class EventLoop: public AMessengerClient
 		std::map<EventType, IEventHandler*> _handlers;
 		std::map<int, Event*>				_eventMap;
 		std::queue<Event*>					_eventQueue;
+		std::vector<int>					_cgiReadFdsVec;
 
 		void	_changeEvent(Event *ev, short status);
 		void	_handleEvent(Event *ev);
@@ -48,9 +49,8 @@ class EventLoop: public AMessengerClient
 
 		void	_sendMessages(Event *event);
 
-		void _finalizeEvent(Event *event);
-		void _handleClientDisconnect(Event *event);
-
+		void	_finalizeEvent(Event *event);
+		void	_handleClientDisconnect(Event *event);
 
 	public:
 		EventLoop(void);

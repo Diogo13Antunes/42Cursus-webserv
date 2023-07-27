@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/26 15:18:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 10:24:16 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@
 #define	HEADER_DONE		1
 #define	BODY_HANDLE		2
 #define	BODY_DONE		3
+
+#define	NO_EXIT_STATUS	256
 
 
 class Event
@@ -86,6 +88,7 @@ class Event
 
 		short	_connectionClosed;
 		bool	_clientDisconnect;
+		int		_cgiExitStatus;
 
 
 	public:
@@ -206,7 +209,7 @@ class Event
 		int					getCgiWriteFd(void);
 		int					getCgiReadFd(void);
 
-		bool				isCgiScriptEnd(void);
+		int					isCgiScriptEnd(void);
 		std::string					getQueryString(void);
 		std::vector<std::string>	getRequestHeaderValue(std::string key);
 		std::string					getReqMethod(void);
@@ -235,4 +238,7 @@ class Event
 		void	cgiExecute(void);
 		int		writeToCgi(std::string &str);
 		int		readFromCgi(std::string &str);
+
+		void	setCgiExitStatus(int cgiExitStatus);
+		int		getCgiExitStatus(void);
 };
