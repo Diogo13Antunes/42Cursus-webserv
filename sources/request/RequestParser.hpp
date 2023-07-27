@@ -14,6 +14,8 @@
 class RequestParser
 {
 	private:
+
+		std::vector<std::string>							_implementedMethods;
 		std::string											_requestLine;
 		std::map<std::string, std::vector<std::string> >	_requestHeader;
 		std::string											_requestBody;
@@ -25,10 +27,20 @@ class RequestParser
 
 		std::string											_queryString;
 
+		int													_statusCode;
+
+		int													_isValidHeader(void);
 		int													_getContentLen(void);
 		std::pair<std::string, std::vector<std::string> >	_getHeaderFieldPair(std::string &src);
-		void												_requestLineParser(void);
+		int													_requestLineParser(void);
+		int													_addHeaderElement(std::string &line);
 		void												_requestTargetParser(void);
+		bool												_isImplementedRequestMethod(void);
+		int													_hasContentLengthAndTransferEncoded(void);
+		int													_isValidRequestHeader(void);
+		int													_isValidTransferEncodingValue(void);
+		int													_isValidHost(void);
+		int													_isValidContentLenght(void);
 
 	public:
 		RequestParser(void);
@@ -44,28 +56,9 @@ class RequestParser
 		std::string											getReqLinePath(void);
 		std::string											getConnectionField(void);
 		std::vector<std::string>							getHeaderField(std::string fieldName);
+		std::string											getQueryString(void);
 
-		bool												headerParse(std::string	&header);
+		int													headerParse(std::string	&header);
 		void												bodyParse(std::string &body);
 
-		bool												isValidHeader(void);
-		bool												checkContentLenght(void);
-
-		class EmptyRequestException: public std::exception
-		{
-			public:
-				const char *what() const throw();
-		};
-
-		class BadRequestException: public std::exception
-		{
-			public:
-				const char *what() const throw();
-		};
-
-		class InvalidRequestLineException: public std::exception
-		{
-			public:
-				const char *what() const throw();
-		};
 };

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/27 10:24:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 11:40:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -626,7 +626,7 @@ int Event::isCgiScriptEnd(void)
 
 std::string	Event::getQueryString(void)
 {
-	return (_reqParsed.getQueryString());
+	return (_reqParser.getQueryString());
 }
 
 std::vector<std::string>	Event::getRequestHeaderValue(std::string key)
@@ -692,8 +692,24 @@ void Event::parseHeader(std::string &header)
 {
 	//Função devolva true or false
 
-	if (!_reqParser.headerParse(header))
-		std::cout << "---------400 Bad Request---------" << std::endl;
+	int	statusCode;
+
+	statusCode = _reqParser.headerParse(header);
+	switch (statusCode)
+	{
+		case 0:
+			std::cout << "---------- SUCCESS ----------" << std::endl;
+			break;
+		case 400:
+			std::cout << "---------- 400 BAD_REQUEST ----------" << std::endl;
+			break;
+		case 414:
+			std::cout << "---------- 414 URI_TOO_LONG ----------" << std::endl;
+			break;
+		case 501:
+			std::cout << "---------- 501 NOT_IMPLEMENTED ----------" << std::endl;
+			break;
+	}
 
 	//if (!_reqParser.headerParse(header))
 	//colocar status event.setStatusCode(400) 
