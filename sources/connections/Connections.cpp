@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/14 16:17:26 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/28 11:37:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,9 @@ void Connections::_removeAllConnections(void)
 
 void Connections::_removeConnection(std::map<int, Connection *>::iterator it)
 {
+
+	std::cout << "remove connection fd: " << it->first << std::endl;
+
 	delete it->second;
 	_activeConnects.erase(it);
 }
@@ -97,7 +100,9 @@ void Connections::_removeConnection(std::map<int, Connection *>::iterator it)
 void Connections::_removeConnection(int fd)
 {
 	std::map<int, Connection *>::iterator it;
-	
+
+	std::cout << "remove connection fd: " << fd << std::endl;
+
 	it = _activeConnects.find(fd);
 	if (it != _activeConnects.end())
 	{

@@ -22,6 +22,7 @@ CGIExecuter::CGIExecuter(void): _statusCode(0)
 	_execute(NULL, "cgi-bin/cgi_script.py");
 }
 
+/*
 CGIExecuter::~CGIExecuter(void)
 {
 	if (!this->isEnded())
@@ -30,6 +31,18 @@ CGIExecuter::~CGIExecuter(void)
 		if (kill(_pid, SIGTERM) == -1)
 			std::cout << "Webserv: Error terminating SGI script" << std::endl;
 
+	}
+	_closeAllFds();
+}
+*/
+
+CGIExecuter::~CGIExecuter(void)
+{
+	if (this->isEnded() == NO_EXIT_STATUS)
+	{
+		std::cout << "Tenta fazer o kill" << std::endl;
+		if (kill(_pid, SIGTERM) == -1)
+			std::cout << "Webserv: Error terminating SGI script" << std::endl;
 	}
 	_closeAllFds();
 }

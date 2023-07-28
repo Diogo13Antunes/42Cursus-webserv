@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/28 10:57:46 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/28 14:54:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void EventLoop::handleEvents(void)
 		_eventQueue.pop();
 		if (event && event->getActualState() == TYPE_TRANSITION)
 			_eventQueue.push(event);
-		
 		if (event->isFinished())
 			_finalizeEvent(event);
 		else if (event->isClientDisconnect())
@@ -66,9 +65,6 @@ void EventLoop::receiveMessage(Message *msg)
 
 	type = msg->getType();
 	fd = msg->getFd();
-
-	//std::cout << "Receive message: FD: " << fd  << " " << type << std::endl;
-
 	if (type == EVENT_READ_TRIGGERED)
 		_registerReadEvent(fd);
 	else if (type == EVENT_WRITE_TRIGGERED)
@@ -86,12 +82,12 @@ void EventLoop::_registerReadEvent(int fd)
 		_addEventToMap(event);
 		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
 	}
-	if (event->getActualState() == READ_EVENT && event->getFd() == fd)
+	if (event && event->getActualState() == READ_EVENT && event->getFd() == fd)
 		_addEventToQueue(event);
-	else if (event->getActualState() == READ_CGI && event->getCgiReadFd() == fd)
+	else if (event && event->getActualState() == READ_CGI && event->getCgiReadFd() == fd)
 		_addEventToQueue(event);
-	else
-		; // É porque ouve um pedido de fechar a ligacao fechar a ligação
+	else if (event)
+		_handleClientDisconnect(event);
 }
 
 void EventLoop::_registerWriteEvent(int fd)
@@ -114,8 +110,6 @@ void EventLoop::_handleEvent(Event *ev)
 	std::map<EventType, IEventHandler*>::iterator	it;
 	EventType										type;
 
-
-	//getActualType()
 	type = ev->getActualState();
 	it = _handlers.find(type);
 	if (it != _handlers.end())
@@ -123,7 +117,6 @@ void EventLoop::_handleEvent(Event *ev)
 	if (type == TYPE_TRANSITION)
 		_sendMessages(ev);
 }
-
 
 Event* EventLoop::_getEventFromMap(std::map<int, Event*> &map, int fd)
 {
@@ -148,9 +141,12 @@ void EventLoop::_addEventToQueue(Event *event)
 	_eventQueue.push(event);
 }
 
+// deve tambem procurar e tentar fazer delete dos eventos da CGI
 void EventLoop::_deleteEvent(int fd)
 {
 	Event*	event;
+	int		cgiReadFd;
+	int		cgiWriteFd;
 
 	event = _getEventFromMap(_cgiEventMap, fd);
 	if (event)
@@ -158,8 +154,14 @@ void EventLoop::_deleteEvent(int fd)
 	event = _getEventFromMap(_eventMap, fd);
 	if (event)
 	{
+		cgiReadFd = event->getCgiReadFd();
+		cgiWriteFd = event->getCgiWriteFd();
+		if (_getEventFromMap(_eventMap, cgiReadFd))
+			_eventMap.erase(cgiReadFd);
+		if (_getEventFromMap(_eventMap, cgiWriteFd))
+			_eventMap.erase(cgiWriteFd);
 		_eventMap.erase(fd);
-		delete event;	
+		delete event;
 	}
 }
 
@@ -172,6 +174,7 @@ void EventLoop::_removeEventFromMap(std::map<int, Event*> &map, int fd)
 		_eventMap.erase(fd);	
 }
 
+/*
 void EventLoop::_handleEventStates(Event *event)
 {
 	int fd;
@@ -228,6 +231,7 @@ void EventLoop::_handleEventStates(Event *event)
 		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
 	}
 }
+*/
 
 // Para não dar erro fazer depois de a queue estar vazia
 void EventLoop::_closeTimeoutEvents(void)
@@ -266,6 +270,7 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 	Event							*event;
 	int								fd;
 
+	//std::cout << "verifica se CGI terminou " << _cgiEventMap.size() << std::endl;
 	if (_cgiEventMap.empty())
 		return ;
 	itMap = _cgiEventMap.begin();
@@ -276,13 +281,17 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 			event->isCgiScriptEnd();
 		else if (event)
 		{
+			
 			event->setActualState(TYPE_TRANSITION);
 			_eventQueue.push(event);
 			_cgiEventMap.erase(itMap);
+
+
 			break;
 		}
 		itMap++;
 	}
+	//std::cout << "CGImapsize: " << _cgiEventMap.size() << std::endl;
 }
 
 // NEW FUNCTIONS
@@ -360,10 +369,22 @@ void EventLoop::_finalizeEvent(Event *event)
 
 void EventLoop::_handleClientDisconnect(Event *event)
 {
-	int	fd;
+	int			fd;
+	int			cgiReadFd;
+	int			cgiWriteFd;
+	EventType	type;
+	
 
 	fd = event->getFd();
+	cgiReadFd = event->getCgiReadFd();
+	cgiWriteFd = event->getCgiWriteFd();
+	type = event->getActualState();
+
 	sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
 	sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
+	if (cgiReadFd > 0 && type == READ_CGI)
+		sendMessage(new Message(EVENTDEMUX_ID, cgiReadFd, EVENT_REMOVE));
+	if (cgiWriteFd > 0 && type == WRITE_CGI)
+		sendMessage(new Message(EVENTDEMUX_ID, cgiWriteFd, EVENT_REMOVE));
 	_deleteEvent(fd);
 }
