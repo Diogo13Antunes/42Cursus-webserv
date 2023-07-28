@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/28 14:54:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/28 16:09:25 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,17 @@ void EventLoop::handleEvents(void)
 		event = _eventQueue.front();
 		_handleEvent(event);
 		_eventQueue.pop();
+		if (event && event->isClientDisconnect())
+		{
+			_handleClientDisconnect(event);
+			continue ;
+			//event = NULL;
+		}
 		if (event && event->getActualState() == TYPE_TRANSITION)
 			_eventQueue.push(event);
-		if (event->isFinished())
+		if (event && event->isFinished())
 			_finalizeEvent(event);
-		else if (event->isClientDisconnect())
-			_handleClientDisconnect(event);
+
 	}
 	_checkIfCgiScriptsFinished();
 	//_closeTimeoutEvents();
@@ -281,12 +286,9 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 			event->isCgiScriptEnd();
 		else if (event)
 		{
-			
 			event->setActualState(TYPE_TRANSITION);
 			_eventQueue.push(event);
 			_cgiEventMap.erase(itMap);
-
-
 			break;
 		}
 		itMap++;
@@ -374,12 +376,10 @@ void EventLoop::_handleClientDisconnect(Event *event)
 	int			cgiWriteFd;
 	EventType	type;
 	
-
 	fd = event->getFd();
 	cgiReadFd = event->getCgiReadFd();
 	cgiWriteFd = event->getCgiWriteFd();
 	type = event->getActualState();
-
 	sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
 	sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
 	if (cgiReadFd > 0 && type == READ_CGI)
