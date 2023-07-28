@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/27 17:05:34 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/28 10:43:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #define CGI_PATH "/cgi"
 
 TypeTransitionHandler::TypeTransitionHandler(void) {}
-
 
 TypeTransitionHandler::~TypeTransitionHandler(void) {}
 

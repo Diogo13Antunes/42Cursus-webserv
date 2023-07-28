@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/27 14:27:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/28 10:53:29 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,20 @@ class EventLoop: public AMessengerClient
 	private:
 		std::map<EventType, IEventHandler*> _handlers;
 		std::map<int, Event*>				_eventMap;
+		std::map<int, Event*>				_cgiEventMap;
 		std::queue<Event*>					_eventQueue;
-		std::list<int>						_cgiEventList;
 
 		void	_changeEvent(Event *ev, short status);
 		void	_handleEvent(Event *ev);
-		Event*	_getEventFromMap(int fd);
+		//Event*	_getEventFromMap(int fd);
+		Event* 	_getEventFromMap(std::map<int, Event*> &map, int fd);
 		void	_addEventToMap(Event *event);
 		void	_addEventToQueue(Event *event);
 		void	_registerReadEvent(int fd);
 		void	_registerWriteEvent(int fd);
 		void	_deleteEvent(int fd);
-		void	_removeEventFromMap(int fd);
+		//void	_removeEventFromMap(int fd);
+		void	_removeEventFromMap(std::map<int, Event*> &map, int fd);
 		void	_handleEventStates(Event *event);
 		void	_closeTimeoutEvents(void);
 		void 	_checkIfCgiScriptsFinished(void);
