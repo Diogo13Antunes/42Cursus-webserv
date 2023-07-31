@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/28 10:53:29 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/31 11:30:40 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ class EventLoop: public AMessengerClient
 
 		void	_finalizeEvent(Event *event);
 		void	_handleClientDisconnect(Event *event);
+
+		Event** _getDoublePointerToEvent(int fd);
 
 	public:
 		EventLoop(void);

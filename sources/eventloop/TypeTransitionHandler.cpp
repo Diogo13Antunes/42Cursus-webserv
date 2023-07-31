@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/28 10:43:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/29 10:25:29 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,12 @@ void TypeTransitionHandler::handleEvent(Event *event)
 		event->setActualState(READ_EVENT);
 	}
 	else if (event->getOldState() == WRITE_CGI)
-		event->setActualState(READ_CGI);
+	{
+		if (event->getCgiExitStatus() != NO_EXIT_STATUS)
+			event->setActualState(WRITE_EVENT);
+		else
+			event->setActualState(READ_CGI);
+	}
 	else if (event->getOldState() == READ_CGI)
 		event->setActualState(WRITE_EVENT);
 }
