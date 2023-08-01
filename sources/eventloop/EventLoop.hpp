@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/31 19:16:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/01 10:34:54 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ class EventLoop: public AMessengerClient
 		//Event*	_getEventFromMap(int fd);
 		Event* 	_getEventFromMap(std::map<int, Event*> &map, int fd);
 		void	_addEventToMap(Event *event);
-		void	_addEventToQueue(Event *event);
+		void	_addEventToQueue(int fd);
 		void	_registerReadEvent(int fd);
 		void	_registerWriteEvent(int fd);
 		void	_deleteEvent(int fd);
