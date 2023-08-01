@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/01 10:34:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/01 13:00:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,43 +32,33 @@ class EventLoop: public AMessengerClient
 		std::map<EventType, IEventHandler*> _handlers;
 		std::map<int, Event*>				_eventMap;
 		std::map<int, Event*>				_cgiEventMap;
-		std::queue<Event*>					_eventQueue;
-		std::queue<int>						_eventQueue1;
+		std::queue<int>						_eventQueue;
 
-
-		void	_changeEvent(Event *ev, short status);
 		void	_handleEvent(Event *ev);
-		//Event*	_getEventFromMap(int fd);
-		Event* 	_getEventFromMap(std::map<int, Event*> &map, int fd);
-		void	_addEventToMap(Event *event);
-		void	_addEventToQueue(int fd);
 		void	_registerReadEvent(int fd);
 		void	_registerWriteEvent(int fd);
+
+
+		void	_addEventToMap(Event *event);
+		void	_addEventToMap(int fd, Event *event);
+		void	_addEventToQueue(int fd);
+		Event* 	_getEventFromMap(std::map<int, Event*> &map, int fd);
 		void	_deleteEvent(int fd);
-		//void	_removeEventFromMap(int fd);
-		void	_removeEventFromMap(std::map<int, Event*> &map, int fd);
-		void	_handleEventStates(Event *event);
 		void	_closeTimeoutEvents(void);
 		void 	_checkIfCgiScriptsFinished(void);
+		void	_finalizeEvent(Event *event);
+		void	_handleClientDisconnect(Event *event);
+		int		_getNextEventFromQueue(void);
 
 		void	_sendMessages(Event *event);
 
-		void	_finalizeEvent(Event *event);
-		void	_handleClientDisconnect(Event *event);
-
-		Event** _getDoublePointerToEvent(int fd);
-
 	public:
 		EventLoop(void);
-		EventLoop(const EventLoop &src);
 		~EventLoop(void);
-		EventLoop &operator=(const EventLoop &src);
 
 		void		registerEventHandler(IEventHandler *eventHandler);
 		void		unregisterEventHandler(IEventHandler *eventHandler);
 		void		handleEvents(void);
-
-
 		ClientID	getId(void);
 		void		receiveMessage(Message *msg);
 

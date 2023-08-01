@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/01 10:47:11 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/01 14:10:40 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 #include "CGIExecuter.hpp"
 
 EventLoop::EventLoop(void): AMessengerClient(NULL) {}
-
-EventLoop::EventLoop(const EventLoop &src) {}
 
 EventLoop::~EventLoop(void) {}
 
@@ -38,25 +36,18 @@ void EventLoop::handleEvents(void)
 	Event	*event;
 	int		fd;
 	
-	while (!_eventQueue1.empty())
+	while (!_eventQueue.empty())
 	{
-		fd = _eventQueue1.front();
-		_eventQueue1.pop();
+		fd = _getNextEventFromQueue();
 		event = _getEventFromMap(_eventMap, fd);
 		if (event)
 			_handleEvent(event);
 		if (event && event->isClientDisconnect())
-		{
  			_handleClientDisconnect(event);
-			continue ;
-		}
-		if (event && event->isFinished())
-		{
+		else if (event && event->isFinished())
 			_finalizeEvent(event);
-			continue ;
-		}
-		if (event && event->getActualState() == TYPE_TRANSITION)
-			_eventQueue1.push(event->getFd());
+		else if (event && event->getActualState() == TYPE_TRANSITION)
+			_addEventToQueue(event->getFd());
 	}
 	_checkIfCgiScriptsFinished();
 	//_closeTimeoutEvents();
@@ -80,75 +71,6 @@ void EventLoop::receiveMessage(Message *msg)
 		_registerWriteEvent(fd);
 }
 
-
-/*
-void EventLoop::_registerReadEvent(int fd)
-{
-	Event*	event;
-
-	event = _getEventFromMap(_eventMap, fd);
-	if (!event)
-	{
-		event = new Event(fd, READ_EVENT);
-		_addEventToMap(event);
-		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
-	}
-	if (event && event->getActualState() == READ_EVENT && event->getFd() == fd)
-		_addEventToQueue(event);
-	else if (event && event->getActualState() == READ_CGI && event->getCgiReadFd() == fd)
-		_addEventToQueue(event);
-	else if (event)
-		_handleClientDisconnect(event);
-}
-
-void EventLoop::_registerWriteEvent(int fd)
-{
-	Event*		event;
-	EventType	type;
-
-	event = _getEventFromMap(_eventMap, fd);
-	if (!event)
-		return ;
-	type = event->getActualState();
-	if ((type == WRITE_EVENT && fd == event->getFd())
-		|| (type == WRITE_CGI && fd == event->getCgiWriteFd()))
-		_addEventToQueue(event);
-}
-*/
-
-void EventLoop::_registerReadEvent(int fd)
-{
-	Event*	event;
-
-	event = _getEventFromMap(_eventMap, fd);
-	if (!event)
-	{
-		event = new Event(fd, READ_EVENT);
-		_addEventToMap(event);
-		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
-	}
-	if (event && event->getActualState() == READ_EVENT && event->getFd() == fd)
-		_addEventToQueue(fd);
-	else if (event && event->getActualState() == READ_CGI && event->getCgiReadFd() == fd)
-		_addEventToQueue(fd);
-	else if (event)
-		_handleClientDisconnect(event);
-}
-
-void EventLoop::_registerWriteEvent(int fd)
-{
-	Event*		event;
-	EventType	type;
-
-	event = _getEventFromMap(_eventMap, fd);
-	if (!event)
-		return ;
-	type = event->getActualState();
-	if ((type == WRITE_EVENT && fd == event->getFd())
-		|| (type == WRITE_CGI && fd == event->getCgiWriteFd()))
-		_addEventToQueue(fd);
-}
-
 void EventLoop::_handleEvent(Event *ev)
 {
 	std::map<EventType, IEventHandler*>::iterator	it;
@@ -161,8 +83,64 @@ void EventLoop::_handleEvent(Event *ev)
 		if (it != _handlers.end())
 			it->second->handleEvent(ev);
 		if (type == TYPE_TRANSITION)
-			_sendMessages(ev);
+			_sendMessages(ev); // change name
 	}
+}
+
+void EventLoop::_registerReadEvent(int fd)
+{
+	Event*		event;
+	EventType	type;
+
+	event = _getEventFromMap(_eventMap, fd);
+	if (!event)
+	{
+		event = new Event(fd, READ_EVENT);
+		_addEventToMap(fd, event);
+		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
+	}
+	if (event)
+	{
+		type = event->getActualState();
+		if ((type == READ_EVENT && event->getFd() == fd)
+			|| (type == READ_CGI && event->getCgiReadFd() == fd))
+			_addEventToQueue(fd);
+		else
+			_handleClientDisconnect(event);
+	}
+}
+
+void EventLoop::_registerWriteEvent(int fd)
+{
+	Event*		event;
+	EventType	type;
+
+	event = _getEventFromMap(_eventMap, fd);
+	if (!event)
+		return ;
+	type = event->getActualState();
+	if ((type == WRITE_EVENT && fd == event->getFd())
+		|| (type == WRITE_CGI && fd == event->getCgiWriteFd()))
+		_addEventToQueue(fd);
+}
+
+void EventLoop::_addEventToMap(Event *event)
+{
+	if (!event)
+		return ;
+	_eventMap.insert(std::make_pair(event->getFd(), event));
+}
+
+void EventLoop::_addEventToMap(int fd, Event *event)
+{
+	if (!event)
+		return ;
+	_eventMap.insert(std::make_pair(fd, event));
+}
+
+void EventLoop::_addEventToQueue(int fd)
+{
+	_eventQueue.push(fd);
 }
 
 Event* EventLoop::_getEventFromMap(std::map<int, Event*> &map, int fd)
@@ -175,31 +153,9 @@ Event* EventLoop::_getEventFromMap(std::map<int, Event*> &map, int fd)
 	return (NULL);
 }
 
-void EventLoop::_addEventToMap(Event *event)
-{
-	int	fd;
-
-	fd = event->getFd();
-	_eventMap.insert(std::make_pair(fd, event));
-}
-
-/*
-void EventLoop::_addEventToQueue(Event *event)
-{
-	//_eventQueue.push(event);
-	_eventQueue1.push(event->getFd());
-}
-*/
-
-void EventLoop::_addEventToQueue(int fd)
-{
-	_eventQueue1.push(fd);
-}
-
 void EventLoop::_deleteEvent(int fd)
 {
 	Event*	event;
-	Event**	eventPtr;
 	int		cgiReadFd;
 	int		cgiWriteFd;
 
@@ -220,7 +176,7 @@ void EventLoop::_deleteEvent(int fd)
 	}
 }
 
-// Para não dar erro fazer depois de a queue estar vazia
+// Not used but will be used and changed
 void EventLoop::_closeTimeoutEvents(void)
 {
 	std::map<int, Event*>::iterator	it;
@@ -277,7 +233,7 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 		else if (status != NO_EXIT_STATUS)
 		{
 			event->setActualState(TYPE_TRANSITION);
-			_eventQueue1.push(fd);
+			_addEventToQueue(fd);
 			itMapBackUp = itMap;
 			itMapBackUp++;
 			_cgiEventMap.erase(itMap);
@@ -285,45 +241,6 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 			continue ;
 		}
 		itMap++;
-	}
-}
-
-// NEW FUNCTIONS
-
-void EventLoop::_sendMessages(Event *event)
-{
-	EventType	type;
-	int			fd;
-	
-	type = event->getActualState(); // getActualType() mudar nome
-	fd = event->getFd();
-	if (type == WRITE_EVENT)
-	{
-		if (event->getCgiReadFd() > 0)
-			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_REMOVE));
-		if (event->getCgiWriteFd() > 0)
-			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
-		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_WRITE));
-
-	}
-	else if (type == READ_EVENT)
-	{
-		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_READ));
-		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_RESTART_TIMER));
-	}
-	else if (type == WRITE_CGI)
-	{
-		_cgiEventMap.insert(std::make_pair(event->getFd(), event));
-		event->cgiExecute();
-		_eventMap.insert(std::make_pair(event->getCgiWriteFd(), event));
-		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_ADD_NEW));
-		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_CHANGE_TO_WRITE));
-	}
-	else if (type == READ_CGI)
-	{
-		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
-		_eventMap.insert(std::make_pair(event->getCgiReadFd(), event));
-		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_ADD_NEW));
 	}
 }
 
@@ -356,4 +273,51 @@ void EventLoop::_handleClientDisconnect(Event *event)
 	if (cgiWriteFd > 0 && type == WRITE_CGI)
 		sendMessage(new Message(EVENTDEMUX_ID, cgiWriteFd, EVENT_REMOVE));
 	_deleteEvent(fd);
+}
+
+int EventLoop::_getNextEventFromQueue(void)
+{
+	int fd;
+
+	fd = _eventQueue.front();
+	_eventQueue.pop();
+	return (fd);
+}
+
+// Function to refactoring
+void EventLoop::_sendMessages(Event *event)
+{
+	EventType	type;
+	int			fd;
+	
+	type = event->getActualState(); // getActualType() change name
+	fd = event->getFd();
+	if (type == WRITE_EVENT)
+	{
+		if (event->getCgiReadFd() > 0)
+			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_REMOVE));
+		if (event->getCgiWriteFd() > 0)
+			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
+		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_WRITE));
+
+	}
+	else if (type == READ_EVENT)
+	{
+		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_READ));
+		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_RESTART_TIMER));
+	}
+	else if (type == WRITE_CGI)
+	{
+		_cgiEventMap.insert(std::make_pair(event->getFd(), event));
+		event->cgiExecute();
+		_eventMap.insert(std::make_pair(event->getCgiWriteFd(), event));
+		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_ADD_NEW));
+		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_CHANGE_TO_WRITE));
+	}
+	else if (type == READ_CGI)
+	{
+		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
+		_eventMap.insert(std::make_pair(event->getCgiReadFd(), event));
+		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_ADD_NEW));
+	}
 }
