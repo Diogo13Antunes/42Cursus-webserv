@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/31 11:30:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/31 19:16:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ class EventLoop: public AMessengerClient
 		std::map<int, Event*>				_eventMap;
 		std::map<int, Event*>				_cgiEventMap;
 		std::queue<Event*>					_eventQueue;
+		std::queue<int>						_eventQueue1;
+
 
 		void	_changeEvent(Event *ev, short status);
 		void	_handleEvent(Event *ev);

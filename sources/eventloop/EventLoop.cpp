@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/31 18:05:49 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/01 09:50:31 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,18 +33,20 @@ void EventLoop::unregisterEventHandler(IEventHandler *eventHandler)
 	_handlers.erase(eventHandler->getHandleType());
 }
 
+/*
 void EventLoop::handleEvents(void)
 {
 	Event	*event;
 	
 	while (!_eventQueue.empty())
 	{	
+		
 		event = _eventQueue.front();
 		_handleEvent(event);
 		_eventQueue.pop();
+
 		if (event && event->isClientDisconnect())
 		{
-			std::cout << "Cliente se desconectou" << std::endl;
  			_handleClientDisconnect(event);
 			continue ;
 		}
@@ -55,6 +57,38 @@ void EventLoop::handleEvents(void)
 		}
 		if (event && event->getActualState() == TYPE_TRANSITION)
 			_eventQueue.push(event);
+	}
+	_checkIfCgiScriptsFinished();
+	//_closeTimeoutEvents();
+}
+*/
+
+
+void EventLoop::handleEvents(void)
+{
+	Event	*event;
+	int		fd;
+	
+	while (!_eventQueue1.empty())
+	{	
+		
+		fd = _eventQueue1.front();
+		_eventQueue1.pop();
+		event = _getEventFromMap(_eventMap, fd);
+		if (event)
+			_handleEvent(event);
+		if (event && event->isClientDisconnect())
+		{
+ 			_handleClientDisconnect(event);
+			continue ;
+		}
+		if (event && event->isFinished())
+		{
+			_finalizeEvent(event);
+			continue ;
+		}
+		if (event && event->getActualState() == TYPE_TRANSITION)
+			_eventQueue1.push(event->getFd());
 	}
 	_checkIfCgiScriptsFinished();
 	//_closeTimeoutEvents();
@@ -148,7 +182,8 @@ void EventLoop::_addEventToMap(Event *event)
 
 void EventLoop::_addEventToQueue(Event *event)
 {
-	_eventQueue.push(event);
+	//_eventQueue.push(event);
+	_eventQueue1.push(event->getFd());
 }
 
 void EventLoop::_deleteEvent(int fd)
@@ -257,6 +292,7 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 }
 */
 
+/*
 void EventLoop::_checkIfCgiScriptsFinished(void)
 {
 	std::map<int, Event*>::iterator	itMap;
@@ -294,7 +330,45 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 	}
 	//std::cout << "CGImapsize: " << _cgiEventMap.size() << std::endl;
 }
+*/
 
+void EventLoop::_checkIfCgiScriptsFinished(void)
+{
+	std::map<int, Event*>::iterator	itMap;
+	std::map<int, Event*>::iterator	itMapBackUp;
+	Event							*event;
+	int								fd;
+	int								status;
+
+	if (_cgiEventMap.empty())
+		return ;
+	itMap = _cgiEventMap.begin();
+	while (itMap != _cgiEventMap.end())
+	{
+		fd = itMap->first;
+		if (!_getEventFromMap(_eventMap, fd))
+		{
+			_cgiEventMap.erase(itMap);
+			continue ;
+		}
+		event = itMap->second;
+		status = event->getCgiExitStatus();
+		if (status == NO_EXIT_STATUS)
+			event->isCgiScriptEnd();
+		else if (status != NO_EXIT_STATUS)
+		{
+			event->setActualState(TYPE_TRANSITION);
+			_eventQueue1.push(event->getFd());
+			itMapBackUp = itMap;
+			itMapBackUp++;
+			_cgiEventMap.erase(itMap);
+			itMap = itMapBackUp;
+			continue ;
+		}
+		itMap++;
+	}
+	//std::cout << "CGImapsize: " << _cgiEventMap.size() << std::endl;
+}
 
 // NEW FUNCTIONS
 
