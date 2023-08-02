@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import sys
-import os
 
 class Unbuffered(object):
    def __init__(self, stream):
@@ -17,18 +16,17 @@ class Unbuffered(object):
 
 sys.stdout = Unbuffered(sys.stdout)
 
-message = input()
+content_length = 9
 
-RequestMethod = os.environ.get("REQUEST_METHOD")
+input_data = input()
 
-htmlfile = "<!DOCTYPE html> <html> <body> <h1> Hello World </h1> " 
-htmlfile += "<h2> " + " ---- Body Message ---- " + " </h2>"
-htmlfile += "<p> " + message + " </p>"
-htmlfile += "<h2> " + " ---- Env Variables ---- " + " </h2>"
-for key, value in os.environ.items():
-	if key != 'LC_CTYPE':
-		htmlfile += "<p> " + str(key) + " -> " + str(value) + " </p>"
-htmlfile += " </body> </html>"
+nome_arquivo = "fromPython.txt"
+
+# Abre o arquivo no modo de escrita ("w") e grava o input nele
+with open(nome_arquivo, "w") as arquivo:
+    arquivo.write(input_data)
+
+htmlfile = "<!DOCTYPE html> <html> <body> <h1> Mensagem enviada para o Script </h1> </body> </html>"
 
 out = "HTTP/1.1 200 OK\r\n"
 out += "Server: webserv\r\n"
@@ -38,5 +36,4 @@ out += "\r\n"
 out += htmlfile
 
 print(out)
-
 exit(0)

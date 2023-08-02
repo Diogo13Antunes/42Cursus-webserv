@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/27 15:42:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/02 08:33:26 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ class Event
 		short	_connectionClosed;
 		bool	_clientDisconnect;
 		int		_cgiExitStatus;
+		size_t	_cgiSentChars;
 
 
 	public:
@@ -201,6 +202,9 @@ class Event
 		bool				isClientClosed(void);
 		void				setClientClosed(void);
 
+		void				updateCgiSentChars(size_t value);
+		size_t				getCgiSentChars(void);
+
 		// Important Criar uma função para eliminar o CGI (Fazer delete) Verificar se já é feito
 		CGIExecuter*		getCgiEx(void);
 		void				setCgiEx(CGIExecuter *cgiEx);
@@ -215,14 +219,16 @@ class Event
 		std::string					getReqMethod(void);
 		std::string					getServerProtocol(void);
 		std::string					getReqContentType(void);
-
+		size_t						getReqContentLength(void);
 		
 		//New functions of request parser
-		std::string	getReqLineTarget(void);
-		std::string	getReqLineHttpVersion(void);
-		std::string	getReqLineMethod(void);
-		std::string	getReqLinePath(void);
-		void		parseHeader(std::string &header);
+		std::string		getReqLineTarget(void);
+		std::string		getReqLineHttpVersion(void);
+		std::string		getReqLineMethod(void);
+		std::string		getReqLinePath(void);
+		void			setReqBody(std::string body);
+		std::string&	getReqBody(void);
+		void			parseHeader(std::string &header);
 
 		EventType	getOldState(void);
 		EventType	getActualState(void);
@@ -236,7 +242,7 @@ class Event
 
 
 		void	cgiExecute(void);
-		int		writeToCgi(std::string &str);
+		int		writeToCgi(const char *str);
 		int		readFromCgi(std::string &str);
 
 		void	setCgiExitStatus(int cgiExitStatus);

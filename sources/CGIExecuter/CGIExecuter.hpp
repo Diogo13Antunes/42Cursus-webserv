@@ -34,7 +34,7 @@ class CGIExecuter
 	
 		int			getReadFD(void);
 		int			getWriteFD(void);
-		int			writeToScript(std::string &str);
+		int			writeToScript(const char *str);
 		int			readFromScript(std::string &str);
 
 		void		execute(std::string script, std::string message, char **env);

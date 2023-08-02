@@ -48,6 +48,7 @@ class RequestParser
 
 		std::string											getRequestLine(void);
 		std::string 										getRequestBody(void);
+		std::string& 										getRequestBodyRef(void);
 		std::map<std::string, std::vector<std::string> >	getRequestHeader(void);
 
 		std::string											getReqLineTarget(void);

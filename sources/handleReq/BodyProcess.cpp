@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BodyProcess.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:49:57 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/21 10:08:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 16:34:46 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,13 @@ BodyProcess::~BodyProcess(void) {}
 StateType BodyProcess::handle(Event *event)
 {
 	const std::string	req = event->getReqRaw1();
-	RequestParser		parser;
 	std::string			body;
-	
-	if (event->getBodySize() != req.size())
+
+	if (event->getReqContentLength() != req.size())
 		return (BODY_PROCESS);
 
 	body = req;
-	parser.bodyParse(body);//provavelmente tem de ser alterado
-	event->setResquestBody(parser.getRequestBody());
-	
+	event->setReqBody(body);
+
 	return (REQUEST_END);
 }

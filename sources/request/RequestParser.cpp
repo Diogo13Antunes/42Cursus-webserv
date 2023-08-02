@@ -116,6 +116,11 @@ std::string RequestParser::getRequestBody(void)
 	return (_requestBody);
 }
 
+std::string& RequestParser::getRequestBodyRef(void)
+{
+	return (_requestBody);
+}
+
 std::map<std::string, std::vector<std::string> > RequestParser::getRequestHeader(void)
 {
 	return (_requestHeader);

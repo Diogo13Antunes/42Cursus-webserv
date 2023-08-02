@@ -13,13 +13,12 @@
 		throw FailToIinitPipesException();
 }*/
 
-
 // O construtor precisa de receber como parametro o que necessita de entrar dentro do _execute()
 CGIExecuter::CGIExecuter(void): _statusCode(0)
 {
 	if (!_initPipes())
 		throw FailToIinitPipesException();
-	_execute(NULL, "cgi-bin/cgi_script.py");
+	_execute(NULL, "cgi-bin/script.py");
 }
 
 /*
@@ -116,12 +115,11 @@ int	CGIExecuter::getWriteFD(void)
 	return (_pipe1[1]);
 }
 
-int CGIExecuter::writeToScript(std::string &str)
+int CGIExecuter::writeToScript(const char *str)
 {
-	int	fd;
-
+	int fd;
 	fd = this->getWriteFD();
-	return (write(fd, str.c_str(), str.size()));
+	return (write(fd, str, std::strlen(str)));
 }
 
 int CGIExecuter::readFromScript(std::string &str)

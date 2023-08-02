@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HeaderProcess.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 18:26:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/07/27 16:28:21 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ StateType HeaderProcess::handle(Event *event)
 	//if (!event->getReqLinePath().compare("/cgi"))
 	//	event->setCgiFlag(true);
 	// não deve ser feito aqui
-	if (!event->getBodySize())
+	if (!event->getReqContentLength())
 		return (REQUEST_END);
 	return (BODY_PROCESS);
 }
