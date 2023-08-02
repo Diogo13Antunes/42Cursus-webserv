@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:15:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/19 16:43:48 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/02 14:23:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ HandleReq::HandleReq(void): _event(NULL)
 {
 	_stateMap.insert(std::make_pair(HEADER_PROCESS, new HeaderProcess()));
 	_stateMap.insert(std::make_pair(BODY_PROCESS, new BodyProcess()));
+	_stateMap.insert(std::make_pair(CHUNKED_BODY_PROCESS, new ChunkedBodyProcess()));
 }
 
 HandleReq::~HandleReq(void)

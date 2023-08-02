@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HeaderProcess.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/27 16:28:21 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/02 14:24:14 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,30 @@ StateType HeaderProcess::handle(Event *event)
 	headerEndIdx = req.find("\r\n\r\n");
 	if (headerEndIdx == req.npos)
 		return (HEADER_PROCESS);
-	header = req.substr(0, headerEndIdx + 4);
+
+	header = req.substr(0, headerEndIdx + 4); // para remover provavelmente
 
 	event->setReqRaw1(req.substr(headerEndIdx + 4));
 
-	// nova funcao
-	event->parseHeader(header);
+	event->parseHeader(header); // para remover provavelmente
 
-	// não deve ser feito aqui
-	//cgi deixou de funcionar devido ao novo parser do header resolver depois
-	//if (!event->getReqLinePath().compare("/cgi"))
-	//	event->setCgiFlag(true);
-	// não deve ser feito aqui
-	if (!event->getReqContentLength())
-		return (REQUEST_END);
-	return (BODY_PROCESS);
+	// first verify if a error occors in parser
+
+	if (_isChunkedTransfer(event))
+		return (CHUNKED_BODY_PROCESS);
+	if (event->getReqContentLength())
+		return (BODY_PROCESS);
+	return (REQUEST_END);
+}
+
+bool HeaderProcess::_isChunkedTransfer(Event *event)
+{
+	std::string transferEconding;
+
+	transferEconding = event->getReqTransferEncoding();
+
+	if (!transferEconding.compare("chunked"))
+		return (true);
+	else
+		return (false);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   BodyProcess.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:49:57 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/27 16:34:46 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/02 08:59:55 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ StateType BodyProcess::handle(Event *event)
 
 	body = req;
 	event->setReqBody(body);
+
+	std::cout << "---BODY---" << std::endl;
+	std::cout << body << std::endl;
 
 	return (REQUEST_END);
 }

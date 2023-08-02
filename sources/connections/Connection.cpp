@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/01 14:03:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/02 17:39:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Connection::Connection(int fd):
 
 Connection::~Connection(void)
 {
-	std::cout << "remove connection: " << _fd << std::endl;
+	//std::cout << "remove connection: " << _fd << std::endl;
 	close(_fd);
 }
 

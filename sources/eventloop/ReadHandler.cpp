@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 18:28:32 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/02 17:40:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,10 @@ void ReadHandler::handleEvent(Event *event)
 	_handleReq->handle();
 	if (!_handleReq->isProcessingComplete())
 		return ;
+
+	std::cout << "---Body---" << std::endl;
+	std::cout << event->getReqBody() << std::endl;
+
 	event->setActualState(TYPE_TRANSITION);
 
 	/*if (event->getCgiFlag())

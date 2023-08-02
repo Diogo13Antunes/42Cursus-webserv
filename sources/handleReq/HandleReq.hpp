@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:15:09 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/19 16:43:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/02 14:23:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "IState.hpp"
 #include "HeaderProcess.hpp"
 #include "BodyProcess.hpp"
+#include "ChunkedBodyProcess.hpp"
 
 class HandleReq
 {

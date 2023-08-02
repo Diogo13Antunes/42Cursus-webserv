@@ -60,6 +60,7 @@ class RequestParser
 		std::string											getQueryString(void);
 
 		int													headerParse(std::string	&header);
-		void												bodyParse(std::string &body);
+		void												bodyParse(std::string &body); // setReqBody -> se calhar pode ir para o evento
+		void												updateReqBody(std::string &body);
 
 };

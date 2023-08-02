@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/02 08:33:26 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/02 17:28:17 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ class Event
 		int		_cgiExitStatus;
 		size_t	_cgiSentChars;
 
+		std::string _body;
 
 	public:
 		Event(void);
@@ -230,6 +231,8 @@ class Event
 		std::string&	getReqBody(void);
 		void			parseHeader(std::string &header);
 
+		std::string		getReqTransferEncoding(void);
+
 		EventType	getOldState(void);
 		EventType	getActualState(void);
 		void		setActualState(EventType actualState);
@@ -247,4 +250,7 @@ class Event
 
 		void	setCgiExitStatus(int cgiExitStatus);
 		int		getCgiExitStatus(void);
+
+		std::string	getBody(void);		
+		void		updateReqBody(std::string body);
 };

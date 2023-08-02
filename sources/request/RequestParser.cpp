@@ -68,6 +68,11 @@ void RequestParser::bodyParse(std::string &body)
 	_requestBody = body;
 }
 
+void RequestParser::updateReqBody(std::string &body)
+{
+	_requestBody += body;
+}
+
 int RequestParser::_isValidRequestHeader(void)
 {
 	if (!_statusCode)

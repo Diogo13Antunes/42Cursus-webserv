@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   HeaderProcess.hpp                                  :+:      :+:    :+:   */
+/*   ChunkedBodyProcess.hpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/22 15:30:22 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/02 14:08:07 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/08/02 14:19:13 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/08/02 15:04:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 #include "IState.hpp"
 
-class HeaderProcess: public IState
+class ChunkedBodyProcess: public IState
 {
 	private:
-		bool _isChunkedTransfer(Event *event);
+		int _hexToDec(std::string hex);
 
 	public:
-		HeaderProcess(void);
-		~HeaderProcess(void);
-		
+		ChunkedBodyProcess(void);
+		~ChunkedBodyProcess(void);
+
 		StateType handle(Event *event);
 };

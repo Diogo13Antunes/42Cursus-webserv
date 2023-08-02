@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/02 08:33:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/02 17:35:27 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -691,6 +691,17 @@ size_t	Event::getReqContentLength(void)
 	return (0);
 }
 
+std::string	Event::getReqTransferEncoding(void)
+{
+	std::vector<std::string> transferEncoding;
+
+	transferEncoding = _reqParser.getHeaderField("transfer-encoding");
+	if (!transferEncoding.empty())
+		return (transferEncoding.at(0));
+	return (std::string());
+}
+
+
 std::string	Event::getReqLineTarget(void)
 {
 	return (_reqParser.getReqLineTarget());
@@ -819,4 +830,14 @@ void	Event::updateCgiSentChars(size_t value)
 size_t	Event::getCgiSentChars(void)
 {
 	return (_cgiSentChars);
+}
+
+std::string Event::getBody(void)
+{
+	return (_body);
+}
+
+void Event::updateReqBody(std::string body)
+{
+	_reqParser.updateReqBody(body);
 }
