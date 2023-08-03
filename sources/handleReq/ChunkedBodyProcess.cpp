@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/02 14:19:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 10:53:22 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 16:30:19 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,12 @@ StateType ChunkedBodyProcess::handle(Event *event)
 
 	while (true)
 	{
-
 		index = bodyChunked.find("0\r\n\r\n");
-		if (index != bodyChunked.npos)
+		if (index == 0)
+		{
+			//std::cout << event->getReqBody() << std::endl;
 			return (REQUEST_END);
+		}
 		index = bodyChunked.find("\r\n");
 		if (index == bodyChunked.npos)
 			return (CHUNKED_BODY_PROCESS);
@@ -77,7 +79,7 @@ StateType ChunkedBodyProcess::handle(Event *event)
 		
 		//std::cout << "---Body---" << std::endl;
 		//std::cout << bodyChunked.substr(index, bodySize) << std::endl;
-		
+
 		event->updateReqBody(bodyChunked.substr(index, bodySize));
 		event->setReqRaw1(bodyChunked.substr(totalSize));
 		bodyChunked = bodyChunked.substr(totalSize);

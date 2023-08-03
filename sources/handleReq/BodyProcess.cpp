@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:49:57 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 11:24:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 16:30:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,9 @@ StateType BodyProcess::handle(Event *event)
 	event->setReqRaw1("");
 
 	if (event->getReqBodySize() >= event->getReqContentLength())
+	{
+		//std::cout << event->getReqBody() << std::endl;
 		return (REQUEST_END);
+	}
 	return (BODY_PROCESS);
 }

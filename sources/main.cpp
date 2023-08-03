@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/27 11:45:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 12:17:31 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ int main(int argc, char **argv)
 	eventLoop.registerEventHandler(new TypeTransitionHandler());
 	//eventLoop.registerEventHandler(factory.getEventHandler(WRITE_EVENT));
 
-	std::cout << "Server started at port: " << PORT << std::endl;
+	//std::cout << "Server started at port: " << PORT << std::endl;
     while(1)
     {
 		conns.updateAllConnections();

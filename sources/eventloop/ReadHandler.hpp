@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:54:59 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 11:50:19 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 16:28:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 #include "Configs.hpp"
 #include "ConfigsData.hpp"
 
-#define BUFF_SIZE1 100000
+#define BUFF_SIZE1 1
 //#define BUFF_SIZE1 2
 
 

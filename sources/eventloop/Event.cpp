@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 11:25:17 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 14:14:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,6 +285,7 @@ void Event::setResVect(void)
 	}
 }
 
+/*
 void Event::printVectDebug(void)
 {
 	std::cout << "############## Print Response ################" << std::endl;
@@ -293,6 +294,7 @@ void Event::printVectDebug(void)
 		std::cout << _resVect.at(i) << std::endl;
 	}
 }
+*/
 
 ssize_t Event::getNumWrited(void)
 {

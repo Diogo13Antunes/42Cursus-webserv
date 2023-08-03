@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 09:14:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 14:18:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,6 @@ void ReadHandler::handleEvent(Event *event)
 	_handleReq->handle();
 	if (!_handleReq->isProcessingComplete())
 		return ;
-
-	std::cout << event->getReqBody() << std::endl;
-
 	event->setActualState(TYPE_TRANSITION);
 }
 
