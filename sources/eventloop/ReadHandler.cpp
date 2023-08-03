@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/02 17:40:00 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 09:14:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,9 @@ void ReadHandler::handleEvent(Event *event)
 	std::string	buff;	
 
 	_handleReq->setEvent(event);
-	valread = read(event->getFd(), _buffer, BUFF_SIZE1 - 1);
-	if (valread == 0 || valread == -1)
+	valread = read(event->getFd(), _buffer, BUFF_SIZE1);
+	if (valread <= 0)
 	{
-		//std::cout << "FECHOU O NAVEGADOR: " << valread << std::endl;
-		//event->setState(CLOSED_EVENT);
-		//event->setClientClosed();
 		event->setClientDisconnected();
 		return ;
 	}
@@ -70,19 +67,9 @@ void ReadHandler::handleEvent(Event *event)
 	if (!_handleReq->isProcessingComplete())
 		return ;
 
-	std::cout << "---Body---" << std::endl;
 	std::cout << event->getReqBody() << std::endl;
 
 	event->setActualState(TYPE_TRANSITION);
-
-	/*if (event->getCgiFlag())
-	{
-		//std::cout << "Coloca CGI STATE" << std::endl;
-		event->setState(CGI_EVENT);
-	}
-	else
-		event->setActualState(TYPE_TRANSITION);//event->setState(READ_EVENT_COMPLETE);//event->setState(WRITE_EVENT);
-	*/
 }
 
 EventType ReadHandler::getHandleType(void)

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/02 17:28:17 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 11:23:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,4 +253,5 @@ class Event
 
 		std::string	getBody(void);		
 		void		updateReqBody(std::string body);
+		size_t		getReqBodySize(void);
 };

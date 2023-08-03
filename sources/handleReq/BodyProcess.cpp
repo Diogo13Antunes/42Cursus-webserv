@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:49:57 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/02 08:59:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 11:24:38 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ BodyProcess::BodyProcess(void) {}
 
 BodyProcess::~BodyProcess(void) {}
 
+/*
 StateType BodyProcess::handle(Event *event)
 {
 	const std::string	req = event->getReqRaw1();
@@ -28,8 +29,19 @@ StateType BodyProcess::handle(Event *event)
 	body = req;
 	event->setReqBody(body);
 
-	std::cout << "---BODY---" << std::endl;
-	std::cout << body << std::endl;
+	//std::cout << "---BODY---" << std::endl;
+	//std::cout << body << std::endl;
 
 	return (REQUEST_END);
+}
+*/
+
+StateType BodyProcess::handle(Event *event)
+{
+	event->updateReqBody(event->getReqRaw1());
+	event->setReqRaw1("");
+
+	if (event->getReqBodySize() >= event->getReqContentLength())
+		return (REQUEST_END);
+	return (BODY_PROCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/02 17:35:27 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 11:25:17 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -733,6 +733,7 @@ void Event::parseHeader(std::string &header)
 
 	int	statusCode;
 
+
 	statusCode = _reqParser.headerParse(header);
 	switch (statusCode)
 	{
@@ -840,4 +841,9 @@ std::string Event::getBody(void)
 void Event::updateReqBody(std::string body)
 {
 	_reqParser.updateReqBody(body);
+}
+
+size_t Event::getReqBodySize(void)
+{
+	return (_reqParser.getRequestBodyRef().size());
 }
