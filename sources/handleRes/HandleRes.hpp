@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleRes.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:27:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 12:10:19 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class HandleRes
 		StateResType _handleState(StateResType state);
 	public:
 		HandleRes(void);
-		HandleRes(ConfigsData configsData);
+		HandleRes(ConfigsData &configsData);
 		HandleRes(Event *event);
 		HandleRes(const HandleRes &src);
 		~HandleRes(void);

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 14:31:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 16:06:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,13 +173,13 @@ bool Event::isBodyComplete(void)
 	return (bodyComplete);
 }
 
-void Event::createResponse(ConfigsData configsData)
+/* void Event::createResponse(ConfigsData &configsData)
 {
 	std::string	reqPath;
 	std::string filePath;
 	std::string	contentType;
 
-	reqPath = _reqParsed.getPath();
+	reqPath = _reqParser.getPath();
 	//std::cout << "path: " << reqPath << std::endl;
 
 	if (!reqPath.compare("/"))
@@ -197,7 +197,7 @@ void Event::createResponse(ConfigsData configsData)
 	}
 
 	//std::cout << "respose: " << this->getResponse() << std::endl;
-}
+} */
 
 
 // New Methods

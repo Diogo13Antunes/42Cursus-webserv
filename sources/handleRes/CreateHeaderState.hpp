@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CreateHeaderState.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 16:38:17 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 12:14:37 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 class CreateHeaderState: public IStateRes
 {
 	private:
-		std::string	_getFileName(std::string reqTarget, ConfigsData conf);
+		std::string	_getFileName(std::string reqTarget, ConfigsData &conf);
 		size_t		_getFileSize(std::string fileName);
 		bool		_isFileReadable(std::string fileName);
 		void		_createHeader(std::string &header, std::string fileName, Event *event);

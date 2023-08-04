@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 14:26:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 16:08:12 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,17 +46,10 @@
 // O configs pode receber o data e modificar o data dentro dele.
 bool	initConfigs(const char *filename, ConfigsData &data)
 {
-	std::string	key, value;
-
 	try
 	{
 		Configs	cfg(filename);
-		while (cfg.getNextConfig(key, value))
-			data.addNewConfigs(key, value);
-		//std::cout << "listen:   " << data.getListen() << std::endl;
-		//std::cout << "ServName: " << data.getServerName() << std::endl;
-		//std::cout << "Root:     " << data.getRoot() << std::endl;
-		// std::cout << "Index:    " << data.getIndex() << std::endl;
+		data.setupConfigs(cfg.getFileContentVector());
 	}
 	catch(const std::exception& e)
 	{
@@ -112,9 +105,9 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
 
-	ConfigsData	data;
-	initConfigs(argv[1], data);
-
+	ConfigsData	confData;
+	if (!initConfigs(argv[1], confData))
+		return (1);
 
 	Messenger			messenger;
 
@@ -128,7 +121,7 @@ int main(int argc, char **argv)
 	
 	//eventLoop.registerEventHandler(factory.getEventHandler(READ_EVENT));
 	eventLoop.registerEventHandler(new ReadSocketHandler(new HandleReq()));
-	eventLoop.registerEventHandler(new WriteHandler(new HandleRes(data)));
+	eventLoop.registerEventHandler(new WriteHandler(new HandleRes(confData)));
 	eventLoop.registerEventHandler(new CGIHandler(new HandleCgi()));
 	eventLoop.registerEventHandler(new ReadCgiHandler());
 	eventLoop.registerEventHandler(new WriteCgiHandler());

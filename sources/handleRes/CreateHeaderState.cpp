@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CreateHeaderState.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/21 09:35:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/03 15:14:55 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,21 +73,31 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 	return (GET_BODY);
 }
 
-std::string CreateHeaderState::_getFileName(std::string reqTarget, ConfigsData conf)
+std::string CreateHeaderState::_getFileName(std::string reqTarget, ConfigsData &conf)
 {
-	std::string fileName;
-	std::string path;
+	ServerConfig	actulServer;
+	std::string		fileName;
+	std::string		path;
 
-	if (!reqTarget.compare("/"))
+	actulServer = conf.getServers().at(0);
+	fileName = actulServer.getFilePathByRoute(reqTarget);
+
+	if (fileName.empty())
+	{
+		path = actulServer.getGlobalRoutePath();
+		fileName = path + "/" + reqTarget;
+	}
+
+	return (fileName);
+
+	/* if (!reqTarget.compare("/"))
 		fileName = conf.getConfig("root");
 	else
 		fileName = conf.getConfig(reqTarget.substr(1));
-
-	// Path configuration is expected to be a valid file path pointing to the location of the pages.
+	Path configuration is expected to be a valid file path pointing to the location of the pages.
 	path = conf.getConfig("path");
 	if (fileName.empty() && !path.empty())
-		fileName = path + "/" + reqTarget;
-	return (fileName);
+		fileName = path + "/" + reqTarget; */
 }
 
 bool CreateHeaderState::_isFileReadable(std::string fileName)

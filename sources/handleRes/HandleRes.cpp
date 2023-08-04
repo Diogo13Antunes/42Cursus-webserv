@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleRes.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/12 16:58:24 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/03 12:10:01 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ HandleRes::HandleRes(void):
 	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
 
-HandleRes::HandleRes(ConfigsData configsData):
+HandleRes::HandleRes(ConfigsData &configsData):
 	_event(NULL),
 	_configsData(configsData),
 	_state(CREATE_HEADER)
