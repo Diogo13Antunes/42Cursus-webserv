@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 12:13:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 13:52:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,4 +261,6 @@ class Event
 		bool isReqHeaderComplete(void);
 		void parseReqHeader(std::string &header);
 		const std::string& getReqHeader(void);
+		const std::string& getReqRawData(void);
+		void clearReqRawData(void);
 };

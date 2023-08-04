@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 12:38:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 13:48:47 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,6 @@ void Event::setReqState(StateReqType reqState)
 	_reqState = reqState;
 }
 
-
 void Event::updateReqRawData(std::string &req)
 {
 	_reqRaw += req;
@@ -232,7 +231,7 @@ const std::string& Event::getReqHeader(void)
 	if (idx == _reqRaw.npos)
 		return (_reqHeader);
 	_reqHeader = _reqRaw.substr(0, idx + 4);
-	_reqRaw.erase(0, _reqHeader.size());	
+	_reqRaw.erase(0, _reqHeader.size());
 	return (_reqHeader);
 }
 
@@ -249,6 +248,16 @@ void Event::setReqRaw1(std::string req)
 const std::string&  Event::getReqRaw1(void)
 {
 	return (_reqRaw);
+}
+
+const std::string&  Event::getReqRawData(void)
+{
+	return (_reqRaw);
+}
+
+void Event::clearReqRawData(void)
+{
+	_reqRaw.clear();
 }
 
 void Event::setHeaderRaw(std::string header)
