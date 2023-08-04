@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/01 14:10:29 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 14:31:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void TypeTransitionHandler::handleEvent(Event *event)
 {
 	//std::cout << "StateTransitionHandler" << std::endl;
 
-	if (event->getOldState() == READ_EVENT)
+	if (event->getOldState() == READ_SOCKET)
 	{
 		if (!event->getReqLinePath().compare(CGI_PATH))
 		{
@@ -36,7 +36,7 @@ void TypeTransitionHandler::handleEvent(Event *event)
 	else if (event->getOldState() == WRITE_EVENT)
 	{
 		event->setAsFinished();
-		event->setActualState(READ_EVENT);
+		event->setActualState(READ_SOCKET);
 	}
 	else if (event->getOldState() == WRITE_CGI)
 	{

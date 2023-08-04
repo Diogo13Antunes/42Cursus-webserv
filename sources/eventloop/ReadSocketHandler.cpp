@@ -1,32 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ReadHandler.cpp                                    :+:      :+:    :+:   */
+/*   ReadSocketHandler.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 14:13:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 14:27:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ReadHandler.hpp"
+#include "ReadSocketHandler.hpp"
 #include "HandleReq.hpp"
 #include <unistd.h>
 #include <string>
 
-ReadHandler::ReadHandler(HandleReq *handleReq): IEventHandler()
+ReadSocketHandler::ReadSocketHandler(HandleReq *handleReq): IEventHandler()
 {
 	_handleReq = handleReq;
 }
 
-ReadHandler::~ReadHandler(void) 
+ReadSocketHandler::~ReadSocketHandler(void) 
 {
 	if (_handleReq)
 		delete _handleReq;
 }
 
-void ReadHandler::handleEvent(Event *event)
+void ReadSocketHandler::handleEvent(Event *event)
 {
 	std::string	buffer;
 	ssize_t		valread;
@@ -46,7 +46,7 @@ void ReadHandler::handleEvent(Event *event)
 	event->setActualState(TYPE_TRANSITION);
 }
 
-EventType ReadHandler::getHandleType(void)
+EventType ReadSocketHandler::getHandleType(void)
 {
-	return (READ_EVENT);
+	return (READ_SOCKET);
 }

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/01 14:10:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 14:31:31 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,14 +95,14 @@ void EventLoop::_registerReadEvent(int fd)
 	event = _getEventFromMap(_eventMap, fd);
 	if (!event)
 	{
-		event = new Event(fd, READ_EVENT);
+		event = new Event(fd, READ_SOCKET);
 		_addEventToMap(fd, event);
 		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
 	}
 	if (event)
 	{
 		type = event->getActualState();
-		if ((type == READ_EVENT && event->getFd() == fd)
+		if ((type == READ_SOCKET && event->getFd() == fd)
 			|| (type == READ_CGI && event->getCgiReadFd() == fd))
 			_addEventToQueue(fd);
 		else
@@ -301,7 +301,7 @@ void EventLoop::_sendMessages(Event *event)
 		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_WRITE));
 
 	}
-	else if (type == READ_EVENT)
+	else if (type == READ_SOCKET)
 	{
 		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_READ));
 		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_RESTART_TIMER));

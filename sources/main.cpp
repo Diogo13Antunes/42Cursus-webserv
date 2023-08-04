@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 09:42:01 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 14:26:43 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ int main(int argc, char **argv)
 	eventDemux.setMessenger(&messenger);
 	
 	//eventLoop.registerEventHandler(factory.getEventHandler(READ_EVENT));
-	eventLoop.registerEventHandler(new ReadHandler(new HandleReq()));
+	eventLoop.registerEventHandler(new ReadSocketHandler(new HandleReq()));
 	eventLoop.registerEventHandler(new WriteHandler(new HandleRes(data)));
 	eventLoop.registerEventHandler(new CGIHandler(new HandleCgi()));
 	eventLoop.registerEventHandler(new ReadCgiHandler());

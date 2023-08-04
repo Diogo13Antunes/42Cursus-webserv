@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 13:48:47 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 14:31:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ Event::Event(int fd, int state):
 	_creationTime(Timer::getActualTimeStamp()),
 	_clientClosed(false),
 	_cgiEx(NULL),
-	_actualState(READ_EVENT),
+	_actualState(READ_SOCKET),
 	_finished(false),
 	_connectionClosed(-1),
 	_clientDisconnect(false),
