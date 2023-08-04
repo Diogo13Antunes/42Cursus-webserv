@@ -1,28 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   EventHandlerFactory.hpp                            :+:      :+:    :+:   */
+/*   StateReqType.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/17 19:03:49 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/05/17 19:53:54 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/06/23 12:11:49 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/08/04 11:00:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "IEventHandler.hpp"
-#include "ReadHandler.hpp"
-#include "WriteHandler.hpp"
-
-class EventHandlerFactory
+typedef enum 
 {
-	public:
-		EventHandlerFactory &operator=(const EventHandlerFactory &src);
-		EventHandlerFactory(const EventHandlerFactory &src);
-		EventHandlerFactory(void);
-		~EventHandlerFactory(void);
-
-		IEventHandler *getEventHandler(EventType type);
-};
+	HEADER_PROCESS,
+	BODY_PROCESS,
+	CHUNKED_BODY_PROCESS,
+	REQUEST_END
+}	StateReqType;

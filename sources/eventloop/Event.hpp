@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 11:23:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 12:13:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "RequestParser.hpp"
 #include "Configs.hpp"
 #include "ConfigsData.hpp"
-#include "StateType.hpp"
+#include "StateReqType.hpp"
 #include "StateResType.hpp"
 #include "StateCgiType.hpp"
 #include "CGIExecuter.hpp"
@@ -50,7 +50,7 @@ class Event
 		short		_state;
 		short		_parseState;
 
-		StateType	_reqState;
+		StateReqType	_reqState;
 
 		int			_resState;
 
@@ -93,6 +93,8 @@ class Event
 
 		std::string _body;
 
+		std::string _reqHeader;
+
 	public:
 		Event(void);
 		Event(int fd, int state);
@@ -117,7 +119,7 @@ class Event
 
 		void		setParseState(int state);
 
-		void		updateReqRaw(std::string req);
+		//void		updateReqRaw(std::string req);
 
 		bool		isBodyComplete(void);
 
@@ -125,9 +127,9 @@ class Event
 
 
 		//New
-		StateType			getReqState(void);
-		void				setReqState(StateType reqState);
-		void				updateReqRaw1(std::string &req);
+		StateReqType			getReqState(void);
+		void				setReqState(StateReqType reqState);
+		void				updateReqRawData(std::string &req);
 		const std::string&  getReqRaw1(void);
 
 		void setHeaderRaw(std::string header);
@@ -254,4 +256,9 @@ class Event
 		std::string	getBody(void);		
 		void		updateReqBody(std::string body);
 		size_t		getReqBodySize(void);
+
+
+		bool isReqHeaderComplete(void);
+		void parseReqHeader(std::string &header);
+		const std::string& getReqHeader(void);
 };

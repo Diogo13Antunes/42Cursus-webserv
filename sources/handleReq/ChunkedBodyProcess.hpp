@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/02 14:19:13 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 14:19:32 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 11:07:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,5 +23,5 @@ class ChunkedBodyProcess: public IState
 		ChunkedBodyProcess(void);
 		~ChunkedBodyProcess(void);
 
-		StateType handle(Event *event);
+		StateReqType handle(Event *event);
 };

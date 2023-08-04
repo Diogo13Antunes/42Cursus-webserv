@@ -6,29 +6,25 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:15:09 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/02 14:23:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 11:05:17 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <iostream>
 #include <map>
 #include "Event.hpp"
-#include "StateType.hpp"
+#include "StateReqType.hpp"
 #include "IState.hpp"
-#include "HeaderProcess.hpp"
-#include "BodyProcess.hpp"
-#include "ChunkedBodyProcess.hpp"
 
 class HandleReq
 {
     private:
-		std::map<StateType, IState*>	_stateMap; 
+		std::map<StateReqType, IState*>	_stateMap; 
 		Event							*_event;
 
-		bool		_changeState(StateType newState);
-		StateType	_handleCurrentState(StateType state);
+		bool			_changeState(StateReqType newState);
+		StateReqType	_handleCurrentState(StateReqType state);
 		
     public:
 		HandleReq(void);

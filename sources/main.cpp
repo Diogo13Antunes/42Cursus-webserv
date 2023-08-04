@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 12:17:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 09:42:01 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@
 #include "Connections.hpp"
 
 #include "EventLoop.hpp"
-#include "EventHandlerFactory.hpp"
-
 #include "Messenger.hpp"
 
 #include "EventDemux.hpp"
@@ -119,7 +117,6 @@ int main(int argc, char **argv)
 
 
 	Messenger			messenger;
-	EventHandlerFactory	factory;
 
 	EventLoop			eventLoop;
 	Connections			conns;

@@ -6,11 +6,14 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:15:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/02 14:23:22 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 11:12:49 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "HandleReq.hpp"
+#include "HeaderProcess.hpp"
+#include "BodyProcess.hpp"
+#include "ChunkedBodyProcess.hpp"
 
 HandleReq::HandleReq(void): _event(NULL)
 {
@@ -21,10 +24,10 @@ HandleReq::HandleReq(void): _event(NULL)
 
 HandleReq::~HandleReq(void)
 {
-	std::map<StateType, IState*>::iterator	it;
+	std::map<StateReqType, IState*>::iterator	it;
 
 	it = _stateMap.begin();
-	while (it !=  _stateMap.end())
+	while (it != _stateMap.end())
 	{
 		if (it->second)
 			delete it->second;
@@ -42,7 +45,7 @@ void HandleReq::handle(void)
 	while (_changeState(_handleCurrentState(_event->getReqState())));
 }
 
-bool HandleReq::_changeState(StateType newState)
+bool HandleReq::_changeState(StateReqType newState)
 {
 	if (_event->getReqState() != newState)
 	{
@@ -52,15 +55,17 @@ bool HandleReq::_changeState(StateType newState)
 	return (false);
 }
 
-StateType HandleReq::_handleCurrentState(StateType state)
+StateReqType HandleReq::_handleCurrentState(StateReqType state)
 {
-	std::map<StateType, IState*>::iterator	it;
+	std::map<StateReqType, IState*>::iterator	it;
 
 	if (state != REQUEST_END)
 	{
 		it = _stateMap.find(state);
 		if (it != _stateMap.end())
 			state = it->second->handle(_event);
+		else
+			state = REQUEST_END;
 	}
 	return (state);
 }

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/02 14:24:14 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 12:34:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,25 +19,14 @@ HeaderProcess::HeaderProcess(void) {}
 
 HeaderProcess::~HeaderProcess(void) {}
 
-StateType HeaderProcess::handle(Event *event)
+StateReqType HeaderProcess::handle(Event *event)
 {
-	const std::string	req = event->getReqRaw1();
-	size_t				headerEndIdx;
-	RequestParser		parser;
-	std::string			header;
+	std::string header;
 
-	headerEndIdx = req.find("\r\n\r\n");
-	if (headerEndIdx == req.npos)
+	if (!event->isReqHeaderComplete())
 		return (HEADER_PROCESS);
-
-	header = req.substr(0, headerEndIdx + 4); // para remover provavelmente
-
-	event->setReqRaw1(req.substr(headerEndIdx + 4));
-
-	event->parseHeader(header); // para remover provavelmente
-
-	// first verify if a error occors in parser
-
+	header = event->getReqHeader();
+	event->parseReqHeader(header);
 	if (_isChunkedTransfer(event))
 		return (CHUNKED_BODY_PROCESS);
 	if (event->getReqContentLength())
@@ -50,7 +39,6 @@ bool HeaderProcess::_isChunkedTransfer(Event *event)
 	std::string transferEconding;
 
 	transferEconding = event->getReqTransferEncoding();
-
 	if (!transferEconding.compare("chunked"))
 		return (true);
 	else

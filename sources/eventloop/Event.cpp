@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 14:14:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 12:38:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,7 @@ void Event::setParseState(int state)
 	_parseState = state;
 }
 
+/*
 void Event::updateReqRaw(std::string req)
 {
 	size_t	headerSize;
@@ -159,6 +160,7 @@ void Event::updateReqRaw(std::string req)
 
 	//this->setBodySize();
 }
+*/
 
 // Para remover mais tarde
 bool Event::isBodyComplete(void)
@@ -199,20 +201,44 @@ void Event::createResponse(ConfigsData configsData)
 
 
 // New Methods
-StateType Event::getReqState(void)
+StateReqType Event::getReqState(void)
 {
 	return (_reqState);
 }
 
-void Event::setReqState(StateType reqState)
+void Event::setReqState(StateReqType reqState)
 {
 	_reqState = reqState;
 }
 
 
-void Event::updateReqRaw1(std::string &req)
+void Event::updateReqRawData(std::string &req)
 {
 	_reqRaw += req;
+}
+
+bool Event::isReqHeaderComplete(void)
+{
+	if (_reqRaw.find("\r\n\r\n") != _reqRaw.npos)
+		return (true);
+	return (false);
+}
+
+const std::string& Event::getReqHeader(void)
+{
+	size_t		idx;
+
+	idx = _reqRaw.find("\r\n\r\n");
+	if (idx == _reqRaw.npos)
+		return (_reqHeader);
+	_reqHeader = _reqRaw.substr(0, idx + 4);
+	_reqRaw.erase(0, _reqHeader.size());	
+	return (_reqHeader);
+}
+
+void Event::parseReqHeader(std::string &header)
+{
+	_reqParser.headerParse(header);
 }
 
 void Event::setReqRaw1(std::string req)

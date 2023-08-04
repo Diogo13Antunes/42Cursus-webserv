@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:49:49 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/21 10:09:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 11:07:12 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,5 @@ class BodyProcess: public IState
 		BodyProcess(void);
 		~BodyProcess(void);
 
-		StateType handle(Event *event);
+		StateReqType handle(Event *event);
 };
