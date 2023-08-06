@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 11:43:37 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/17 15:02:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/05 15:40:43 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,13 @@ StateResType GetBodyState::handle(Event *event, ConfigsData configsData)
 	std::string			fileName;
 	ErrorPageBuilder	errorBuilder;
 
-	if (event->getErrorCode())
+	if (event->getStatusCode())
+	{
+		errorBuilder.setErrorCode(event->getStatusCode());
+		data = errorBuilder.getErrorPageHtml();
+	}
+
+	else if (event->getErrorCode())
 	{
 		errorBuilder.setErrorCode(event->getErrorCode());
 		data = errorBuilder.getErrorPageHtml();

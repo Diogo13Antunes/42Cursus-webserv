@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 16:06:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/05 15:22:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ Event::Event(int fd, int state):
 	_connectionClosed(-1),
 	_clientDisconnect(false),
 	_cgiExitStatus(NO_EXIT_STATUS),
-	_cgiSentChars(0)
+	_cgiSentChars(0),
+	_statusCode(0)
 {}
 
 Event::Event(const Event &src) {}
@@ -237,7 +238,7 @@ const std::string& Event::getReqHeader(void)
 
 void Event::parseReqHeader(std::string &header)
 {
-	_reqParser.headerParse(header);
+	this->setStatusCode(_reqParser.headerParse(header));
 }
 
 void Event::setReqRaw1(std::string req)
@@ -883,4 +884,14 @@ void Event::updateReqBody(std::string body)
 size_t Event::getReqBodySize(void)
 {
 	return (_reqParser.getRequestBodyRef().size());
+}
+
+int Event::getStatusCode(void)
+{
+	return (_statusCode);
+}
+
+void Event::setStatusCode(int statusCode)
+{
+	_statusCode = statusCode;
 }

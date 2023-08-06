@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 16:06:47 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/05 15:18:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ class Event
 		std::string _body;
 
 		std::string _reqHeader;
+
+		int _statusCode;
 
 	public:
 		Event(void);
@@ -263,4 +265,7 @@ class Event
 		const std::string& getReqHeader(void);
 		const std::string& getReqRawData(void);
 		void clearReqRawData(void);
+
+		int getStatusCode(void);
+		void setStatusCode(int statusCode);
 };

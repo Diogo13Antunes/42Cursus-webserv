@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 15:21:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 17:29:29 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,11 @@
 #include "WriteHandler.hpp"
 #include "HandleRes.hpp"
 
-WriteHandler::WriteHandler(void): IEventHandler()
-{
-	_handleRes = NULL;
-}
 
 WriteHandler::WriteHandler(HandleRes *handleRes): IEventHandler()
 {
 	_handleRes = handleRes;
 }
-
-WriteHandler::WriteHandler(const WriteHandler &src) {}
 
 WriteHandler::~WriteHandler(void) 
 {
@@ -34,27 +28,12 @@ WriteHandler::~WriteHandler(void)
 		delete _handleRes;
 }
 
-/*
-WriteHandler &WriteHandler::operator=(const WriteHandler &src)
-{
-	//WriteHandler Copy Assignment Operator
-}
-*/
-
 void WriteHandler::handleEvent(Event *event)
 {
-	//std::cout << "Evento de escrita: " << event->getFd() << std::endl;
-
-	// Terminal::printMessages("--------------------------------");
-	// std::cout << event->getCgiScriptResult() << std::endl;
-	// Terminal::printMessages("--------------------------------");
-
 	_handleRes->setEvent(event);
 	_handleRes->handle();
 	if (_handleRes->isResProcessingComplete())
 		event->setActualState(TYPE_TRANSITION);
-	//if (_handleRes->isResProcessingComplete())
-	//	event->setState(WRITE_EVENT_COMPLETE);
 }
 
 EventType WriteHandler::getHandleType(void)

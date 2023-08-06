@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleRes.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 12:10:19 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/04 17:42:40 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,7 @@ class HandleRes
 	public:
 		HandleRes(void);
 		HandleRes(ConfigsData &configsData);
-		HandleRes(Event *event);
-		HandleRes(const HandleRes &src);
 		~HandleRes(void);
-		HandleRes &operator=(const HandleRes &src);
 		void setEvent(Event *event);
 
 		void handle(void);

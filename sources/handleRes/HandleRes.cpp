@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   HandleRes.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 12:10:01 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/05 14:23:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <cstdlib> // para remover apenas de teste
+//#include <cstdlib> // para remover apenas de teste
 
 
 #include <iostream>
@@ -30,25 +30,11 @@ HandleRes::HandleRes(void):
 HandleRes::HandleRes(ConfigsData &configsData):
 	_event(NULL),
 	_configsData(configsData),
-	_state(CREATE_HEADER)
+	_state(CREATE_HEADER) //maybe not nedded
 {
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
 	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
 	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
-}
-
-HandleRes::HandleRes(Event *event): 
-	_event(event),
-	_state(CREATE_HEADER)
-{
-	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
-	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
-	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
-}
-
-HandleRes::HandleRes(const HandleRes &src)
-{
-	//HandleRes Copy Constructor
 }
 
 HandleRes::~HandleRes(void)
@@ -64,13 +50,6 @@ HandleRes::~HandleRes(void)
 	}
 }
 
-/*
-HandleRes &HandleRes::operator=(const HandleRes &src)
-{
-	//HandleRes Copy Assignment Operator
-}
-*/
-
 void HandleRes::setEvent(Event *event)
 {
 	_event = event;
@@ -81,6 +60,7 @@ void HandleRes::handle(void)
 	StateResType	state;
 	bool			loop;
 
+	// For send data from cgi. Will be changed
 	if (!_event->getCgiScriptResult().empty())
 	{
 		_event->setResState1(RESPONSE_END);

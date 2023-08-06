@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 13:36:26 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/05 15:28:46 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ StateReqType HeaderProcess::handle(Event *event)
 	header = event->getReqHeader();
 	event->parseReqHeader(header);
 
-	// verificar error status da parser
+	if (event->getStatusCode())
+		return (REQUEST_END);
 
 	if (_isChunkedTransfer(event))
 		return (CHUNKED_BODY_PROCESS);

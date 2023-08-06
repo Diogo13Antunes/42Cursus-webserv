@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 16:08:12 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 16:35:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 	//eventLoop.registerEventHandler(factory.getEventHandler(READ_EVENT));
 	eventLoop.registerEventHandler(new ReadSocketHandler(new HandleReq()));
 	eventLoop.registerEventHandler(new WriteHandler(new HandleRes(confData)));
-	eventLoop.registerEventHandler(new CGIHandler(new HandleCgi()));
+	//eventLoop.registerEventHandler(new CGIHandler(new HandleCgi()));
 	eventLoop.registerEventHandler(new ReadCgiHandler());
 	eventLoop.registerEventHandler(new WriteCgiHandler());
 	eventLoop.registerEventHandler(new TypeTransitionHandler());

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CreateHeaderState.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 12:14:37 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/05 14:59:40 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,7 @@ class CreateHeaderState: public IStateRes
 
 	public:
 		CreateHeaderState(void);
-		CreateHeaderState(const CreateHeaderState &src);
 		~CreateHeaderState(void);
-		CreateHeaderState &operator=(const CreateHeaderState &src);
 
 		StateResType handle(Event *event, ConfigsData configsData);
 };

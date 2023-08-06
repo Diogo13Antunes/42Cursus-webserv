@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CreateHeaderState.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/03 15:14:55 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/05 15:38:45 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,23 +24,12 @@ CreateHeaderState::CreateHeaderState(void)
 	//Default CreateHeaderState Constructor
 }
 
-CreateHeaderState::CreateHeaderState(const CreateHeaderState &src)
-{
-	//CreateHeaderState Copy Constructor
-}
-
 CreateHeaderState::~CreateHeaderState(void)
 {
 	//Default CreateHeaderState Destructor
 }
 
 /*
-CreateHeaderState &CreateHeaderState::operator=(const CreateHeaderState &src)
-{
-	//CreateHeaderState Copy Assignment Operator
-}
-*/
-
 StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 {
 	std::string			fileName;
@@ -49,7 +38,6 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 	int					errorCode = 0;
 	ErrorPageBuilder	errorBuilder;
 
-	//fileName = _getFileName(event->getReqPath(), configsData);
 	fileName = _getFileName(event->getReqLinePath(), configsData);
 	if (_isFileReadable(fileName))
 		fileSize = _getFileSize(fileName);
@@ -72,6 +60,53 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 	event->setResSize(header.size() + fileSize);
 	return (GET_BODY);
 }
+*/
+
+StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
+{
+	std::string			fileName;
+	std::string			header;
+	size_t				fileSize;
+	int					errorCode = 0;
+	ErrorPageBuilder	errorBuilder;
+
+	int statusCode;
+
+	statusCode = event->getStatusCode();
+	if (statusCode)
+	{
+		errorBuilder.setErrorCode(statusCode);
+		event->setBodySize1(errorBuilder.getErrorPageSize());
+		_createHeaderDefaultError(header, statusCode, event);
+		event->setRes(header);
+		event->setResSize(header.size() + fileSize);
+		return (GET_BODY);
+	}
+
+	fileName = _getFileName(event->getReqLinePath(), configsData);
+	if (_isFileReadable(fileName))
+		fileSize = _getFileSize(fileName);
+	else
+	{
+		errorCode = 404;
+		event->setErrorCode(errorCode);
+		errorBuilder.setErrorCode(errorCode);
+		fileSize = errorBuilder.getErrorPageSize();
+	}
+	event->setBodySize1(fileSize);
+
+	if (errorCode)
+		_createHeaderDefaultError(header, errorCode, event);
+	else
+		_createHeader(header, fileName, event);
+	
+	event->setFileName(fileName);
+	event->setRes(header);
+	event->setResSize(header.size() + fileSize);
+
+
+	return (GET_BODY);
+}
 
 std::string CreateHeaderState::_getFileName(std::string reqTarget, ConfigsData &conf)
 {
@@ -87,17 +122,7 @@ std::string CreateHeaderState::_getFileName(std::string reqTarget, ConfigsData &
 		path = actulServer.getGlobalRoutePath();
 		fileName = path + "/" + reqTarget;
 	}
-
 	return (fileName);
-
-	/* if (!reqTarget.compare("/"))
-		fileName = conf.getConfig("root");
-	else
-		fileName = conf.getConfig(reqTarget.substr(1));
-	Path configuration is expected to be a valid file path pointing to the location of the pages.
-	path = conf.getConfig("path");
-	if (fileName.empty() && !path.empty())
-		fileName = path + "/" + reqTarget; */
 }
 
 bool CreateHeaderState::_isFileReadable(std::string fileName)
