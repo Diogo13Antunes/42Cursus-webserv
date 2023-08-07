@@ -10,8 +10,8 @@ typedef enum
 {
 	SUCCESSFULL_HEADER = 0,
 	BAD_REQUEST = 400,
-	LENGTH_REQUEIRED = 411,
 	URI_TOO_LONG = 414,
+	INTERNAL_SERVER_ERROR = 500,
 	NOT_IMPLEMENTED = 501
 } RequestStatusCode;
 
@@ -39,27 +39,34 @@ int RequestParser::headerParse(std::string &header)
 	std::string line;
 	bool isFirstLine = true;
 
-	if (header.size() > MAX_HEADER_SIZE)
-		return (BAD_REQUEST);
-	while (std::getline(iss, line))
+	try
 	{
-		line += "\n";
-		if (line.find_first_not_of("\r\n") == line.npos)
-			break;
-		if (line.size() > MAX_REQUEST_TARGET_LEN)
-				_statusCode = BAD_REQUEST;
-		else if (isFirstLine)
+		if (header.size() > MAX_HEADER_SIZE)
+			return (BAD_REQUEST);
+		while (std::getline(iss, line))
 		{
-			_requestLine = StringUtils::stringTrim(line);
-			_statusCode = _requestLineParser();
-			isFirstLine = false;
+			line += "\n";
+			if (line.find_first_not_of("\r\n") == line.npos)
+				break;
+			if (line.size() > MAX_REQUEST_TARGET_LEN)
+				_statusCode = URI_TOO_LONG;
+			else if (isFirstLine)
+			{
+				_requestLine = StringUtils::stringTrim(line);
+				_statusCode = _requestLineParser();
+				isFirstLine = false;
+			}
+			else
+				_statusCode = _addHeaderElement(line);
+			if (_statusCode)
+				return (_statusCode);
 		}
-		else
-			_statusCode = _addHeaderElement(line);
-		if (_statusCode)
-			return (_statusCode);
+		_statusCode = _isValidRequestHeader();
 	}
-	_statusCode = _isValidRequestHeader();
+	catch(const std::exception& e)
+	{
+		_statusCode = INTERNAL_SERVER_ERROR;
+	}
 	return (_statusCode);
 }
 
@@ -281,13 +288,23 @@ int RequestParser::_addHeaderElement(std::string &line)
 	std::pair<std::string, std::vector<std::string>  > header;
 
 	header = _getHeaderFieldPair(line);
-	if (StringUtils::hasWhiteSpaces(header.first))
+	if (StringUtils::hasWhiteSpaces(header.first) || _existAlreadyHeader(header.first))
 	{
 		_requestHeader.clear();
 		return (BAD_REQUEST);
 	}
 	_requestHeader.insert(header);
 	return (SUCCESSFULL_HEADER);
+}
+
+bool	RequestParser::_existAlreadyHeader(std::string &key)
+{
+	std::map<std::string, std::vector<std::string> >::iterator	it;
+
+	it = _requestHeader.find(key);
+	if (it != _requestHeader.end())
+		return (true);
+	return (false);
 }
 
 int RequestParser::_hasContentLengthAndTransferEncoded(void)
