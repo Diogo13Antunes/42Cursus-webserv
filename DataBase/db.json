@@ -1,0 +1,24 @@
+{
+    "users": [
+        {
+            "name": "Diogo",
+            "age": "12",
+            "email": "diogoandrecandeias@gmail.com"
+        },
+        {
+            "name": "Rui",
+            "age": "12",
+            "email": "diogoandrecandeias@gmail.com"
+        },
+		{
+            "name": "Ricardo",
+            "age": "12",
+            "email": "diogoandrecandeias@gmail.com"
+        },
+		{
+            "name": "Filipe",
+            "age": "12",
+            "email": "diogoandrecandeias@gmail.com"
+        }
+    ]
+}

@@ -1,8 +1,11 @@
+from urllib.parse import parse_qs
 import json
 import os
 
+data = input()
+dataDict = parse_qs(data)
+
 dataBasePath = "DataBase/db.json"
-addUserPath = "InputFiles/user.json"
 
 if not os.path.exists(dataBasePath) or os.stat(dataBasePath).st_size == 0:
 	initData = {"users": []}
@@ -12,8 +15,15 @@ if not os.path.exists(dataBasePath) or os.stat(dataBasePath).st_size == 0:
 with open(dataBasePath, "r") as file:
 	fileData = json.load(file)
 
-with open(addUserPath, "r") as file:
-	userFileData = json.load(file)
+username = dataDict['name'][0]
+age = dataDict['age'][0]
+email = dataDict['email'][0]
+
+userFileData = {
+	"name": username,
+	"age": age,
+	"email": email
+}
 
 fileData["users"].append(userFileData)
 

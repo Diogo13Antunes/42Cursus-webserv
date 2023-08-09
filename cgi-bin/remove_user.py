@@ -1,3 +1,4 @@
+from urllib.parse import parse_qs
 import json
 
 def removeUserFromDataBase(db, userToRemove):
@@ -7,7 +8,9 @@ def removeUserFromDataBase(db, userToRemove):
 			return True
 	return False
 
-username = input("USERNAME -> ")
+data = input()
+dataDict = parse_qs(data)
+username = dataDict['name'][0]
 dataBasePath = "DataBase/db.json"
 
 with open(dataBasePath, "r") as file:
@@ -24,7 +27,7 @@ htmlfile = "<!DOCTYPE html> <html> <body> <h1> "
 htmlfile += msg
 htmlfile += " </h1> </body> </html>"
 
-out = "HTTP/1.1 201 Created\r\n"
+out = "HTTP/1.1 200 OK\r\n"
 out += "Server: webserv\r\n"
 out += "Connection: keep-alive\r\n"
 out += "Content-Length: " + str(len(htmlfile)) + "\r\n"
