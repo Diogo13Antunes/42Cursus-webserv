@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/09 15:33:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/09 16:14:02 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 int main(int argc, char **argv)
 {
 	ConfigsData	confData;
-	Server		server;
 
 	if (argc != 2)
 	{
@@ -73,9 +72,9 @@ int main(int argc, char **argv)
 	}
 	if (!initConfigs(argv[1], confData))
 		return (-1);
-	server.setConfigs(confData);
-	server.init();
-	server.start();
+	Server server(confData);
+	if (server.init())
+		server.start();
 	return (0);
 }
 

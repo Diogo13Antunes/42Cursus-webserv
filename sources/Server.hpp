@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/09 15:46:19 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/09 16:14:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class Server
 		void		_errorStartServerPrint(std::string host, std::string port);
 		void		_printActiveEndpoins(void);
 		std::string	_getIpAddress(std::string host, std::string port);
+		bool        _initServers(void);
 		bool		_initEventLoop(void);
 		bool		_initConnections(void);
 		bool		_initEventDemux(void);
@@ -47,8 +48,6 @@ class Server
 		Server(void);
 		Server(ConfigsData &configs);
 		~Server(void);
-
-		void setConfigs(ConfigsData &configs);
 
 		bool init(void);
 		void start(void);

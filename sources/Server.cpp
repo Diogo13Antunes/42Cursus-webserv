@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/09 15:47:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/09 16:14:54 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,40 +27,20 @@ static void debugPrint(struct sockaddr_in *address);
 static void debugServersPrint(std::vector<int> servers);
 static void debugServersEndpointPrint(std::vector<std::string> endpoints);
 
-Server::Server(void) {}
-
-//Server não pode ter construtor sem iniciar configs para evitar erros
 Server::Server(ConfigsData &configs): _configs(configs) {}
 
 Server::~Server(void) {}
 
 bool Server::init(void)
 {
-	std::vector<ServerConfig>			serverConfigs;
-	std::vector<ServerConfig>::iterator	it;
-	std::string							port;
-	std::string							host;
-	int									serverFd;
-	
-	serverConfigs = _configs.getServers();
-	for (it = serverConfigs.begin(); it != serverConfigs.end(); it++)
-	{
-		host = (*it).getHost();
-		port = (*it).getPort();
-		if (_isServerAlreadyInitialized(host, port))
-			continue ;
-		serverFd = _getServerFd(host, port);
-		if (serverFd == -1)
-		{
-			_errorStartServerPrint(host, port);
-			return (false);
-		}
-		_addNewServerFd(serverFd);
-		_addNewServerEndpoint(host, port);
-	}
-	_initEventLoop();
-	_initConnections();
-	_initEventDemux();
+	if (!_initServers())
+		return (false);
+	if (!_initEventLoop())
+		return (false);
+	if (!_initConnections())
+		return (false);
+	if (!_initEventDemux())
+		return (false);
 	_printActiveEndpoins();
 	return (true);
 }
@@ -73,11 +53,6 @@ void Server::start(void)
 void Server::stop(void)
 {
 	
-}
-
-void Server::setConfigs(ConfigsData &configs)
-{
-	_configs = configs;
 }
 
 int Server::_getServerFd(std::string host, std::string port)
@@ -110,7 +85,7 @@ int Server::_getServerFd(std::string host, std::string port)
 	{
 		close(serverFd);
 		freeaddrinfo(result);
-    	return (-1); 
+    	return (-1);
 	}
     if (listen(serverFd, DEFAULT_BACKLOG) < 0)
     {
@@ -186,6 +161,33 @@ std::string	Server::_getIpAddress(std::string host, std::string port)
 	}
 	freeaddrinfo(result);
 	return (ip);
+}
+
+bool Server::_initServers(void)
+{
+	std::vector<ServerConfig>			serverConfigs;
+	std::vector<ServerConfig>::iterator	it;
+	std::string							port;
+	std::string							host;
+	int									serverFd;
+
+	serverConfigs = _configs.getServers();
+	for (it = serverConfigs.begin(); it != serverConfigs.end(); it++)
+	{
+		host = (*it).getHost();
+		port = (*it).getPort();
+		if (_isServerAlreadyInitialized(host, port))
+			continue ;
+		serverFd = _getServerFd(host, port);
+		if (serverFd == -1)
+		{
+			_errorStartServerPrint(host, port);
+			return (false);
+		}
+		_addNewServerFd(serverFd);
+		_addNewServerEndpoint(host, port);
+	}
+	return (true);
 }
 
 bool Server::_initEventLoop(void)
