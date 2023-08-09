@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/09 12:20:45 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/09 15:13:49 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,21 +34,8 @@ Server::Server(ConfigsData &configs): _configs(configs) {}
 
 Server::~Server(void) {}
 
-/*
-void Server::init(void)
+bool Server::init(void)
 {
-	int fd;
-
-	_getHostsAndPortsMapFromConfigs(_configs);
-	fd = _getServerFd("localhost", "8080");
-	std::cout << "fd: " << fd << std::endl;
-	
-}
-*/
-
-void Server::init(void)
-{
-
 	std::vector<ServerConfig>			serverConfigs;
 	std::vector<ServerConfig>::iterator	it;
 	std::string							port;
@@ -66,15 +53,13 @@ void Server::init(void)
 		if (serverFd == -1)
 		{
 			_errorStartServerPrint(host, port);
-			return ;
+			return (false);
 		}
 		_addNewServerFd(serverFd);
 		_addNewServerEndpoint(host, port);
 	}
-	
-	//Debug
-	debugServersPrint(_serverFds);
-	debugServersEndpointPrint(_serverEndpoints);
+	_printActiveEndpoins();
+	return (true);
 }
 
 void Server::start(void)
@@ -136,13 +121,15 @@ int Server::_getServerFd(std::string host, std::string port)
 
 bool Server::_isServerAlreadyInitialized(std::string host, std::string port)
 {
+	struct addrinfo						hints, *result;
 	std::vector<std::string>::iterator	it;
 	std::string							server;
+	std::string							ip;
 
-	server = host + ":" + port;
+	ip = _getIpAddress(host, port);
 	for (it = _serverEndpoints.begin(); it !=_serverEndpoints.end(); it++)
 	{
-		if (!it->compare(server))
+		if (!it->compare(host + ":" + port) || !it->compare(ip + ":" + port))
 			return (true);
 	}
 	return (false);
@@ -163,9 +150,42 @@ void Server::_addNewServerFd(int fd)
 
 void Server::_errorStartServerPrint(std::string host, std::string port)
 {
-	std::cout << "WebServer: Failed to start server at " << host << ":" << port << std::endl;
+	std::cout << BOLDRED << "WebServer: Failed to Initialize Server on ";
+	std::cout << BOLDWHITE << host << ":" << port << RESET <<std::endl;
 }
 
+void Server::_printActiveEndpoins(void)
+{
+	std::vector<std::string>::iterator it;
+
+	for (it = _serverEndpoints.begin(); it != _serverEndpoints.end(); it++)
+	{
+		std::cout << GREEN << "Webserv: Server started on ";
+		std::cout << BOLDWHITE << "http://" << (*it) << RESET << std::endl;
+	}
+}
+
+std::string	Server::_getIpAddress(std::string host, std::string port)
+{
+	struct addrinfo		hints, *result;
+	struct sockaddr_in	*ipv4;
+	std::string			ip;
+
+    memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	if (getaddrinfo(host.c_str(), port.c_str(), &hints, &result) != 0)
+		return ip;
+	if (result->ai_family == AF_INET)
+	{
+		ipv4 = (struct sockaddr_in *)result->ai_addr;
+		ip = inet_ntoa(ipv4->sin_addr);
+	}
+	freeaddrinfo(result);
+	return (ip);
+}
+
+// DEBUG
 static void debugPrint(struct sockaddr_in *address)
 {
 	std::cout << "sin_family: " << address->sin_family << std::endl;

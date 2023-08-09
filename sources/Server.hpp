@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/09 11:26:48 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/09 14:47:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,13 @@ class Server
 		std::vector<int>			_serverFds;
 		ConfigsData					_configs;
 
-		int		_getServerFd(std::string host, std::string port);
-		bool	_isServerAlreadyInitialized(std::string host, std::string port);
-		void	_addNewServerEndpoint(std::string host, std::string port);
-		void	_addNewServerFd(int fd);
-		void	_errorStartServerPrint(std::string host, std::string port);
-
+		int			_getServerFd(std::string host, std::string port);
+		bool		_isServerAlreadyInitialized(std::string host, std::string port);
+		void		_addNewServerEndpoint(std::string host, std::string port);
+		void		_addNewServerFd(int fd);
+		void		_errorStartServerPrint(std::string host, std::string port);
+		void		_printActiveEndpoins(void);
+		std::string	_getIpAddress(std::string host, std::string port);
 
 	public:
 		Server(void);
@@ -38,7 +39,7 @@ class Server
 
 		void setConfigs(ConfigsData &configs);
 
-		void init(void);
+		bool init(void);
 		void start(void);
 		void stop(void);
 };
