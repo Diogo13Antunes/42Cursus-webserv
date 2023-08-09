@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:39:35 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/02 08:32:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/07 15:09:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,21 @@ void WriteCgiHandler::handleEvent(Event *event)
 	bodyStr = event->getReqBody().c_str();
 	bodySize = event->getReqBody().size();
 	sentChars = event->getCgiSentChars();
+	
 	if (sentChars < bodySize)
 	{
 		bodyStr += sentChars;
 		nwrite = event->writeToCgi(bodyStr);
+
+		std::cout << "N send: " << nwrite << std::endl;
+
 		// Se falhar tem de ser mandado um 501 Internal Server Error
 		event->updateCgiSentChars(nwrite);
+		if (event->getCgiSentChars() >= bodySize)
+		{
+			event->writeToCgi("\n");
+			event->setActualState(TYPE_TRANSITION);
+		}
 	}
 	else
 	{

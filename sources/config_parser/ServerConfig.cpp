@@ -1,4 +1,5 @@
 #include "ServerConfig.hpp"
+#include "configs.hpp"
 
 static size_t	getNumberOfIdentations(std::string &line);
 static void		stringTrim(std::string &str);
@@ -145,6 +146,16 @@ std::string	ServerConfig::existMimeType(std::string src)
 	return (res);
 }
 
+std::string ServerConfig::getHost(void)
+{
+	return (_host);
+}
+
+std::string ServerConfig::getPort(void)
+{
+	return (_port);
+}
+
 /* PRIVATE METHODS */
 
 void	ServerConfig::_updateConfigError(bool newConfigError)
@@ -190,6 +201,11 @@ void	ServerConfig::_setListen(std::string newListen)
 	_listen = _getValue(newListen);
 	if (_listen.empty())
 		_updateConfigError(false);
+	else 
+	{
+		_host = _getHostFromListen(_listen);
+		_port = _getPortFromListen(_listen);
+	}
 }
 
 void	ServerConfig::_setServerName(std::string newServerName)
@@ -332,6 +348,36 @@ void	ServerConfig::_setMimeTypes(std::vector<std::string>::iterator &it,
 		}
 		it--;
 	}
+}
+
+std::string ServerConfig::_getHostFromListen(std::string listen)
+{
+	std::string	host;
+	size_t		idx;
+
+	idx = listen.find(":");
+	if (idx != listen.npos)
+		host = listen.substr(0, idx);
+	else if (listen.find_first_not_of("0123456789") != std::string::npos)
+		host = listen;
+	else
+		host = DEFAULT_HOST;
+	return (host);
+}
+
+std::string ServerConfig::_getPortFromListen(std::string listen)
+{
+	std::string	port;
+	size_t		idx;
+
+	idx = listen.find(":");
+	if (idx != listen.npos)
+		port = listen.substr(idx + 1);
+	else if (listen.find_first_not_of("0123456789") != std::string::npos)
+		port = DEFAULT_PORT_STR;
+	else
+		port = listen;
+	return (port);
 }
 
 void	ServerConfig::_addNewMimeType(std::string &src)

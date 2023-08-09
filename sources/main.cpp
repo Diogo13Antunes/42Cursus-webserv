@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 16:35:07 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/08 16:11:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@
 
 #include "Timer.hpp"
 
-// O configs pode receber o data e modificar o data dentro dele.
+#include "Server.hpp"
+
 bool	initConfigs(const char *filename, ConfigsData &data)
 {
 	try
@@ -59,6 +60,26 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 	return (true);
 }
 
+
+int main(int argc, char **argv)
+{
+	ConfigsData	confData;
+	Server		server;
+
+	if (argc != 2)
+	{
+		std::cout << "Error: No config file" << std::endl;
+		return (0);
+	}
+	if (!initConfigs(argv[1], confData))
+		return (-1);
+	server.setConfigs(confData);
+	server.init();
+	server.start();
+	return (0);
+}
+
+/*
 int main(int argc, char **argv)
 {
 	int server_fd, new_socket;
@@ -73,7 +94,7 @@ int main(int argc, char **argv)
 
 	
 	// cria socket
-	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) 
+	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		perror("cannot create socket");
 		return 0; 
@@ -137,3 +158,4 @@ int main(int argc, char **argv)
 	}
 	return (0);
 }
+*/

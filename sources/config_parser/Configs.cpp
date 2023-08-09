@@ -305,5 +305,5 @@ static bool	isValidNbrQuotes(std::string &data)
 
 const char *Configs::InvalidConfigFileException::what(void) const throw()
 {
-	return ("InvalidConfigFileException: Invalid Config File");
+	return ("Webserv: Invalid Config File");
 }

@@ -11,6 +11,8 @@ class ServerConfig
 		std::string	_serverName;
 		std::string	_listen;
 		std::string	_masterRoot;
+		std::string _host;
+		std::string _port;
 		size_t		_clientMaxBodySize;
 
 		std::map<std::string, Location>			_locations;
@@ -31,6 +33,8 @@ class ServerConfig
 			std::vector<std::string>::iterator itEnd);
 		void		_setMimeTypes(std::vector<std::string>::iterator &it,
 			std::vector<std::string>::iterator itEnd);
+		std::string	_getHostFromListen(std::string listen);
+		std::string	_getPortFromListen(std::string listen);
 		void		_addNewErrorPage(std::string &src);
 		void		_addNewMimeType(std::string &src);
 		void		_checkAllLocationsStatus(void);
@@ -51,4 +55,6 @@ class ServerConfig
 		std::string							getFilePathByRoute(std::string route);
 		std::string							getGlobalRoutePath(void);
 		std::string							existMimeType(std::string src);
+		std::string 						getHost(void);
+		std::string 						getPort(void);
 };

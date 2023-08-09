@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/05 15:22:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/07 14:38:34 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -762,6 +762,8 @@ std::string	Event::getReqLinePath(void)
 
 std::string& Event::getReqBody(void)
 {
+	
+	//return (_reqParser.getRequestBody());
 	return (_reqParser.getRequestBodyRef());
 }
 
