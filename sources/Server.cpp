@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/09 15:13:49 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/09 15:47:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,9 @@ bool Server::init(void)
 		_addNewServerFd(serverFd);
 		_addNewServerEndpoint(host, port);
 	}
+	_initEventLoop();
+	_initConnections();
+	_initEventDemux();
 	_printActiveEndpoins();
 	return (true);
 }
@@ -184,6 +187,32 @@ std::string	Server::_getIpAddress(std::string host, std::string port)
 	freeaddrinfo(result);
 	return (ip);
 }
+
+bool Server::_initEventLoop(void)
+{
+	_eventLoop.setMessenger(&_messenger);
+	_eventLoop.registerEventHandler(new ReadSocketHandler(new HandleReq()));
+	_eventLoop.registerEventHandler(new WriteHandler(new HandleRes(_configs)));
+	_eventLoop.registerEventHandler(new ReadCgiHandler());
+	_eventLoop.registerEventHandler(new WriteCgiHandler());
+	_eventLoop.registerEventHandler(new TypeTransitionHandler());
+	return (true);
+}
+
+bool Server::_initConnections(void)
+{
+	_connections.setMessenger(&_messenger);
+	return (true);
+}
+
+bool Server::_initEventDemux(void)
+{
+	return (true);
+}
+
+
+
+
 
 // DEBUG
 static void debugPrint(struct sockaddr_in *address)

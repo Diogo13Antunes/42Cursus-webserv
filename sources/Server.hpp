@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/09 14:47:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/09 15:46:19 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,11 @@
 #include <string>
 #include <vector>
 #include <map>
+
 #include "ConfigsData.hpp"
+#include "Messenger.hpp"
+#include "EventLoop.hpp"
+#include "Connections.hpp"
 
 class Server
 {
@@ -23,6 +27,10 @@ class Server
 		std::vector<std::string>	_serverEndpoints;
 		std::vector<int>			_serverFds;
 		ConfigsData					_configs;
+		Messenger					_messenger;
+		EventLoop					_eventLoop;
+		Connections					_connections;
+		//EventDemux					eventDemux(server_fd, address, (socklen_t) addrlen);
 
 		int			_getServerFd(std::string host, std::string port);
 		bool		_isServerAlreadyInitialized(std::string host, std::string port);
@@ -31,6 +39,9 @@ class Server
 		void		_errorStartServerPrint(std::string host, std::string port);
 		void		_printActiveEndpoins(void);
 		std::string	_getIpAddress(std::string host, std::string port);
+		bool		_initEventLoop(void);
+		bool		_initConnections(void);
+		bool		_initEventDemux(void);
 
 	public:
 		Server(void);

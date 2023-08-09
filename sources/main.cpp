@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/08 16:11:30 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/09 15:33:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ int main(int argc, char **argv)
 	return (0);
 }
 
-/*
-int main(int argc, char **argv)
+
+int main1(int argc, char **argv)
 {
 	int server_fd, new_socket;
 	struct sockaddr_in address;
@@ -158,4 +158,3 @@ int main(int argc, char **argv)
 	}
 	return (0);
 }
-*/
