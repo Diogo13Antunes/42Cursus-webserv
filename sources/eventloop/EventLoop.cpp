@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 14:31:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/10 17:36:01 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void EventLoop::handleEvents(void)
 {
 	Event	*event;
 	int		fd;
-	
+
 	while (!_eventQueue.empty())
 	{
 		fd = _getNextEventFromQueue();

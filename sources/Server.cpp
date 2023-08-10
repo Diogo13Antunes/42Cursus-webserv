@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/09 16:14:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/10 17:36:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,15 @@ bool Server::init(void)
 
 void Server::start(void)
 {
-
+	while (true)
+	{
+		_connections.updateAllConnections();
+		_eventDemux.waitAndDispatchEvents();
+		_eventLoop.handleEvents();
+	}
 }
 
-void Server::stop(void)
-{
-	
-}
-
-int Server::_getServerFd(std::string host, std::string port)
+bool Server::_initAndStoreSocketInf(std::string host, std::string port)
 {
 	struct addrinfo		hints, *result;
 	struct sockaddr_in	address;
@@ -66,35 +66,36 @@ int Server::_getServerFd(std::string host, std::string port)
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	if (getaddrinfo(host.c_str(), port.c_str(), &hints, &result) != 0)
-		return (-1);
+		return (false);
 	memset((char *)&address, 0, sizeof(address));
 	address = *((struct sockaddr_in *)(result->ai_addr));
 	if ((serverFd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		freeaddrinfo(result);
-		return (-1); 
+		return (false); 
 	}
 	enable = 1;
 	if (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
 	{
 		close(serverFd);
 		freeaddrinfo(result);
-		return (-1);
+		return (false);
 	}
 	if (bind(serverFd, (struct sockaddr *) &address, sizeof(address)) < 0) 
 	{
 		close(serverFd);
 		freeaddrinfo(result);
-    	return (-1);
+    	return (false);
 	}
     if (listen(serverFd, DEFAULT_BACKLOG) < 0)
     {
 		close(serverFd);
 		freeaddrinfo(result);
-        return (-1);
+        return (false);
     }
 	freeaddrinfo(result);
-	return (serverFd);
+	_serversInfo.insert(std::make_pair(serverFd, address));
+	return (true);	
 }
 
 bool Server::_isServerAlreadyInitialized(std::string host, std::string port)
@@ -119,11 +120,6 @@ void Server::_addNewServerEndpoint(std::string host, std::string port)
 
 	server = host + ":" + port;
 	_serverEndpoints.push_back(server);	
-}
-
-void Server::_addNewServerFd(int fd)
-{
-	_serverFds.push_back(fd);
 }
 
 void Server::_errorStartServerPrint(std::string host, std::string port)
@@ -153,7 +149,7 @@ std::string	Server::_getIpAddress(std::string host, std::string port)
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 	if (getaddrinfo(host.c_str(), port.c_str(), &hints, &result) != 0)
-		return ip;
+		return (ip);
 	if (result->ai_family == AF_INET)
 	{
 		ipv4 = (struct sockaddr_in *)result->ai_addr;
@@ -178,13 +174,14 @@ bool Server::_initServers(void)
 		port = (*it).getPort();
 		if (_isServerAlreadyInitialized(host, port))
 			continue ;
-		serverFd = _getServerFd(host, port);
-		if (serverFd == -1)
+		//serverFd = _getServerFd(host, port);
+		;
+		if (!_initAndStoreSocketInf(host, port))
 		{
 			_errorStartServerPrint(host, port);
 			return (false);
 		}
-		_addNewServerFd(serverFd);
+		//_addNewServerFd(serverFd);
 		_addNewServerEndpoint(host, port);
 	}
 	return (true);
@@ -209,11 +206,10 @@ bool Server::_initConnections(void)
 
 bool Server::_initEventDemux(void)
 {
+	_eventDemux.init(_serversInfo);
+	_eventDemux.setMessenger(&_messenger);
 	return (true);
 }
-
-
-
 
 
 // DEBUG

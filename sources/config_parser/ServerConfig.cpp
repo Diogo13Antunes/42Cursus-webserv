@@ -357,10 +357,7 @@ std::string ServerConfig::_getHostFromListen(std::string listen)
 
 	idx = listen.find(":");
 	if (idx != listen.npos)
-	{
 		host = listen.substr(0, idx);
-
-	}
 	else if (listen.find_first_not_of("0123456789") != std::string::npos)
 		host = listen;
 	else
