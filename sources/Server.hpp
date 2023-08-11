@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/11 11:52:47 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/11 17:54:55 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,6 @@ class Server
 		void		_printIniServerError(std::string host, std::string port);
 		void		_printActiveEndpoins(void);
 		bool		_isValidPort(std::string port);
-		std::string	_getIpAddress(std::string host, std::string port);
-		std::string	_getPortFromSocket(int fd);
 		
 	public:
 		Server(void);

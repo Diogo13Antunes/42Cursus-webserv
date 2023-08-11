@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:09:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/11 12:49:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/11 15:26:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,12 @@
 #include "AMessengerClient.hpp"
 #include "configs.hpp"
 
-//#define N_MAX_EVENTS	100000
-
 class EventDemux: public AMessengerClient
 {
 	private:
 		struct epoll_event					_events[EPOLL_MAX_NEVENTS];
 		int									_epollFd;
 		std::map<int, struct sockaddr_in>	_servers;
-
 
 		void	_addNewEvent(int fd);
 		void	_removeEvent(int fd);

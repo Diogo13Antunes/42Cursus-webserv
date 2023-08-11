@@ -6,12 +6,13 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/11 12:33:22 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/11 17:55:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "configs.hpp"
+#include "SocketUtils.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -76,7 +77,8 @@ bool Server::_initServers(void)
 			_printIniServerError(host, port);
 			return (false);
 		}
-		_addNewServerEndpoint(host, _getPortFromSocket(serverFd));
+		//_addNewServerEndpoint(host, _getPortFromSocket(serverFd));
+		_addNewServerEndpoint(host, SocketUtils::getPort(serverFd));
 	}
 	return (true);
 }
@@ -170,7 +172,7 @@ bool Server::_isServerAlreadyInitialized(std::string host, std::string port)
 	std::string							server;
 	std::string							ip;
 
-	ip = _getIpAddress(host, port);
+	ip = SocketUtils::getIpAddress(host, port);
 	for (it = _serverEndpoints.begin(); it !=_serverEndpoints.end(); it++)
 	{
 		if (!it->compare(host + ":" + port) || !it->compare(ip + ":" + port))
@@ -206,50 +208,14 @@ void Server::_printActiveEndpoins(void)
 
 bool Server::_isValidPort(std::string port) 
 {
-   std::stringstream	ss;
-   int					portInt;
-   bool					res;
+	std::stringstream	ss;
+	int					portInt;
+	bool				res;
 
 	ss << port;
 	ss >> portInt;
 	res = portInt >= 0 && portInt <= 65535;
 	return (res);
-}
-
-std::string	Server::_getIpAddress(std::string host, std::string port)
-{
-	struct addrinfo		hints, *result;
-	struct sockaddr_in	*ipv4;
-	std::string			ip;
-
-    memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	if (getaddrinfo(host.c_str(), port.c_str(), &hints, &result) != 0)
-		return (ip);
-	if (result->ai_family == AF_INET)
-	{
-		ipv4 = (struct sockaddr_in *)result->ai_addr;
-		ip = inet_ntoa(ipv4->sin_addr);
-	}
-	freeaddrinfo(result);
-	return (ip);
-}
-
-std::string	Server::_getPortFromSocket(int fd)
-{
-	struct sockaddr_in	addr;
-	socklen_t			addrlen;
-	std::string			port;
-	std::stringstream	ss;
-
-	
-	addrlen = (socklen_t) sizeof(addr);
-	if (getsockname(fd, (struct sockaddr *)&addr, &addrlen) == -1)
-		return (port);
-	ss << ntohs(addr.sin_port);
-	ss >> port;
-	return (port);
 }
 
 // DEBUG

@@ -6,14 +6,17 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/05 15:28:46 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/11 17:29:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <iostream>
+
 #include "HeaderProcess.hpp"
 #include "RequestParser.hpp"
+#include "SocketUtils.hpp"
 
+static void getHostPortFromSocket(int fd, std::string& hostIP, std::string& port);
 
 HeaderProcess::HeaderProcess(void) {}
 
@@ -22,15 +25,18 @@ HeaderProcess::~HeaderProcess(void) {}
 StateReqType HeaderProcess::handle(Event *event)
 {
 	std::string header;
+	std::string hostIp;
+	std::string port;
 
 	if (!event->isReqHeaderComplete())
 		return (HEADER_PROCESS);
 	header = event->getReqHeader();
 	event->parseReqHeader(header);
 
+	SocketUtils::getHostAndPort(event->getFd(), hostIp, port);
+
 	if (event->getStatusCode())
 		return (REQUEST_END);
-
 	if (_isChunkedTransfer(event))
 		return (CHUNKED_BODY_PROCESS);
 	if (event->getReqContentLength())
