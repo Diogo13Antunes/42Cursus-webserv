@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:09:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/10 16:26:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/11 12:49:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,15 @@
 #include <map>
 
 #include "AMessengerClient.hpp"
+#include "configs.hpp"
 
-#define N_MAX_EVENTS	100000
+//#define N_MAX_EVENTS	100000
 
 class EventDemux: public AMessengerClient
 {
 	private:
-		struct epoll_event	_events[N_MAX_EVENTS];
-		int					_serverFd;
-		int					_epollFd;
-		socklen_t			_addrlen;
-		struct sockaddr_in	_address;
-
+		struct epoll_event					_events[EPOLL_MAX_NEVENTS];
+		int									_epollFd;
 		std::map<int, struct sockaddr_in>	_servers;
 
 
@@ -44,8 +41,6 @@ class EventDemux: public AMessengerClient
 
 	public:
 		EventDemux(void);
-		EventDemux(int serverFd, struct sockaddr_in address, socklen_t addrlen);
-		EventDemux(std::map<int, struct sockaddr_in> servers);
 		~EventDemux(void);
 
 		void		init(std::map<int, struct sockaddr_in> servers);

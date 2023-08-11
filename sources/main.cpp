@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/09 16:14:02 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/11 12:36:15 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int main(int argc, char **argv)
 	return (0);
 }
 
-
+/*
 int main1(int argc, char **argv)
 {
 	int server_fd, new_socket;
@@ -157,3 +157,4 @@ int main1(int argc, char **argv)
 	}
 	return (0);
 }
+*/
