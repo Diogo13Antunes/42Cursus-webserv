@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/10 16:30:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/11 11:52:47 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,19 @@ class Server
 		Connections							_connections;
 		EventDemux							_eventDemux;
 
-		bool		_initAndStoreSocketInf(std::string host, std::string port);
-		bool		_isServerAlreadyInitialized(std::string host, std::string port);
-		void		_addNewServerEndpoint(std::string host, std::string port);
-		void		_errorStartServerPrint(std::string host, std::string port);
-		void		_printActiveEndpoins(void);
-		std::string	_getIpAddress(std::string host, std::string port);
 		bool        _initServers(void);
 		bool		_initEventLoop(void);
-		bool		_initConnections(void);
-		bool		_initEventDemux(void);
-
+		void		_initConnections(void);
+		void		_initEventDemux(void);
+		int			_initAndStoreSocketInf(std::string host, std::string port);
+		bool		_isServerAlreadyInitialized(std::string host, std::string port);
+		void		_addNewServerEndpoint(std::string host, std::string port);
+		void		_printIniServerError(std::string host, std::string port);
+		void		_printActiveEndpoins(void);
+		bool		_isValidPort(std::string port);
+		std::string	_getIpAddress(std::string host, std::string port);
+		std::string	_getPortFromSocket(int fd);
+		
 	public:
 		Server(void);
 		Server(ConfigsData &configs);

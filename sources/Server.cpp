@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/10 17:36:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/11 12:05:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "configs.hpp"
 
 #include <iostream>
+#include <sstream>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -22,6 +23,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+
 
 static void debugPrint(struct sockaddr_in *address);
 static void debugServersPrint(std::vector<int> servers);
@@ -37,10 +39,8 @@ bool Server::init(void)
 		return (false);
 	if (!_initEventLoop())
 		return (false);
-	if (!_initConnections())
-		return (false);
-	if (!_initEventDemux())
-		return (false);
+	_initConnections();
+	_initEventDemux();
 	_printActiveEndpoins();
 	return (true);
 }
@@ -55,7 +55,69 @@ void Server::start(void)
 	}
 }
 
-bool Server::_initAndStoreSocketInf(std::string host, std::string port)
+bool Server::_initServers(void)
+{
+	std::vector<ServerConfig>			serverConfigs;
+	std::vector<ServerConfig>::iterator	it;
+	std::string							port;
+	std::string							host;
+	int									serverFd;
+
+	serverConfigs = _configs.getServers();
+	for (it = serverConfigs.begin(); it != serverConfigs.end(); it++)
+	{
+		host = (*it).getHost();
+		port = (*it).getPort();
+		if (_isServerAlreadyInitialized(host, port))
+			continue ;
+		serverFd = _initAndStoreSocketInf(host, port);
+		if (serverFd == -1)
+		{
+			_printIniServerError(host, port);
+			return (false);
+		}
+		_addNewServerEndpoint(host, _getPortFromSocket(serverFd));
+	}
+	return (true);
+}
+
+bool Server::_initEventLoop(void)
+{
+	try {
+		_eventLoop.setMessenger(&_messenger);
+		_eventLoop.registerEventHandler(new ReadSocketHandler(new HandleReq()));
+		_eventLoop.registerEventHandler(new WriteHandler(new HandleRes(_configs)));
+		_eventLoop.registerEventHandler(new ReadCgiHandler());
+		_eventLoop.registerEventHandler(new WriteCgiHandler());
+		_eventLoop.registerEventHandler(new TypeTransitionHandler());
+	}
+	catch (const std::bad_alloc& e)
+	{
+		std::cout << BOLDRED << "Webserv: Server Initialization Failed - Memory Allocation Error" 
+				<< RESET << std::endl;
+		return (false);
+	} 
+	catch (const std::exception& e)
+	{
+		std::cout << BOLDRED << "Webserv: Server Initialization Failed - " 
+				<< e.what() << RESET << std::endl;
+		return (false);
+	}
+	return (true);
+}
+
+void Server::_initConnections(void)
+{
+	_connections.setMessenger(&_messenger);
+}
+
+void Server::_initEventDemux(void)
+{
+	_eventDemux.init(_serversInfo);
+	_eventDemux.setMessenger(&_messenger);
+}
+
+int Server::_initAndStoreSocketInf(std::string host, std::string port)
 {
 	struct addrinfo		hints, *result;
 	struct sockaddr_in	address;
@@ -65,37 +127,40 @@ bool Server::_initAndStoreSocketInf(std::string host, std::string port)
     memset(&hints, 0, sizeof(hints));
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
+
+	if (!_isValidPort(port))
+		return (-1);
 	if (getaddrinfo(host.c_str(), port.c_str(), &hints, &result) != 0)
-		return (false);
+		return (-1);
 	memset((char *)&address, 0, sizeof(address));
 	address = *((struct sockaddr_in *)(result->ai_addr));
 	if ((serverFd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
 		freeaddrinfo(result);
-		return (false); 
+		return (-1); 
 	}
 	enable = 1;
 	if (setsockopt(serverFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
 	{
 		close(serverFd);
 		freeaddrinfo(result);
-		return (false);
+		return (-1);
 	}
 	if (bind(serverFd, (struct sockaddr *) &address, sizeof(address)) < 0) 
 	{
 		close(serverFd);
 		freeaddrinfo(result);
-    	return (false);
+    	return (-1);
 	}
     if (listen(serverFd, DEFAULT_BACKLOG) < 0)
     {
 		close(serverFd);
 		freeaddrinfo(result);
-        return (false);
+        return (-1);
     }
 	freeaddrinfo(result);
 	_serversInfo.insert(std::make_pair(serverFd, address));
-	return (true);	
+	return (serverFd);	
 }
 
 bool Server::_isServerAlreadyInitialized(std::string host, std::string port)
@@ -122,7 +187,7 @@ void Server::_addNewServerEndpoint(std::string host, std::string port)
 	_serverEndpoints.push_back(server);	
 }
 
-void Server::_errorStartServerPrint(std::string host, std::string port)
+void Server::_printIniServerError(std::string host, std::string port)
 {
 	std::cout << BOLDRED << "WebServer: Failed to Initialize Server on ";
 	std::cout << BOLDWHITE << host << ":" << port << RESET <<std::endl;
@@ -137,6 +202,18 @@ void Server::_printActiveEndpoins(void)
 		std::cout << GREEN << "Webserv: Server started on ";
 		std::cout << BOLDWHITE << "http://" << (*it) << RESET << std::endl;
 	}
+}
+
+bool Server::_isValidPort(std::string port) 
+{
+   std::stringstream	ss;
+   int					portInt;
+   bool					res;
+
+	ss << port;
+	ss >> portInt;
+	res = portInt >= 0 && portInt <= 65535;
+	return (res);
 }
 
 std::string	Server::_getIpAddress(std::string host, std::string port)
@@ -159,58 +236,21 @@ std::string	Server::_getIpAddress(std::string host, std::string port)
 	return (ip);
 }
 
-bool Server::_initServers(void)
+std::string	Server::_getPortFromSocket(int fd)
 {
-	std::vector<ServerConfig>			serverConfigs;
-	std::vector<ServerConfig>::iterator	it;
-	std::string							port;
-	std::string							host;
-	int									serverFd;
+	struct sockaddr_in	addr;
+	socklen_t			addrlen;
+	std::string			port;
+	std::stringstream	ss;
 
-	serverConfigs = _configs.getServers();
-	for (it = serverConfigs.begin(); it != serverConfigs.end(); it++)
-	{
-		host = (*it).getHost();
-		port = (*it).getPort();
-		if (_isServerAlreadyInitialized(host, port))
-			continue ;
-		//serverFd = _getServerFd(host, port);
-		;
-		if (!_initAndStoreSocketInf(host, port))
-		{
-			_errorStartServerPrint(host, port);
-			return (false);
-		}
-		//_addNewServerFd(serverFd);
-		_addNewServerEndpoint(host, port);
-	}
-	return (true);
+	
+	addrlen = (socklen_t) sizeof(addr);
+	if (getsockname(fd, (struct sockaddr *)&addr, &addrlen) == -1)
+		return (port);
+	ss << ntohs(addr.sin_port);
+	ss >> port;
+	return (port);
 }
-
-bool Server::_initEventLoop(void)
-{
-	_eventLoop.setMessenger(&_messenger);
-	_eventLoop.registerEventHandler(new ReadSocketHandler(new HandleReq()));
-	_eventLoop.registerEventHandler(new WriteHandler(new HandleRes(_configs)));
-	_eventLoop.registerEventHandler(new ReadCgiHandler());
-	_eventLoop.registerEventHandler(new WriteCgiHandler());
-	_eventLoop.registerEventHandler(new TypeTransitionHandler());
-	return (true);
-}
-
-bool Server::_initConnections(void)
-{
-	_connections.setMessenger(&_messenger);
-	return (true);
-}
-
-bool Server::_initEventDemux(void)
-{
-	_eventDemux.init(_serversInfo);
-	_eventDemux.setMessenger(&_messenger);
-	return (true);
-}
-
 
 // DEBUG
 static void debugPrint(struct sockaddr_in *address)
