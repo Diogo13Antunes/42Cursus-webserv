@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/11 17:55:59 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/12 17:05:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ bool Server::_initServers(void)
 			_printIniServerError(host, port);
 			return (false);
 		}
-		//_addNewServerEndpoint(host, _getPortFromSocket(serverFd));
 		_addNewServerEndpoint(host, SocketUtils::getPort(serverFd));
 	}
 	return (true);

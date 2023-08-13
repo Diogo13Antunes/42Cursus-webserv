@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/07 14:38:34 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/12 17:46:46 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,9 @@ Event::Event(int fd, int state):
 	_cgiExitStatus(NO_EXIT_STATUS),
 	_cgiSentChars(0),
 	_statusCode(0)
-{}
+{
+	SocketUtils::getHostAndPort(_fd, _ip, _port);
+}
 
 Event::Event(const Event &src) {}
 
@@ -739,6 +741,15 @@ std::string	Event::getReqTransferEncoding(void)
 	return (std::string());
 }
 
+std::string Event::getReqHost(void)
+{
+	std::vector<std::string> host;
+
+	host = _reqParser.getHeaderField("host");
+	if (!host.empty())
+		return (host.at(0));
+	return (std::string());	
+}
 
 std::string	Event::getReqLineTarget(void)
 {
@@ -896,4 +907,14 @@ int Event::getStatusCode(void)
 void Event::setStatusCode(int statusCode)
 {
 	_statusCode = statusCode;
+}
+
+std::string Event::getIp(void)
+{
+	return (_ip);
+}
+
+std::string Event::getPort(void)
+{
+	return (_port);
 }
