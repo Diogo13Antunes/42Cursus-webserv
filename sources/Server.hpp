@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 12:46:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 14:48:02 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,12 @@ class Server
 	private:
 		std::vector<std::string>			_serverEndpoints;
 		std::map<int, struct sockaddr_in>	_serversInfo;
-		ConfigsData&						_configs;
+		ConfigsData							_configs;
 		Messenger							_messenger;
 		EventLoop							_eventLoop;
 		Connections							_connections;
 		EventDemux							_eventDemux;
 
-		//bool        _initServers(void);
 		bool		_initServers(std::vector<ServerConfig>& serverConfigs);
 		bool		_initEventLoop(void);
 		void		_initConnections(void);

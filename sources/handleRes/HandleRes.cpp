@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 11:31:16 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 18:00:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void HandleRes::handle(void)
 	StateResType	state;
 	bool			loop;
 
-	_setServerConfig();
+	_serverConf = _setServerConfig(_configsData.getServers());
 
 	// For send data from cgi. Will be changed
 	if (!_event->getCgiScriptResult().empty())
@@ -94,28 +94,39 @@ StateResType HandleRes::_handleState(StateResType state)
 	{
 		it = _stateMap.find(state);
 		if (it != _stateMap.end())
-			state = it->second->handle(_event, _configsData);
+			//state = it->second->handle(_event, _configsData);
+			state = it->second->handle(_event, *_serverConf);
 	}
 	return (state);
 }
 
-void HandleRes::_setServerConfig(void)
+// Se returnar NULL deve responder 500 Internal error
+ServerConfig* HandleRes::_setServerConfig(std::vector<ServerConfig>& serverConfigs)
 {
-	std::vector<ServerConfig>			serverConfigs;
 	std::vector<ServerConfig>::iterator	it;
-	std::string							ip;
-	std::string							port;
-	std::string							host;
-
-	ip = _event->getIp();
-	port = _event->getPort();
-	host = _event->getReqHost();
-	serverConfigs = _configsData.getServers();
+	std::string							ipReq;
+	std::string							portReq;
+	std::string							hostReq;
+	ServerConfig						*serverConf;
+	
+	ipReq = _event->getIp();
+	portReq = _event->getPort();
+	hostReq = _event->getReqHost();
+	serverConf = NULL;
 	for (it = serverConfigs.begin(); it != serverConfigs.end(); it++)
 	{
-		std::cout << "ip: " << it->getIp() << std::endl;
-		std::cout << "port: " << it->getPort() << std::endl;
+		if (!ipReq.compare(it->getIp()) && !portReq.compare(it->getPort()))
+		{
+			if (!hostReq.compare(it->getServerName()))
+			{
+				serverConf = &(*it);
+				break ;
+			}
+			else if (serverConf == NULL)
+				serverConf = &(*it);
+		}
 	}
+	return (serverConf);
 }
 
 bool HandleRes::isResProcessingComplete(void)

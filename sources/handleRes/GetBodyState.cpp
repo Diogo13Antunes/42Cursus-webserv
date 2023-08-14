@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 11:43:37 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/05 15:40:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 17:57:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ GetBodyState &GetBodyState::operator=(const GetBodyState &src)
 */
 
 
-StateResType GetBodyState::handle(Event *event, ConfigsData configsData)
+StateResType GetBodyState::handle(Event *event, ServerConfig config)
 {
 	std::string			data; 
 	std::string			fileName;

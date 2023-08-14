@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/05 15:38:45 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 18:00:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 }
 */
 
-StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
+StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 {
 	std::string			fileName;
 	std::string			header;
@@ -83,7 +83,8 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 		return (GET_BODY);
 	}
 
-	fileName = _getFileName(event->getReqLinePath(), configsData);
+	//fileName = _getFileName(event->getReqLinePath(), configsData);
+	fileName = _getFileName(event->getReqLinePath(), config);
 	if (_isFileReadable(fileName))
 		fileSize = _getFileSize(fileName);
 	else
@@ -108,6 +109,7 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 	return (GET_BODY);
 }
 
+/*
 std::string CreateHeaderState::_getFileName(std::string reqTarget, ConfigsData &conf)
 {
 	ServerConfig	actulServer;
@@ -120,6 +122,24 @@ std::string CreateHeaderState::_getFileName(std::string reqTarget, ConfigsData &
 	if (fileName.empty())
 	{
 		path = actulServer.getGlobalRoutePath();
+		fileName = path + "/" + reqTarget;
+	}
+	return (fileName);
+}
+*/
+
+std::string CreateHeaderState::_getFileName(std::string reqTarget, ServerConfig &conf)
+{
+	//ServerConfig	actulServer;
+	std::string		fileName;
+	std::string		path;
+
+	//actulServer = conf.getServers().at(0);
+	fileName = conf.getFilePathByRoute(reqTarget);
+
+	if (fileName.empty())
+	{
+		path = conf.getGlobalRoutePath();
 		fileName = path + "/" + reqTarget;
 	}
 	return (fileName);

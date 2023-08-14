@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 10:15:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 17:38:09 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class HandleRes
 		StateResType						_state;
 
 		StateResType	_handleState(StateResType state);
-		void			_setServerConfig(void);
+		ServerConfig*	_setServerConfig(std::vector<ServerConfig>& serverConfigs);
 
 	public:
 		HandleRes(void);
