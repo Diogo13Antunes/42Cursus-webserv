@@ -15,6 +15,7 @@ class CgiResponseProcess: public IStateRes
 		std::string					_getStatusLine(std::vector<std::string> &src);
 		bool						_existContent(std::vector<std::string> &header);
 		std::string					_getCgiBody(std::string &src);
+		std::string					_getResponseHeaderLine(std::string &src);
 
 	public:
 		CgiResponseProcess(void);

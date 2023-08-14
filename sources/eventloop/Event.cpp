@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/05 15:22:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 15:36:44 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -876,6 +876,11 @@ std::string Event::getBody(void)
 	return (_body);
 }
 
+void	Event::setBody(std::string &src)
+{
+	_body = src;
+}
+
 void Event::updateReqBody(std::string body)
 {
 	_reqParser.updateReqBody(body);
@@ -894,4 +899,14 @@ int Event::getStatusCode(void)
 void Event::setStatusCode(int statusCode)
 {
 	_statusCode = statusCode;
+}
+
+std::string Event::getCgiBodyRes(void)
+{
+	return (_cgiBodyRes);
+}
+
+void	Event::setCgiBodyRes(std::string &src)
+{
+	_cgiBodyRes = src;
 }

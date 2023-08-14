@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/05 15:18:59 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 15:37:31 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ class Event
 		std::string _reqHeader;
 
 		int _statusCode;
+
+		std::string	_cgiBodyRes;
 
 	public:
 		Event(void);
@@ -210,6 +212,9 @@ class Event
 		void				updateCgiSentChars(size_t value);
 		size_t				getCgiSentChars(void);
 
+		std::string			getCgiBodyRes(void);
+		void				setCgiBodyRes(std::string &src);
+
 		// Important Criar uma função para eliminar o CGI (Fazer delete) Verificar se já é feito
 		CGIExecuter*		getCgiEx(void);
 		void				setCgiEx(CGIExecuter *cgiEx);
@@ -265,6 +270,8 @@ class Event
 		const std::string& getReqHeader(void);
 		const std::string& getReqRawData(void);
 		void clearReqRawData(void);
+
+		void	setBody(std::string &src);
 
 		int getStatusCode(void);
 		void setStatusCode(int statusCode);

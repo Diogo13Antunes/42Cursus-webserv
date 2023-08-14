@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/12 15:35:04 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/14 16:13:02 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,26 +63,16 @@ void HandleRes::handle(void)
 	bool			loop;
 
 	// For send data from cgi. Will be changed
+	loop = true;
 	if (!_event->getCgiScriptResult().empty() && _event->getResState1() != RESPONSE)
-	{
 		_event->setResState1(CGI_RES_PROCESS);
-		_event->setResState1(_handleState(_event->getResState1()));
+	while (loop && _event->getResState1() != RESPONSE_END)
+	{
+		if (_event->getResState1() == RESPONSE)
+			loop = false;
+		state = _handleState(_event->getResState1());
+		_event->setResState1(state);
 	}
-	else
-	{	
-		loop = true;
-		while (loop && _event->getResState1() != RESPONSE_END)
-		{
-			if (_event->getResState1() == RESPONSE)
-				loop = false;
-			state = _handleState(_event->getResState1());
-			_event->setResState1(state);
-		}
-	}
-	//std::cout << "last State: " << state << std::endl;
-
-	//exit(0);
-
 }
 
 StateResType HandleRes::_handleState(StateResType state)

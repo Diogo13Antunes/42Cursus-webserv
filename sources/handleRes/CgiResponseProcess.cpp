@@ -17,18 +17,15 @@ CgiResponseProcess::~CgiResponseProcess(void)
 	//Default CgiResponseProcess Destructor
 }
 
-#include <cstdlib>
-
 StateResType	CgiResponseProcess::handle(Event *event, ConfigsData configsData)
 {
 	(void)configsData;
 	std::vector<std::string>::iterator	it;
 	std::vector<std::string>			headerVector;
 	std::string							scriptRes;
-	std::string							res;
 	std::string							cgiBody;
-	std::string							key;
-	std::string							value;
+	std::string							line;
+	std::string							res;
 
 	scriptRes = event->getCgiScriptResult();
 	headerVector = _getHeaderVector(scriptRes);
@@ -37,24 +34,22 @@ StateResType	CgiResponseProcess::handle(Event *event, ConfigsData configsData)
 	{
 		if (!StringUtils::isStringEmptyOrSpaces(*it))
 		{
-			key = _getKey(*it);
-			value = _getValue(*it);
-			if (StringUtils::isStringEmptyOrSpaces(key)
-				|| StringUtils::isStringEmptyOrSpaces(value))
+			line = _getResponseHeaderLine(*it);
+			if (StringUtils::isStringEmptyOrSpaces(line))
 			{
 				res = _invalidCgiResponse();
 				break;
 			}
-			res += key + ": " + value + "\r\n";
+			res += line;
 		}
 	}
+	res += "\r\n";
 	if (_existContent(headerVector))
-	{
 		cgiBody = _getCgiBody(scriptRes);
-		res += "\r\n" + cgiBody;
-	}
 	event->setRes(res);
-	return (RESPONSE);
+	event->setCgiBodyRes(cgiBody);
+	event->setResSize(res.size() + cgiBody.size());
+	return (GET_BODY);
 }
 
 /* PRIVATE METHODS */
@@ -160,4 +155,17 @@ std::string	CgiResponseProcess::_getCgiBody(std::string &src)
 	if (i != src.npos)
 		body = src.substr(i + 2);
 	return (body);
+}
+
+std::string	CgiResponseProcess::_getResponseHeaderLine(std::string &src)
+{
+	std::string	headerLine;
+	std::string	key;	
+	std::string	value;
+
+	key = _getKey(src);
+	value = _getValue(src);
+	if (!StringUtils::isStringEmptyOrSpaces(key) && !StringUtils::isStringEmptyOrSpaces(value))
+		headerLine = key + ": " + value + "\r\n";
+	return (headerLine);	
 }

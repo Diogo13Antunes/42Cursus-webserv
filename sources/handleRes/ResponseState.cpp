@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseState.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/25 16:12:09 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 16:19:57 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ StateResType ResponseState::handle(Event *event, ConfigsData confiagsDta)
 	ssize_t		numBytesSend;
 	size_t		resSize;
 	std::string	res;
+	size_t		size = 1000; 
 
 	res = event->getRes();
 	resSize = res.size();

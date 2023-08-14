@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GetBodyState.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 11:43:37 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/05 15:40:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 16:17:46 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ GetBodyState &GetBodyState::operator=(const GetBodyState &src)
 }
 */
 
-
 StateResType GetBodyState::handle(Event *event, ConfigsData configsData)
 {
 	std::string			data; 
@@ -52,11 +51,15 @@ StateResType GetBodyState::handle(Event *event, ConfigsData configsData)
 		errorBuilder.setErrorCode(event->getStatusCode());
 		data = errorBuilder.getErrorPageHtml();
 	}
-
 	else if (event->getErrorCode())
 	{
 		errorBuilder.setErrorCode(event->getErrorCode());
 		data = errorBuilder.getErrorPageHtml();
+	}
+	else if (!event->getCgiBodyRes().empty())
+	{
+		data = event->getCgiBodyRes();
+		
 	}
 	else
 	{
@@ -64,11 +67,8 @@ StateResType GetBodyState::handle(Event *event, ConfigsData configsData)
 		event->updateBytesReadBody(_getBodyData(data, fileName, event->getBytesReadBody()));
 	}
 	event->updateRes(data);
-
 	return (RESPONSE);
 }
-
-
 
 size_t GetBodyState::_getBodyData(std::string& data, std::string fileName, size_t offset)
 {
