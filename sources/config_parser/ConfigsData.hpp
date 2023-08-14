@@ -19,7 +19,7 @@ class ConfigsData
 		~ConfigsData(void);
 
 		void						setupConfigs(std::vector<std::string> &src);
-		const std::vector<ServerConfig>	&getServers(void);
+		std::vector<ServerConfig>	&getServers(void);
 
 		class InvalidConfigFileException: public std::exception
 		{

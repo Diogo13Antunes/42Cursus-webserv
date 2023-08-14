@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/11 17:10:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/11 17:46:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 10:59:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void SocketUtils::getHostAndPort(int fd, std::string& hostIP, std::string& port)
 	addrlen = (socklen_t) sizeof(addr);
 	if (getsockname(fd, (struct sockaddr *)&addr, &addrlen) == -1)
 		return ;
-	hostIP = inet_ntoa(addr.sin_addr);
+	hostIP.assign(inet_ntoa(addr.sin_addr));
 	ss << ntohs(addr.sin_port);
 	ss >> port;
 }

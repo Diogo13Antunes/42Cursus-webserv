@@ -43,7 +43,7 @@ void	ConfigsData::setupConfigs(std::vector<std::string> &fileContent)
 	}
 }
 
-const std::vector<ServerConfig>	&ConfigsData::getServers(void)
+std::vector<ServerConfig>	&ConfigsData::getServers(void)
 {
 	return (_servers);
 }

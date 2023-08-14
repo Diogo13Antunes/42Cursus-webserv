@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/11 15:31:47 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 12:06:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,7 @@ int main(int argc, char **argv)
 
 	// Neste caso iniciar default configs
 	if (argc != 2)
-	{
-		std::cout << "Error: No config file" << std::endl;
 		return (0);
-	}
-
 
 	if (!initConfigs(argv[1], confData))
 		return (-1);

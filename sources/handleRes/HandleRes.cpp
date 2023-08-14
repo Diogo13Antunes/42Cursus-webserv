@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/05 14:23:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 11:31:16 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 
 HandleRes::HandleRes(void):
 	_event(NULL),
-	_state(CREATE_HEADER)
+	_state(CREATE_HEADER),
+	_serverConf(NULL)
 {
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
 	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
@@ -30,7 +31,8 @@ HandleRes::HandleRes(void):
 HandleRes::HandleRes(ConfigsData &configsData):
 	_event(NULL),
 	_configsData(configsData),
-	_state(CREATE_HEADER) //maybe not nedded
+	_state(CREATE_HEADER), //maybe not nedded
+	_serverConf(NULL)
 {
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
 	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
@@ -59,6 +61,8 @@ void HandleRes::handle(void)
 {
 	StateResType	state;
 	bool			loop;
+
+	_setServerConfig();
 
 	// For send data from cgi. Will be changed
 	if (!_event->getCgiScriptResult().empty())
@@ -93,6 +97,25 @@ StateResType HandleRes::_handleState(StateResType state)
 			state = it->second->handle(_event, _configsData);
 	}
 	return (state);
+}
+
+void HandleRes::_setServerConfig(void)
+{
+	std::vector<ServerConfig>			serverConfigs;
+	std::vector<ServerConfig>::iterator	it;
+	std::string							ip;
+	std::string							port;
+	std::string							host;
+
+	ip = _event->getIp();
+	port = _event->getPort();
+	host = _event->getReqHost();
+	serverConfigs = _configsData.getServers();
+	for (it = serverConfigs.begin(); it != serverConfigs.end(); it++)
+	{
+		std::cout << "ip: " << it->getIp() << std::endl;
+		std::cout << "port: " << it->getPort() << std::endl;
+	}
 }
 
 bool HandleRes::isResProcessingComplete(void)

@@ -12,6 +12,7 @@ class ServerConfig
 		std::string	_listen;
 		std::string	_masterRoot;
 		std::string _host;
+		std::string _ip;
 		std::string _port;
 		size_t		_clientMaxBodySize;
 
@@ -57,4 +58,7 @@ class ServerConfig
 		std::string							existMimeType(std::string src);
 		std::string 						getHost(void);
 		std::string 						getPort(void);
+		std::string 						getIp(void);
+		void								setIp(std::string ip);
+		void								setPort(std::string port);
 };

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/12 17:05:39 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 13:02:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ static void debugPrint(struct sockaddr_in *address);
 static void debugServersPrint(std::vector<int> servers);
 static void debugServersEndpointPrint(std::vector<std::string> endpoints);
 
-Server::Server(ConfigsData &configs): _configs(configs) {}
+Server::Server(ConfigsData& configs): _configs(configs) {}
 
 Server::~Server(void) {}
 
 bool Server::init(void)
 {
-	if (!_initServers())
+	if (!_initServers(_configs.getServers()))
 		return (false);
 	if (!_initEventLoop())
 		return (false);
@@ -56,15 +56,16 @@ void Server::start(void)
 	}
 }
 
+
+/*
 bool Server::_initServers(void)
 {
-	std::vector<ServerConfig>			serverConfigs;
+	std::vector<ServerConfig>&			serverConfigs = _configs.getServers();
 	std::vector<ServerConfig>::iterator	it;
 	std::string							port;
 	std::string							host;
 	int									serverFd;
 
-	serverConfigs = _configs.getServers();
 	for (it = serverConfigs.begin(); it != serverConfigs.end(); it++)
 	{
 		host = (*it).getHost();
@@ -78,6 +79,34 @@ bool Server::_initServers(void)
 			return (false);
 		}
 		_addNewServerEndpoint(host, SocketUtils::getPort(serverFd));
+	}
+	return (true);
+}
+*/
+
+bool Server::_initServers(std::vector<ServerConfig>& serverConfigs)
+{
+	std::vector<ServerConfig>::iterator	it;
+	std::string							port;
+	std::string							host;
+	int									serverFd;
+
+	for (it = serverConfigs.begin(); it != serverConfigs.end(); it++)
+	{
+		host = (*it).getHost();
+		port = (*it).getPort();
+		it->setIp(SocketUtils::getIpAddress(host, port));
+		if (_isServerAlreadyInitialized(host, port))
+			continue ;
+		serverFd = _initAndStoreSocketInf(host, port);
+		if (serverFd == -1)
+		{
+			_printIniServerError(host, port);
+			return (false);
+		}
+		port = SocketUtils::getPort(serverFd);
+		_addNewServerEndpoint(host, port);
+		it->setPort(port);
 	}
 	return (true);
 }
@@ -161,7 +190,7 @@ int Server::_initAndStoreSocketInf(std::string host, std::string port)
     }
 	freeaddrinfo(result);
 	_serversInfo.insert(std::make_pair(serverFd, address));
-	return (serverFd);	
+	return (serverFd);
 }
 
 bool Server::_isServerAlreadyInitialized(std::string host, std::string port)

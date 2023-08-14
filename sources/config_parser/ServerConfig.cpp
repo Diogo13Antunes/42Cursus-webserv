@@ -156,6 +156,21 @@ std::string ServerConfig::getPort(void)
 	return (_port);
 }
 
+std::string ServerConfig::getIp(void)
+{
+	return (_ip);
+}
+
+void ServerConfig::setIp(std::string ip)
+{
+	_ip = ip;
+}
+
+void ServerConfig::setPort(std::string port)
+{
+	_port = port;
+}
+
 /* PRIVATE METHODS */
 
 void	ServerConfig::_updateConfigError(bool newConfigError)
