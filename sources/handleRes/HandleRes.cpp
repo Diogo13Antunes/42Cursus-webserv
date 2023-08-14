@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleRes.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/05 14:23:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/12 15:35:04 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ HandleRes::HandleRes(void):
 	_state(CREATE_HEADER)
 {
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
+	_stateMap.insert(std::make_pair(CGI_RES_PROCESS, new CgiResponseProcess()));
 	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
 	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
@@ -33,6 +34,7 @@ HandleRes::HandleRes(ConfigsData &configsData):
 	_state(CREATE_HEADER) //maybe not nedded
 {
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
+	_stateMap.insert(std::make_pair(CGI_RES_PROCESS, new CgiResponseProcess()));
 	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
 	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
@@ -63,8 +65,10 @@ void HandleRes::handle(void)
 	// For send data from cgi. Will be changed
 	if (!_event->getCgiScriptResult().empty())
 	{
-		_event->setResState1(RESPONSE_END);
-		send(_event->getFd(), _event->getCgiScriptResult().c_str(), _event->getCgiScriptResult().size(), 0);
+		_event->setResState1(CGI_RES_PROCESS);
+		state = _handleState(_event->getResState1());
+		// _event->setResState1(RESPONSE_END);
+		// send(_event->getFd(), _event->getCgiScriptResult().c_str(), _event->getCgiScriptResult().size(), 0); // Comentar
 	}
 	else
 	{	
@@ -80,6 +84,7 @@ void HandleRes::handle(void)
 	//std::cout << "last State: " << state << std::endl;
 
 	//exit(0);
+
 }
 
 StateResType HandleRes::_handleState(StateResType state)

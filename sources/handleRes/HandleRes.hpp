@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleRes.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 17:42:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/12 15:34:13 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include "CreateHeaderState.hpp"
 #include "GetBodyState.hpp"
 #include "ResponseState.hpp"
+#include "CgiResponseProcess.hpp"
+
 
 class HandleRes
 {

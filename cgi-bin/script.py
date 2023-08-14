@@ -28,11 +28,12 @@ with open(nome_arquivo, "w") as arquivo:
 
 htmlfile = "<!DOCTYPE html> <html> <body> <h1> Mensagem enviada para o Script </h1> </body> </html>"
 
-out = "HTTP/1.1 200 OK\r\n"
-out += "Server: webserv\r\n"
-out += "Connection: keep-alive\r\n"
-out += "Content-Length: " + str(len(htmlfile)) + "\r\n"
-out += "\r\n"
+out = "Status: 200 OK\n"
+out += "Server: webserv\n"
+out += "Connection: keep-alive\n"
+out += "Content-Length: " + str(len(htmlfile)) + "\n"
+out += "Content-Type: " + "text/html" + "\n"
+out += "\n"
 out += htmlfile
 
 print(out)
