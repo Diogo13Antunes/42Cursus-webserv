@@ -63,12 +63,10 @@ void HandleRes::handle(void)
 	bool			loop;
 
 	// For send data from cgi. Will be changed
-	if (!_event->getCgiScriptResult().empty())
+	if (!_event->getCgiScriptResult().empty() && _event->getResState1() != RESPONSE)
 	{
 		_event->setResState1(CGI_RES_PROCESS);
-		state = _handleState(_event->getResState1());
-		// _event->setResState1(RESPONSE_END);
-		// send(_event->getFd(), _event->getCgiScriptResult().c_str(), _event->getCgiScriptResult().size(), 0); // Comentar
+		_event->setResState1(_handleState(_event->getResState1()));
 	}
 	else
 	{	

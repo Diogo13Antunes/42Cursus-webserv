@@ -17,20 +17,22 @@ CgiResponseProcess::~CgiResponseProcess(void)
 	//Default CgiResponseProcess Destructor
 }
 
+#include <cstdlib>
+
 StateResType	CgiResponseProcess::handle(Event *event, ConfigsData configsData)
 {
 	(void)configsData;
 	std::vector<std::string>::iterator	it;
 	std::vector<std::string>			headerVector;
 	std::string							scriptRes;
-	std::string							resBody;
+	std::string							res;
+	std::string							cgiBody;
 	std::string							key;
 	std::string							value;
 
 	scriptRes = event->getCgiScriptResult();
 	headerVector = _getHeaderVector(scriptRes);
-
-	resBody = _getStatusLine(headerVector);
+	res = _getStatusLine(headerVector);
 	for (it = headerVector.begin(); it !=  headerVector.end(); it++)
 	{
 		if (!StringUtils::isStringEmptyOrSpaces(*it))
@@ -40,20 +42,19 @@ StateResType	CgiResponseProcess::handle(Event *event, ConfigsData configsData)
 			if (StringUtils::isStringEmptyOrSpaces(key)
 				|| StringUtils::isStringEmptyOrSpaces(value))
 			{
-				resBody = _invalidCgiResponse();
+				res = _invalidCgiResponse();
 				break;
 			}
-			resBody += key + ": " + value + "\r\n";
+			res += key + ": " + value + "\r\n";
 		}
 	}
-
-	printer("-------------------------", true);
-	printer(resBody, false);
-	printer("-------------------------", true);
-
-	event->setRes(resBody);
-
-	return (GET_BODY);
+	if (_existContent(headerVector))
+	{
+		cgiBody = _getCgiBody(scriptRes);
+		res += "\r\n" + cgiBody;
+	}
+	event->setRes(res);
+	return (RESPONSE);
 }
 
 /* PRIVATE METHODS */
@@ -70,7 +71,6 @@ std::vector<std::string>	CgiResponseProcess::_getHeaderVector(std::string &src)
 			break;
 		result.push_back(line);
 	}
-
 	return (result);
 }
 
@@ -91,6 +91,8 @@ std::string	CgiResponseProcess::_getStatusLine(std::vector<std::string> &src)
 			break;
 		}
 	}
+	if (value.empty())
+		value = "200 OK";
 	res = "HTTP/1.1 ";
 	res += value;
 	res += "\r\n";
@@ -133,4 +135,29 @@ std::string	CgiResponseProcess::_invalidCgiResponse(void)
 	out += "Connection: keep-alive\r\n";
 	out += "Server: webserv\r\n";
 	return (out);
+}
+
+bool	CgiResponseProcess::_existContent(std::vector<std::string> &header)
+{
+	std::vector<std::string>::iterator	it;
+	std::string							key;
+
+	for (it = header.begin(); it != header.end(); it++)
+	{
+		key = _getKey(*it);
+		if (key.compare("Content-Type") == 0)
+			return (true);
+	}
+	return (false);
+}
+
+std::string	CgiResponseProcess::_getCgiBody(std::string &src)
+{
+	std::string body;
+	size_t		i;
+
+	i = src.find("\n\n");
+	if (i != src.npos)
+		body = src.substr(i + 2);
+	return (body);
 }

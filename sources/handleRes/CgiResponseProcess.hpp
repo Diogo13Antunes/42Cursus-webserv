@@ -13,6 +13,8 @@ class CgiResponseProcess: public IStateRes
 		std::string					_getValue(std::string &line);
 		std::string					_invalidCgiResponse(void);
 		std::string					_getStatusLine(std::vector<std::string> &src);
+		bool						_existContent(std::vector<std::string> &header);
+		std::string					_getCgiBody(std::string &src);
 
 	public:
 		CgiResponseProcess(void);

@@ -32,11 +32,11 @@ void ReadCgiHandler::handleEvent(Event *event)
 	nRead = event->readFromCgi(str);
 	if (nRead > 0)
 		event->updateCgiScriptResult(str);
-	
+	else
+		event->setActualState(TYPE_TRANSITION);
+
 	//for(int i = 0; i < 99999999; i++);
 	//std::cout << "CGI status code: " << event->isCgiScriptEnd() << std::endl;
-
-	//event->setActualState(TYPE_TRANSITION);
 }
 
 EventType ReadCgiHandler::getHandleType(void)

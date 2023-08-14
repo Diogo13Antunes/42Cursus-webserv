@@ -37,4 +37,3 @@ out += "\n"
 out += htmlfile
 
 print(out)
-exit(0)
