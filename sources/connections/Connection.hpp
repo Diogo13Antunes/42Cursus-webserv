@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:28 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/14 16:13:19 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/15 09:47:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,5 @@ class Connection
 		void	resetKeepAliveTimeout(void);
 		void	startTimer(void);
 		void	pauseTimer(void);
-		
-		// Just for debug
-		void			showDataConnection(void);
-		
-
+		void	showDataConnection(void);
 };

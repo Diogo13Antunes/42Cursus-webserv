@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 13:02:44 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/15 09:47:55 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,34 +55,6 @@ void Server::start(void)
 		_eventLoop.handleEvents();
 	}
 }
-
-
-/*
-bool Server::_initServers(void)
-{
-	std::vector<ServerConfig>&			serverConfigs = _configs.getServers();
-	std::vector<ServerConfig>::iterator	it;
-	std::string							port;
-	std::string							host;
-	int									serverFd;
-
-	for (it = serverConfigs.begin(); it != serverConfigs.end(); it++)
-	{
-		host = (*it).getHost();
-		port = (*it).getPort();
-		if (_isServerAlreadyInitialized(host, port))
-			continue ;
-		serverFd = _initAndStoreSocketInf(host, port);
-		if (serverFd == -1)
-		{
-			_printIniServerError(host, port);
-			return (false);
-		}
-		_addNewServerEndpoint(host, SocketUtils::getPort(serverFd));
-	}
-	return (true);
-}
-*/
 
 bool Server::_initServers(std::vector<ServerConfig>& serverConfigs)
 {

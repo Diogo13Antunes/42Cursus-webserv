@@ -6,13 +6,15 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/28 16:22:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/15 10:17:46 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connections.hpp"
 
-Connections::Connections(void): AMessengerClient(NULL) {}
+#include "Timer.hpp"
+
+Connections::Connections(void): AMessengerClient(NULL), _lastUpdateTime(0) {}
 
 Connections::~Connections(void)
 {
@@ -23,16 +25,20 @@ void Connections::updateAllConnections(void)
 {
 	std::map<int, Connection *>::iterator it;
 
-	it = _activeConnects.begin();
-	while (it != _activeConnects.end())
+	if (Timer::isTimeoutExpired(_lastUpdateTime, 1))
 	{
-		if (it->second->isKeepAliveTimeout())
+		it = _activeConnects.begin();
+		while (it != _activeConnects.end())
 		{
-			sendMessage(new Message(EVENTDEMUX_ID, it->second->getFd(), EVENT_REMOVE));
-			_removeConnection(it);
-			break;
+			if (it->second->isKeepAliveTimeout())
+			{
+				sendMessage(new Message(EVENTDEMUX_ID, it->second->getFd(), EVENT_REMOVE));
+				_removeConnection(it);
+				break;
+			}
+			it++;
 		}
-		it++;
+		_lastUpdateTime = Timer::getActualTimeStamp();
 	}
 }
 
@@ -60,8 +66,7 @@ void Connections::receiveMessage(Message *msg)
 		_resetKeepAliveTimer(fd);
 }
 
-// Just for debug (remove when not necessary)
-// Remove
+// DEBUG
 void Connections::showConnections(void)
 {
 	std::map<int, Connection *>::iterator it;
