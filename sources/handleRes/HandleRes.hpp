@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 17:38:09 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/15 14:48:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class HandleRes
 {
 	private:
 		std::map<StateResType, IStateRes*>	_stateMap;
-		ConfigsData							_configsData;
+		ConfigsData							*_configsData;
 		ServerConfig						*_serverConf;
 		Event								*_event;
 		StateResType						_state;
@@ -34,7 +34,7 @@ class HandleRes
 
 	public:
 		HandleRes(void);
-		HandleRes(ConfigsData &configsData);
+		HandleRes(ConfigsData *configsData);
 		~HandleRes(void);
 		void setEvent(Event *event);
 

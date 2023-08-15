@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 14:48:02 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/15 16:24:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class Server
 	private:
 		std::vector<std::string>			_serverEndpoints;
 		std::map<int, struct sockaddr_in>	_serversInfo;
-		ConfigsData							_configs;
+		ConfigsData							*_configs;
 		Messenger							_messenger;
 		EventLoop							_eventLoop;
 		Connections							_connections;
@@ -46,9 +46,10 @@ class Server
 		
 	public:
 		Server(void);
-		Server(ConfigsData& configs);
 		~Server(void);
 
-		bool init(void);
-		void start(void);
+		void	setConfigs(ConfigsData *configs);
+		void	handleControlC(int signal);
+		bool	init(void);
+		void	start(void);
 };

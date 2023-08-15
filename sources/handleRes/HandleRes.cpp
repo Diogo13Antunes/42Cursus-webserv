@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 18:00:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/15 15:09:46 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ HandleRes::HandleRes(void):
 	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
 
-HandleRes::HandleRes(ConfigsData &configsData):
+HandleRes::HandleRes(ConfigsData *configsData):
 	_event(NULL),
 	_configsData(configsData),
 	_state(CREATE_HEADER), //maybe not nedded
@@ -62,7 +62,7 @@ void HandleRes::handle(void)
 	StateResType	state;
 	bool			loop;
 
-	_serverConf = _setServerConfig(_configsData.getServers());
+	_serverConf = _setServerConfig(_configsData->getServers());
 
 	// For send data from cgi. Will be changed
 	if (!_event->getCgiScriptResult().empty())

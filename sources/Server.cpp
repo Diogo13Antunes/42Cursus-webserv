@@ -6,13 +6,14 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/15 09:47:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/15 16:49:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 #include "configs.hpp"
 #include "SocketUtils.hpp"
+#include "Signals.hpp"
 
 #include <iostream>
 #include <sstream>
@@ -30,13 +31,18 @@ static void debugPrint(struct sockaddr_in *address);
 static void debugServersPrint(std::vector<int> servers);
 static void debugServersEndpointPrint(std::vector<std::string> endpoints);
 
-Server::Server(ConfigsData& configs): _configs(configs) {}
+Server::Server(void): _configs(NULL){}
 
 Server::~Server(void) {}
 
+void Server::setConfigs(ConfigsData *configs)
+{
+	_configs = configs;
+}
+
 bool Server::init(void)
 {
-	if (!_initServers(_configs.getServers()))
+	if (!_initServers(_configs->getServers()))
 		return (false);
 	if (!_initEventLoop())
 		return (false);
@@ -53,6 +59,8 @@ void Server::start(void)
 		_connections.updateAllConnections();
 		_eventDemux.waitAndDispatchEvents();
 		_eventLoop.handleEvents();
+		if (Signals::isStopSignalTriggered())
+			break ;
 	}
 }
 
