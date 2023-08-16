@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleRes.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 16:13:02 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/16 16:04:16 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,7 @@ void HandleRes::handle(void)
 	StateResType	state;
 	bool			loop;
 
-	// For send data from cgi. Will be changed
 	loop = true;
-	if (!_event->getCgiScriptResult().empty() && _event->getResState1() != RESPONSE)
-		_event->setResState1(CGI_RES_PROCESS);
 	while (loop && _event->getResState1() != RESPONSE_END)
 	{
 		if (_event->getResState1() == RESPONSE)

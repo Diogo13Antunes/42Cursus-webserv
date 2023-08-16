@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CreateHeaderState.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/05 15:38:45 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/16 16:32:16 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 
 	int statusCode;
 
+
 	statusCode = event->getStatusCode();
 	if (statusCode)
 	{
@@ -82,6 +83,9 @@ StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
 		event->setResSize(header.size() + fileSize);
 		return (GET_BODY);
 	}
+
+	if (!event->getCgiScriptResult().empty())
+		return (CGI_RES_PROCESS);
 
 	fileName = _getFileName(event->getReqLinePath(), configsData);
 	if (_isFileReadable(fileName))

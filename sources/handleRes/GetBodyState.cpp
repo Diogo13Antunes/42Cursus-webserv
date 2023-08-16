@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GetBodyState.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 11:43:37 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 16:17:46 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/16 16:49:57 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,8 @@ StateResType GetBodyState::handle(Event *event, ConfigsData configsData)
 	}
 	else if (!event->getCgiBodyRes().empty())
 	{
-		data = event->getCgiBodyRes();
-		
+		if (event->getTotalBytesSend() == 0)
+			data = event->getCgiBodyRes();
 	}
 	else
 	{
