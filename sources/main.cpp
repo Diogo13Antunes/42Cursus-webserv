@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/15 16:56:17 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/16 10:53:34 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,11 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 	return (true);
 }
 
-
-void handleControlC(int sig)
-{
-	std::cout << "Caught signal" << sig << std::endl;
-	exit(1);
-}
-
-
 int main(int argc, char **argv)
 {
 	ConfigsData	confData;
 	Server		server;
 
-
-	//signal(SIGINT, Signals::handler);
 	Signals::init();
 	
 	// Neste caso iniciar default configs

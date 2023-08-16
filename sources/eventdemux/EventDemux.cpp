@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventDemux.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/11 14:11:46 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/16 16:17:32 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 
 EventDemux::EventDemux(void): AMessengerClient(NULL) {}
 
-EventDemux::~EventDemux(void){}
+EventDemux::~EventDemux(void)
+{
+	std::cout << "~EventDemux" << std::endl;
+}
 
 ClientID EventDemux::getId(void)
 {

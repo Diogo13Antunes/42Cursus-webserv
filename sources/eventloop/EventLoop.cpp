@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/10 17:36:01 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/16 16:16:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,10 @@
 
 EventLoop::EventLoop(void): AMessengerClient(NULL) {}
 
-EventLoop::~EventLoop(void) {}
+EventLoop::~EventLoop(void)
+{
+	std::cout << "~EventLoop" << std::endl;
+}
 
 void EventLoop::registerEventHandler(IEventHandler *eventHandler)
 {

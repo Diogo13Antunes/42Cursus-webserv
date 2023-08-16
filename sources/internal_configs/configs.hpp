@@ -1,7 +1,11 @@
 #pragma once
 
+#define SERVER_SOFTWARE			"webserv/1.0"
+
 #define SOCKET_READ_BUFF_SIZE	100000
 #define DEFAULT_PORT_STR		"80"
+#define	MAX_PORT_VALUE			65535
+#define	MIN_PORT_VALUE			0
 #define DEFAULT_HOST			"localhost"
 
 // socket defines

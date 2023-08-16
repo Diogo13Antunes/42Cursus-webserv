@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connections.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/15 10:17:46 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/16 16:23:16 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ Connections::Connections(void): AMessengerClient(NULL), _lastUpdateTime(0) {}
 Connections::~Connections(void)
 {
 	_removeAllConnections();
+	std::cout << "~Connections" << std::endl;
 }
 
 void Connections::updateAllConnections(void)

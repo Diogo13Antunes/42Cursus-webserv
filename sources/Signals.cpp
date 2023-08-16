@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Signals.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 15:57:25 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/15 19:31:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/16 11:08:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void Signals::init(void)
 
 void Signals::handler(int signal)
 {
-	std::cout << "Signal: " << signal << std::endl;
+	//std::cout << "Signal: " << signal << std::endl;
 	if (signal == SIGINT || signal == SIGTERM || signal == SIGQUIT)
 		_stopSignal = true;
 }

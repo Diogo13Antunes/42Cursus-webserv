@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/15 16:49:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/16 16:09:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,11 @@ static void debugServersEndpointPrint(std::vector<std::string> endpoints);
 
 Server::Server(void): _configs(NULL){}
 
-Server::~Server(void) {}
+Server::~Server(void)
+{
+	std::cout << std::endl;
+	std::cout << BOLDRED << "Webserv: Server shutdown" << RESET << std::endl;
+}
 
 void Server::setConfigs(ConfigsData *configs)
 {
@@ -222,7 +226,7 @@ bool Server::_isValidPort(std::string port)
 
 	ss << port;
 	ss >> portInt;
-	res = portInt >= 0 && portInt <= 65535;
+	res = portInt >= MIN_PORT_VALUE && portInt <= MAX_PORT_VALUE;
 	return (res);
 }
 
