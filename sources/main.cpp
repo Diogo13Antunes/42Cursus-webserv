@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/16 10:53:34 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/17 11:01:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,4 +51,3 @@ int main(int argc, char **argv)
 		server.start();
 	return (0);
 }
-

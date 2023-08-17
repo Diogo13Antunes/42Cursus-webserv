@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/16 16:16:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/17 11:04:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ EventLoop::EventLoop(void): AMessengerClient(NULL) {}
 
 EventLoop::~EventLoop(void)
 {
-	std::cout << "~EventLoop" << std::endl;
+	_cleanUpMap(_handlers.begin(), _handlers.end());
+	_cleanUpMap(_eventMap.begin(), _eventMap.end());
+	//std::cout << "~EventLoop" << std::endl;
 }
 
 void EventLoop::registerEventHandler(IEventHandler *eventHandler)
@@ -323,4 +325,13 @@ void EventLoop::_sendMessages(Event *event)
 		_eventMap.insert(std::make_pair(event->getCgiReadFd(), event));
 		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_ADD_NEW));
 	}
+}
+
+template <typename T>
+void EventLoop::_cleanUpMap(T begin, T end)
+{
+	T it;
+
+	for (it = begin; it != end; it++)
+		delete it->second;
 }

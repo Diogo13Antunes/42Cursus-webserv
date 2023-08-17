@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/17 08:14:48 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/17 11:04:31 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Connections::Connections(void): AMessengerClient(NULL), _lastUpdateTime(0) {}
 Connections::~Connections(void)
 {
 	_removeAllConnections();
-	std::cout << "~Connections" << std::endl;
+	//std::cout << "~Connections" << std::endl;
 }
 
 void Connections::updateAllConnections(void)
@@ -114,7 +114,14 @@ void Connections::_removeConnection(int fd)
 
 void Connections::_addNewConnection(int fd)
 {
-	_activeConnects.insert(std::make_pair(fd, new Connection(fd)));
+	try 
+	{
+		_activeConnects.insert(std::make_pair(fd, new Connection(fd)));
+	}
+	catch (const std::exception& e)
+	{
+		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
+	}
 }
 
 void Connections::_pauseKeepAliveTimer(int fd)
