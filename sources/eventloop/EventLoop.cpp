@@ -6,13 +6,13 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/17 11:04:13 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/17 11:58:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventLoop.hpp"
-
 #include "CGIExecuter.hpp"
+#include "Signals.hpp"
 
 EventLoop::EventLoop(void): AMessengerClient(NULL) {}
 
@@ -54,7 +54,8 @@ void EventLoop::handleEvents(void)
 		else if (event && event->getActualState() == TYPE_TRANSITION)
 			_addEventToQueue(event->getFd());
 	}
-	_checkIfCgiScriptsFinished();
+	//if (Signals::isChildSignalTriggered())
+		_checkIfCgiScriptsFinished();
 	//_closeTimeoutEvents();
 }
 
