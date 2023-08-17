@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connections.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/16 16:23:16 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/17 08:14:48 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,12 +91,11 @@ void Connections::_removeAllConnections(void)
 	std::map<int, Connection *>::iterator it;
 
 	for(it = _activeConnects.begin(); it != _activeConnects.end(); it++)
-		_removeConnection(it);
+		delete it->second;
 }
 
 void Connections::_removeConnection(std::map<int, Connection *>::iterator it)
 {
-
 	delete it->second;
 	_activeConnects.erase(it);
 }
