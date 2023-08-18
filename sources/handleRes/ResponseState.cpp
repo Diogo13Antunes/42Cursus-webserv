@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/18 08:30:24 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/18 08:49:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,12 @@ StateResType ResponseState::handle(Event *event, ServerConfig config)
 		return (RESPONSE_END);
 	}
 	
-	std::cout << "RES_SIZE: " << resSize << std::endl;
-	std::cout << "BYTES_SEND: " << numBytesSend << std::endl;
+	//std::cout << "RES_SIZE: " << resSize << std::endl;
+	//std::cout << "BYTES_SEND: " << numBytesSend << std::endl;
 	
 	if (numBytesSend >= resSize)
 	{
-		std::cout << "AQUI" << std::endl;
+		//std::cout << "AQUI" << std::endl;
 		//std::cout << event->getRes() << std::endl;
 		// numBytesSend = send(event->getFd(), res.c_str(), resSize, 0);
 		event->setRes("");

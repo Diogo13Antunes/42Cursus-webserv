@@ -42,8 +42,8 @@ class Location
 		std::string					getUploadStore(void);
 		std::vector<std::string>	getAccepted(void);
 		std::map<int, std::string>	getRedirection(void);
+		bool						hasRedirection(void);
 		bool						existCgi(void);
 		bool						existUploadStore(void);
-		bool						existRedirection(void);
 		bool						isAcceptedMethod(std::string method);
 };

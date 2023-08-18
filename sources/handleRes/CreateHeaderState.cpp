@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/18 08:26:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/18 16:07:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,38 +29,7 @@ CreateHeaderState::~CreateHeaderState(void)
 	//Default CreateHeaderState Destructor
 }
 
-/*
-StateResType CreateHeaderState::handle(Event *event, ConfigsData configsData)
-{
-	std::string			fileName;
-	std::string			header;
-	size_t				fileSize;
-	int					errorCode = 0;
-	ErrorPageBuilder	errorBuilder;
 
-	fileName = _getFileName(event->getReqLinePath(), configsData);
-	if (_isFileReadable(fileName))
-		fileSize = _getFileSize(fileName);
-	else
-	{
-		errorCode = 404;
-		event->setErrorCode(errorCode);
-		errorBuilder.setErrorCode(errorCode);
-		fileSize = errorBuilder.getErrorPageSize();
-	}
-	event->setBodySize1(fileSize);
-
-	if (errorCode)
-		_createHeaderDefaultError(header, errorCode, event);
-	else
-		_createHeader(header, fileName, event);
-	
-	event->setFileName(fileName);
-	event->setRes(header);
-	event->setResSize(header.size() + fileSize);
-	return (GET_BODY);
-}
-*/
 
 StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 {
@@ -73,6 +42,8 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 	int statusCode;
 
 
+
+
 	statusCode = event->getStatusCode();
 	if (statusCode)
 	{
@@ -83,6 +54,9 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 		event->setResSize(header.size() + fileSize);
 		return (GET_BODY);
 	}
+
+	if (config.hasRedirection(event->getReqLinePath()))
+		return (REDIRECT);
 
 	//fileName = _getFileName(event->getReqLinePath(), configsData);
 	fileName = _getFileName(event->getReqLinePath(), config);
@@ -111,25 +85,6 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 
 	return (GET_BODY);
 }
-
-/*
-std::string CreateHeaderState::_getFileName(std::string reqTarget, ConfigsData &conf)
-{
-	ServerConfig	actulServer;
-	std::string		fileName;
-	std::string		path;
-
-	actulServer = conf.getServers().at(0);
-	fileName = actulServer.getFilePathByRoute(reqTarget);
-
-	if (fileName.empty())
-	{
-		path = actulServer.getGlobalRoutePath();
-		fileName = path + "/" + reqTarget;
-	}
-	return (fileName);
-}
-*/
 
 std::string CreateHeaderState::_getFileName(std::string reqTarget, ServerConfig &conf)
 {
@@ -211,7 +166,6 @@ void CreateHeaderState::_createHeader(std::string &header, std::string fileName,
 	httpHeader.setStatus("200 OK");
 	httpHeader.setContentLength(_getFileSize(fileName));
 	httpHeader.setContentType(_getMimeType(_getFileType(fileName)));
-	httpHeader.setServerName("webserv");
 	httpHeader.setConnection("keep-alive");
 	if (event->isConnectionClose())
 		httpHeader.setConnection("close");
@@ -228,7 +182,6 @@ void CreateHeaderState::_createHeaderDefaultError(std::string &header, int error
 	httpHeader.setStatus(errorBuilder.getCodeAndPhrase());
 	httpHeader.setContentLength(errorBuilder.getErrorPageSize());
 	httpHeader.setContentType(_getMimeType("html"));
-	httpHeader.setServerName("webserv");
 	if (event->isConnectionClose())
 		httpHeader.setConnection("close");
 	else

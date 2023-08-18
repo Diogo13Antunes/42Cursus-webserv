@@ -99,6 +99,11 @@ std::map<int, std::string>	Location::getRedirection(void)
 	return (_redirection);
 }
 
+bool	Location::hasRedirection(void)
+{
+	return (!_redirection.empty());
+}
+
 bool	Location::existCgi(void)
 {
 	if (!_cgi.empty())
@@ -109,13 +114,6 @@ bool	Location::existCgi(void)
 bool	Location::existUploadStore(void)
 {
 	if (!_uploadStore.empty())
-		return (true);
-	return (false);
-}
-
-bool	Location::existRedirection(void)
-{
-	if (_redirection.size() > 0)
 		return (true);
 	return (false);
 }

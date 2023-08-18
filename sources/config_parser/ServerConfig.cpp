@@ -123,6 +123,34 @@ std::string	ServerConfig::getGlobalRoutePath(void)
 	return (globalRoutePath);
 }
 
+bool ServerConfig::hasRedirection(std::string route)
+{
+	Location	*location;
+
+	location = _getSpecificLocations(route);
+	if (location)
+		return (location->hasRedirection());
+	return (false);
+}
+
+// redirections come in map but this is a error because the redir can be only one for route:NEED CHANGE
+void ServerConfig::getRedirectionInfo(std::string route, int &code, std::string &resource)
+{
+	Location								*location;
+	std::map<int, std::string>::iterator	it;
+	std::map<int, std::string>				redir;
+	
+	location = _getSpecificLocations(route);
+	if (!location)
+		return ;
+	redir = location->getRedirection();
+	if (redir.empty())
+		return ;
+	it = redir.begin();
+	code = it->first;
+	resource.assign(it->second);
+}
+
 std::string	ServerConfig::existMimeType(std::string src)
 {
 	std::map<std::string, std::string>::iterator	it;
@@ -419,6 +447,8 @@ void	ServerConfig::_checkAllLocationsStatus(void)
 	}
 }
 
+
+// mudificar o nome "Location *_getLocation(std::string route)"
 Location	*ServerConfig::_getSpecificLocations(std::string location)
 {
 	std::map<std::string, Location>::iterator	it;
