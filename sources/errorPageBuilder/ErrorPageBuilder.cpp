@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrorPageBuilder.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 09:35:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/05 09:16:15 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/07 11:01:42 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,8 @@ int ErrorPageBuilder::getErrorPageSize(void)
 
 void ErrorPageBuilder::_initErrorCodes(void)
 {
+	_reasonPhrase.insert(std::make_pair(400, "Bad Request"));
 	_reasonPhrase.insert(std::make_pair(404, "Not Found"));
-	_reasonPhrase.insert(std::make_pair(400, "Bad Request"));	
+	_reasonPhrase.insert(std::make_pair(414, "URI Too Long"));
+	_reasonPhrase.insert(std::make_pair(501, "Not Implemented"));
 }

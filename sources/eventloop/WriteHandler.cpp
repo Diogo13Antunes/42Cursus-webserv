@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WriteHandler.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 17:29:29 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/16 12:16:50 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,10 @@ WriteHandler::~WriteHandler(void)
 
 void WriteHandler::handleEvent(Event *event)
 {
+	/* if (event->getCgiBodyRes().size() > 0)
+	{
+		std::cout << event->getCgiBodyRes() << std::endl;
+	} */
 	_handleRes->setEvent(event);
 	_handleRes->handle();
 	if (_handleRes->isResProcessingComplete())

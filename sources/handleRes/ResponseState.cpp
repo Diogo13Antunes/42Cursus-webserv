@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 17:57:19 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/18 08:30:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,26 @@ StateResType ResponseState::handle(Event *event, ServerConfig config)
 		event->setClientDisconnected();
 		return (RESPONSE_END);
 	}
+	
+	std::cout << "RES_SIZE: " << resSize << std::endl;
+	std::cout << "BYTES_SEND: " << numBytesSend << std::endl;
+	
 	if (numBytesSend >= resSize)
+	{
+		std::cout << "AQUI" << std::endl;
+		//std::cout << event->getRes() << std::endl;
+		// numBytesSend = send(event->getFd(), res.c_str(), resSize, 0);
 		event->setRes("");
+	}
 	else
 		event->setRes(res.substr(numBytesSend));
 	event->updateTotalBytesSend(numBytesSend);
 
-	if (_isResponseFullySend(event->getTotalBytesSend(), event->getResSize()))
+	/* if (_isResponseFullySend(event->getTotalBytesSend(), event->getResSize()))
+	{
+		std::cout << "RESPONSE_END" << std::endl;
 		return (RESPONSE_END);
+	} */
 	return (GET_BODY);
 }
 

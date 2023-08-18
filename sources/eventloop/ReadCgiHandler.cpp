@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ReadCgiHandler.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:38:17 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/02 08:32:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/16 11:52:51 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,6 @@ void ReadCgiHandler::handleEvent(Event *event)
 	nRead = event->readFromCgi(str);
 	if (nRead > 0)
 		event->updateCgiScriptResult(str);
-	
-	//for(int i = 0; i < 99999999; i++);
-	//std::cout << "CGI status code: " << event->isCgiScriptEnd() << std::endl;
-
-	//event->setActualState(TYPE_TRANSITION);
 }
 
 EventType ReadCgiHandler::getHandleType(void)

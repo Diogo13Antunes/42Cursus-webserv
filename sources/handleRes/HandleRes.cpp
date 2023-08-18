@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/15 15:09:46 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/18 08:33:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ HandleRes::HandleRes(void):
 	_serverConf(NULL)
 {
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
+	_stateMap.insert(std::make_pair(CGI_RES_PROCESS, new CgiResponseProcess()));
 	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
 	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
@@ -35,6 +36,7 @@ HandleRes::HandleRes(ConfigsData *configsData):
 	_serverConf(NULL)
 {
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
+	_stateMap.insert(std::make_pair(CGI_RES_PROCESS, new CgiResponseProcess()));
 	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
 	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
@@ -64,26 +66,14 @@ void HandleRes::handle(void)
 
 	_serverConf = _setServerConfig(_configsData->getServers());
 
-	// For send data from cgi. Will be changed
-	if (!_event->getCgiScriptResult().empty())
+	loop = true;
+	while (loop && _event->getResState1() != RESPONSE_END)
 	{
-		_event->setResState1(RESPONSE_END);
-		send(_event->getFd(), _event->getCgiScriptResult().c_str(), _event->getCgiScriptResult().size(), 0);
+		if (_event->getResState1() == RESPONSE)
+			loop = false;
+		state = _handleState(_event->getResState1());
+		_event->setResState1(state);
 	}
-	else
-	{	
-		loop = true;
-		while (loop && _event->getResState1() != RESPONSE_END)
-		{
-			if (_event->getResState1() == RESPONSE)
-				loop = false;
-			state = _handleState(_event->getResState1());
-			_event->setResState1(state);
-		}
-	}
-	//std::cout << "last State: " << state << std::endl;
-
-	//exit(0);
 }
 
 StateResType HandleRes::_handleState(StateResType state)

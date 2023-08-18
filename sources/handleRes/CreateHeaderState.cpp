@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 18:00:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/18 08:26:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 
 	int statusCode;
 
+
 	statusCode = event->getStatusCode();
 	if (statusCode)
 	{
@@ -85,6 +86,8 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 
 	//fileName = _getFileName(event->getReqLinePath(), configsData);
 	fileName = _getFileName(event->getReqLinePath(), config);
+	if (!event->getCgiScriptResult().empty())
+		return (CGI_RES_PROCESS);
 	if (_isFileReadable(fileName))
 		fileSize = _getFileSize(fileName);
 	else

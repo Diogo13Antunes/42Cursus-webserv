@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 11:43:37 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 17:57:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/18 08:27:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,15 @@ StateResType GetBodyState::handle(Event *event, ServerConfig config)
 		errorBuilder.setErrorCode(event->getStatusCode());
 		data = errorBuilder.getErrorPageHtml();
 	}
-
 	else if (event->getErrorCode())
 	{
 		errorBuilder.setErrorCode(event->getErrorCode());
 		data = errorBuilder.getErrorPageHtml();
+	}
+	else if (!event->getCgiBodyRes().empty())
+	{
+		if (event->getTotalBytesSend() == 0)
+			data = event->getCgiBodyRes();
 	}
 	else
 	{
@@ -64,11 +68,8 @@ StateResType GetBodyState::handle(Event *event, ServerConfig config)
 		event->updateBytesReadBody(_getBodyData(data, fileName, event->getBytesReadBody()));
 	}
 	event->updateRes(data);
-
 	return (RESPONSE);
 }
-
-
 
 size_t GetBodyState::_getBodyData(std::string& data, std::string fileName, size_t offset)
 {

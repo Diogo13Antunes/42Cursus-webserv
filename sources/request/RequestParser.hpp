@@ -34,6 +34,7 @@ class RequestParser
 		std::pair<std::string, std::vector<std::string> >	_getHeaderFieldPair(std::string &src);
 		int													_requestLineParser(void);
 		int													_addHeaderElement(std::string &line);
+		bool												_existAlreadyHeader(std::string &key);
 		void												_requestTargetParser(void);
 		bool												_isImplementedRequestMethod(void);
 		int													_hasContentLengthAndTransferEncoded(void);

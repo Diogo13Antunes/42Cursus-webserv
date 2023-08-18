@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/12 17:46:46 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/18 08:22:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -889,6 +889,11 @@ std::string Event::getBody(void)
 	return (_body);
 }
 
+void	Event::setBody(std::string &src)
+{
+	_body = src;
+}
+
 void Event::updateReqBody(std::string body)
 {
 	_reqParser.updateReqBody(body);
@@ -917,4 +922,14 @@ std::string Event::getIp(void)
 std::string Event::getPort(void)
 {
 	return (_port);
+}
+
+std::string Event::getCgiBodyRes(void)
+{
+	return (_cgiBodyRes);
+}
+
+void	Event::setCgiBodyRes(std::string &src)
+{
+	_cgiBodyRes = src;
 }
