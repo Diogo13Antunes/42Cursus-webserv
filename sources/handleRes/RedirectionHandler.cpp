@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 09:14:45 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/19 14:12:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/19 17:41:32 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,14 @@ std::string RedirectionHandler::_createHeader(ServerConfig config, int code, std
 	std::string			location;
 	std::string			statusCode;
 
-	location = _getLocation(resource, config.getHost(), config.getPort());
+	
 	statusCode = _getStatusCode(code);
+	if (statusCode.empty())
+	{
+		httpHeader.setStatus(StringUtils::toString(code));
+		return (httpHeader.getHeader());
+	}
+	location = _getLocation(resource, config.getHost(), config.getPort());
 	httpHeader.setStatus(statusCode);
 	httpHeader.setLocation(location);
 	return (httpHeader.getHeader());
@@ -59,9 +65,8 @@ std::string	RedirectionHandler::_getStatusCode(int code)
 
 	it = _redirCodes.find(code);
 	if (it == _redirCodes.end())
-		status = StringUtils::toString(code);
-	else
-		status = StringUtils::toString(code) + " " + it->second;
+		return (status);
+	status = StringUtils::toString(code) + " " + it->second;
 	return (status);
 }
 
@@ -70,9 +75,9 @@ std::string RedirectionHandler::_getLocation(std::string resource, std::string h
 	std::string	location;
 	std::string	protocol;
 
-	if (resource.empty())
-		return (resource);
 	StringUtils::stringTrim(resource);
+	if (resource.empty())
+		return (" ");
 	if (resource.at(0) != '/')
 		return (resource);
 	protocol = PROTOCOL;
