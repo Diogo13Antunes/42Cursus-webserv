@@ -1,6 +1,7 @@
 #include "StringUtils.hpp"
 
 #include <iostream>
+#include <sstream>
 
 std::string&	StringUtils::stringTrim(std::string &str)
 {
@@ -64,4 +65,12 @@ bool	StringUtils::hasWhiteSpaces(std::string &str)
 	if (str.find_first_of(WHITE_SPACE) != str.npos)
 		return (true);
 	return (false);
+}
+
+std::string StringUtils::toString(int num)
+{
+	std::stringstream ss;
+
+	ss << num;
+	return (std::string(ss.str()));
 }

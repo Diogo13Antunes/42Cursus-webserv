@@ -11,7 +11,7 @@
 #define DEFAULT_HOST			"localhost"
 #define LOOPBACK_ADD			"127.0.0.1"
 
-// socket defines
+// socket defines (max size of internal queue of listen)
 #define DEFAULT_BACKLOG 		128
 
 #define EPOLL_MAX_NEVENTS	100000

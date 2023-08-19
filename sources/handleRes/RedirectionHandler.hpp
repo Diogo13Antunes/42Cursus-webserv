@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 09:14:49 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/18 17:47:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/19 11:44:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ class RedirectionHandler: public IStateRes
 		std::map<int, std::string> _redirCodes;
 
 		std::string _createHeader(ServerConfig config, int code, std::string resource);
-		std::string _createHeader(std::string resource, std::string host, std::string port);
+		std::string	_getStatusCode(int code);
+		std::string _getLocation(std::string resource, std::string host, std::string port);
 
 	public:
 		RedirectionHandler(void);
