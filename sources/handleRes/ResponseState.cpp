@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ResponseState.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/16 17:09:40 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/20 18:22:07 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,26 +54,14 @@ StateResType ResponseState::handle(Event *event, ConfigsData confiagsDta)
 		event->setClientDisconnected();
 		return (RESPONSE_END);
 	}
-	
-	std::cout << "RES_SIZE: " << resSize << std::endl;
-	std::cout << "BYTES_SEND: " << numBytesSend << std::endl;
-	
 	if (numBytesSend >= resSize)
-	{
-		std::cout << "AQUI" << std::endl;
-		//std::cout << event->getRes() << std::endl;
-		// numBytesSend = send(event->getFd(), res.c_str(), resSize, 0);
 		event->setRes("");
-	}
 	else
 		event->setRes(res.substr(numBytesSend));
 	event->updateTotalBytesSend(numBytesSend);
 
-	/* if (_isResponseFullySend(event->getTotalBytesSend(), event->getResSize()))
-	{
-		std::cout << "RESPONSE_END" << std::endl;
+	if (_isResponseFullySend(event->getTotalBytesSend(), event->getResSize()))
 		return (RESPONSE_END);
-	} */
 	return (GET_BODY);
 }
 
