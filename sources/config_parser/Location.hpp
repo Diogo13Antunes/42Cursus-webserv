@@ -17,7 +17,7 @@ class Location
 	std::string						_uploadStore;
 	std::vector<std::string>		_accepted;
 	std::vector<std::string>		_acceptedDefault;
-	std::map<int, std::string>		_redirection;
+	std::pair<int, std::string>		_redirection;
 
 	void	_initAcceptedDefault(void);
 	void	_updateLocationError(bool newLocationError);
@@ -41,7 +41,7 @@ class Location
 		std::string					getCgi(void);
 		std::string					getUploadStore(void);
 		std::vector<std::string>	getAccepted(void);
-		std::map<int, std::string>	getRedirection(void);
+		std::pair<int, std::string>	getRedirection(void);
 		bool						existCgi(void);
 		bool						existUploadStore(void);
 		bool						existRedirection(void);

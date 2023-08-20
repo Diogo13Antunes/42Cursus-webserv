@@ -10,6 +10,7 @@ static void			removeBraquets(std::string &array);
 static size_t		getNumberOfIdentations(std::string &line);
 static int			strToInt(std::string &str);
 static bool			isValidRedirectionCode(int code);
+static bool			isStringEmptyOrSpaces(std::string &str);
 
 Location::Location(void):
 	_locationError(true)
@@ -19,7 +20,8 @@ Location::Location(void):
 
 Location::Location(std::string masterRoot, std::vector<std::string> locationInfo):
 	_locationError(true),
-	_index("index.html")
+	_index("index.html"),
+	_redirection(std::make_pair(0, ""))
 {
 	std::vector<std::string>::iterator	it;
 	std::string	key;
@@ -94,7 +96,7 @@ std::vector<std::string>	Location::getAccepted(void)
 	return (_acceptedDefault);
 }
 
-std::map<int, std::string>	Location::getRedirection(void)
+std::pair<int, std::string>	Location::getRedirection(void)
 {
 	return (_redirection);
 }
@@ -115,7 +117,7 @@ bool	Location::existUploadStore(void)
 
 bool	Location::existRedirection(void)
 {
-	if (_redirection.size() > 0)
+	if (_redirection.first && !_redirection.second.empty())
 		return (true);
 	return (false);
 }
@@ -207,21 +209,32 @@ void	Location::_setRedirection(std::vector<std::string>::iterator &it,
 		_updateLocationError(false);
 	else
 	{
-		int			code;
-		std::string key;
-		std::string value;
-
-		key = getKey(*it);
-		value = getValue(*it);
-		if (key.find_first_not_of("0123456789") != key.npos)
-			_updateLocationError(false);
-		else
+		while (isRedirection(*it) && it != itEnd)
 		{
-			code = strToInt(key);
-			if (!isValidRedirectionCode(code))
+			if (_redirection.first && !_redirection.second.empty())
+			{
+				_updateLocationError(false);
+				return ;
+			}
+
+			int			code;
+			std::string key;
+			std::string value;
+
+			key = getKey(*it);
+			value = getValue(*it);
+			if (isStringEmptyOrSpaces(value)
+				|| key.find_first_not_of("0123456789") != key.npos)
 				_updateLocationError(false);
 			else
-				_redirection.insert(std::make_pair(code, value));
+			{
+				code = strToInt(key);
+				if (!isValidRedirectionCode(code))
+					_updateLocationError(false);
+				else
+					_redirection = std::make_pair(code, value);
+			}
+			it++;
 		}
 		it--;
 	}
@@ -347,15 +360,11 @@ static bool	isValidRedirectionCode(int code)
 {
 	switch (code)
 	{
-		case 300:
-			return (true);
 		case 301:
 			return (true);
 		case 302:
 			return (true);
 		case 303:
-			return (true);
-		case 304:
 			return (true);
 		case 307:
 			return (true);
@@ -363,4 +372,14 @@ static bool	isValidRedirectionCode(int code)
 			return (true);
 	}
 	return (false);
+}
+
+static bool	isStringEmptyOrSpaces(std::string &str)
+{
+	if (!str.empty())
+	{
+		if (str.find_first_not_of(EMPTY_SPACE) != str.npos)
+			return (false);
+	}
+	return (true);
 }
