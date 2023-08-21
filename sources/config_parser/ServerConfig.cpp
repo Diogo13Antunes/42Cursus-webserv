@@ -147,6 +147,16 @@ void ServerConfig::getRedirectionInfo(std::string route, int &code, std::string 
 	resource.assign(redir.second);
 }
 
+std::string ServerConfig::getCgiScriptName(std::string route)
+{
+	Location	*location;
+
+	location = _getSpecificLocations(route);
+	if (!location)
+		return (std::string());
+	return (location->getCgi());
+}
+
 std::string	ServerConfig::existMimeType(std::string src)
 {
 	std::map<std::string, std::string>::iterator	it;
@@ -193,6 +203,16 @@ void ServerConfig::setIp(std::string ip)
 void ServerConfig::setPort(std::string port)
 {
 	_port = port;
+}
+
+std::string ServerConfig::getUploadStore(std::string route)
+{
+	Location								*location;
+
+	location = _getSpecificLocations(route);
+	if (!location)
+		return (std::string());
+	return (location->getUploadStore());
 }
 
 /* PRIVATE METHODS */

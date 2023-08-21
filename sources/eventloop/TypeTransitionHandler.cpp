@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   TypeTransitionHandler.cpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 14:31:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/21 16:37:27 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 #define CGI_PATH "/cgi"
 
-TypeTransitionHandler::TypeTransitionHandler(void) {}
+TypeTransitionHandler::TypeTransitionHandler(ConfigsData *configs): _configs(configs) {}
 
 TypeTransitionHandler::~TypeTransitionHandler(void) {}
 
@@ -23,11 +23,19 @@ void TypeTransitionHandler::handleEvent(Event *event)
 {
 	//std::cout << "StateTransitionHandler" << std::endl;
 
+	ServerConfig*	serverConf;
+	std::string		cgiName;
+
 	if (event->getOldState() == READ_SOCKET)
 	{
-		if (!event->getReqLinePath().compare(CGI_PATH))
+		serverConf = _getServerConfig(event, _configs->getServers());
+
+		cgiName = serverConf->getCgiScriptName(event->getReqLinePath());
+
+		if (!cgiName.empty())
 		{
-			//std::cout << "TypeTransitionHandler: CGI" << std::endl;
+			std::cout << "Script name: " << cgiName << std::endl;
+			event->cgiExecute(serverConf, cgiName);
 			event->setActualState(WRITE_CGI);
 		}
 		else
@@ -52,4 +60,33 @@ void TypeTransitionHandler::handleEvent(Event *event)
 EventType TypeTransitionHandler::getHandleType(void)
 {
 	return (TYPE_TRANSITION);
+}
+
+
+ServerConfig* TypeTransitionHandler::_getServerConfig(Event *event, std::vector<ServerConfig>& serverConfigs)
+{
+	std::vector<ServerConfig>::iterator	it;
+	std::string							ipReq;
+	std::string							portReq;
+	std::string							hostReq;
+	ServerConfig						*serverConf;
+	
+	ipReq = event->getIp();
+	portReq = event->getPort();
+	hostReq = event->getReqHost();
+	serverConf = NULL;
+	for (it = serverConfigs.begin(); it != serverConfigs.end(); it++)
+	{
+		if (!ipReq.compare(it->getIp()) && !portReq.compare(it->getPort()))
+		{
+			if (!hostReq.compare(it->getServerName()))
+			{
+				serverConf = &(*it);
+				break ;
+			}
+			else if (serverConf == NULL)
+				serverConf = &(*it);
+		}
+	}
+	return (serverConf);
 }

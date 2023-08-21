@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/17 11:58:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/21 16:33:45 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,7 +315,7 @@ void EventLoop::_sendMessages(Event *event)
 	else if (type == WRITE_CGI)
 	{
 		_cgiEventMap.insert(std::make_pair(event->getFd(), event));
-		event->cgiExecute();
+		//event->cgiExecute();
 		_eventMap.insert(std::make_pair(event->getCgiWriteFd(), event));
 		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_ADD_NEW));
 		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_CHANGE_TO_WRITE));

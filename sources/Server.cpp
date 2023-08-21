@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/17 11:02:07 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/21 13:54:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ bool Server::_initEventLoop(void)
 		_eventLoop.registerEventHandler(new WriteHandler(new HandleRes(_configs)));
 		_eventLoop.registerEventHandler(new ReadCgiHandler());
 		_eventLoop.registerEventHandler(new WriteCgiHandler());
-		_eventLoop.registerEventHandler(new TypeTransitionHandler());
+		_eventLoop.registerEventHandler(new TypeTransitionHandler(_configs));
 	}
 	catch (const std::bad_alloc& e)
 	{

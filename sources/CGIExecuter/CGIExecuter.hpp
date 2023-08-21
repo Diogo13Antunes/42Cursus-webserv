@@ -10,9 +10,16 @@
 
 #define WHITE_SPACE	"\n\t\r "
 
+#include "ServerConfig.hpp"
+#include "RequestParser.hpp"
+
 class CGIExecuter
 {
 	private:
+
+		ServerConfig		*_serverConfigs;
+		RequestParser		_request;
+
 		std::string			_scriptInterpreter;
 		std::string			_scriptName;
 		std::string			_scriptInput;
@@ -20,6 +27,7 @@ class CGIExecuter
 		int					_pipe2[2];
 		int					_pid;
 		int					_statusCode;
+		char				**_env;
 
 		bool				_initPipes(void);
 		std::string			_getScriptInterpreter(void);
@@ -27,11 +35,13 @@ class CGIExecuter
 		void				_closeAllFds(void);
 		void				_closeFd(int *fd);
 		void				_execute(char **env, std::string path);
+		char 				**_getEnvVariables(void);
 
 	public:
 		CGIExecuter(void);
+		CGIExecuter(ServerConfig *config, RequestParser &request, std::string scriptName);
 		~CGIExecuter(void);
-	
+
 		int			getReadFD(void);
 		int			getWriteFD(void);
 		int			writeToScript(const char *str);
