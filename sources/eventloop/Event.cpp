@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/18 08:22:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/21 16:00:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -844,10 +844,10 @@ void Event::setClientDisconnected(void)
 }
 
 
-void Event::cgiExecute(void)
+void Event::cgiExecute(std::string scriptName)
 {
 	if (!_cgiEx)
-		_cgiEx = new CGIExecuter();
+		_cgiEx = new CGIExecuter(scriptName);
 }
 
 int Event::writeToCgi(const char *str)

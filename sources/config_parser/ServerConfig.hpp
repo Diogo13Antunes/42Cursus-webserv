@@ -57,6 +57,7 @@ class ServerConfig
 		std::string							getGlobalRoutePath(void);
 		bool								hasRedirection(std::string route);
 		void								getRedirectionInfo(std::string route, int &code, std::string &resource);
+		std::string							getCgiScriptName(std::string route);
 		std::string							existMimeType(std::string src);
 		std::string 						getHost(void);
 		std::string 						getPort(void);

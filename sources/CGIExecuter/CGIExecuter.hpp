@@ -30,6 +30,7 @@ class CGIExecuter
 
 	public:
 		CGIExecuter(void);
+		CGIExecuter(std::string scriptName);
 		~CGIExecuter(void);
 	
 		int			getReadFD(void);

@@ -21,6 +21,13 @@ CGIExecuter::CGIExecuter(void): _statusCode(0)
 	_execute(NULL, "cgi-bin/script.py");
 }
 
+CGIExecuter::CGIExecuter(std::string scriptName): _statusCode(0)
+{
+	if (!_initPipes())
+		throw FailToIinitPipesException();
+	_execute(NULL, scriptName);
+}
+
 /*
 CGIExecuter::~CGIExecuter(void)
 {
