@@ -13,13 +13,28 @@
 		throw FailToIinitPipesException();
 }*/
 
-// O construtor precisa de receber como parametro o que necessita de entrar dentro do _execute()
 CGIExecuter::CGIExecuter(void): _statusCode(0)
 {
 	if (!_initPipes())
 		throw FailToIinitPipesException();
 	_execute(NULL, "cgi-bin/script.py");
 }
+
+// O construtor precisa de receber como parametro o que necessita de entrar dentro do _execute()
+CGIExecuter::CGIExecuter(ServerConfig &config, RequestParser &request, std::string scriptName): _statusCode(0)
+{
+	_serverConfigs = config;
+	_request = request;
+	if (!_initPipes())
+		throw FailToIinitPipesException();
+	_execute(NULL, "cgi-bin/script.py");
+}
+
+/*
+	/cgi-bin/test.py
+
+
+*/
 
 /*
 CGIExecuter::~CGIExecuter(void)

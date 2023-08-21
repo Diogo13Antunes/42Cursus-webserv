@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 from urllib.parse import parse_qs
 import json
 
