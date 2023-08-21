@@ -1,14 +1,19 @@
 #!/usr/bin/python3
 
-import cgi, os
+import cgi, os, sys
 
 form = cgi.FieldStorage()
 status = "200 OK"
 
-file = form['file']
+directory = os.getenv('DOCUMENT_ROOT')
+
+if not os.path.exists(directory) or not os.path.isdir(directory):
+	os.mkdir(directory)
+
+file = form['fileTest']
 if file.filename:
 	fileName = os.path.basename(file.filename)
-	open(os.getenv('DOCUMENT_ROOT') + fileName, 'wb').write(file.file.read())
+	open(directory + fileName, 'wb').write(file.file.read())
 	status = "201 Created"
 	htmlfile = """
 <!DOCTYPE html>

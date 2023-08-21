@@ -21,20 +21,15 @@ CGIExecuter::CGIExecuter(void): _statusCode(0)
 }
 
 // O construtor precisa de receber como parametro o que necessita de entrar dentro do _execute()
-CGIExecuter::CGIExecuter(ServerConfig &config, RequestParser &request, std::string scriptName): _statusCode(0)
+CGIExecuter::CGIExecuter(ServerConfig *config, RequestParser &request, std::string scriptName): _statusCode(0)
 {
 	_serverConfigs = config;
 	_request = request;
 	if (!_initPipes())
 		throw FailToIinitPipesException();
-	_execute(NULL, "cgi-bin/script.py");
+	_env = _getEnvVariables();
+	_execute(_env, scriptName);
 }
-
-/*
-	/cgi-bin/test.py
-
-
-*/
 
 /*
 CGIExecuter::~CGIExecuter(void)
@@ -58,7 +53,8 @@ CGIExecuter::~CGIExecuter(void)
 		if (kill(_pid, SIGTERM) == -1)
 			std::cout << "Webserv: Error terminating SGI script" << std::endl;
 	}
-	_closeAllFds();
+	// _closeAllFds();
+	_closeFd(&_pipe2[0]);
 }
 
 void	CGIExecuter::execute(std::string script, std::string message, char **env)
@@ -247,4 +243,35 @@ void CGIExecuter::_execute(char **env, std::string path)
 		throw ExecutionErrorException();
 		return ;
 	}
+}
+
+std::string sizeToString(size_t number)
+{
+	std::stringstream ss;
+	ss << number;
+
+	return (ss.str());
+}
+
+char	**CGIExecuter::_getEnvVariables(void)
+{
+	std::vector<std::string>	temp;
+
+	temp.push_back("SERVER_PROTOCOL=HTTP/1.1");
+	temp.push_back("REQUEST_METHOD=" + _request.getReqLineMethod());
+	temp.push_back("CONTENT_LENGTH=" + sizeToString(_request.getRequestBody().size()));
+	temp.push_back("CONTENT_TYPE=" + _request.getHeaderField("content-type").at(0));
+	temp.push_back("QUERY_STRING=" + _request.getQueryString());
+	temp.push_back("DOCUMENT_ROOT=" + _serverConfigs->getUploadStore(_request.getReqLinePath()));
+
+	char **env = new char*[temp.size() + 1];
+
+	env[temp.size()] = NULL;
+
+	for (size_t i = 0; i < temp.size(); ++i) {
+		env[i] = new char[temp[i].size() + 1];
+		std::strcpy(env[i], temp[i].c_str());
+	}
+
+	return (env);
 }
