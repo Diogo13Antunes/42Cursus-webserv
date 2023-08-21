@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IStateRes.hpp                                      :+:      :+:    :+:   */
+/*   Signals.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/29 11:17:19 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 17:55:05 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/08/15 15:57:28 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/08/17 11:44:12 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Event.hpp"
-#include "StateResType.hpp"
-#include "ConfigsData.hpp"
-
-class IStateRes
+class Signals
 {
+	private:
+		static bool	_stopSignal;
+		static bool	_childSignal;
+
 	public:
-		virtual ~IStateRes(void) {};
-		//virtual StateResType handle(Event *event, ConfigsData configsData) = 0;
-		virtual StateResType handle(Event *event, ServerConfig config) = 0;
+		static void init(void);
+		static void	handler(int signal);
+		static bool	isStopSignalTriggered(void);
+		static bool	isChildSignalTriggered(void);
 };

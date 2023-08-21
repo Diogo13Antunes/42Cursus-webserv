@@ -21,5 +21,5 @@ class CgiResponseProcess: public IStateRes
 		CgiResponseProcess(void);
 		~CgiResponseProcess(void);
 
-		StateResType handle(Event *event, ConfigsData configsData);
+		StateResType handle(Event *event, ServerConfig configsData);
 };

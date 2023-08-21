@@ -1,33 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   GetBodyState.hpp                                   :+:      :+:    :+:   */
+/*   RedirectionHandler.hpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/30 11:43:43 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 17:57:14 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/08/18 09:14:49 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/08/19 11:44:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "IStateRes.hpp"
+#include <map>
 
-#define BUFF_SIZE 500000
-
-class GetBodyState: public IStateRes
+class RedirectionHandler: public IStateRes
 {
 	private:
-		char _buff[BUFF_SIZE];
-		
-		size_t	_getBodyData(std::string& data, std::string fileName, size_t offset);
+		std::map<int, std::string> _redirCodes;
+
+		std::string _createHeader(ServerConfig config, int code, std::string resource);
+		std::string	_getStatusCode(int code);
+		std::string _getLocation(std::string resource, std::string host, std::string port);
 
 	public:
-		GetBodyState(void);
-		GetBodyState(const GetBodyState &src);
-		~GetBodyState(void);
-		GetBodyState &operator=(const GetBodyState &src);
+		RedirectionHandler(void);
+		~RedirectionHandler(void);
 
 		StateResType handle(Event *event, ServerConfig config);
 };

@@ -13,4 +13,5 @@ class StringUtils
 		static void			removeConsecutiveChars(std::string &src, char c);
 		static bool			areCharsEqual(char c1, char c2);
 		static bool			hasWhiteSpaces(std::string &str);
+		static std::string	toString(int num);
 };

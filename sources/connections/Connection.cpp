@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 12:25:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/17 11:04:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,7 @@ void Connection::pauseTimer(void)
 	_status = TIMER_PAUSED;
 }
 
-// Just for debug (remove when not necessary)
-// Remove
+// DEBUG
 void Connection::showDataConnection(void)
 {
 	std::cout << "------------ Connection ------------" << std::endl;

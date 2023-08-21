@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 14:25:06 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/17 11:00:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,6 @@ class EventLoop: public AMessengerClient
 		void	_handleEvent(Event *ev);
 		void	_registerReadEvent(int fd);
 		void	_registerWriteEvent(int fd);
-
-
 		void	_addEventToMap(Event *event);
 		void	_addEventToMap(int fd, Event *event);
 		void	_addEventToQueue(int fd);
@@ -49,8 +47,10 @@ class EventLoop: public AMessengerClient
 		void	_finalizeEvent(Event *event);
 		void	_handleClientDisconnect(Event *event);
 		int		_getNextEventFromQueue(void);
-
 		void	_sendMessages(Event *event);
+
+		template <typename T>
+		void _cleanUpMap(T begin, T end);
 
 	public:
 		EventLoop(void);

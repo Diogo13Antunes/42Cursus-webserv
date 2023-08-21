@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleRes.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/12 15:34:13 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/18 09:22:15 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,21 +18,26 @@
 #include "CreateHeaderState.hpp"
 #include "GetBodyState.hpp"
 #include "ResponseState.hpp"
+#include "ServerConfig.hpp"
 #include "CgiResponseProcess.hpp"
+#include "RedirectionHandler.hpp"
 
 
 class HandleRes
 {
 	private:
 		std::map<StateResType, IStateRes*>	_stateMap;
-		ConfigsData							_configsData;
+		ConfigsData							*_configsData;
+		ServerConfig						*_serverConf;
 		Event								*_event;
 		StateResType						_state;
 
-		StateResType _handleState(StateResType state);
+		StateResType	_handleState(StateResType state);
+		ServerConfig*	_setServerConfig(std::vector<ServerConfig>& serverConfigs);
+
 	public:
 		HandleRes(void);
-		HandleRes(ConfigsData &configsData);
+		HandleRes(ConfigsData *configsData);
 		~HandleRes(void);
 		void setEvent(Event *event);
 

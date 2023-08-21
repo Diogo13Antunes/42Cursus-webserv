@@ -1,4 +1,5 @@
 #include "ServerConfig.hpp"
+#include "configs.hpp"
 
 static size_t	getNumberOfIdentations(std::string &line);
 static void		stringTrim(std::string &str);
@@ -40,7 +41,7 @@ ServerConfig::ServerConfig(std::vector<std::string>	configs):
 			else if (key.compare("error_pages") == 0)
 				_setErrorPages(it, configs.end());
 			else if (key.compare("location") == 0)
-				_setLocations(it, configs.end());
+				_setLocations(it, configs.end());				
 			else if (key.compare("mime_types") == 0)
 				_setMimeTypes(it, configs.end());
 			else
@@ -122,6 +123,30 @@ std::string	ServerConfig::getGlobalRoutePath(void)
 	return (globalRoutePath);
 }
 
+bool ServerConfig::hasRedirection(std::string route)
+{
+	Location	*location;
+
+	location = _getSpecificLocations(route);
+	if (location)
+		return (location->hasRedirection());
+	return (false);
+}
+
+// redirections come in map but this is a error because the redir can be only one for route:NEED CHANGE
+void ServerConfig::getRedirectionInfo(std::string route, int &code, std::string &resource)
+{
+	Location								*location;
+	std::pair<int, std::string>				redir;
+
+	location = _getSpecificLocations(route);
+	if (!location)
+		return ;
+	redir = location->getRedirection();
+	code = redir.first;
+	resource.assign(redir.second);
+}
+
 std::string	ServerConfig::existMimeType(std::string src)
 {
 	std::map<std::string, std::string>::iterator	it;
@@ -143,6 +168,31 @@ std::string	ServerConfig::existMimeType(std::string src)
 			res = it->second;
 	}
 	return (res);
+}
+
+std::string ServerConfig::getHost(void)
+{
+	return (_host);
+}
+
+std::string ServerConfig::getPort(void)
+{
+	return (_port);
+}
+
+std::string ServerConfig::getIp(void)
+{
+	return (_ip);
+}
+
+void ServerConfig::setIp(std::string ip)
+{
+	_ip = ip;
+}
+
+void ServerConfig::setPort(std::string port)
+{
+	_port = port;
 }
 
 /* PRIVATE METHODS */
@@ -190,6 +240,11 @@ void	ServerConfig::_setListen(std::string newListen)
 	_listen = _getValue(newListen);
 	if (_listen.empty())
 		_updateConfigError(false);
+	else 
+	{
+		_host = _getHostFromListen(_listen);
+		_port = _getPortFromListen(_listen);
+	}
 }
 
 void	ServerConfig::_setServerName(std::string newServerName)
@@ -334,6 +389,36 @@ void	ServerConfig::_setMimeTypes(std::vector<std::string>::iterator &it,
 	}
 }
 
+std::string ServerConfig::_getHostFromListen(std::string listen)
+{
+	std::string	host;
+	size_t		idx;
+
+	idx = listen.find(":");
+	if (idx != listen.npos)
+		host = listen.substr(0, idx);
+	else if (listen.find_first_not_of("0123456789") != std::string::npos)
+		host = listen;
+	else
+		host = DEFAULT_HOST;
+	return (host);
+}
+
+std::string ServerConfig::_getPortFromListen(std::string listen)
+{
+	std::string	port;
+	size_t		idx;
+
+	idx = listen.find(":");
+	if (idx != listen.npos)
+		port = listen.substr(idx + 1);
+	else if (listen.find_first_not_of("0123456789") != std::string::npos)
+		port = DEFAULT_PORT_STR;
+	else
+		port = listen;
+	return (port);
+}
+
 void	ServerConfig::_addNewMimeType(std::string &src)
 {
 	std::string key;
@@ -358,6 +443,8 @@ void	ServerConfig::_checkAllLocationsStatus(void)
 	}
 }
 
+
+// mudificar o nome "Location *_getLocation(std::string route)"
 Location	*ServerConfig::_getSpecificLocations(std::string location)
 {
 	std::map<std::string, Location>::iterator	it;

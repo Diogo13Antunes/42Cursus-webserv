@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GetBodyState.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 11:43:37 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/16 16:49:57 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/18 08:27:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ GetBodyState &GetBodyState::operator=(const GetBodyState &src)
 }
 */
 
-StateResType GetBodyState::handle(Event *event, ConfigsData configsData)
+
+StateResType GetBodyState::handle(Event *event, ServerConfig config)
 {
 	std::string			data; 
 	std::string			fileName;

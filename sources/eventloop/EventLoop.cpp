@@ -6,17 +6,22 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 14:31:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/17 11:58:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventLoop.hpp"
-
 #include "CGIExecuter.hpp"
+#include "Signals.hpp"
 
 EventLoop::EventLoop(void): AMessengerClient(NULL) {}
 
-EventLoop::~EventLoop(void) {}
+EventLoop::~EventLoop(void)
+{
+	_cleanUpMap(_handlers.begin(), _handlers.end());
+	_cleanUpMap(_eventMap.begin(), _eventMap.end());
+	//std::cout << "~EventLoop" << std::endl;
+}
 
 void EventLoop::registerEventHandler(IEventHandler *eventHandler)
 {
@@ -35,7 +40,7 @@ void EventLoop::handleEvents(void)
 {
 	Event	*event;
 	int		fd;
-	
+
 	while (!_eventQueue.empty())
 	{
 		fd = _getNextEventFromQueue();
@@ -49,7 +54,8 @@ void EventLoop::handleEvents(void)
 		else if (event && event->getActualState() == TYPE_TRANSITION)
 			_addEventToQueue(event->getFd());
 	}
-	_checkIfCgiScriptsFinished();
+	//if (Signals::isChildSignalTriggered())
+		_checkIfCgiScriptsFinished();
 	//_closeTimeoutEvents();
 }
 
@@ -320,4 +326,13 @@ void EventLoop::_sendMessages(Event *event)
 		_eventMap.insert(std::make_pair(event->getCgiReadFd(), event));
 		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_ADD_NEW));
 	}
+}
+
+template <typename T>
+void EventLoop::_cleanUpMap(T begin, T end)
+{
+	T it;
+
+	for (it = begin; it != end; it++)
+		delete it->second;
 }

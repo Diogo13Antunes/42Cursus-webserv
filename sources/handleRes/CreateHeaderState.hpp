@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/05 14:59:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/18 10:58:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,11 @@ class CreateHeaderState: public IStateRes
 		std::string	_getFileType(std::string fileName);
 		std::string _getMimeType(std::string fileExt);
 
+		std::string _getFileName(std::string reqTarget, ServerConfig &conf);
+
 	public:
 		CreateHeaderState(void);
 		~CreateHeaderState(void);
 
-		StateResType handle(Event *event, ConfigsData configsData);
+		StateResType handle(Event *event, ServerConfig config);
 };

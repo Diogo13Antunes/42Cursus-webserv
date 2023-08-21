@@ -17,7 +17,7 @@ CgiResponseProcess::~CgiResponseProcess(void)
 	//Default CgiResponseProcess Destructor
 }
 
-StateResType	CgiResponseProcess::handle(Event *event, ConfigsData configsData)
+StateResType	CgiResponseProcess::handle(Event *event, ServerConfig configsData)
 {
 	(void)configsData;
 	std::vector<std::string>::iterator	it;

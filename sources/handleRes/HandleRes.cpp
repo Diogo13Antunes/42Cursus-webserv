@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HandleRes.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/16 16:04:16 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/18 10:14:49 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,25 @@
 
 HandleRes::HandleRes(void):
 	_event(NULL),
-	_state(CREATE_HEADER)
+	_state(CREATE_HEADER),
+	_serverConf(NULL)
 {
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
 	_stateMap.insert(std::make_pair(CGI_RES_PROCESS, new CgiResponseProcess()));
+	_stateMap.insert(std::make_pair(REDIRECT, new RedirectionHandler()));
 	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
 	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
 
-HandleRes::HandleRes(ConfigsData &configsData):
+HandleRes::HandleRes(ConfigsData *configsData):
 	_event(NULL),
 	_configsData(configsData),
-	_state(CREATE_HEADER) //maybe not nedded
+	_state(CREATE_HEADER), //maybe not nedded
+	_serverConf(NULL)
 {
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
 	_stateMap.insert(std::make_pair(CGI_RES_PROCESS, new CgiResponseProcess()));
+	_stateMap.insert(std::make_pair(REDIRECT, new RedirectionHandler()));
 	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
 	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
@@ -62,6 +66,8 @@ void HandleRes::handle(void)
 	StateResType	state;
 	bool			loop;
 
+	_serverConf = _setServerConfig(_configsData->getServers());
+
 	loop = true;
 	while (loop && _event->getResState1() != RESPONSE_END)
 	{
@@ -80,9 +86,39 @@ StateResType HandleRes::_handleState(StateResType state)
 	{
 		it = _stateMap.find(state);
 		if (it != _stateMap.end())
-			state = it->second->handle(_event, _configsData);
+			//state = it->second->handle(_event, _configsData);
+			state = it->second->handle(_event, *_serverConf);
 	}
 	return (state);
+}
+
+// Se returnar NULL deve responder 500 Internal error
+ServerConfig* HandleRes::_setServerConfig(std::vector<ServerConfig>& serverConfigs)
+{
+	std::vector<ServerConfig>::iterator	it;
+	std::string							ipReq;
+	std::string							portReq;
+	std::string							hostReq;
+	ServerConfig						*serverConf;
+	
+	ipReq = _event->getIp();
+	portReq = _event->getPort();
+	hostReq = _event->getReqHost();
+	serverConf = NULL;
+	for (it = serverConfigs.begin(); it != serverConfigs.end(); it++)
+	{
+		if (!ipReq.compare(it->getIp()) && !portReq.compare(it->getPort()))
+		{
+			if (!hostReq.compare(it->getServerName()))
+			{
+				serverConf = &(*it);
+				break ;
+			}
+			else if (serverConf == NULL)
+				serverConf = &(*it);
+		}
+	}
+	return (serverConf);
 }
 
 bool HandleRes::isResProcessingComplete(void)

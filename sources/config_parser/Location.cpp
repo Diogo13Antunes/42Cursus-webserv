@@ -115,7 +115,7 @@ bool	Location::existUploadStore(void)
 	return (false);
 }
 
-bool	Location::existRedirection(void)
+bool	Location::hasRedirection(void)
 {
 	if (_redirection.first && !_redirection.second.empty())
 		return (true);
@@ -209,7 +209,7 @@ void	Location::_setRedirection(std::vector<std::string>::iterator &it,
 		_updateLocationError(false);
 	else
 	{
-		while (isRedirection(*it) && it != itEnd)
+		while (it != itEnd && isRedirection(*it))
 		{
 			if (_redirection.first && !_redirection.second.empty())
 			{

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/14 16:17:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/15 10:06:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ class Connections: public AMessengerClient
 {
 	private:
 		std::map<int, Connection *> _activeConnects;
+		time_t						_lastUpdateTime;
 
 		Connection *	_getConnection(int fd);
 		void			_removeAllConnections(void);

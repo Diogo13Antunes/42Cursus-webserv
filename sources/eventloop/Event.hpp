@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 15:37:31 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/18 08:23:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include "CGIExecuter.hpp"
 
 #include "EventType.hpp"
+#include "SocketUtils.hpp"
 
 
 //#define	NONE			0
@@ -97,6 +98,8 @@ class Event
 
 		int _statusCode;
 
+		std::string _ip;
+		std::string _port;
 		std::string	_cgiBodyRes;
 
 	public:
@@ -231,6 +234,8 @@ class Event
 		std::string					getReqContentType(void);
 		size_t						getReqContentLength(void);
 		
+
+		
 		//New functions of request parser
 		std::string		getReqLineTarget(void);
 		std::string		getReqLineHttpVersion(void);
@@ -241,6 +246,8 @@ class Event
 		void			parseHeader(std::string &header);
 
 		std::string		getReqTransferEncoding(void);
+		std::string		getReqHost(void);
+
 
 		EventType	getOldState(void);
 		EventType	getActualState(void);
@@ -275,4 +282,7 @@ class Event
 
 		int getStatusCode(void);
 		void setStatusCode(int statusCode);
+
+		std::string getIp(void);
+		std::string getPort(void);
 };

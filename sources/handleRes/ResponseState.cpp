@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/20 18:22:07 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/21 09:49:36 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ ResponseState &ResponseState::operator=(const ResponseState &src)
 */
 
 
-StateResType ResponseState::handle(Event *event, ConfigsData confiagsDta)
+StateResType ResponseState::handle(Event *event, ServerConfig config)
 {
 	ssize_t		numBytesSend;
 	size_t		resSize;
@@ -50,7 +50,6 @@ StateResType ResponseState::handle(Event *event, ConfigsData confiagsDta)
 	numBytesSend = send(event->getFd(), res.c_str(), resSize, 0);
 	if (numBytesSend <= 0)
 	{
-		//event->setState(CLOSED_EVENT);
 		event->setClientDisconnected();
 		return (RESPONSE_END);
 	}

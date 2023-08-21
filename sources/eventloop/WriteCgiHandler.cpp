@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WriteCgiHandler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:39:35 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/07 14:48:13 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/18 08:23:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,14 @@ void WriteCgiHandler::handleEvent(Event *event)
 	bodyStr = event->getReqBody().c_str();
 	bodySize = event->getReqBody().size();
 	sentChars = event->getCgiSentChars();
+	
 	if (sentChars < bodySize)
 	{
 		bodyStr += sentChars;
 		nwrite = event->writeToCgi(bodyStr);
+
+		std::cout << "N send: " << nwrite << std::endl;
+
 		// Se falhar tem de ser mandado um 501 Internal Server Error
 		event->updateCgiSentChars(nwrite);
 		if (event->getCgiSentChars() >= bodySize)

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/31 08:59:01 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/17 11:39:18 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,51 +14,49 @@
 
 EventDemux::EventDemux(void): AMessengerClient(NULL) {}
 
-EventDemux::EventDemux(int serverFd, struct sockaddr_in address, socklen_t addrlen):
-	AMessengerClient(NULL),
-	_serverFd(serverFd),
-	_address(address),
-	_addrlen(addrlen)
+EventDemux::~EventDemux(void)
 {
-	_epollFd = epoll_create1(0);
-	_addNewEvent(serverFd);
+	//std::cout << "~EventDemux" << std::endl;
 }
-
-EventDemux::~EventDemux(void){}
 
 ClientID EventDemux::getId(void)
 {
 	return (EVENTDEMUX_ID);
 }
 
+void EventDemux::init(std::map<int, struct sockaddr_in> servers)
+{
+	std::map<int, struct sockaddr_in>::iterator it;
+
+	_servers = servers;
+	_epollFd = epoll_create1(0);
+	for (it = _servers.begin(); it != _servers.end(); it++)
+		_addNewEvent(it->first);
+}
+
 void EventDemux::waitAndDispatchEvents(void)
 {
 	int		numEvents;
 	int		eventFd;
-	int		timeOutMs;
+	int		newClientFd;
 
-	timeOutMs = 5;
-	numEvents = epoll_wait(_epollFd, _events, N_MAX_EVENTS, timeOutMs);
+	numEvents = epoll_wait(_epollFd, _events, EPOLL_MAX_NEVENTS, EPOLL_TIMEOUT);
 	for (int i = 0; i < numEvents; i++) 
 	{
 		eventFd = _events[i].data.fd;
-		if (eventFd == _serverFd)
+		newClientFd = _acceptClientConnectionIfServer(eventFd);
+		if (newClientFd != -1)
 		{
-			eventFd = accept(_serverFd, (struct sockaddr *) &_address, &_addrlen);
-			if (eventFd != -1)
-			{
-				_addNewEvent(eventFd);
-				sendMessage(new Message(CONNECTIONS_ID, eventFd, CONNECTION_ADD_NEW));
-			}
+			_addNewEvent(newClientFd);
+			sendMessage(new Message(CONNECTIONS_ID, newClientFd, CONNECTION_ADD_NEW));
 		}
 		else
 		{
 			if (_isReadEvent(_events[i].events))
 				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_READ_TRIGGERED));
+
 			else if (_isWriteEvent(_events[i].events))
 				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_WRITE_TRIGGERED));
-			else
-				; //error provavelmente fechar a ligação 
 		}
 	}
 }
@@ -96,10 +94,8 @@ void EventDemux::_addNewEvent(int fd)
 
 void EventDemux::_removeEvent(int fd)
 {
-	//std::cout << "EventDemux: Remove evento fd: " << fd << std::endl;
-	if (epoll_ctl(_epollFd, EPOLL_CTL_DEL, fd, NULL) == -1) {
+	if (epoll_ctl(_epollFd, EPOLL_CTL_DEL, fd, NULL) == -1)
 		;//std::cerr << "Failed to remove event from epoll" << std::endl;
-	}	
 }
 
 void EventDemux::_changeEvent(int fd, uint32_t eventMask)
@@ -125,4 +121,22 @@ bool EventDemux::_isWriteEvent(uint32_t eventMask)
 	if (eventMask & EPOLLOUT)
 		return (true);
 	return (false);
+}
+
+int EventDemux::_acceptClientConnectionIfServer(int fd)
+{
+	std::map<int, struct sockaddr_in>::iterator	it;
+	struct sockaddr_in							addr;
+	socklen_t									addrlen;
+	int 										serverFd;
+	int											clientFd;
+	
+	it = _servers.find(fd);
+	if (it == _servers.end())
+		return (-1);
+	serverFd = it->first;
+	addr = it->second;
+	addrlen = (socklen_t)sizeof(addr);
+	clientFd = accept(serverFd, (struct sockaddr *) &addr, &addrlen);
+	return (clientFd);
 }

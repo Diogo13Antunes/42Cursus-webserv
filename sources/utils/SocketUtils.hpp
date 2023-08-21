@@ -1,25 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IStateRes.hpp                                      :+:      :+:    :+:   */
+/*   SocketUtils.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/29 11:17:19 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 17:55:05 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/08/11 17:10:36 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/08/11 17:38:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Event.hpp"
-#include "StateResType.hpp"
-#include "ConfigsData.hpp"
+#include <string>
 
-class IStateRes
+class SocketUtils
 {
 	public:
-		virtual ~IStateRes(void) {};
-		//virtual StateResType handle(Event *event, ConfigsData configsData) = 0;
-		virtual StateResType handle(Event *event, ServerConfig config) = 0;
+		static void			getHostAndPort(int fd, std::string& hostIP, std::string& port);
+		static std::string	getHostIP(int fd);
+		static std::string	getPort(int fd);
+		static std::string	getIpAddress(std::string host, std::string port);
 };
