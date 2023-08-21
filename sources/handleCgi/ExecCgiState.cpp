@@ -21,7 +21,7 @@ StateCgiType ExecCgiState::handle(Event *event)
 {
 	CGIExecuter *ex;
 	char		**env;
-	std::string	data = "Hi From Python";
+	std::string	data = "STDIN: here has to be sent the body (payload) and has to pass by epoll";
 
 	ex = event->getCgiEx();
 	env = _getEnvVariables(event, data);
@@ -33,20 +33,12 @@ StateCgiType ExecCgiState::handle(Event *event)
 char	**ExecCgiState::_getEnvVariables(Event *event, std::string data)
 {
 	std::vector<std::string>	temp;
-	std::string					aux[5];
 
-	aux[0] = "REQUEST_METHOD=" + event->getReqMethod();
-	aux[1] = "SERVER_PROTOCOL=" + event->getServerProtocol();
-	aux[2] = "CONTENT_LENGTH=" + _sizeToString(data.length());
-	if (!event->getQueryString().empty())
-	{
-		if (!event->getReqContentType().empty())
-			aux[3] = "CONTENT_TYPE=" + event->getReqContentType();
-		aux[4] = "QUERY_STRING=" + event->getQueryString();
-	}
-	for (size_t i = 0; i < 5; i++)
-		if (!aux[i].empty())
-			temp.push_back(aux[i]);
+	temp.push_back("REQUEST_METHOD=" + event->getReqLineMethod());
+	temp.push_back("SERVER_PROTOCOL=" + event->getReqLineHttpVersion());
+	temp.push_back("CONTENT_LENGTH=" + _sizeToString(data.length()));
+	temp.push_back("CONTENT_TYPE=" + event->getReqContentType());
+	temp.push_back("QUERY_STRING=" + event->getQueryString());
 
 	char **env = new char*[temp.size() + 1];
 

@@ -1,5 +1,5 @@
 #include "RequestData.hpp"
-
+#include "StringUtils.hpp"
 #include <sstream>
 
 RequestData::RequestData(void)
@@ -87,6 +87,7 @@ size_t	RequestData::getContentLenght(void)
 	return (lenght);
 }
 
+//deprecated
 std::vector<std::string>	RequestData::getHeaderValue(std::string	element)
 {
 	std::map<std::string, std::vector<std::string> >::iterator	it;
@@ -114,7 +115,7 @@ std::string	RequestData::getQueryString(void)
 		{
 			contentType = getHeaderValue("content-type").at(0);
 			if (!contentType.compare("application/x-www-form-urlencoded"))
-				_queryString = RequestDataUtils::stringTrim(_requestBody);
+				_queryString = StringUtils::stringTrim(_requestBody);
 		}
 	}
 	return (_queryString);

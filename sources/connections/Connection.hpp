@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:28 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/14 16:13:19 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/17 08:09:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ class Connection
 		int					_keepAliveTimeout;
 		time_t				_lastRequestTime;
 
-
 	public:
 		Connection(int fd);
 		~Connection(void);
@@ -40,9 +39,5 @@ class Connection
 		void	resetKeepAliveTimeout(void);
 		void	startTimer(void);
 		void	pauseTimer(void);
-		
-		// Just for debug
-		void			showDataConnection(void);
-		
-
+		void	showDataConnection(void);
 };

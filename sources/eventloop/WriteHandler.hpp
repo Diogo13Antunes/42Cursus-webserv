@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:30:30 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:39:22 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 17:29:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,8 @@ class WriteHandler: public IEventHandler
 		HandleRes	*_handleRes;
 
 	public:
-		WriteHandler(void);
 		WriteHandler(HandleRes *handleRes);
 		~WriteHandler(void);
-		WriteHandler(const WriteHandler &src);
-		WriteHandler &operator=(const WriteHandler &src);
 
 		void		handleEvent(Event *event);
 		EventType	getHandleType(void);

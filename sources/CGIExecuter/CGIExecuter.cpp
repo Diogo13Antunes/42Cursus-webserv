@@ -1,15 +1,27 @@
 #include "CGIExecuter.hpp"
 
 #include <signal.h>
-
 #include <cstdlib>
+#include <fcntl.h>
 
-CGIExecuter::CGIExecuter(void)
+#define	NO_EXIT_STATUS	256
+#define GENERIC_ERROR	1
+
+/*CGIExecuter::CGIExecuter(void)
 {
 	if (!_initPipes())
 		throw FailToIinitPipesException();
+}*/
+
+// O construtor precisa de receber como parametro o que necessita de entrar dentro do _execute()
+CGIExecuter::CGIExecuter(void): _statusCode(0)
+{
+	if (!_initPipes())
+		throw FailToIinitPipesException();
+	_execute(NULL, "cgi-bin/script.py");
 }
 
+/*
 CGIExecuter::~CGIExecuter(void)
 {
 	if (!this->isEnded())
@@ -18,6 +30,18 @@ CGIExecuter::~CGIExecuter(void)
 		if (kill(_pid, SIGTERM) == -1)
 			std::cout << "Webserv: Error terminating SGI script" << std::endl;
 
+	}
+	_closeAllFds();
+}
+*/
+
+CGIExecuter::~CGIExecuter(void)
+{
+	if (this->isEnded() == NO_EXIT_STATUS)
+	{
+		std::cout << "Tenta fazer o kill" << std::endl;
+		if (kill(_pid, SIGTERM) == -1)
+			std::cout << "Webserv: Error terminating SGI script" << std::endl;
 	}
 	_closeAllFds();
 }
@@ -55,6 +79,7 @@ void	CGIExecuter::execute(std::string script, std::string message, char **env)
 	}
 }
 
+/*
 bool CGIExecuter::isEnded(void)
 {
 	int res;
@@ -64,10 +89,49 @@ bool CGIExecuter::isEnded(void)
 		return (true);
 	return (false);
 }
+*/
+
+int CGIExecuter::isEnded(void)
+{
+	int res;
+	int	status;
+
+	status = NO_EXIT_STATUS;
+	res = waitpid(_pid, &status, WNOHANG);
+	if (res == _pid)
+		status = WEXITSTATUS(status);
+	else if (res < 0)
+		status = res;
+	return (status);
+}
 
 int	CGIExecuter::getReadFD(void)
 {
 	return (_pipe2[0]);
+}
+
+int	CGIExecuter::getWriteFD(void)
+{
+	return (_pipe1[1]);
+}
+
+int CGIExecuter::writeToScript(const char *str)
+{
+	int fd;
+	fd = this->getWriteFD();
+	return (write(fd, str, std::strlen(str)));
+}
+
+int CGIExecuter::readFromScript(std::string &str)
+{
+	char	buffer[500000];
+	int		fd;
+	int		nRead;
+
+	fd = this->getReadFD();
+	nRead = read(fd, buffer, 500000);
+	str.assign(buffer, nRead);
+	return (nRead);
 }
 
 /* Exceptions */
@@ -130,6 +194,7 @@ void	CGIExecuter::_closeAllFds(void)
 	_closeFd(&_pipe2[1]);
 }
 
+//depercated acho que já existe outra string trim nos utils
 static void stringTrim(std::string &str)
 {
 	std::string	trimmed;
@@ -142,4 +207,29 @@ static void stringTrim(std::string &str)
 	len = end - start + 1;
 	trimmed = str.substr(start, len);
 	str = trimmed;
+}
+
+void CGIExecuter::_execute(char **env, std::string path)
+{
+	_scriptName = path;
+	_scriptInterpreter = _getScriptInterpreter();
+
+	if (_scriptInterpreter.empty())
+		throw ExecutionErrorException();
+
+	const char *av[] = {_scriptInterpreter.c_str(), _scriptName.c_str(), NULL};
+
+	_pid = fork();
+	if (_pid == -1)
+		throw FailToCreateChildProcessException();
+
+	if (_pid == 0)
+	{
+		dup2(_pipe1[0], STDIN_FILENO);
+		dup2(_pipe2[1], STDOUT_FILENO);
+		_closeAllFds();
+		execve(_scriptInterpreter.c_str(), const_cast<char**>(av), env);
+		throw ExecutionErrorException();
+		return ;
+	}
 }

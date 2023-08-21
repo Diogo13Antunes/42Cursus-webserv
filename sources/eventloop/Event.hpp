@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/18 16:33:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/18 08:23:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,17 @@
 #include <string>
 #include <vector>
 #include "RequestData.hpp"
+#include "RequestParser.hpp"
 #include "Configs.hpp"
 #include "ConfigsData.hpp"
-#include "StateType.hpp"
+#include "StateReqType.hpp"
 #include "StateResType.hpp"
 #include "StateCgiType.hpp"
 #include "CGIExecuter.hpp"
+
+#include "EventType.hpp"
+#include "SocketUtils.hpp"
+
 
 //#define	NONE			0
 #define HEADER_HANDLE	0
@@ -28,13 +33,16 @@
 #define	BODY_HANDLE		2
 #define	BODY_DONE		3
 
+#define	NO_EXIT_STATUS	256
+
 
 class Event
 {
 	private:
-		std::string	_reqRaw;
-		RequestData	_reqParsed;
-		std::string	_res;
+		std::string		_reqRaw;
+		RequestData		_reqParsed;
+		RequestParser 	_reqParser;
+		std::string		_res;
 
 		std::string	_headerRaw;
 		std::string _bodyRaw;
@@ -43,7 +51,7 @@ class Event
 		short		_state;
 		short		_parseState;
 
-		StateType	_reqState;
+		StateReqType	_reqState;
 
 		int			_resState;
 
@@ -71,9 +79,28 @@ class Event
 		int 	_timeoutSec;
 		time_t	_creationTime;
 
-
 		bool	_clientClosed;
 
+
+		EventType _oldState;
+		EventType _actualState;
+
+		bool	_finished;
+
+		short	_connectionClosed;
+		bool	_clientDisconnect;
+		int		_cgiExitStatus;
+		size_t	_cgiSentChars;
+
+		std::string _body;
+
+		std::string _reqHeader;
+
+		int _statusCode;
+
+		std::string _ip;
+		std::string _port;
+		std::string	_cgiBodyRes;
 
 	public:
 		Event(void);
@@ -99,17 +126,17 @@ class Event
 
 		void		setParseState(int state);
 
-		void		updateReqRaw(std::string req);
+		//void		updateReqRaw(std::string req);
 
 		bool		isBodyComplete(void);
 
-		void		createResponse(ConfigsData configsData);
+		// void		createResponse(ConfigsData &configsData);
 
 
 		//New
-		StateType			getReqState(void);
-		void				setReqState(StateType reqState);
-		void				updateReqRaw1(std::string req);
+		StateReqType			getReqState(void);
+		void				setReqState(StateReqType reqState);
+		void				updateReqRawData(std::string &req);
 		const std::string&  getReqRaw1(void);
 
 		void setHeaderRaw(std::string header);
@@ -185,14 +212,77 @@ class Event
 		bool				isClientClosed(void);
 		void				setClientClosed(void);
 
+		void				updateCgiSentChars(size_t value);
+		size_t				getCgiSentChars(void);
+
+		std::string			getCgiBodyRes(void);
+		void				setCgiBodyRes(std::string &src);
+
+		// Important Criar uma função para eliminar o CGI (Fazer delete) Verificar se já é feito
 		CGIExecuter*		getCgiEx(void);
 		void				setCgiEx(CGIExecuter *cgiEx);
 		int					getCgiFd(void);
 
-		bool				isCgiScriptEnd(void);
+		int					getCgiWriteFd(void);
+		int					getCgiReadFd(void);
+
+		int					isCgiScriptEnd(void);
 		std::string					getQueryString(void);
 		std::vector<std::string>	getRequestHeaderValue(std::string key);
 		std::string					getReqMethod(void);
 		std::string					getServerProtocol(void);
 		std::string					getReqContentType(void);
+		size_t						getReqContentLength(void);
+		
+
+		
+		//New functions of request parser
+		std::string		getReqLineTarget(void);
+		std::string		getReqLineHttpVersion(void);
+		std::string		getReqLineMethod(void);
+		std::string		getReqLinePath(void);
+		void			setReqBody(std::string body);
+		std::string&	getReqBody(void);
+		void			parseHeader(std::string &header);
+
+		std::string		getReqTransferEncoding(void);
+		std::string		getReqHost(void);
+
+
+		EventType	getOldState(void);
+		EventType	getActualState(void);
+		void		setActualState(EventType actualState);
+
+		bool	isFinished(void);
+		void	setAsFinished(void);
+
+		bool	isClientDisconnect(void);
+		void	setClientDisconnected(void);
+
+
+		void	cgiExecute(void);
+		int		writeToCgi(const char *str);
+		int		readFromCgi(std::string &str);
+
+		void	setCgiExitStatus(int cgiExitStatus);
+		int		getCgiExitStatus(void);
+
+		std::string	getBody(void);		
+		void		updateReqBody(std::string body);
+		size_t		getReqBodySize(void);
+
+
+		bool isReqHeaderComplete(void);
+		void parseReqHeader(std::string &header);
+		const std::string& getReqHeader(void);
+		const std::string& getReqRawData(void);
+		void clearReqRawData(void);
+
+		void	setBody(std::string &src);
+
+		int getStatusCode(void);
+		void setStatusCode(int statusCode);
+
+		std::string getIp(void);
+		std::string getPort(void);
 };

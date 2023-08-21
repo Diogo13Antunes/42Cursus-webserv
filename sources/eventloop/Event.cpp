@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/18 16:24:02 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/18 08:22:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 #include "Timer.hpp"
 #include "EventType.hpp"
 
-#define TIMEOUT_SEC	200
+#define TIMEOUT_SEC				200
+#define CONNECTION_CLOSED		1
+#define CONNECTION_KEEPALIVE	0
 
 static std::string createResponse1(std::string path, std::string contentType);
 static std::string getFileContent(std::string fileName);
@@ -40,8 +42,17 @@ Event::Event(int fd, int state):
 	_timeoutSec(TIMEOUT_SEC),
 	_creationTime(Timer::getActualTimeStamp()),
 	_clientClosed(false),
-	_cgiEx(NULL)
-{}
+	_cgiEx(NULL),
+	_actualState(READ_SOCKET),
+	_finished(false),
+	_connectionClosed(-1),
+	_clientDisconnect(false),
+	_cgiExitStatus(NO_EXIT_STATUS),
+	_cgiSentChars(0),
+	_statusCode(0)
+{
+	SocketUtils::getHostAndPort(_fd, _ip, _port);
+}
 
 Event::Event(const Event &src) {}
 
@@ -109,9 +120,15 @@ void Event::setResquestHeader(std::string reqLine, std::map<std::string, std::ve
 	_reqParsed.setRequestHeader(reqHeader);
 }
 
+// Deprecated , é para apagar esta merda ;)
 void Event::setResquestBody(std::string body)
 {
 	_reqParsed.setRequestBody(body);
+}
+
+void Event::setReqBody(std::string body)
+{
+	_reqParser.bodyParse(body);
 }
 
 void Event::setParseState(int state)
@@ -119,6 +136,7 @@ void Event::setParseState(int state)
 	_parseState = state;
 }
 
+/*
 void Event::updateReqRaw(std::string req)
 {
 	size_t	headerSize;
@@ -145,6 +163,7 @@ void Event::updateReqRaw(std::string req)
 
 	//this->setBodySize();
 }
+*/
 
 // Para remover mais tarde
 bool Event::isBodyComplete(void)
@@ -157,13 +176,13 @@ bool Event::isBodyComplete(void)
 	return (bodyComplete);
 }
 
-void Event::createResponse(ConfigsData configsData)
+/* void Event::createResponse(ConfigsData &configsData)
 {
 	std::string	reqPath;
 	std::string filePath;
 	std::string	contentType;
 
-	reqPath = _reqParsed.getPath();
+	reqPath = _reqParser.getPath();
 	//std::cout << "path: " << reqPath << std::endl;
 
 	if (!reqPath.compare("/"))
@@ -181,24 +200,47 @@ void Event::createResponse(ConfigsData configsData)
 	}
 
 	//std::cout << "respose: " << this->getResponse() << std::endl;
-}
+} */
 
 
 // New Methods
-StateType Event::getReqState(void)
+StateReqType Event::getReqState(void)
 {
 	return (_reqState);
 }
 
-void Event::setReqState(StateType reqState)
+void Event::setReqState(StateReqType reqState)
 {
 	_reqState = reqState;
 }
 
-
-void Event::updateReqRaw1(std::string req)
+void Event::updateReqRawData(std::string &req)
 {
 	_reqRaw += req;
+}
+
+bool Event::isReqHeaderComplete(void)
+{
+	if (_reqRaw.find("\r\n\r\n") != _reqRaw.npos)
+		return (true);
+	return (false);
+}
+
+const std::string& Event::getReqHeader(void)
+{
+	size_t		idx;
+
+	idx = _reqRaw.find("\r\n\r\n");
+	if (idx == _reqRaw.npos)
+		return (_reqHeader);
+	_reqHeader = _reqRaw.substr(0, idx + 4);
+	_reqRaw.erase(0, _reqHeader.size());
+	return (_reqHeader);
+}
+
+void Event::parseReqHeader(std::string &header)
+{
+	this->setStatusCode(_reqParser.headerParse(header));
 }
 
 void Event::setReqRaw1(std::string req)
@@ -209,6 +251,16 @@ void Event::setReqRaw1(std::string req)
 const std::string&  Event::getReqRaw1(void)
 {
 	return (_reqRaw);
+}
+
+const std::string&  Event::getReqRawData(void)
+{
+	return (_reqRaw);
+}
+
+void Event::clearReqRawData(void)
+{
+	_reqRaw.clear();
 }
 
 void Event::setHeaderRaw(std::string header)
@@ -271,6 +323,7 @@ void Event::setResVect(void)
 	}
 }
 
+/*
 void Event::printVectDebug(void)
 {
 	std::cout << "############## Print Response ################" << std::endl;
@@ -279,6 +332,7 @@ void Event::printVectDebug(void)
 		std::cout << _resVect.at(i) << std::endl;
 	}
 }
+*/
 
 ssize_t Event::getNumWrited(void)
 {
@@ -519,15 +573,19 @@ bool Event::isEventTimeout(void)
 
 bool Event::isConnectionClose(void)
 {
-	std::vector<std::string> value;
-
-	value = _reqParsed.getHeaderValue("connection");
-
-	if (!value.empty() && !value[0].compare("close"))
+	if (_connectionClosed == -1)
+	{
+		if (!(_reqParser.getConnectionField().compare("close")))
+			_connectionClosed = CONNECTION_CLOSED;
+		else
+			_connectionClosed = CONNECTION_KEEPALIVE;
+	}
+	if (_connectionClosed)
 		return (true);
 	return (false);
 }
 
+// Não usado
 bool Event::isClientClosed(void)
 {
 	return (_clientClosed);
@@ -549,12 +607,28 @@ void Event::setCgiEx(CGIExecuter *cgiEx)
 	_cgiEx = cgiEx;
 }
 
+// Deprecated
 int Event::getCgiFd(void)
 {
 	if (_cgiEx)
 		return (_cgiEx->getReadFD());
 	return (-1);
 }
+
+int Event::getCgiWriteFd(void)
+{
+	if (_cgiEx)
+		return (_cgiEx->getWriteFD());
+	return (-1);
+}
+
+int Event::getCgiReadFd(void)
+{
+	if (_cgiEx)
+		return (_cgiEx->getReadFD());
+	return (-1);
+}
+
 
 StateCgiType	Event::getCgiState(void)
 {
@@ -576,6 +650,7 @@ void	Event::updateCgiScriptResult(std::string src)
 	_cgiScriptResult += src;
 }
 
+/*
 bool Event::isCgiScriptEnd(void)
 {
 	if (this->getCgiFd() > 0 && _state == CGI_EVENT)
@@ -585,11 +660,20 @@ bool Event::isCgiScriptEnd(void)
 	}
 	return (false);
 }
+*/
+
+int Event::isCgiScriptEnd(void)
+{
+	if (_cgiEx && _cgiExitStatus == NO_EXIT_STATUS)
+		_cgiExitStatus = _cgiEx->isEnded();
+	return (_cgiExitStatus);
+}
+
 /* Getters for RequestData */
 
 std::string	Event::getQueryString(void)
 {
-	return (_reqParsed.getQueryString());
+	return (_reqParser.getQueryString());
 }
 
 std::vector<std::string>	Event::getRequestHeaderValue(std::string key)
@@ -607,11 +691,245 @@ std::string	Event::getServerProtocol(void)
 	return (_reqParsed.getRequestLine().at(2));
 }
 
-std::string	Event::getReqContentType(void)
+
+// Alterar esta funcao para o novo parser
+/*std::string	Event::getReqContentType(void)
 {
 	std::string	contentType;
 
 	if (!_reqParsed.getHeaderValue("content-type").empty())
 		contentType = _reqParsed.getHeaderValue("content-type").at(0);
 	return (contentType);
+}*/
+
+std::string	Event::getReqContentType(void)
+{
+	std::vector<std::string> contentType;
+
+	contentType = _reqParser.getHeaderField("content-type");
+	if (!contentType.empty())
+	{
+		std::cout << "Não vazio getHeaderField()" << std::endl;
+		return (contentType.at(0));
+	}
+	return (std::string());
+}
+
+size_t	Event::getReqContentLength(void)
+{
+	std::vector<std::string>	contentLength;
+	size_t						len;
+
+	contentLength = _reqParser.getHeaderField("content-length");
+	if (!contentLength.empty())
+	{
+		std::istringstream	ss(contentLength.at(0));
+		if (!(ss >> len))
+			return (0);
+		return (len);
+	}
+	return (0);
+}
+
+std::string	Event::getReqTransferEncoding(void)
+{
+	std::vector<std::string> transferEncoding;
+
+	transferEncoding = _reqParser.getHeaderField("transfer-encoding");
+	if (!transferEncoding.empty())
+		return (transferEncoding.at(0));
+	return (std::string());
+}
+
+std::string Event::getReqHost(void)
+{
+	std::vector<std::string> host;
+
+	host = _reqParser.getHeaderField("host");
+	if (!host.empty())
+		return (host.at(0));
+	return (std::string());	
+}
+
+std::string	Event::getReqLineTarget(void)
+{
+	return (_reqParser.getReqLineTarget());
+}
+
+std::string	Event::getReqLineHttpVersion(void)
+{
+	return (_reqParser.getReqLineHttpVersion());
+}
+
+std::string	Event::getReqLineMethod(void)
+{
+	return (_reqParser.getReqLineMethod());
+}
+
+std::string	Event::getReqLinePath(void)
+{
+	return (_reqParser.getReqLinePath());
+}
+
+std::string& Event::getReqBody(void)
+{
+	
+	//return (_reqParser.getRequestBody());
+	return (_reqParser.getRequestBodyRef());
+}
+
+void Event::parseHeader(std::string &header)
+{
+	//Função devolva true or false
+
+	int	statusCode;
+
+
+	statusCode = _reqParser.headerParse(header);
+	switch (statusCode)
+	{
+		case 0:
+			//std::cout << "---------- SUCCESS ----------" << std::endl;
+			break;
+		case 400:
+			std::cout << "---------- 400 BAD_REQUEST ----------" << std::endl;
+			break;
+		case 414:
+			std::cout << "---------- 414 URI_TOO_LONG ----------" << std::endl;
+			break;
+		case 501:
+			std::cout << "---------- 501 NOT_IMPLEMENTED ----------" << std::endl;
+			break;
+	}
+
+	//if (!_reqParser.headerParse(header))
+	//colocar status event.setStatusCode(400) 
+}
+
+
+EventType Event::getOldState(void)
+{
+	return (_oldState);
+}
+
+EventType Event::getActualState(void)
+{
+	return (_actualState);
+}
+
+void Event::setActualState(EventType newState)
+{
+	_oldState = _actualState;
+	_actualState = newState;
+}
+
+bool Event::isFinished(void)
+{
+	return (_finished);
+}
+
+void Event::setAsFinished(void)
+{
+	_finished = true;
+}
+
+bool Event::isClientDisconnect(void)
+{
+	return (_clientDisconnect);
+}
+
+void Event::setClientDisconnected(void)
+{
+	_clientDisconnect = true;
+}
+
+
+void Event::cgiExecute(void)
+{
+	if (!_cgiEx)
+		_cgiEx = new CGIExecuter();
+}
+
+int Event::writeToCgi(const char *str)
+{
+	if (_cgiEx)
+		return (_cgiEx->writeToScript(str));
+	return (-1);
+}
+
+int Event::readFromCgi(std::string &str)
+{
+	if (_cgiEx)
+		return (_cgiEx->readFromScript(str));
+	return (-1);
+}
+
+void Event::setCgiExitStatus(int cgiExitStatus)
+{
+	_cgiExitStatus = cgiExitStatus;
+}
+
+int Event::getCgiExitStatus(void)
+{
+	return (_cgiExitStatus);
+}
+
+void	Event::updateCgiSentChars(size_t value)
+{
+	_cgiSentChars += value;
+}
+
+size_t	Event::getCgiSentChars(void)
+{
+	return (_cgiSentChars);
+}
+
+std::string Event::getBody(void)
+{
+	return (_body);
+}
+
+void	Event::setBody(std::string &src)
+{
+	_body = src;
+}
+
+void Event::updateReqBody(std::string body)
+{
+	_reqParser.updateReqBody(body);
+}
+
+size_t Event::getReqBodySize(void)
+{
+	return (_reqParser.getRequestBodyRef().size());
+}
+
+int Event::getStatusCode(void)
+{
+	return (_statusCode);
+}
+
+void Event::setStatusCode(int statusCode)
+{
+	_statusCode = statusCode;
+}
+
+std::string Event::getIp(void)
+{
+	return (_ip);
+}
+
+std::string Event::getPort(void)
+{
+	return (_port);
+}
+
+std::string Event::getCgiBodyRes(void)
+{
+	return (_cgiBodyRes);
+}
+
+void	Event::setCgiBodyRes(std::string &src)
+{
+	_cgiBodyRes = src;
 }

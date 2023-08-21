@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 11:43:43 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 16:03:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/14 17:57:14 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,5 @@ class GetBodyState: public IStateRes
 		~GetBodyState(void);
 		GetBodyState &operator=(const GetBodyState &src);
 
-		StateResType handle(Event *event, ConfigsData configsData);
+		StateResType handle(Event *event, ServerConfig config);
 };

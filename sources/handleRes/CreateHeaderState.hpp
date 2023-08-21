@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/09 16:38:17 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/18 10:58:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 class CreateHeaderState: public IStateRes
 {
 	private:
-		std::string	_getFileName(std::string reqTarget, ConfigsData conf);
+		std::string	_getFileName(std::string reqTarget, ConfigsData &conf);
 		size_t		_getFileSize(std::string fileName);
 		bool		_isFileReadable(std::string fileName);
 		void		_createHeader(std::string &header, std::string fileName, Event *event);
@@ -25,11 +25,11 @@ class CreateHeaderState: public IStateRes
 		std::string	_getFileType(std::string fileName);
 		std::string _getMimeType(std::string fileExt);
 
+		std::string _getFileName(std::string reqTarget, ServerConfig &conf);
+
 	public:
 		CreateHeaderState(void);
-		CreateHeaderState(const CreateHeaderState &src);
 		~CreateHeaderState(void);
-		CreateHeaderState &operator=(const CreateHeaderState &src);
 
-		StateResType handle(Event *event, ConfigsData configsData);
+		StateResType handle(Event *event, ServerConfig config);
 };

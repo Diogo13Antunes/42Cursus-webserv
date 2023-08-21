@@ -7,18 +7,41 @@
 #include <map>
 #include <cctype>
 #include <set>
+#include <sstream>
 
 #include "Terminal.hpp"
-#include "RequestParserUtils.hpp"
 
 class RequestParser
 {
 	private:
+
+		std::vector<std::string>							_implementedMethods;
 		std::string											_requestLine;
 		std::map<std::string, std::vector<std::string> >	_requestHeader;
 		std::string											_requestBody;
 
+		std::string											_reqLineTarget;
+		std::string											_reqLineHttpVersion;
+		std::string											_reqLineMethod;
+		std::string											_reqLinePath;
+
+		std::string											_queryString;
+
+		int													_statusCode;
+
+		int													_isValidHeader(void);
 		int													_getContentLen(void);
+		std::pair<std::string, std::vector<std::string> >	_getHeaderFieldPair(std::string &src);
+		int													_requestLineParser(void);
+		int													_addHeaderElement(std::string &line);
+		bool												_existAlreadyHeader(std::string &key);
+		void												_requestTargetParser(void);
+		bool												_isImplementedRequestMethod(void);
+		int													_hasContentLengthAndTransferEncoded(void);
+		int													_isValidRequestHeader(void);
+		int													_isValidTransferEncodingValue(void);
+		int													_isValidHost(void);
+		int													_isValidContentLenght(void);
 
 	public:
 		RequestParser(void);
@@ -26,23 +49,19 @@ class RequestParser
 
 		std::string											getRequestLine(void);
 		std::string 										getRequestBody(void);
+		std::string& 										getRequestBodyRef(void);
 		std::map<std::string, std::vector<std::string> >	getRequestHeader(void);
 
-		void												headerParse(std::string	&header);
-		void												bodyParse(std::string &body);
+		std::string											getReqLineTarget(void);
+		std::string											getReqLineHttpVersion(void);
+		std::string											getReqLineMethod(void);
+		std::string											getReqLinePath(void);
+		std::string											getConnectionField(void);
+		std::vector<std::string>							getHeaderField(std::string fieldName);
+		std::string											getQueryString(void);
 
-		bool												isValidHeader(void);
-		bool												checkContentLenght(void);
+		int													headerParse(std::string	&header);
+		void												bodyParse(std::string &body); // setReqBody -> se calhar pode ir para o evento
+		void												updateReqBody(std::string &body);
 
-		class EmptyRequestException: public std::exception
-		{
-			public:
-				const char *what() const throw();
-		};
-
-		class BadRequestException: public std::exception
-		{
-			public:
-				const char *what() const throw();
-		};
 };

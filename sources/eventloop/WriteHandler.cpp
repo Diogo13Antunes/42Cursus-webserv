@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WriteHandler.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/16 12:35:01 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/16 12:16:50 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,11 @@
 #include "WriteHandler.hpp"
 #include "HandleRes.hpp"
 
-WriteHandler::WriteHandler(void): IEventHandler()
-{
-	_handleRes = NULL;
-}
 
 WriteHandler::WriteHandler(HandleRes *handleRes): IEventHandler()
 {
 	_handleRes = handleRes;
 }
-
-WriteHandler::WriteHandler(const WriteHandler &src) {}
 
 WriteHandler::~WriteHandler(void) 
 {
@@ -34,25 +28,16 @@ WriteHandler::~WriteHandler(void)
 		delete _handleRes;
 }
 
-/*
-WriteHandler &WriteHandler::operator=(const WriteHandler &src)
-{
-	//WriteHandler Copy Assignment Operator
-}
-*/
-
 void WriteHandler::handleEvent(Event *event)
 {
-	//std::cout << "Evento de escrita: " << event->getFd() << std::endl;
-
-	// Terminal::printMessages("--------------------------------");
-	// std::cout << event->getCgiScriptResult() << std::endl;
-	// Terminal::printMessages("--------------------------------");
-
+	/* if (event->getCgiBodyRes().size() > 0)
+	{
+		std::cout << event->getCgiBodyRes() << std::endl;
+	} */
 	_handleRes->setEvent(event);
 	_handleRes->handle();
 	if (_handleRes->isResProcessingComplete())
-		event->setState(WRITE_EVENT_COMPLETE);
+		event->setActualState(TYPE_TRANSITION);
 }
 
 EventType WriteHandler::getHandleType(void)

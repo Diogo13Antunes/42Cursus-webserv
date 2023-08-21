@@ -6,41 +6,31 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:15:09 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 15:25:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/04 11:05:17 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <iostream>
 #include <map>
 #include "Event.hpp"
-#include "StateType.hpp"
+#include "StateReqType.hpp"
 #include "IState.hpp"
-#include "HeaderProcess.hpp"
-#include "BodyProcess.hpp"
 
-class HandleReq 
+class HandleReq
 {
     private:
-		std::map<StateType, IState*>	_stateMap;
-		StateType						_state; 	//to remove 
+		std::map<StateReqType, IState*>	_stateMap; 
 		Event							*_event;
 
-		bool _changeState(StateType state);
-		StateType _handleState(StateType state);
-
+		bool			_changeState(StateReqType newState);
+		StateReqType	_handleCurrentState(StateReqType state);
+		
     public:
 		HandleReq(void);
-		HandleReq(Event *event);
 		~HandleReq(void);
 
-		void setEvent(Event *event);
-
-		// for remove
-		void setState(StateType state);
-		
-		bool handle(void);	
-
-		bool isProcessingComplete(void);
+		void	setEvent(Event *event);
+		void	handle(void);	
+		bool	isProcessingComplete(void);
 };
