@@ -12,6 +12,8 @@
 
 #include "ServerConfig.hpp"
 #include "RequestParser.hpp"
+#include "StringUtils.hpp"
+#include "configs.hpp"
 
 class CGIExecuter
 {
@@ -31,11 +33,11 @@ class CGIExecuter
 
 		bool				_initPipes(void);
 		std::string			_getScriptInterpreter(void);
-
 		void				_closeAllFds(void);
 		void				_closeFd(int *fd);
 		void				_execute(char **env, std::string path);
 		char 				**_getEnvVariables(void);
+		void				_freeEnvVariables(void);
 
 	public:
 		CGIExecuter(void);
@@ -46,9 +48,6 @@ class CGIExecuter
 		int			getWriteFD(void);
 		int			writeToScript(const char *str);
 		int			readFromScript(std::string &str);
-
-		void		execute(std::string script, std::string message, char **env);
-		//bool		isEnded(void);
 		int			isEnded(void);
 
 		class ExecutionErrorException: public std::exception
