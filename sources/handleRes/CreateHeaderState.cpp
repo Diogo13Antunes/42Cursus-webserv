@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/22 17:01:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/22 17:39:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,25 +214,6 @@ void CreateHeaderState::_createHeaderDefaultError(std::string &header, int error
 // Se for um folder sem index então retorna só o folder
 // se tiver index então retorna file
 // index: tem de ser string vazia se não for configurado
-std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std::string path)
-{
-	std::string rootPath;
-	std::string index;
-	std::string fullPath;
-	std::string fullPathIndex;
-	
-	rootPath = config.getLocationRootPath(path);
-	index = config.getLocationIndex(path);
-	fullPath = rootPath + path + "/" + index;
-	//IMPORTANTE: se existir alias o alias, o fullPath será:  fullPath = alias + "/" + index;
-	if (!_isFolder(fullPath))
-		return (fullPath);
-	fullPathIndex = fullPath + "/" + "index.html";
-	if (access(fullPathIndex.c_str(), F_OK) == 0)
-		return (fullPathIndex);
-	return (fullPath);
-}
-
 std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std::string path, ResourceType& type)
 {
 	std::string rootPath;

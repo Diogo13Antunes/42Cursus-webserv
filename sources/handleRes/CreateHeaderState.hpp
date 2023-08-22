@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/22 16:56:32 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/22 17:34:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ class CreateHeaderState: public IStateRes
 
 		std::string _getFileName(std::string reqTarget, ServerConfig &conf);
 
-		std::string _getResourceFromURLPath(ServerConfig& config, std::string path);
 		std::string _getResourceFromURLPath(ServerConfig& config, std::string path, ResourceType& type);
 		bool _isFolder(std::string path);
 
