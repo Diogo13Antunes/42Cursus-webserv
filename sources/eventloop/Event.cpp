@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/21 16:35:35 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/22 10:02:32 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ Event::Event(int fd, int state):
 	_resState1(CREATE_HEADER),
 	_errorCode(0),
 	_cgiFlag(false),
-	_cgiState(EXEC_CGI),
 	_timeoutSec(TIMEOUT_SEC),
 	_creationTime(Timer::getActualTimeStamp()),
 	_clientClosed(false),
@@ -627,17 +626,6 @@ int Event::getCgiReadFd(void)
 	if (_cgiEx)
 		return (_cgiEx->getReadFD());
 	return (-1);
-}
-
-
-StateCgiType	Event::getCgiState(void)
-{
-	return (_cgiState);
-}
-
-void	Event::setCgiState(StateCgiType state)
-{
-	_cgiState = state;
 }
 
 std::string		Event::getCgiScriptResult(void)
