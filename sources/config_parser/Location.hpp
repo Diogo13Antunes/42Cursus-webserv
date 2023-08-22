@@ -18,6 +18,7 @@ class Location
 	std::vector<std::string>		_accepted;
 	std::vector<std::string>		_acceptedDefault;
 	std::pair<int, std::string>		_redirection;
+	std::string						_alias;
 
 	void	_initAcceptedDefault(void);
 	void	_updateLocationError(bool newLocationError);
@@ -29,6 +30,7 @@ class Location
 	void	_setAccepted(std::string &accepted);
 	void	_setRedirection(std::vector<std::string>::iterator &it,
 		std::vector<std::string>::iterator	itEnd);
+	void	_setAlias(std::string &alias);
 
 	public:
 		Location(void);

@@ -54,6 +54,7 @@ void	Configs::_initValidOptions(void)
 	_validOptions.push_back("limit_except");
 	_validOptions.push_back("master_root");
 	_validOptions.push_back("mime_types");
+	_validOptions.push_back("alias");
 }
 
 bool	Configs::_getConfigFile(const char *configFile)

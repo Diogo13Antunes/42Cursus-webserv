@@ -20,7 +20,6 @@ Location::Location(void):
 
 Location::Location(std::string masterRoot, std::vector<std::string> locationInfo):
 	_locationError(true),
-	_index("index.html"),
 	_redirection(std::make_pair(0, ""))
 {
 	std::vector<std::string>::iterator	it;
@@ -44,6 +43,8 @@ Location::Location(std::string masterRoot, std::vector<std::string> locationInfo
 				_setUploadStore(*it);
 			else if (!key.compare("redirect"))
 				_setRedirection(it, locationInfo.end());
+			else if (!key.compare("alias"))
+				_setAlias(*it);
 			else
 				_updateLocationError(false);
 			if (getLocationError() == false)
@@ -238,6 +239,11 @@ void	Location::_setRedirection(std::vector<std::string>::iterator &it,
 		}
 		it--;
 	}
+}
+
+void	Location::_setAlias(std::string &alias)
+{
+	_alias = getValue(alias);
 }
 
 /* STATIC FUNCTIONS */
