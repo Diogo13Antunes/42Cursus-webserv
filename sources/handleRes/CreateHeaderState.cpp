@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/18 16:07:24 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/22 17:01:43 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <sys/stat.h>
 
 CreateHeaderState::CreateHeaderState(void)
 {
@@ -30,7 +31,7 @@ CreateHeaderState::~CreateHeaderState(void)
 }
 
 
-
+// Não pode existir nenhuma copia a ser feita na ServerConfig config
 StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 {
 	std::string			fileName;
@@ -39,8 +40,24 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 	int					errorCode = 0;
 	ErrorPageBuilder	errorBuilder;
 
+	ResourceType resourceType;
+
 	int statusCode;
 
+
+	/*
+	struct stat file_info;
+	std::cout << "path: " << event->getReqLinePath() << std::endl;
+	if (stat(event->getReqLinePath().c_str(), &file_info) == 0) 
+	{
+		std::cout << "info mode" << file_info.st_mode << std::endl;
+    } 
+	else
+	{		
+        perror("Erro ao obter informações do arquivo");
+    }
+	*/
+	
 
 
 
@@ -54,9 +71,13 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 		event->setResSize(header.size() + fileSize);
 		return (GET_BODY);
 	}
-
 	if (config.hasRedirection(event->getReqLinePath()))
 		return (REDIRECT);
+
+	//verificar se é folder
+	std::cout << "caminho real: " << _getResourceFromURLPath(config, event->getReqLinePath(), resourceType) << std::endl;
+	std::cout << "resourceType: " << resourceType << std::endl;
+
 
 	//fileName = _getFileName(event->getReqLinePath(), configsData);
 	fileName = _getFileName(event->getReqLinePath(), config);
@@ -187,4 +208,64 @@ void CreateHeaderState::_createHeaderDefaultError(std::string &header, int error
 	else
 		httpHeader.setConnection("keep-alive");
 	header = httpHeader.getHeader();
+}
+
+
+// Se for um folder sem index então retorna só o folder
+// se tiver index então retorna file
+// index: tem de ser string vazia se não for configurado
+std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std::string path)
+{
+	std::string rootPath;
+	std::string index;
+	std::string fullPath;
+	std::string fullPathIndex;
+	
+	rootPath = config.getLocationRootPath(path);
+	index = config.getLocationIndex(path);
+	fullPath = rootPath + path + "/" + index;
+	//IMPORTANTE: se existir alias o alias, o fullPath será:  fullPath = alias + "/" + index;
+	if (!_isFolder(fullPath))
+		return (fullPath);
+	fullPathIndex = fullPath + "/" + "index.html";
+	if (access(fullPathIndex.c_str(), F_OK) == 0)
+		return (fullPathIndex);
+	return (fullPath);
+}
+
+std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std::string path, ResourceType& type)
+{
+	std::string rootPath;
+	std::string index;
+	std::string fullPath;
+	std::string fullPathIndex;
+	
+	rootPath = config.getLocationRootPath(path);
+	index = config.getLocationIndex(path);
+	fullPath = rootPath + path + "/" + index;
+	//IMPORTANTE: se existir alias o alias, o fullPath será:  fullPath = alias + "/" + index;
+	if (!_isFolder(fullPath))
+	{
+		type = FILE_TYPE;
+		return (fullPath);
+	}
+	type = FOLDER_TYPE;
+	fullPathIndex = fullPath + "/" + "index.html";
+	if (access(fullPathIndex.c_str(), F_OK) == 0)
+		return (fullPathIndex);
+	return (fullPath);
+}
+
+bool CreateHeaderState::_isFolder(std::string path)
+{
+	struct stat	pathInfo;
+	int			err;
+
+	err = stat(path.c_str(), &pathInfo);
+	if (!err)
+	{
+		if (S_ISDIR(pathInfo.st_mode))
+			return (true);
+	}
+	return (false);
 }

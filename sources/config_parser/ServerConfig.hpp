@@ -65,4 +65,7 @@ class ServerConfig
 		void								setIp(std::string ip);
 		void								setPort(std::string port);
 		std::string							getUploadStore(std::string route);
+		std::string							getLocationRootPath(std::string route);
+		std::string							getLocationIndex(std::string route);
+
 };

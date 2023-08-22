@@ -6,13 +6,19 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/18 10:58:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/22 16:56:32 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "IStateRes.hpp"
+
+typedef enum {
+    FILE_TYPE,
+    FOLDER_TYPE,
+    UNKNOWN_TYPE
+}	ResourceType;
 
 class CreateHeaderState: public IStateRes
 {
@@ -26,6 +32,10 @@ class CreateHeaderState: public IStateRes
 		std::string _getMimeType(std::string fileExt);
 
 		std::string _getFileName(std::string reqTarget, ServerConfig &conf);
+
+		std::string _getResourceFromURLPath(ServerConfig& config, std::string path);
+		std::string _getResourceFromURLPath(ServerConfig& config, std::string path, ResourceType& type);
+		bool _isFolder(std::string path);
 
 	public:
 		CreateHeaderState(void);

@@ -207,12 +207,47 @@ void ServerConfig::setPort(std::string port)
 
 std::string ServerConfig::getUploadStore(std::string route)
 {
-	Location								*location;
+	Location	*location;
 
 	location = _getSpecificLocations(route);
 	if (!location)
 		return (std::string());
 	return (location->getUploadStore());
+}
+
+/*
+std::string ServerConfig::getRootPath(std::string route)
+{
+	Location *location;
+
+	location = _getSpecificLocations(route);
+	if (!location)
+		location = _getSpecificLocations("/");		
+	if (location)
+		return (location->getRoot());
+	return (_masterRoot);
+}
+*/
+
+std::string ServerConfig::getLocationRootPath(std::string route)
+{
+	Location *location;
+
+	location = _getSpecificLocations(route);
+	if (location)
+		return (location->getRoot());
+	return (_masterRoot);
+}
+
+std::string ServerConfig::getLocationIndex(std::string route)
+{
+	Location *location;
+
+	location = _getSpecificLocations(route);
+	if (location)
+		return (location->getIndex());
+	return (std::string());
+	
 }
 
 /* PRIVATE METHODS */

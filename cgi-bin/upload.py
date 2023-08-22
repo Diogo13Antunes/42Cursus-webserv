@@ -7,8 +7,11 @@ status = "200 OK"
 
 directory = os.getenv('DOCUMENT_ROOT')
 
-if not os.path.exists(directory) or not os.path.isdir(directory):
-	os.mkdir(directory)
+"""if not os.path.exists(directory) or not os.path.isdir(directory):
+	os.mkdir(directory)"""
+
+if not os.path.exists(directory):
+    os.makedirs(directory)
 
 file = form['fileTest']
 if file.filename:
@@ -53,4 +56,4 @@ out += "Content-Type: " + "text/html" + "\n"
 out += "\n"
 out += htmlfile
 
-print (out);
+print (out)
