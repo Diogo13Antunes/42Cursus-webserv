@@ -51,6 +51,7 @@ ServerConfig::ServerConfig(std::vector<std::string>	configs):
 			break;
 		it++;
 	}
+	_checkMasterRoot();
 	if (_isValidConfigError())
 		_checkAllLocationsStatus();
 }
@@ -259,9 +260,7 @@ void	ServerConfig::_updateConfigError(bool newConfigError)
 
 bool	ServerConfig::_isValidConfigError(void)
 {
-	if (_configError == false)
-		return (false);
-	return (true);
+	return (_configError);
 }
 
 std::string	ServerConfig::_getValue(std::string &src)
@@ -508,6 +507,12 @@ Location	*ServerConfig::_getSpecificLocations(std::string location)
 	if (it != _locations.end())
 		return (&(it->second));
 	return (NULL);
+}
+
+void	ServerConfig::_checkMasterRoot(void)
+{
+	if (_masterRoot.empty())
+		_updateConfigError(false);
 }
 
 /* STATIC FUNCTIONS */

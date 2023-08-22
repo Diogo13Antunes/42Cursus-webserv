@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/21 16:36:44 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/22 10:01:54 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 #include "ConfigsData.hpp"
 #include "StateReqType.hpp"
 #include "StateResType.hpp"
-#include "StateCgiType.hpp"
 #include "CGIExecuter.hpp"
 
 #include "EventType.hpp"
@@ -71,7 +70,6 @@ class Event
 		//CGI
 		bool			_cgiFlag;
 		CGIExecuter		*_cgiEx;
-		StateCgiType	_cgiState;
 
 		std::string		_cgiScriptResult;
 
@@ -199,8 +197,6 @@ class Event
 		bool			getCgiFlag(void);
 		void			setCgiFlag(bool cgiFlag);
 
-		StateCgiType	getCgiState(void);
-		void			setCgiState(StateCgiType state);
 
 		std::string		getCgiScriptResult(void);
 		void			updateCgiScriptResult(std::string src);

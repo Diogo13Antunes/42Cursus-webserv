@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/17 11:00:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/22 10:02:44 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 #include "IEventHandler.hpp"
 #include "ReadSocketHandler.hpp"
 #include "WriteHandler.hpp"
-#include "CGIHandler.hpp"
 #include "ReadCgiHandler.hpp"
 #include "WriteCgiHandler.hpp"
 #include "TypeTransitionHandler.hpp"

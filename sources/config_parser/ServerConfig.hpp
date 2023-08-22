@@ -40,6 +40,7 @@ class ServerConfig
 		void		_addNewMimeType(std::string &src);
 		void		_checkAllLocationsStatus(void);
 		Location*	_getSpecificLocations(std::string location);
+		void		_checkMasterRoot(void);
 
 	public:
 		ServerConfig(void);

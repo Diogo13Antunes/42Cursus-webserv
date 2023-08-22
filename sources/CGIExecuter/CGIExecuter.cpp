@@ -7,12 +7,6 @@
 #define	NO_EXIT_STATUS	256
 #define GENERIC_ERROR	1
 
-/*CGIExecuter::CGIExecuter(void)
-{
-	if (!_initPipes())
-		throw FailToIinitPipesException();
-}*/
-
 CGIExecuter::CGIExecuter(void): _statusCode(0)
 {
 	if (!_initPipes())
@@ -20,7 +14,6 @@ CGIExecuter::CGIExecuter(void): _statusCode(0)
 	_execute(NULL, "cgi-bin/script.py");
 }
 
-// O construtor precisa de receber como parametro o que necessita de entrar dentro do _execute()
 CGIExecuter::CGIExecuter(ServerConfig *config, RequestParser &request, std::string scriptName): _statusCode(0)
 {
 	_serverConfigs = config;
@@ -30,20 +23,6 @@ CGIExecuter::CGIExecuter(ServerConfig *config, RequestParser &request, std::stri
 	_env = _getEnvVariables();
 	_execute(_env, scriptName);
 }
-
-/*
-CGIExecuter::~CGIExecuter(void)
-{
-	if (!this->isEnded())
-	{
-		std::cout << "Tenta fazer o kill" << std::endl;
-		if (kill(_pid, SIGTERM) == -1)
-			std::cout << "Webserv: Error terminating SGI script" << std::endl;
-
-	}
-	_closeAllFds();
-}
-*/
 
 CGIExecuter::~CGIExecuter(void)
 {
@@ -56,51 +35,6 @@ CGIExecuter::~CGIExecuter(void)
 	// _closeAllFds();
 	_closeFd(&_pipe2[0]);
 }
-
-void	CGIExecuter::execute(std::string script, std::string message, char **env)
-{
-	_scriptName = script;
-	_scriptInterpreter = _getScriptInterpreter();
-
-	if (_scriptInterpreter.empty())
-		throw ExecutionErrorException();
-
-	const char *av[] = {_scriptInterpreter.c_str(), _scriptName.c_str(), NULL};
-
-	_pid = fork();
-	if (_pid == -1)
-		throw FailToCreateChildProcessException();
-
-	if (_pid == 0)
-	{
-		dup2(_pipe1[0], STDIN_FILENO);
-		dup2(_pipe2[1], STDOUT_FILENO);
-		_closeAllFds();
-		execve(_scriptInterpreter.c_str(), const_cast<char**>(av), env);
-		//throw ExecutionErrorException();
-		return ;
-	}
-	else
-	{
-		write(_pipe1[1], message.c_str(), message.size());
-
-		_closeFd(&_pipe1[0]);
-		_closeFd(&_pipe1[1]);
-		_closeFd(&_pipe2[1]);
-	}
-}
-
-/*
-bool CGIExecuter::isEnded(void)
-{
-	int res;
-
-	res = waitpid(_pid, NULL, WNOHANG);
-	if (res == _pid || res < 0)
-		return (true);
-	return (false);
-}
-*/
 
 int CGIExecuter::isEnded(void)
 {
@@ -171,8 +105,6 @@ bool	CGIExecuter::_initPipes(void)
 	return (true);
 }
 
-static void stringTrim(std::string &str);
-
 std::string	CGIExecuter::_getScriptInterpreter(void)
 {
 	std::ifstream	file(_scriptName.c_str());
@@ -182,7 +114,7 @@ std::string	CGIExecuter::_getScriptInterpreter(void)
 	if (file.is_open())
 	{
 		std::getline(file, line);
-		stringTrim(line);
+		line = StringUtils::stringTrim(line);
 		result = line.substr(line.find_first_not_of("#!"));
 	}
 	return (result);
@@ -203,21 +135,6 @@ void	CGIExecuter::_closeAllFds(void)
 	_closeFd(&_pipe1[1]);
 	_closeFd(&_pipe2[0]);
 	_closeFd(&_pipe2[1]);
-}
-
-//depercated acho que já existe outra string trim nos utils
-static void stringTrim(std::string &str)
-{
-	std::string	trimmed;
-	size_t		start;
-	size_t		end;
-	size_t		len;
-
-	start = str.find_first_not_of(WHITE_SPACE);
-	end = str.find_last_not_of(WHITE_SPACE);
-	len = end - start + 1;
-	trimmed = str.substr(start, len);
-	str = trimmed;
 }
 
 void CGIExecuter::_execute(char **env, std::string path)
@@ -245,24 +162,20 @@ void CGIExecuter::_execute(char **env, std::string path)
 	}
 }
 
-std::string sizeToString(size_t number)
-{
-	std::stringstream ss;
-	ss << number;
-
-	return (ss.str());
-}
-
 char	**CGIExecuter::_getEnvVariables(void)
 {
 	std::vector<std::string>	temp;
 
 	temp.push_back("SERVER_PROTOCOL=HTTP/1.1");
 	temp.push_back("REQUEST_METHOD=" + _request.getReqLineMethod());
-	temp.push_back("CONTENT_LENGTH=" + sizeToString(_request.getRequestBody().size()));
+	temp.push_back("CONTENT_LENGTH=" + StringUtils::toString(_request.getRequestBody().size()));
 	temp.push_back("CONTENT_TYPE=" + _request.getHeaderField("content-type").at(0));
 	temp.push_back("QUERY_STRING=" + _request.getQueryString());
 	temp.push_back("DOCUMENT_ROOT=" + _serverConfigs->getUploadStore(_request.getReqLinePath()));
+	temp.push_back("REMOTE_ADDR=" + _serverConfigs->getIp());
+	temp.push_back("SERVER_NAME=webserve");
+	temp.push_back("SERVER_PORT=" + _serverConfigs->getPort());
+	temp.push_back("SERVER_SOFTWARE=" + std::string(SERVER_SOFTWARE));
 
 	char **env = new char*[temp.size() + 1];
 
@@ -274,4 +187,14 @@ char	**CGIExecuter::_getEnvVariables(void)
 	}
 
 	return (env);
+}
+
+void	CGIExecuter::_freeEnvVariables(void)
+{
+	if (_env)
+	{
+		for (size_t i = 0; _env[i] ; i++)
+			delete[] _env[i];
+		delete[] _env;
+	}
 }
