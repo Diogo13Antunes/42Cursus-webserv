@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CreateHeaderState.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/23 09:52:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/23 19:33:51 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,11 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 
 	//std::string resourcePath = _getResourceFromURLPath(config, event->getReqLinePath(), resourceType);
 	fileName = _getResourceFromURLPath(config, event->getReqLinePath(), resourceType);
-	std::cout << "caminho real: " << fileName << std::endl;
-	std::cout << "resourceType: " << resourceType << std::endl;
 
 	if (resourceType == FOLDER_TYPE)
 		return (DIRECTORY_LISTING);
 
 
-	std::cout << "Sai aqui" << std::endl;
 
 	//fileName = _getFileName(event->getReqLinePath(), configsData);
 	//fileName = _getFileName(event->getReqLinePath(), config);

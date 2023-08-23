@@ -512,7 +512,6 @@ Location	*ServerConfig::_getSpecificLocations(std::string location)
 {
 	std::map<std::string, Location>::iterator	it;
 
-	std::cout << "location: " << location << std::endl;
 	it = _locations.find(location);
 	if (it != _locations.end())
 		return (&(it->second));
