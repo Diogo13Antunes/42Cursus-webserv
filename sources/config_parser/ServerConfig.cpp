@@ -511,10 +511,19 @@ void	ServerConfig::_checkAllLocationsStatus(void)
 Location	*ServerConfig::_getSpecificLocations(std::string location)
 {
 	std::map<std::string, Location>::iterator	it;
+	size_t										routeSize;
 
 	it = _locations.find(location);
 	if (it != _locations.end())
 		return (&(it->second));
+	routeSize = location.size();	
+	if (routeSize > 0 && location.at(routeSize - 1) == '/')
+	{
+		location.erase(routeSize - 1);
+		it = _locations.find(location);
+		if (it != _locations.end())
+			return (&(it->second));
+	}
 	return (NULL);
 }
 

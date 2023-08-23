@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/23 09:52:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/23 10:35:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,7 @@ std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std
 	std::string fullPath;
 	std::string fullPathIndex;
 	std::string alias;
-	
+
 	rootPath = config.getLocationRootPath(path);
 	alias = config.getLocationAlias(path);
 	if (!alias.empty())
