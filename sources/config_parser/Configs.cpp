@@ -55,6 +55,7 @@ void	Configs::_initValidOptions(void)
 	_validOptions.push_back("master_root");
 	_validOptions.push_back("mime_types");
 	_validOptions.push_back("alias");
+	_validOptions.push_back("autoindex");
 }
 
 bool	Configs::_getConfigFile(const char *configFile)
