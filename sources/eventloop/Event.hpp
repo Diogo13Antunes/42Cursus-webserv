@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/22 10:01:54 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/23 15:22:54 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ class Event
 		std::string _ip;
 		std::string _port;
 		std::string	_cgiBodyRes;
+
+		std::string	_resourcePath;
 
 	public:
 		Event(void);
@@ -281,4 +283,7 @@ class Event
 
 		std::string getIp(void);
 		std::string getPort(void);
+
+		void setResourcePath(std::string resourcePath);
+		std::string getResourcePath(void);
 };

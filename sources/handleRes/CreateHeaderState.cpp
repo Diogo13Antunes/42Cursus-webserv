@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/23 12:48:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/23 15:20:32 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 	//std::string resourcePath = _getResourceFromURLPath(config, event->getReqLinePath(), resourceType);
 	fileName = _getResourceFromURLPath(config, event->getReqLinePath(), resourceType);
 	std::cout << "caminho real: " << fileName << std::endl;
-	std::cout << "resourceType: " << resourceType << std::endl;
+
+	event->setResourcePath(fileName);
 
 	if (resourceType == FOLDER_TYPE)
 		return (DIRECTORY_LISTING);
@@ -198,40 +199,6 @@ void CreateHeaderState::_createHeaderDefaultError(std::string &header, int error
 	header = httpHeader.getHeader();
 }
 
-/*
-std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std::string path, ResourceType& type)
-{
-	std::string rootPath;
-	std::string index;
-	std::string fullPath;
-	std::string fullPathIndex;
-	std::string alias;
-
-	rootPath = config.getLocationRootPath(path);
-	alias = config.getLocationAlias(path);
-	if (!alias.empty())
-		fullPath = alias;
-	else
-		fullPath = rootPath + path;
-	index = config.getLocationIndex(path);
-	if (!index.empty())
-		fullPath += "/" + index;
-	if (!_isFolder(fullPath))
-	{
-		type = FILE_TYPE;
-		return (fullPath);
-	}
-	type = FOLDER_TYPE;
-	fullPathIndex = fullPath + "/index.html";
-	if (access(fullPathIndex.c_str(), F_OK) == 0)
-	{
-		type = FILE_TYPE;
-		return (fullPathIndex);
-	}
-	return (fullPath);
-}
-*/
-
 std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std::string path, ResourceType& type)
 {
 	std::string rootPath;
@@ -282,7 +249,6 @@ std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std
 	}
 	return (fullPath);
 }
-
 
 bool CreateHeaderState::_isFolder(std::string path)
 {

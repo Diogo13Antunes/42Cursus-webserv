@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/22 10:02:32 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/23 15:24:11 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -920,4 +920,13 @@ std::string Event::getCgiBodyRes(void)
 void	Event::setCgiBodyRes(std::string &src)
 {
 	_cgiBodyRes = src;
+}
+
+void Event::setResourcePath(std::string resourcePath)
+{
+	_resourcePath = resourcePath;
+}
+std::string Event::getResourcePath(void)
+{
+	return (_resourcePath);
 }
