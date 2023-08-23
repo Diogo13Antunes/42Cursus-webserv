@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/23 10:35:44 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/23 12:48:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,6 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 
 	if (resourceType == FOLDER_TYPE)
 		return (DIRECTORY_LISTING);
-
-
-	std::cout << "Sai aqui" << std::endl;
 
 	//fileName = _getFileName(event->getReqLinePath(), configsData);
 	//fileName = _getFileName(event->getReqLinePath(), config);
@@ -201,6 +198,7 @@ void CreateHeaderState::_createHeaderDefaultError(std::string &header, int error
 	header = httpHeader.getHeader();
 }
 
+/*
 std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std::string path, ResourceType& type)
 {
 	std::string rootPath;
@@ -232,6 +230,59 @@ std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std
 	}
 	return (fullPath);
 }
+*/
+
+std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std::string path, ResourceType& type)
+{
+	std::string rootPath;
+	std::string index;
+	std::string fullPath;
+	std::string fullPathIndex;
+	std::string alias;
+
+	std::string newPath;
+	size_t lastBarIdx;
+
+
+	std::cout << "PATH: " << path << std::endl;
+
+	rootPath = config.getLocationRootPath(path);
+	if(rootPath.empty())
+	{
+		lastBarIdx = path.find_last_of("/");
+		newPath = path.substr(0, lastBarIdx);
+		alias = config.getLocationAlias(newPath);
+		if (!alias.empty())
+			alias +=  path.substr(lastBarIdx);
+	}
+	else
+		alias = config.getLocationAlias(path);
+
+	if (rootPath.empty() && alias.empty())
+		rootPath = config.getMasterRoot();
+		
+	if (!alias.empty())
+		fullPath = alias;
+	else
+		fullPath = rootPath + path;
+	index = config.getLocationIndex(path);
+	if (!index.empty())
+		fullPath += "/" + index;
+	if (!_isFolder(fullPath))
+	{
+		type = FILE_TYPE;
+		return (fullPath);
+	}
+	type = FOLDER_TYPE;
+	fullPathIndex = fullPath + "/index.html";
+	if (access(fullPathIndex.c_str(), F_OK) == 0)
+	{
+		type = FILE_TYPE;
+		return (fullPathIndex);
+	}
+	return (fullPath);
+}
+
 
 bool CreateHeaderState::_isFolder(std::string path)
 {

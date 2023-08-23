@@ -237,8 +237,15 @@ std::string ServerConfig::getLocationRootPath(std::string route)
 	location = _getSpecificLocations(route);
 	if (location)
 		return (location->getRoot());
+	return (std::string());
+}
+
+std::string ServerConfig::getMasterRootPath(std::string route)
+{
 	return (_masterRoot);
 }
+
+
 
 std::string ServerConfig::getLocationIndex(std::string route)
 {
