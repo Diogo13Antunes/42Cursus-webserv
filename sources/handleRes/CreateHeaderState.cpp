@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/23 08:09:17 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/23 09:52:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,6 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 
 	int statusCode;
 
-
-	/*
-	struct stat file_info;
-	std::cout << "path: " << event->getReqLinePath() << std::endl;
-	if (stat(event->getReqLinePath().c_str(), &file_info) == 0) 
-	{
-		std::cout << "info mode" << file_info.st_mode << std::endl;
-    } 
-	else
-	{		
-        perror("Erro ao obter informações do arquivo");
-    }
-	*/
-	
-
-
-
 	statusCode = event->getStatusCode();
 	if (statusCode)
 	{
@@ -76,13 +59,19 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 
 	//verificar se é folder
 
-	std::string resourcePath = _getResourceFromURLPath(config, event->getReqLinePath(), resourceType);
-	std::cout << "caminho real: " << resourcePath << std::endl;
+	//std::string resourcePath = _getResourceFromURLPath(config, event->getReqLinePath(), resourceType);
+	fileName = _getResourceFromURLPath(config, event->getReqLinePath(), resourceType);
+	std::cout << "caminho real: " << fileName << std::endl;
 	std::cout << "resourceType: " << resourceType << std::endl;
 
+	if (resourceType == FOLDER_TYPE)
+		return (DIRECTORY_LISTING);
+
+
+	std::cout << "Sai aqui" << std::endl;
 
 	//fileName = _getFileName(event->getReqLinePath(), configsData);
-	fileName = _getFileName(event->getReqLinePath(), config);
+	//fileName = _getFileName(event->getReqLinePath(), config);
 	if (!event->getCgiScriptResult().empty())
 		return (CGI_RES_PROCESS);
 	if (_isFileReadable(fileName))
@@ -221,12 +210,14 @@ std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std
 	std::string alias;
 	
 	rootPath = config.getLocationRootPath(path);
-	index = config.getLocationIndex(path);
 	alias = config.getLocationAlias(path);
 	if (!alias.empty())
-		fullPath = alias + "/" + index;
+		fullPath = alias;
 	else
-		fullPath = rootPath + path + "/" + index;
+		fullPath = rootPath + path;
+	index = config.getLocationIndex(path);
+	if (!index.empty())
+		fullPath += "/" + index;
 	if (!_isFolder(fullPath))
 	{
 		type = FILE_TYPE;
@@ -235,7 +226,10 @@ std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std
 	type = FOLDER_TYPE;
 	fullPathIndex = fullPath + "/index.html";
 	if (access(fullPathIndex.c_str(), F_OK) == 0)
+	{
+		type = FILE_TYPE;
 		return (fullPathIndex);
+	}
 	return (fullPath);
 }
 

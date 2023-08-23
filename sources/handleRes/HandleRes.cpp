@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/22 18:05:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/23 09:37:34 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ HandleRes::HandleRes(ConfigsData *configsData):
 	_stateMap.insert(std::make_pair(CGI_RES_PROCESS, new CgiResponseProcess()));
 	_stateMap.insert(std::make_pair(REDIRECT, new RedirectionHandler()));
 	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
+	_stateMap.insert(std::make_pair(DIRECTORY_LISTING, new DirectoryListing()));
 	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
 
