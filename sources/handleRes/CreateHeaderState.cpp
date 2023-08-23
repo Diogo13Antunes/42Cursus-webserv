@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/22 17:39:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/23 08:09:17 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,9 @@ StateResType CreateHeaderState::handle(Event *event, ServerConfig config)
 		return (REDIRECT);
 
 	//verificar se é folder
-	std::cout << "caminho real: " << _getResourceFromURLPath(config, event->getReqLinePath(), resourceType) << std::endl;
+
+	std::string resourcePath = _getResourceFromURLPath(config, event->getReqLinePath(), resourceType);
+	std::cout << "caminho real: " << resourcePath << std::endl;
 	std::cout << "resourceType: " << resourceType << std::endl;
 
 
@@ -210,28 +212,28 @@ void CreateHeaderState::_createHeaderDefaultError(std::string &header, int error
 	header = httpHeader.getHeader();
 }
 
-
-// Se for um folder sem index então retorna só o folder
-// se tiver index então retorna file
-// index: tem de ser string vazia se não for configurado
 std::string CreateHeaderState::_getResourceFromURLPath(ServerConfig& config, std::string path, ResourceType& type)
 {
 	std::string rootPath;
 	std::string index;
 	std::string fullPath;
 	std::string fullPathIndex;
+	std::string alias;
 	
 	rootPath = config.getLocationRootPath(path);
 	index = config.getLocationIndex(path);
-	fullPath = rootPath + path + "/" + index;
-	//IMPORTANTE: se existir alias o alias, o fullPath será:  fullPath = alias + "/" + index;
+	alias = config.getLocationAlias(path);
+	if (!alias.empty())
+		fullPath = alias + "/" + index;
+	else
+		fullPath = rootPath + path + "/" + index;
 	if (!_isFolder(fullPath))
 	{
 		type = FILE_TYPE;
 		return (fullPath);
 	}
 	type = FOLDER_TYPE;
-	fullPathIndex = fullPath + "/" + "index.html";
+	fullPathIndex = fullPath + "/index.html";
 	if (access(fullPathIndex.c_str(), F_OK) == 0)
 		return (fullPathIndex);
 	return (fullPath);

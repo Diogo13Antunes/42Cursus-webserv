@@ -90,6 +90,11 @@ std::string	Location::getUploadStore(void)
 	return (_uploadStore);
 }
 
+std::string	Location::getAlias(void)
+{
+	return (_alias);
+}
+
 std::vector<std::string>	Location::getAccepted(void)
 {
 	if (_accepted.size() > 0)

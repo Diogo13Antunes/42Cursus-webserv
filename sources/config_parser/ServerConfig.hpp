@@ -68,5 +68,6 @@ class ServerConfig
 		std::string							getUploadStore(std::string route);
 		std::string							getLocationRootPath(std::string route);
 		std::string							getLocationIndex(std::string route);
+		std::string							getLocationAlias(std::string route);
 
 };

@@ -248,7 +248,16 @@ std::string ServerConfig::getLocationIndex(std::string route)
 	if (location)
 		return (location->getIndex());
 	return (std::string());
-	
+}
+
+std::string ServerConfig::getLocationAlias(std::string route)
+{
+	Location *location;
+
+	location = _getSpecificLocations(route);
+	if (location)
+		return (location->getAlias());
+	return (std::string());
 }
 
 /* PRIVATE METHODS */

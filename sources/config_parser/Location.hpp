@@ -42,6 +42,7 @@ class Location
 		std::string					getIndex(void);
 		std::string					getCgi(void);
 		std::string					getUploadStore(void);
+		std::string					getAlias(void);
 		std::vector<std::string>	getAccepted(void);
 		std::pair<int, std::string>	getRedirection(void);
 		bool						hasRedirection(void);
