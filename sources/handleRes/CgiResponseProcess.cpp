@@ -19,7 +19,6 @@ StateResType	CgiResponseProcess::handle(Event *event, ServerConfig configsData)
 	std::map<std::string, std::string>				headerMap;
 	std::string										scriptRes;
 	std::string										cgiBody;
-	std::string										line;
 	std::string										res;
 
 	scriptRes = event->getCgiScriptResult();
@@ -27,10 +26,7 @@ StateResType	CgiResponseProcess::handle(Event *event, ServerConfig configsData)
 	res = _getStatusLine(headerMap);
 	_completeHeaderSet(headerMap);
 	for (it = headerMap.begin(); it !=  headerMap.end(); it++)
-	{
-		line = _getResponseHeaderLine(it->first, it->second);
-		res += line;
-	}
+		res += _getResponseHeaderLine(it->first, it->second);
 	res += "\r\n";
 	if (_existContent(headerMap))
 		cgiBody = _getCgiBody(scriptRes);
