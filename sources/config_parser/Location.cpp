@@ -20,7 +20,8 @@ Location::Location(void):
 
 Location::Location(std::string masterRoot, std::vector<std::string> locationInfo):
 	_locationError(true),
-	_redirection(std::make_pair(0, ""))
+	_redirection(std::make_pair(0, "")),
+	_autoIndex(false)
 {
 	std::vector<std::string>::iterator	it;
 	std::string	key;
@@ -45,6 +46,8 @@ Location::Location(std::string masterRoot, std::vector<std::string> locationInfo
 				_setRedirection(it, locationInfo.end());
 			else if (!key.compare("alias"))
 				_setAlias(*it);
+			else if (!key.compare("autoindex"))
+				_setAutoIndex(*it);
 			else
 				_updateLocationError(false);
 			if (getLocationError() == false)
@@ -105,6 +108,11 @@ std::vector<std::string>	Location::getAccepted(void)
 std::pair<int, std::string>	Location::getRedirection(void)
 {
 	return (_redirection);
+}
+
+bool	Location::isAutoIndex(void)
+{
+	return (_autoIndex);
 }
 
 bool	Location::existCgi(void)
@@ -249,6 +257,17 @@ void	Location::_setRedirection(std::vector<std::string>::iterator &it,
 void	Location::_setAlias(std::string &alias)
 {
 	_alias = getValue(alias);
+}
+
+void	Location::_setAutoIndex(std::string &autoindex)
+{
+	std::string value;
+
+	value = getValue(autoindex);
+	if (!value.compare("on"))
+		_autoIndex = true;
+	else
+		_autoIndex = false;
 }
 
 /* STATIC FUNCTIONS */

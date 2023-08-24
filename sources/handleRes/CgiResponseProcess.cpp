@@ -1,11 +1,6 @@
 #include "CgiResponseProcess.hpp"
 
-void	printer(std::string src, bool withNL)
-{
-	std::cout << src;
-	if (withNL)
-		std::cout << std::endl;
-}
+static bool	existHeaderElement(std::map<std::string, std::string> &header, std::string element);
 
 CgiResponseProcess::CgiResponseProcess(void)
 {
@@ -20,31 +15,20 @@ CgiResponseProcess::~CgiResponseProcess(void)
 StateResType	CgiResponseProcess::handle(Event *event, ServerConfig configsData)
 {
 	(void)configsData;
-	std::vector<std::string>::iterator	it;
-	std::vector<std::string>			headerVector;
-	std::string							scriptRes;
-	std::string							cgiBody;
-	std::string							line;
-	std::string							res;
+	std::map<std::string, std::string>::iterator	it;
+	std::map<std::string, std::string>				headerMap;
+	std::string										scriptRes;
+	std::string										cgiBody;
+	std::string										res;
 
 	scriptRes = event->getCgiScriptResult();
-	headerVector = _getHeaderVector(scriptRes);
-	res = _getStatusLine(headerVector);
-	for (it = headerVector.begin(); it !=  headerVector.end(); it++)
-	{
-		if (!StringUtils::isStringEmptyOrSpaces(*it))
-		{
-			line = _getResponseHeaderLine(*it);
-			if (StringUtils::isStringEmptyOrSpaces(line))
-			{
-				res = _invalidCgiResponse();
-				break;
-			}
-			res += line;
-		}
-	}
+	headerMap = _getHeaderMap(scriptRes);
+	res = _getStatusLine(headerMap);
+	_completeHeaderSet(headerMap);
+	for (it = headerMap.begin(); it !=  headerMap.end(); it++)
+		res += _getResponseHeaderLine(it->first, it->second);
 	res += "\r\n";
-	if (_existContent(headerVector))
+	if (_existContent(headerMap))
 		cgiBody = _getCgiBody(scriptRes);
 	event->setRes(res);
 	event->setCgiBodyRes(cgiBody);
@@ -54,38 +38,32 @@ StateResType	CgiResponseProcess::handle(Event *event, ServerConfig configsData)
 
 /* PRIVATE METHODS */
 
-std::vector<std::string>	CgiResponseProcess::_getHeaderVector(std::string &src)
+std::map<std::string, std::string>	CgiResponseProcess::_getHeaderMap(std::string &src)
 {
-	std::vector<std::string>	result;
-	std::istringstream			iss(src);
-	std::string					line;
+	std::map<std::string, std::string>	result;
+	std::istringstream					iss(src);
+	std::string							line;
+	size_t								i;
 
 	while (std::getline(iss, line))
 	{
 		if (StringUtils::isStringEmptyOrSpaces(line))
 			break;
-		result.push_back(line);
+		result.insert(_makePair(line));
 	}
 	return (result);
 }
 
-std::string	CgiResponseProcess::_getStatusLine(std::vector<std::string> &src)
+std::string	CgiResponseProcess::_getStatusLine(std::map<std::string, std::string> &src)
 {
-	std::vector<std::string>::iterator	it;
-	std::string key;
-	std::string value;
-	std::string res;
+	std::map<std::string, std::string>::iterator	it;
+	std::string										key;
+	std::string										value;
+	std::string										res;
 
-	for (it = src.begin(); it !=  src.end(); it++)
-	{
-		key = _getKey(*it);
-		if (key.compare("Status") == 0)
-		{
-			value = _getValue(*it);
-			(*it).clear();
-			break;
-		}
-	}
+	it = src.find("Status");
+	if (it != src.end())
+		value = it->second;
 	if (value.empty())
 		value = "200 OK";
 	res = "HTTP/1.1 ";
@@ -122,27 +100,14 @@ std::string	CgiResponseProcess::_getValue(std::string &line)
 	return (value);
 }
 
-std::string	CgiResponseProcess::_invalidCgiResponse(void)
+bool	CgiResponseProcess::_existContent(std::map<std::string, std::string> &header)
 {
-	std::string out;
+	std::map<std::string, std::string>::iterator	it;
+	std::string										key;
 
-	out = "HTTP/1.1 501 Internal Server Error\r\n";
-	out += "Connection: keep-alive\r\n";
-	out += "Server: webserv\r\n";
-	return (out);
-}
-
-bool	CgiResponseProcess::_existContent(std::vector<std::string> &header)
-{
-	std::vector<std::string>::iterator	it;
-	std::string							key;
-
-	for (it = header.begin(); it != header.end(); it++)
-	{
-		key = _getKey(*it);
-		if (key.compare("Content-Type") == 0)
-			return (true);
-	}
+	it = header.find("Content-Type");
+	if (it != header.end())
+		return (true);
 	return (false);
 }
 
@@ -157,15 +122,43 @@ std::string	CgiResponseProcess::_getCgiBody(std::string &src)
 	return (body);
 }
 
-std::string	CgiResponseProcess::_getResponseHeaderLine(std::string &src)
+std::string	CgiResponseProcess::_getResponseHeaderLine(std::string key, std::string value)
 {
 	std::string	headerLine;
-	std::string	key;	
-	std::string	value;
 
-	key = _getKey(src);
-	value = _getValue(src);
 	if (!StringUtils::isStringEmptyOrSpaces(key) && !StringUtils::isStringEmptyOrSpaces(value))
 		headerLine = key + ": " + value + "\r\n";
 	return (headerLine);	
+}
+
+std::pair<std::string, std::string>	CgiResponseProcess::_makePair(std::string &line)
+{
+	std::string key;
+	std::string value;
+
+	key = _getKey(line);
+	value = _getValue(line);
+	return (std::make_pair(key, value));
+}
+
+void	CgiResponseProcess::_completeHeaderSet(std::map<std::string, std::string> &header)
+{
+	if (!existHeaderElement(header, "Date"))
+		header.insert(std::make_pair("Date", TimeDate::getTimeDateIMFfixdateFormat()));
+	if (!existHeaderElement(header, "Connection"))
+		header.insert(std::make_pair("Connection", "keep-alive"));
+	if (!existHeaderElement(header, "Server"))
+		header.insert(std::make_pair("Server", "webserv/1.0"));
+}
+
+/* STATIC FUNCTIONS */
+
+static bool	existHeaderElement(std::map<std::string, std::string> &header, std::string element)
+{
+	std::map<std::string, std::string>::iterator it;
+
+	it = header.find(element);
+	if (it != header.end())
+		return (true);
+	return (false);
 }
