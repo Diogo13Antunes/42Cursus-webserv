@@ -3,20 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   HttpHeaderBuilder.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 15:34:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/18 16:27:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/24 10:11:30 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <string>
+#include <map>
+#include "StringUtils.hpp"
 
 class HttpHeaderBuilder
 {
 	private:
+		std::map<std::string, std::string>	_fields;
 		std::string	_status;
 		std::string	_contentType;
 		std::string _date;
@@ -29,6 +32,7 @@ class HttpHeaderBuilder
 		HttpHeaderBuilder(void);
 		~HttpHeaderBuilder(void);
 
+		void		addNewField(std::string key, std::string value);
 		void		setStatus(std::string status);
 		void		setContentType(std::string contentType);
 		void		setDate(std::string date);

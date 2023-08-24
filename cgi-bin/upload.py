@@ -49,7 +49,6 @@ else:
 """
 
 out = "Status: " + status +"\n"
-out += "Server: webserv\n"
 out += "Connection: keep-alive\n"
 out += "Content-Length: " + str(len(htmlfile)) + "\n"
 out += "Content-Type: " + "text/html" + "\n"
