@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/23 19:03:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/24 09:53:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <sys/stat.h>
 #include "TimeDate.hpp"
 #include "HttpHeaderBuilder.hpp"
+
+#define NAME_MAX_SIZE	48
 
 DirectoryListing::DirectoryListing(void) {}
 
@@ -78,16 +80,15 @@ std::string DirectoryListing::_createPageHtml(std::string path, std::map<std::st
 {
 	std::map<std::string, std::string>::iterator	it;
 	std::string										page;
-	int												spaceDate;
 
-	spaceDate = 50;
 	page = "<html><head><title>Index of " + path + "</title></head>";
 	page += "<body><h1> Index of " + path + "</h1><hr><pre>";
 	for(it = dirCont.begin(); it != dirCont.end(); it++)
 	{
-		page += "<a href=\"" + it->first +  "\">" + it->first + "</a>";
-		for(int i = it->first.size(); i < spaceDate; i++)
+		page += "<a href=\"" + it->first +  "\">" + _resizeName(it->first) + "</a>";
+		for(int i = it->first.size(); i < NAME_MAX_SIZE; i++)
 			page += " ";
+		page += " ";
 		page += it->second + "\n";
 	}
 	page += "</pre><hr></body></html>";
@@ -101,4 +102,14 @@ std::string DirectoryListing::_createHeader(int contLength)
 	httpHeader.setContentLength(contLength);
 	httpHeader.setContentType("text/html");
 	return (httpHeader.getHeader());
+}
+
+std::string DirectoryListing::_resizeName(std::string name)
+{
+	if (name.size() >= NAME_MAX_SIZE)
+	{
+		name.erase(NAME_MAX_SIZE - 3);
+		name += "...";
+	}
+	return (name);
 }
