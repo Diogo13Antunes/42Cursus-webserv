@@ -70,5 +70,6 @@ class ServerConfig
 		std::string							getMasterRootPath(std::string route);
 		std::string							getLocationIndex(std::string route);
 		std::string							getLocationAlias(std::string route);
+		bool								isLocationAutoIndex(std::string route);
 
 };

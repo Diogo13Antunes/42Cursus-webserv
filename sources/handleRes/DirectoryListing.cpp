@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/24 09:53:59 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/24 15:19:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <sys/stat.h>
 #include "TimeDate.hpp"
 #include "HttpHeaderBuilder.hpp"
+#include "ErrorPageBuilder.hpp"
 
 #define NAME_MAX_SIZE	48
 
@@ -30,6 +31,14 @@ StateResType DirectoryListing::handle(Event *event, ServerConfig config)
 	std::string							page;
 
 	dir = event->getResourcePath();
+
+	// verificar se tem acesso
+	if (!_checkDirectoryAccess(event, config))
+	{
+		event->setRes(_getErrorResponse());
+		return (RESPONSE);
+	}
+
 	dirCont = _getDirContent(dir);
 	page = _createPageHtml(dir, dirCont);
 	event->setRes(_createHeader(page.size()));
@@ -112,4 +121,53 @@ std::string DirectoryListing::_resizeName(std::string name)
 		name += "...";
 	}
 	return (name);
+}
+
+bool DirectoryListing::_checkDirectoryAccess(Event *event, ServerConfig config)
+{
+	std::string route;
+	bool		autoIndex;
+	size_t		idx;
+
+	route = event->getReqLinePath();
+	autoIndex = config.isLocationAutoIndex(route);
+	while (!autoIndex)
+	{
+		_getPreviousRoute(route);
+		if (route.size() == 1 && route.at(0) == '/')
+			break;
+		autoIndex = config.isLocationAutoIndex(route);
+	}
+	return (autoIndex);
+}
+
+std::string DirectoryListing::_getErrorResponse(void)
+{
+	ErrorPageBuilder	errorPage;
+	HttpHeaderBuilder	header;
+	std::string			errorPageHtml;
+	std::string			res;
+
+	errorPage.setErrorCode(403);
+	errorPageHtml = errorPage.getErrorPageHtml();
+	header.setStatus(errorPage.getCodeAndPhrase());
+	header.setContentType("text/html");
+	header.setContentLength(errorPageHtml.size());
+	res = header.getHeader() + errorPageHtml;
+	return (res);
+}
+
+void DirectoryListing::_getPreviousRoute(std::string& route)
+{
+	size_t idx;
+
+	if (route.size() == 1)
+		return ;
+	if (route.at(route.size() - 1) == '/')
+		route.erase(route.size() - 1);
+	idx = route.find_last_of("/");
+	if (idx != route.npos && idx > 0)
+		route.erase(idx);
+	else if (idx != route.npos)
+		route.erase(idx + 1);
 }

@@ -267,6 +267,16 @@ std::string ServerConfig::getLocationAlias(std::string route)
 	return (std::string());
 }
 
+bool ServerConfig::isLocationAutoIndex(std::string route)
+{
+	Location *location;
+
+	location = _getSpecificLocations(route);
+	if (!location)
+		return (false);
+	return (location->isAutoIndex());
+}
+
 /* PRIVATE METHODS */
 
 void	ServerConfig::_updateConfigError(bool newConfigError)
