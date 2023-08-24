@@ -110,7 +110,7 @@ std::pair<int, std::string>	Location::getRedirection(void)
 	return (_redirection);
 }
 
-bool	Location::isAutoIndex(void)
+std::string	Location::getAutoIndex(void)
 {
 	return (_autoIndex);
 }
@@ -265,9 +265,9 @@ void	Location::_setAutoIndex(std::string &autoindex)
 
 	value = getValue(autoindex);
 	if (!value.compare("on"))
-		_autoIndex = true;
+		_autoIndex = "on";
 	else
-		_autoIndex = false;
+		_autoIndex = "off";
 }
 
 /* STATIC FUNCTIONS */
