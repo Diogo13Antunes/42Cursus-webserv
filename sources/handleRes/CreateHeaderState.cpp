@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:43:02 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/24 08:24:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/25 15:12:27 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,11 +176,11 @@ void CreateHeaderState::_createHeader(std::string &header, std::string fileName,
 	httpHeader.setStatus("200 OK");
 	httpHeader.setContentLength(_getFileSize(fileName));
 	httpHeader.setContentType(_getMimeType(_getFileType(fileName)));
-	httpHeader.setConnection("keep-alive");
-	if (event->isConnectionClose())
+	//httpHeader.setConnection("keep-alive");
+	/*if (event->isConnectionClose())
 		httpHeader.setConnection("close");
 	else
-		httpHeader.setConnection("keep-alive");
+		httpHeader.setConnection("keep-alive");*/
 	header = httpHeader.getHeader();
 }
 
@@ -192,10 +192,10 @@ void CreateHeaderState::_createHeaderDefaultError(std::string &header, int error
 	httpHeader.setStatus(errorBuilder.getCodeAndPhrase());
 	httpHeader.setContentLength(errorBuilder.getErrorPageSize());
 	httpHeader.setContentType(_getMimeType("html"));
-	if (event->isConnectionClose())
+	/*if (event->isConnectionClose())
 		httpHeader.setConnection("close");
 	else
-		httpHeader.setConnection("keep-alive");
+		httpHeader.setConnection("keep-alive");*/
 	header = httpHeader.getHeader();
 }
 

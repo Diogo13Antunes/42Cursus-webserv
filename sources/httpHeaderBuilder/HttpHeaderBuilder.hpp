@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpHeaderBuilder.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 15:34:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/24 10:11:30 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/25 15:14:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class HttpHeaderBuilder
 		void		setStatus(std::string status);
 		void		setContentType(std::string contentType);
 		void		setDate(std::string date);
-		void		setConnection(std::string connection);
+		void		setConnectionClose(void);
 		void		setTransferEncoding(std::string transferEncoding);
 		void		setContentLength(int contentLength);
 		void		setLocation(std::string location);

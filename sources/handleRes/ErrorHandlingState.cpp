@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 11:07:22 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/25 14:53:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/25 15:17:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,12 @@ void ErrorHandlingState::_getHeader(Event *event, size_t pageSize, std::string& 
 	std::string			status;
 
 	errorCode = event->getStatusCode();
-	status = StringUtils::toString(errorCode) + _getErrorMessage(errorCode);
+	status = StringUtils::toString(errorCode) + " " +_getErrorMessage(errorCode);
 	headerBuilder.setStatus(status);
 	headerBuilder.setContentType(ERRO_PAGE_MIME_TYPE);
 	headerBuilder.setContentLength(pageSize);
 	if (event->isConnectionClose())
-		headerBuilder.setConnection("close");
+		headerBuilder.setConnectionClose();
 	header.assign(headerBuilder.getHeader());
 }
 

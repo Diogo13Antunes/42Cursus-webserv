@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HttpHeaderBuilder.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 15:34:03 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/24 10:16:28 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/25 15:14:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@ void  HttpHeaderBuilder::setDate(std::string date)
 	_date = date;
 }
 
-void HttpHeaderBuilder::setConnection(std::string connection)
+void HttpHeaderBuilder::setConnectionClose(void)
 {
-	_connection = connection;
+	_connection = "close";
 }
 
 void HttpHeaderBuilder::setTransferEncoding(std::string transferEncoding)
