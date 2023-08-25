@@ -86,6 +86,16 @@ std::map<int, std::string>	ServerConfig::getErrorPages(void)
 	return (_errorPages);
 }
 
+std::string ServerConfig::getErrorPagePath(int code)
+{
+	std::map<int, std::string>::iterator	it;
+
+	it = _errorPages.find(code);
+	if (it != _errorPages.end())
+		return (it->second);
+	return (std::string());
+}
+
 std::map<std::string, Location>&	ServerConfig::getLocations(void)
 {
 	return (_locations);
@@ -267,18 +277,6 @@ std::string ServerConfig::getLocationAlias(std::string route)
 	return (std::string());
 }
 
-/*
-bool ServerConfig::isLocationAutoIndex(std::string route)
-{
-	Location *location;
-
-	location = _getSpecificLocations(route);
-	if (!location)
-		return (false);
-	return (location->isAutoIndex());
-}
-*/
-
 std::string ServerConfig::getLocationAutoIndex(std::string route)
 {
 	Location *location;
@@ -288,7 +286,6 @@ std::string ServerConfig::getLocationAutoIndex(std::string route)
 		return (std::string());
 	return (location->getAutoIndex());
 }
-
 
 /* PRIVATE METHODS */
 

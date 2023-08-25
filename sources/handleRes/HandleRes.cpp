@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/24 18:03:09 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/25 11:42:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <sys/socket.h>
 
 #include "InitialState.hpp"
+#include "ErrorHandlingState.hpp"
 
 HandleRes::HandleRes(ConfigsData *configsData):
 	_event(NULL),
@@ -22,6 +23,7 @@ HandleRes::HandleRes(ConfigsData *configsData):
 	_serverConf(NULL)
 {
 	_stateMap.insert(std::make_pair(INITIAL_STATE, new InitialState()));
+	_stateMap.insert(std::make_pair(ERROR_HANDLING, new ErrorHandlingState()));
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
 	_stateMap.insert(std::make_pair(CGI_RES_PROCESS, new CgiResponseProcess()));
 	_stateMap.insert(std::make_pair(REDIRECT, new RedirectionHandler()));

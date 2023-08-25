@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/24 18:06:48 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/25 11:06:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -892,11 +892,13 @@ size_t Event::getReqBodySize(void)
 	return (_reqParser.getRequestBodyRef().size());
 }
 
+// getErrorCode
 int Event::getStatusCode(void)
 {
 	return (_statusCode);
 }
 
+// setErrorCode
 void Event::setStatusCode(int statusCode)
 {
 	_statusCode = statusCode;

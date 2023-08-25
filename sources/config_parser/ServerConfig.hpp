@@ -56,6 +56,7 @@ class ServerConfig
 		std::string							getServerName(void);
 		std::string							getMasterRoot(void);
 		std::map<int, std::string>			getErrorPages(void);
+		std::string							getErrorPagePath(int code);
 		std::map<std::string, Location>&	getLocations(void);
 		size_t								getClientMaxBodySize(void);
 		std::string							getFilePathByRoute(std::string route);
