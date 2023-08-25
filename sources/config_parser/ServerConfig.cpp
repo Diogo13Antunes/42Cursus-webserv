@@ -267,6 +267,7 @@ std::string ServerConfig::getLocationAlias(std::string route)
 	return (std::string());
 }
 
+/*
 bool ServerConfig::isLocationAutoIndex(std::string route)
 {
 	Location *location;
@@ -276,6 +277,18 @@ bool ServerConfig::isLocationAutoIndex(std::string route)
 		return (false);
 	return (location->isAutoIndex());
 }
+*/
+
+std::string ServerConfig::getLocationAutoIndex(std::string route)
+{
+	Location *location;
+
+	location = _getSpecificLocations(route);
+	if (!location)
+		return (std::string());
+	return (location->getAutoIndex());
+}
+
 
 /* PRIVATE METHODS */
 

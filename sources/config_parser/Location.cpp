@@ -20,8 +20,7 @@ Location::Location(void):
 
 Location::Location(std::string masterRoot, std::vector<std::string> locationInfo):
 	_locationError(true),
-	_redirection(std::make_pair(0, "")),
-	_autoIndex(false)
+	_redirection(std::make_pair(0, ""))
 {
 	std::vector<std::string>::iterator	it;
 	std::string	key;

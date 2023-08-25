@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/24 15:19:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/25 10:13:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include "ErrorPageBuilder.hpp"
 
 #define NAME_MAX_SIZE	48
+#define AUTOINDEX_ON	"on"
+#define AUTOINDEX_OFF	"off"
 
 DirectoryListing::DirectoryListing(void) {}
 
@@ -103,6 +105,7 @@ std::string DirectoryListing::_createPageHtml(std::string path, std::map<std::st
 	page += "</pre><hr></body></html>";
 	return (page);
 }
+
 std::string DirectoryListing::_createHeader(int contLength)
 {
 	HttpHeaderBuilder	httpHeader;
@@ -125,20 +128,21 @@ std::string DirectoryListing::_resizeName(std::string name)
 
 bool DirectoryListing::_checkDirectoryAccess(Event *event, ServerConfig config)
 {
-	std::string route;
-	bool		autoIndex;
-	size_t		idx;
+	std::string	route;
+	std::string	autoIndex;
 
 	route = event->getReqLinePath();
-	autoIndex = config.isLocationAutoIndex(route);
-	while (!autoIndex)
+	autoIndex = config.getLocationAutoIndex(route);
+	while (autoIndex.empty())
 	{
 		_getPreviousRoute(route);
 		if (route.size() == 1 && route.at(0) == '/')
 			break;
-		autoIndex = config.isLocationAutoIndex(route);
+		autoIndex = config.getLocationAutoIndex(route);
 	}
-	return (autoIndex);
+	if (!autoIndex.compare(AUTOINDEX_ON))
+		return (true);
+	return (false);
 }
 
 std::string DirectoryListing::_getErrorResponse(void)
