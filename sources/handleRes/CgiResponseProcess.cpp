@@ -1,7 +1,5 @@
 #include "CgiResponseProcess.hpp"
 
-static bool	existHeaderElement(std::map<std::string, std::string> &header, std::string element);
-
 CgiResponseProcess::CgiResponseProcess(void)
 {
 	//Default CgiResponseProcess Constructor
@@ -15,21 +13,37 @@ CgiResponseProcess::~CgiResponseProcess(void)
 StateResType	CgiResponseProcess::handle(Event *event, ServerConfig configsData)
 {
 	(void)configsData;
+	HttpHeaderBuilder								header;
 	std::map<std::string, std::string>::iterator	it;
 	std::map<std::string, std::string>				headerMap;
 	std::string										scriptRes;
 	std::string										cgiBody;
 	std::string										res;
+	std::string										key;
 
 	scriptRes = event->getCgiScriptResult();
 	headerMap = _getHeaderMap(scriptRes);
-	res = _getStatusLine(headerMap);
-	_completeHeaderSet(headerMap);
 	for (it = headerMap.begin(); it !=  headerMap.end(); it++)
-		res += _getResponseHeaderLine(it->first, it->second);
-	res += "\r\n";
+	{
+		key = it->first;
+		StringUtils::stringToLower(key);
+		if (!key.compare("status"))
+			header.setStatus(it->second);
+		else if (!key.compare("date"))
+			header.setDate(it->second);
+		else if (!key.compare("connection"));
+		else if (!key.compare("content-length"));
+		else if (!key.compare("server"));
+		else
+			header.addNewField(it->first, it->second);
+	}
 	if (_existContent(headerMap))
+	{
 		cgiBody = _getCgiBody(scriptRes);
+		if (!_existContentLength(headerMap))
+			header.setContentLength(cgiBody.size());
+	}
+	res = header.getHeader();
 	event->setRes(res);
 	event->setCgiBodyRes(cgiBody);
 	event->setResSize(res.size() + cgiBody.size());
@@ -52,24 +66,6 @@ std::map<std::string, std::string>	CgiResponseProcess::_getHeaderMap(std::string
 		result.insert(_makePair(line));
 	}
 	return (result);
-}
-
-std::string	CgiResponseProcess::_getStatusLine(std::map<std::string, std::string> &src)
-{
-	std::map<std::string, std::string>::iterator	it;
-	std::string										key;
-	std::string										value;
-	std::string										res;
-
-	it = src.find("Status");
-	if (it != src.end())
-		value = it->second;
-	if (value.empty())
-		value = "200 OK";
-	res = "HTTP/1.1 ";
-	res += value;
-	res += "\r\n";
-	return (res);
 }
 
 std::string	CgiResponseProcess::_getKey(std::string &line)
@@ -105,9 +101,13 @@ bool	CgiResponseProcess::_existContent(std::map<std::string, std::string> &heade
 	std::map<std::string, std::string>::iterator	it;
 	std::string										key;
 
-	it = header.find("Content-Type");
-	if (it != header.end())
-		return (true);
+	for (it = header.begin(); it !=  header.end(); it++)
+	{
+		key = it->first;
+		StringUtils::stringToLower(key);
+		if (key.compare("content-type"))	
+			return (true);
+	}
 	return (false);
 }
 
@@ -122,15 +122,6 @@ std::string	CgiResponseProcess::_getCgiBody(std::string &src)
 	return (body);
 }
 
-std::string	CgiResponseProcess::_getResponseHeaderLine(std::string key, std::string value)
-{
-	std::string	headerLine;
-
-	if (!StringUtils::isStringEmptyOrSpaces(key) && !StringUtils::isStringEmptyOrSpaces(value))
-		headerLine = key + ": " + value + "\r\n";
-	return (headerLine);	
-}
-
 std::pair<std::string, std::string>	CgiResponseProcess::_makePair(std::string &line)
 {
 	std::string key;
@@ -141,24 +132,12 @@ std::pair<std::string, std::string>	CgiResponseProcess::_makePair(std::string &l
 	return (std::make_pair(key, value));
 }
 
-void	CgiResponseProcess::_completeHeaderSet(std::map<std::string, std::string> &header)
+bool	CgiResponseProcess::_existContentLength(std::map<std::string, std::string> &map)
 {
-	if (!existHeaderElement(header, "Date"))
-		header.insert(std::make_pair("Date", TimeDate::getTimeDateIMFfixdateFormat()));
-	if (!existHeaderElement(header, "Connection"))
-		header.insert(std::make_pair("Connection", "keep-alive"));
-	if (!existHeaderElement(header, "Server"))
-		header.insert(std::make_pair("Server", "webserv/1.0"));
-}
+	std::map<std::string, std::string>::iterator	it;
 
-/* STATIC FUNCTIONS */
-
-static bool	existHeaderElement(std::map<std::string, std::string> &header, std::string element)
-{
-	std::map<std::string, std::string>::iterator it;
-
-	it = header.find(element);
-	if (it != header.end())
+	it = map.find("Content-Length");
+	if (it != map.end())
 		return (true);
 	return (false);
 }
