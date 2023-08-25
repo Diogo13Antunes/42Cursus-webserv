@@ -16,7 +16,11 @@ class ConfigsData
 
 	public:
 		ConfigsData(void);
+		ConfigsData(const ConfigsData &src);
 		~ConfigsData(void);
+		ConfigsData &operator=(const ConfigsData &src);
+
+
 
 		void						setupConfigs(std::vector<std::string> &src);
 		std::vector<ServerConfig>	&getServers(void);

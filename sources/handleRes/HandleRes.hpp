@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/22 18:03:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/24 18:04:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,12 @@ class HandleRes
 		ConfigsData							*_configsData;
 		ServerConfig						*_serverConf;
 		Event								*_event;
-		StateResType						_state;
+		//StateResType						_state;
 
 		StateResType	_handleState(StateResType state);
 		ServerConfig*	_setServerConfig(std::vector<ServerConfig>& serverConfigs);
 
 	public:
-		HandleRes(void);
 		HandleRes(ConfigsData *configsData);
 		~HandleRes(void);
 		void setEvent(Event *event);

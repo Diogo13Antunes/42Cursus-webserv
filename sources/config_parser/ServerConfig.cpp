@@ -642,3 +642,21 @@ static int	strToInt(std::string &str)
 	out >> intValue;
 	return (intValue);
 }
+
+// Just for debug
+
+/*
+#include <stdexcept>
+#include <iostream>
+ServerConfig::ServerConfig(const ServerConfig &src)
+{
+	//throw std::runtime_error("ServerConfig: No copies are allowed");
+	*this = src;
+}
+
+ServerConfig& ServerConfig::operator=(const ServerConfig &src)
+{
+	//throw std::runtime_error("ServerConfig: No copies are allowed");
+	return (*this);
+}
+*/

@@ -101,3 +101,21 @@ const char *ConfigsData::InvalidConfigFileException::what(void) const throw()
 {
 	return ("InvalidConfigFileException: Invalid Config File");
 }
+
+
+// Just for debug
+/*
+#include <stdexcept>
+#include <iostream>
+ConfigsData::ConfigsData(const ConfigsData &src)
+{
+	throw std::runtime_error("ConfigsData: No copies are allowed");
+	*this = src;
+}
+
+ConfigsData& ConfigsData::operator=(const ConfigsData &src)
+{
+	throw std::runtime_error("ConfigsData: No copies are allowed");
+	return (*this);
+}
+*/

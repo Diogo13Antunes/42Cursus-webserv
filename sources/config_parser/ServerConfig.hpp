@@ -43,6 +43,10 @@ class ServerConfig
 		void		_checkMasterRoot(void);
 
 	public:
+
+		//ServerConfig(const ServerConfig &src);
+		//ServerConfig &operator=(const ServerConfig &src);
+
 		ServerConfig(void);
 		~ServerConfig(void);
 		ServerConfig(std::vector<std::string> configs);

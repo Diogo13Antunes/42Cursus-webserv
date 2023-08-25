@@ -6,37 +6,22 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/23 09:37:34 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/24 18:03:09 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//#include <cstdlib> // para remover apenas de teste
-
-
+#include "HandleRes.hpp"
 #include <iostream>
 #include <sys/socket.h>
 
-#include "HandleRes.hpp"
-
-HandleRes::HandleRes(void):
-	_event(NULL),
-	_state(CREATE_HEADER),
-	_serverConf(NULL)
-{
-	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
-	_stateMap.insert(std::make_pair(CGI_RES_PROCESS, new CgiResponseProcess()));
-	_stateMap.insert(std::make_pair(REDIRECT, new RedirectionHandler()));
-	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
-	_stateMap.insert(std::make_pair(DIRECTORY_LISTING, new DirectoryListing()));
-	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
-}
+#include "InitialState.hpp"
 
 HandleRes::HandleRes(ConfigsData *configsData):
 	_event(NULL),
 	_configsData(configsData),
-	_state(CREATE_HEADER), //maybe not nedded
 	_serverConf(NULL)
 {
+	_stateMap.insert(std::make_pair(INITIAL_STATE, new InitialState()));
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
 	_stateMap.insert(std::make_pair(CGI_RES_PROCESS, new CgiResponseProcess()));
 	_stateMap.insert(std::make_pair(REDIRECT, new RedirectionHandler()));
@@ -94,7 +79,11 @@ StateResType HandleRes::_handleState(StateResType state)
 	return (state);
 }
 
+
+
 // Se returnar NULL deve responder 500 Internal error
+// decidir onde deve ser verificado e adicionado o server config. 
+//devera existir um ponteiro no evento para o serverconfig?
 ServerConfig* HandleRes::_setServerConfig(std::vector<ServerConfig>& serverConfigs)
 {
 	std::vector<ServerConfig>::iterator	it;

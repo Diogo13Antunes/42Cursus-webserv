@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/23 15:24:11 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/24 18:06:48 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ Event::Event(int fd, int state):
 	_idx(0),
 	_bytesReadBody(0),
 	_totalBytesSend(0),
-	_resState1(CREATE_HEADER),
+	_resState1(INITIAL_STATE),
 	_errorCode(0),
 	_cgiFlag(false),
 	_timeoutSec(TIMEOUT_SEC),
