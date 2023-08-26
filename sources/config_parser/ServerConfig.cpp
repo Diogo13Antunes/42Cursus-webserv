@@ -144,7 +144,6 @@ bool ServerConfig::hasRedirection(std::string route)
 	return (false);
 }
 
-// redirections come in map but this is a error because the redir can be only one for route:NEED CHANGE
 void ServerConfig::getRedirectionInfo(std::string route, int &code, std::string &resource)
 {
 	Location								*location;
@@ -255,8 +254,6 @@ std::string ServerConfig::getMasterRootPath(std::string route)
 	return (_masterRoot);
 }
 
-
-
 std::string ServerConfig::getLocationIndex(std::string route)
 {
 	Location *location;
@@ -285,6 +282,13 @@ std::string ServerConfig::getLocationAutoIndex(std::string route)
 	if (!location)
 		return (std::string());
 	return (location->getAutoIndex());
+}
+
+bool ServerConfig::isConfiguredRoute(std::string path)
+{
+	if (_getSpecificLocations(path))
+		return (true);
+	return (false);
 }
 
 /* PRIVATE METHODS */

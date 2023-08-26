@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/23 15:22:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/25 16:43:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,9 @@ class Event
 		std::string	_cgiBodyRes;
 
 		std::string	_resourcePath;
+
+		int			_redirectCode;
+		std::string	_redirectResource;
 
 	public:
 		Event(void);
@@ -286,4 +289,12 @@ class Event
 
 		void setResourcePath(std::string resourcePath);
 		std::string getResourcePath(void);
+
+		int _redirectionCode;
+		std::string _redirectionResource;
+
+		void		setRredirectCode(int redirectCode);
+		int			getRredirectCode(void);
+		void		setRredirectResource(std::string redirectResource);
+		std::string	getRredirectResource(void);
 };

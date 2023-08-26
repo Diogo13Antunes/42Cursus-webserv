@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/25 11:06:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/25 16:46:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ Event::Event(int fd, int state):
 	_clientDisconnect(false),
 	_cgiExitStatus(NO_EXIT_STATUS),
 	_cgiSentChars(0),
-	_statusCode(0)
+	_statusCode(0),
+	_redirectCode(0)
 {
 	SocketUtils::getHostAndPort(_fd, _ip, _port);
 }
@@ -931,4 +932,25 @@ void Event::setResourcePath(std::string resourcePath)
 std::string Event::getResourcePath(void)
 {
 	return (_resourcePath);
+}
+
+
+void Event::setRredirectCode(int redirectCode)
+{
+	_redirectCode = redirectCode;
+}
+
+int Event::getRredirectCode(void)
+{
+	return (_redirectCode);
+}
+
+void Event::setRredirectResource(std::string redirectResource)
+{
+	_redirectResource = redirectResource;
+}
+
+std::string	Event::getRredirectResource(void)
+{
+	return (_redirectResource);
 }

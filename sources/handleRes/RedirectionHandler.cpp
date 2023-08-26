@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 09:14:45 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/19 17:41:32 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/26 09:10:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,8 @@ StateResType RedirectionHandler::handle(Event *event, ServerConfig config)
 	std::string header;
 	std::string	resource;
 	int			code;
-	
-	config.getRedirectionInfo(event->getReqLinePath(), code, resource);
-	header = _createHeader(config, code, resource);
+
+	header = _createHeader(config, event->getRredirectCode(), event->getRredirectResource());
 	event->setRes(header);
 	return (RESPONSE);
 }
@@ -45,7 +44,6 @@ std::string RedirectionHandler::_createHeader(ServerConfig config, int code, std
 	std::string			location;
 	std::string			statusCode;
 
-	
 	statusCode = _getStatusCode(code);
 	if (statusCode.empty())
 	{
