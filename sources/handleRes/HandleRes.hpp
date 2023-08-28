@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/24 18:04:13 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/28 15:24:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include "ServerConfig.hpp"
 #include "CgiResponseProcess.hpp"
 #include "RedirectionHandler.hpp"
-#include "DirectoryListing.hpp"
+
 
 class HandleRes
 {

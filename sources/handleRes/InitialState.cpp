@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/26 09:12:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/28 15:13:19 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,25 +16,43 @@
 
 #define MOVED_PERMANENTLY	301
 
+
+
 InitialState::InitialState(void) {}
 
 InitialState::~InitialState(void) {}
 
 StateResType InitialState::handle(Event *event, ServerConfig config)
 {
+	std::string resourcePath;
+
 	std::cout << "InitialState" << std::endl;
 
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);
 	
+	// verificar se é cgi
+
 	// verificar se o metodo é permitido.
 
 	if (_hasRedirection(event, config))
 		return (REDIRECT);
 	
-
+	resourcePath = _getResourceFromURLPath(config, event->getReqLinePath());
+	event->setResourcePath(resourcePath);
+	
+	if (_isFolder(resourcePath))
+		return (DIRECTORY_LISTING);
 	
 
+
+
+
+	// verificar buscar o resource real include root or alias
+
+	// criar a resposta com o get 
+
+	// fazer directory listing
 
 	exit(0);
 	return (RESPONSE);
@@ -80,3 +98,86 @@ bool InitialState::_isFolder(std::string path)
 	}
 	return (false);
 }
+
+std::string InitialState::_getResourceFromURLPath(ServerConfig& config, std::string path)
+{
+	std::string fullPath;
+	std::string	rootPath;
+	std::string	aliasPath;
+	std::string	index;
+
+	aliasPath = config.getLocationAlias(path);
+	if (aliasPath.empty())
+		rootPath = config.getLocationRootPath(path);
+	if (rootPath.empty())
+		rootPath = config.getMasterRoot();
+	if (!aliasPath.empty())
+		fullPath = aliasPath;
+	else
+		fullPath = rootPath + path;
+
+	index = config.getLocationIndex(path);
+	if (!index.empty())
+		fullPath += index;
+	else
+	{
+		if (access((fullPath + "index.html").c_str(), F_OK) == 0)
+			fullPath + "index.html";
+	}
+	return (fullPath);
+}
+
+
+
+/*
+std::string InitialState::_getResourceFromURLPath(ServerConfig& config, std::string path, ResourceType& type)
+{
+	std::string rootPath;
+	std::string index;
+	std::string fullPath;
+	std::string fullPathIndex;
+	std::string alias;
+
+	std::string newPath;
+	size_t lastBarIdx;
+
+
+	std::cout << "PATH: " << path << std::endl;
+
+	rootPath = config.getLocationRootPath(path);
+	if(rootPath.empty())
+	{
+		lastBarIdx = path.find_last_of("/");
+		newPath = path.substr(0, lastBarIdx);
+		alias = config.getLocationAlias(newPath);
+		if (!alias.empty())
+			alias +=  path.substr(lastBarIdx);
+	}
+	else
+		alias = config.getLocationAlias(path);
+
+	if (rootPath.empty() && alias.empty())
+		rootPath = config.getMasterRoot();
+		
+	if (!alias.empty())
+		fullPath = alias;
+	else
+		fullPath = rootPath + path;
+	index = config.getLocationIndex(path);
+	if (!index.empty())
+		fullPath += "/" + index;
+	if (!_isFolder(fullPath))
+	{
+		type = FILE_TYPE;
+		return (fullPath);
+	}
+	type = FOLDER_TYPE;
+	fullPathIndex = fullPath + "/index.html";
+	if (access(fullPathIndex.c_str(), F_OK) == 0)
+	{
+		type = FILE_TYPE;
+		return (fullPathIndex);
+	}
+	return (fullPath);
+}
+*/

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   DirectoryListing.hpp                               :+:      :+:    :+:   */
+/*   DirectoryListingState.hpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:45 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/24 14:37:59 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/28 15:25:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include "IStateRes.hpp"
 
-class DirectoryListing: public IStateRes
+class DirectoryListingState: public IStateRes
 {
 	private:
 		std::map<std::string, std::string>	_getDirContent(std::string directory);
@@ -28,7 +28,7 @@ class DirectoryListing: public IStateRes
 		void		_getPreviousRoute(std::string& route);
 
 	public:
-		DirectoryListing(void);
-		~DirectoryListing(void);
+		DirectoryListingState(void);
+		~DirectoryListingState(void);
 		StateResType handle(Event *event, ServerConfig config);
 };

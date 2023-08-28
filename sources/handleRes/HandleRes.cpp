@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/25 11:42:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/28 15:26:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #include "InitialState.hpp"
 #include "ErrorHandlingState.hpp"
+#include "DirectoryListingState.hpp"
 
 HandleRes::HandleRes(ConfigsData *configsData):
 	_event(NULL),
@@ -24,11 +25,15 @@ HandleRes::HandleRes(ConfigsData *configsData):
 {
 	_stateMap.insert(std::make_pair(INITIAL_STATE, new InitialState()));
 	_stateMap.insert(std::make_pair(ERROR_HANDLING, new ErrorHandlingState()));
+	_stateMap.insert(std::make_pair(DIRECTORY_LISTING, new DirectoryListingState()));
+
+
+
 	_stateMap.insert(std::make_pair(CREATE_HEADER, new CreateHeaderState()));
 	_stateMap.insert(std::make_pair(CGI_RES_PROCESS, new CgiResponseProcess()));
 	_stateMap.insert(std::make_pair(REDIRECT, new RedirectionHandler()));
 	_stateMap.insert(std::make_pair(GET_BODY, new GetBodyState()));
-	_stateMap.insert(std::make_pair(DIRECTORY_LISTING, new DirectoryListing()));
+	//_stateMap.insert(std::make_pair(DIRECTORY_LISTING, new DirectoryListing()));
 	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
 

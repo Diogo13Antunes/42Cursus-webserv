@@ -1,46 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   DirectoryListing.cpp                               :+:      :+:    :+:   */
+/*   DirectoryListingState.cpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/25 10:13:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/28 15:25:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "DirectoryListing.hpp"
+#include "DirectoryListingState.hpp"
 #include <iostream>
 #include <dirent.h>
 #include <sys/stat.h>
 #include "TimeDate.hpp"
 #include "HttpHeaderBuilder.hpp"
-#include "ErrorPageBuilder.hpp"
 
+#define FORBIDEN_CODE	403
 #define NAME_MAX_SIZE	48
 #define AUTOINDEX_ON	"on"
 #define AUTOINDEX_OFF	"off"
 
-DirectoryListing::DirectoryListing(void) {}
+DirectoryListingState::DirectoryListingState(void) {}
 
-DirectoryListing::~DirectoryListing(void) {}
+DirectoryListingState::~DirectoryListingState(void) {}
 
-StateResType DirectoryListing::handle(Event *event, ServerConfig config)
+StateResType DirectoryListingState::handle(Event *event, ServerConfig config)
 {
 	std::map<std::string, std::string>	dirCont;
 	std::string							dir;
 	std::string							page;
 
 	dir = event->getResourcePath();
-
-	// verificar se tem acesso
 	if (!_checkDirectoryAccess(event, config))
 	{
-		event->setRes(_getErrorResponse());
-		return (RESPONSE);
+		event->setStatusCode(FORBIDEN_CODE);
+		return (ERROR_HANDLING);
 	}
-
 	dirCont = _getDirContent(dir);
 	page = _createPageHtml(dir, dirCont);
 	event->setRes(_createHeader(page.size()));
@@ -48,7 +45,7 @@ StateResType DirectoryListing::handle(Event *event, ServerConfig config)
 	return (RESPONSE);
 }
 
-std::map<std::string, std::string> DirectoryListing::_getDirContent(std::string directory)
+std::map<std::string, std::string> DirectoryListingState::_getDirContent(std::string directory)
 {
 	std::map<std::string, std::string>	dirCont;
 	struct dirent						*entry;
@@ -72,7 +69,7 @@ std::map<std::string, std::string> DirectoryListing::_getDirContent(std::string 
 	return (dirCont);
 }
 
-std::string DirectoryListing::_getLastModificationDate(std::string path)
+std::string DirectoryListingState::_getLastModificationDate(std::string path)
 {
 	struct stat	pathInfo;
 	time_t		timeDate;
@@ -87,7 +84,7 @@ std::string DirectoryListing::_getLastModificationDate(std::string path)
 	return (lastMod);
 }
 
-std::string DirectoryListing::_createPageHtml(std::string path, std::map<std::string, std::string> dirCont)
+std::string DirectoryListingState::_createPageHtml(std::string path, std::map<std::string, std::string> dirCont)
 {
 	std::map<std::string, std::string>::iterator	it;
 	std::string										page;
@@ -106,7 +103,7 @@ std::string DirectoryListing::_createPageHtml(std::string path, std::map<std::st
 	return (page);
 }
 
-std::string DirectoryListing::_createHeader(int contLength)
+std::string DirectoryListingState::_createHeader(int contLength)
 {
 	HttpHeaderBuilder	httpHeader;
 
@@ -116,7 +113,7 @@ std::string DirectoryListing::_createHeader(int contLength)
 	return (httpHeader.getHeader());
 }
 
-std::string DirectoryListing::_resizeName(std::string name)
+std::string DirectoryListingState::_resizeName(std::string name)
 {
 	if (name.size() >= NAME_MAX_SIZE)
 	{
@@ -126,7 +123,7 @@ std::string DirectoryListing::_resizeName(std::string name)
 	return (name);
 }
 
-bool DirectoryListing::_checkDirectoryAccess(Event *event, ServerConfig config)
+bool DirectoryListingState::_checkDirectoryAccess(Event *event, ServerConfig config)
 {
 	std::string	route;
 	std::string	autoIndex;
@@ -145,23 +142,7 @@ bool DirectoryListing::_checkDirectoryAccess(Event *event, ServerConfig config)
 	return (false);
 }
 
-std::string DirectoryListing::_getErrorResponse(void)
-{
-	ErrorPageBuilder	errorPage;
-	HttpHeaderBuilder	header;
-	std::string			errorPageHtml;
-	std::string			res;
-
-	errorPage.setErrorCode(403);
-	errorPageHtml = errorPage.getErrorPageHtml();
-	header.setStatus(errorPage.getCodeAndPhrase());
-	header.setContentType("text/html");
-	header.setContentLength(errorPageHtml.size());
-	res = header.getHeader() + errorPageHtml;
-	return (res);
-}
-
-void DirectoryListing::_getPreviousRoute(std::string& route)
+void DirectoryListingState::_getPreviousRoute(std::string& route)
 {
 	size_t idx;
 
