@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RedirectionHandler.hpp                             :+:      :+:    :+:   */
+/*   RedirectionHandlingState.hpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 09:14:49 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/19 11:44:00 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 18:33:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "IStateRes.hpp"
 #include <map>
 
-class RedirectionHandler: public IStateRes
+class RedirectionHandlingState: public IStateRes
 {
 	private:
 		std::map<int, std::string> _redirCodes;
@@ -25,8 +25,8 @@ class RedirectionHandler: public IStateRes
 		std::string _getLocation(std::string resource, std::string host, std::string port);
 
 	public:
-		RedirectionHandler(void);
-		~RedirectionHandler(void);
+		RedirectionHandlingState(void);
+		~RedirectionHandlingState(void);
 
 		StateResType handle(Event *event, ServerConfig config);
 };

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 12:09:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 18:34:45 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "ErrorHandlingState.hpp"
 #include "DirectoryListingState.hpp"
 #include "StaticFileHandlingState.hpp"
+#include "RedirectionHandlingState.hpp"
 
 HandleRes::HandleRes(ConfigsData *configsData):
 	_event(NULL),
@@ -26,9 +27,9 @@ HandleRes::HandleRes(ConfigsData *configsData):
 {
 	_stateMap.insert(std::make_pair(INITIAL_STATE, new InitialState()));
 	_stateMap.insert(std::make_pair(ERROR_HANDLING, new ErrorHandlingState()));
-	_stateMap.insert(std::make_pair(REDIRECT, new RedirectionHandler())); // mudar nome
+	_stateMap.insert(std::make_pair(REDIRECT, new RedirectionHandlingState()));
 	_stateMap.insert(std::make_pair(DIRECTORY_LISTING, new DirectoryListingState()));
-	_stateMap.insert(std::make_pair(STATIC_FILE_HANDLING, new StaticFileHandlingState())); // mudar nome
+	_stateMap.insert(std::make_pair(STATIC_FILE_HANDLING, new StaticFileHandlingState()));
 
 
 

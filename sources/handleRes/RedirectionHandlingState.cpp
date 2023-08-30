@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   RedirectionHandler.cpp                             :+:      :+:    :+:   */
+/*   RedirectionHandlingState.cpp                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 09:14:45 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/26 09:10:07 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 18:34:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "RedirectionHandler.hpp"
+#include "RedirectionHandlingState.hpp"
 #include "HttpHeaderBuilder.hpp"
 #include "configs.hpp"
 #include "StringUtils.hpp"
 #include <iostream>
 
-RedirectionHandler::RedirectionHandler(void)
+RedirectionHandlingState::RedirectionHandlingState(void)
 {
 	_redirCodes.insert(std::make_pair(301, "Moved Permanently"));
 	_redirCodes.insert(std::make_pair(302, "Moved Temporarily"));
@@ -25,9 +25,9 @@ RedirectionHandler::RedirectionHandler(void)
 	_redirCodes.insert(std::make_pair(308, "Permanent Redirect"));
 }
 
-RedirectionHandler::~RedirectionHandler(void) {}
+RedirectionHandlingState::~RedirectionHandlingState(void) {}
 
-StateResType RedirectionHandler::handle(Event *event, ServerConfig config)
+StateResType RedirectionHandlingState::handle(Event *event, ServerConfig config)
 {
 	std::string header;
 	std::string	resource;
@@ -38,7 +38,7 @@ StateResType RedirectionHandler::handle(Event *event, ServerConfig config)
 	return (RESPONSE);
 }
 
-std::string RedirectionHandler::_createHeader(ServerConfig config, int code, std::string resource)
+std::string RedirectionHandlingState::_createHeader(ServerConfig config, int code, std::string resource)
 {
 	HttpHeaderBuilder	httpHeader;
 	std::string			location;
@@ -56,7 +56,7 @@ std::string RedirectionHandler::_createHeader(ServerConfig config, int code, std
 	return (httpHeader.getHeader());
 }
 
-std::string	RedirectionHandler::_getStatusCode(int code)
+std::string	RedirectionHandlingState::_getStatusCode(int code)
 {
 	std::map<int, std::string>::iterator	it;
 	std::string								status;
@@ -68,7 +68,7 @@ std::string	RedirectionHandler::_getStatusCode(int code)
 	return (status);
 }
 
-std::string RedirectionHandler::_getLocation(std::string resource, std::string host, std::string port)
+std::string RedirectionHandlingState::_getLocation(std::string resource, std::string host, std::string port)
 {
 	std::string	location;
 	std::string	protocol;
