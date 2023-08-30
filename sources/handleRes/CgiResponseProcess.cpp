@@ -44,7 +44,7 @@ StateResType	CgiResponseProcess::handle(Event *event, ServerConfig configsData)
 	event->setRes(res);
 	event->setCgiBodyRes(cgiBody);
 	event->setResSize(res.size() + cgiBody.size());
-	return (GET_BODY);
+	return (RESPONSE);
 }
 
 /* PRIVATE METHODS */

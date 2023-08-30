@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 17:41:22 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 18:45:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,11 @@ StateResType InitialState::handle(Event *event, ServerConfig config)
 
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);
-
 	if (!event->getCgiScriptResult().empty())
 		return (CGI_RES_PROCESS);
-	
-	// verificar se é cgi
-
 	// verificar se o metodo é permitido.
-
-
 	if (_hasRedirection(event, config))
-		return (REDIRECT);
+		return (REDIRECTION_HANDLING);
 	reqPath =  event->getReqLinePath();
 	resourcePath = _getResourceFromURLPath(config, reqPath);
 	event->setResourcePath(resourcePath);

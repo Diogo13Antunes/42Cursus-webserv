@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 18:35:06 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 18:50:26 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,8 @@
 #include "Event.hpp"
 #include "StateResType.hpp"
 #include "IStateRes.hpp"
-#include "CreateHeaderState.hpp"
-#include "GetBodyState.hpp"
-#include "ResponseState.hpp"
 #include "ServerConfig.hpp"
-#include "CgiResponseProcess.hpp"
+
 
 
 class HandleRes
