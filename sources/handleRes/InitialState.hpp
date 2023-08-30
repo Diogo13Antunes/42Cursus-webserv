@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:48 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/28 11:47:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 15:19:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ class InitialState: public IStateRes
 		bool		_hasRedirection(Event *event, ServerConfig config);
 		bool		_isFolder(std::string path);
 		std::string	_getResourceFromURLPath(ServerConfig& config, std::string path);
+		std::string _getPreviousRouteResourcePath(ServerConfig& config, std::string path);
+		std::string	_getPreviousRoute(std::string path);
 
 	public:
 		InitialState(void);
