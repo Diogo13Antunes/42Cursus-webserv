@@ -167,7 +167,7 @@ std::string ServerConfig::getCgiScriptName(std::string route)
 	return (location->getCgi());
 }
 
-std::string	ServerConfig::existMimeType(std::string src)
+std::string	ServerConfig::getMimeTypeByFileName(std::string src)
 {
 	std::map<std::string, std::string>::iterator	it;
 	std::string	res;
@@ -189,6 +189,17 @@ std::string	ServerConfig::existMimeType(std::string src)
 	}
 	return (res);
 }
+
+std::string	ServerConfig::getMimeTypeByFileType(std::string fileType)
+{
+	std::map<std::string, std::string>::iterator	it;
+
+	it = _mimeTypes.find(fileType);
+	if (it != _mimeTypes.end())
+		return (it->second);
+	return (std::string());
+}
+
 
 std::string ServerConfig::getHost(void)
 {

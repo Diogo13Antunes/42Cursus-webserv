@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/25 16:46:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/28 18:24:47 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,10 @@ Event::Event(int fd, int state):
 	_cgiExitStatus(NO_EXIT_STATUS),
 	_cgiSentChars(0),
 	_statusCode(0),
-	_redirectCode(0)
+	_redirectCode(0),
+	_fileSize(0),
+	_fileNumBytesRead(0)
+	
 {
 	SocketUtils::getHostAndPort(_fd, _ip, _port);
 }
@@ -953,4 +956,24 @@ void Event::setRredirectResource(std::string redirectResource)
 std::string	Event::getRredirectResource(void)
 {
 	return (_redirectResource);
+}
+
+void Event::setFileSize(size_t fileSize)
+{
+	_fileSize = fileSize;
+}
+
+size_t Event::getFileSize(void)
+{
+	return (_fileSize);
+}
+
+void Event::setFileNumBytesRead(size_t fileNumBytesRead)
+{
+	_fileNumBytesRead = fileNumBytesRead;
+}
+
+size_t Event::getFileNumBytesRead(void)
+{
+	return (_fileNumBytesRead);
 }

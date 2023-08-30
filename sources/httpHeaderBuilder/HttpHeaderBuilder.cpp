@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 15:34:03 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/25 15:14:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 08:03:47 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ std::string	HttpHeaderBuilder::getHeader(void)
 		header += "Date: " + _date + "\r\n";
 	if (!_contentType.empty())
 		header += "Content-Type: " + _contentType + "\r\n";
-	if (_contentLength)
+	if (_contentLength || !_contentType.empty())
 		header += "Content-Length: " + StringUtils::toString(_contentLength) + "\r\n";
 	if (!_location.empty())
 		header += "Location: " + _location + "\r\n";

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/28 15:13:19 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/29 15:07:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,29 @@ StateResType InitialState::handle(Event *event, ServerConfig config)
 
 	// verificar se o metodo é permitido.
 
+
 	if (_hasRedirection(event, config))
 		return (REDIRECT);
-	
 	resourcePath = _getResourceFromURLPath(config, event->getReqLinePath());
 	event->setResourcePath(resourcePath);
-	
 	if (_isFolder(resourcePath))
 		return (DIRECTORY_LISTING);
+	if (access(resourcePath.c_str(), F_OK))
+	{
+		event->setStatusCode(NOT_FOUND_CODE);
+		return (ERROR_HANDLING);
+	}
+	if (access(resourcePath.c_str(), R_OK))
+	{
+		event->setStatusCode(FORBIDEN_CODE);
+		return (ERROR_HANDLING);
+	}
+
+	std::cout << "tem de chegar aqui" << std::endl;
+
+	return (STATIC_FILE_READ);
+	
+
 	
 
 
@@ -54,7 +69,7 @@ StateResType InitialState::handle(Event *event, ServerConfig config)
 
 	// fazer directory listing
 
-	exit(0);
+
 	return (RESPONSE);
 	//return (CREATE_HEADER);
 }
@@ -115,14 +130,13 @@ std::string InitialState::_getResourceFromURLPath(ServerConfig& config, std::str
 		fullPath = aliasPath;
 	else
 		fullPath = rootPath + path;
-
 	index = config.getLocationIndex(path);
 	if (!index.empty())
 		fullPath += index;
 	else
 	{
 		if (access((fullPath + "index.html").c_str(), F_OK) == 0)
-			fullPath + "index.html";
+			fullPath += "index.html";
 	}
 	return (fullPath);
 }

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/28 15:25:24 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/28 16:04:48 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 #include <sys/stat.h>
 #include "TimeDate.hpp"
 #include "HttpHeaderBuilder.hpp"
+#include "configs.hpp"
 
-#define FORBIDEN_CODE	403
 #define NAME_MAX_SIZE	48
 #define AUTOINDEX_ON	"on"
 #define AUTOINDEX_OFF	"off"

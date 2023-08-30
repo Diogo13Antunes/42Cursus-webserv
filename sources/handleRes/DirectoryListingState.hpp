@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:45 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/28 15:25:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/28 16:47:41 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,6 @@ class DirectoryListingState: public IStateRes
 	public:
 		DirectoryListingState(void);
 		~DirectoryListingState(void);
+
 		StateResType handle(Event *event, ServerConfig config);
 };

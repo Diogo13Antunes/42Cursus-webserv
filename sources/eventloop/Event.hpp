@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/25 16:43:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/28 18:24:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,9 @@ class Event
 
 		int			_redirectCode;
 		std::string	_redirectResource;
+
+		size_t	_fileSize;
+		size_t	_fileNumBytesRead;
 
 	public:
 		Event(void);
@@ -297,4 +300,9 @@ class Event
 		int			getRredirectCode(void);
 		void		setRredirectResource(std::string redirectResource);
 		std::string	getRredirectResource(void);
+
+		void setFileSize(size_t fileSize);
+		size_t getFileSize(void);
+		void setFileNumBytesRead(size_t fileNumBytesRead);
+		size_t getFileNumBytesRead(void);
 };

@@ -1,8 +1,8 @@
 #pragma once
 
 #define SERVER_SOFTWARE			"webserv/1.0"
-#define HTTP_VERSION            "HTTP/1.1"
-#define PROTOCOL                "http"
+#define HTTP_VERSION			"HTTP/1.1"
+#define PROTOCOL				"http"
 
 #define SOCKET_READ_BUFF_SIZE	100000
 #define DEFAULT_PORT_STR		"80"
@@ -16,6 +16,10 @@
 
 #define EPOLL_MAX_NEVENTS	100000
 #define EPOLL_TIMEOUT		5
+
+// Error codes
+#define FORBIDEN_CODE		403
+#define NOT_FOUND_CODE		404
 
 // Colors
 #define RESET		"\033[0m"
