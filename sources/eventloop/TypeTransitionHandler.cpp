@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   TypeTransitionHandler.cpp                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/21 16:37:27 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/08/30 17:30:15 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void TypeTransitionHandler::handleEvent(Event *event)
 		{
 			std::cout << "Script name: " << cgiName << std::endl;
 			event->cgiExecute(serverConf, cgiName);
-			event->setActualState(WRITE_CGI);
+			event->setActualState(WRITE_CGI);			
 		}
 		else
 			event->setActualState(WRITE_EVENT);

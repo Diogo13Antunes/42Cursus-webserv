@@ -1,14 +1,8 @@
 #include "CgiResponseProcess.hpp"
 
-CgiResponseProcess::CgiResponseProcess(void)
-{
-	//Default CgiResponseProcess Constructor
-}
+CgiResponseProcess::CgiResponseProcess(void) {}
 
-CgiResponseProcess::~CgiResponseProcess(void)
-{
-	//Default CgiResponseProcess Destructor
-}
+CgiResponseProcess::~CgiResponseProcess(void) {}
 
 StateResType	CgiResponseProcess::handle(Event *event, ServerConfig configsData)
 {
@@ -20,6 +14,9 @@ StateResType	CgiResponseProcess::handle(Event *event, ServerConfig configsData)
 	std::string										cgiBody;
 	std::string										res;
 	std::string										key;
+
+
+	std::cout << "CgiResponseProcess" << std::endl;
 
 	scriptRes = event->getCgiScriptResult();
 	headerMap = _getHeaderMap(scriptRes);

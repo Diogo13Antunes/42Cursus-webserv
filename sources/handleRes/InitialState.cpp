@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 16:01:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 17:41:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@ StateResType InitialState::handle(Event *event, ServerConfig config)
 
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);
+
+	if (!event->getCgiScriptResult().empty())
+		return (CGI_RES_PROCESS);
 	
 	// verificar se é cgi
 
@@ -57,21 +60,7 @@ StateResType InitialState::handle(Event *event, ServerConfig config)
 		event->setStatusCode(FORBIDEN_CODE);
 		return (ERROR_HANDLING);
 	}
-
 	return (STATIC_FILE_HANDLING);
-
-
-
-
-	// verificar buscar o resource real include root or alias
-
-	// criar a resposta com o get 
-
-	// fazer directory listing
-
-
-	return (RESPONSE);
-	//return (CREATE_HEADER);
 }
 
 bool InitialState::_hasRedirection(Event *event, ServerConfig config)
@@ -151,13 +140,9 @@ std::string InitialState::_getPreviousRouteResourcePath(ServerConfig& config, st
 	idx = path.find_last_of("/");
 	if (idx != path.npos)
 		fileName = path.substr(idx + 1);
-
 	prevPath = _getPreviousRoute(path);
-
 	while (!prevPath.empty())
 	{
-		//std::cout << "Rota anterior: " << prevPath << std::endl;
-
 		aliasPath = config.getLocationAlias(prevPath);
 		if (!aliasPath.empty())
 		{
@@ -165,57 +150,9 @@ std::string InitialState::_getPreviousRouteResourcePath(ServerConfig& config, st
 			break;
 		}
 		prevPath = _getPreviousRoute(prevPath);
-		
 	}
 	return (aliasPath);
 }
-
-
-/*
-std::string InitialState::_getResourceFromURLPath(ServerConfig& config, std::string path)
-{
-	std::string fullPath;
-	std::string	rootPath;
-	std::string	aliasPath;
-	std::string	index;
-	std::string prevRoute;
-
-
-	std::cout << "reqPath:  " << path << std::endl;
-
-	prevRoute = path;
-	while (!prevRoute.empty())
-	{
-		aliasPath = config.getLocationAlias(prevRoute);
-		if (aliasPath.empty())
-			rootPath = config.getLocationRootPath(prevRoute);
-		if (!aliasPath.empty() || !rootPath.empty())
-			break;
-		prevRoute = _getPreviousRoute(prevRoute);
-	}
-	if (aliasPath.empty() || rootPath.empty())
-		rootPath = config.getMasterRoot();
-	if (!aliasPath.empty())
-		fullPath = aliasPath;
-	else
-		fullPath = rootPath + path;
-	if (path.at(path.size() - 1) == '/')
-		index = config.getLocationIndex(path);
-	if (!index.empty())
-	{
-		std::cout << "adiciona o index: " << index << std::endl;
-		fullPath += index;
-	}
-	else
-	{
-		if (access((fullPath + "index.html").c_str(), F_OK) == 0)
-			fullPath += "index.html";
-	}
-	std::cout << "fullPath: " << fullPath << std::endl;
-	return (fullPath);
-}
-*/
-
 
 std::string InitialState::_getPreviousRoute(std::string path)
 {
@@ -232,81 +169,3 @@ std::string InitialState::_getPreviousRoute(std::string path)
 		return (std::string());
 	return (path);
 }
-
-
-
-/*
-
-bool DirectoryListingState::_checkDirectoryAccess(Event *event, ServerConfig config)
-{
-	std::string	route;
-	std::string	autoIndex;
-
-	route = event->getReqLinePath();
-	autoIndex = config.getLocationAutoIndex(route);
-	while (autoIndex.empty())
-	{
-		_getPreviousRoute(route);
-		if (route.size() == 1 && route.at(0) == '/')
-			break;
-		autoIndex = config.getLocationAutoIndex(route);
-	}
-	if (!autoIndex.compare(AUTOINDEX_ON))
-		return (true);
-	return (false);
-}
-
-*/
-
-/*
-std::string InitialState::_getResourceFromURLPath(ServerConfig& config, std::string path, ResourceType& type)
-{
-	std::string rootPath;
-	std::string index;
-	std::string fullPath;
-	std::string fullPathIndex;
-	std::string alias;
-
-	std::string newPath;
-	size_t lastBarIdx;
-
-
-	std::cout << "PATH: " << path << std::endl;
-
-	rootPath = config.getLocationRootPath(path);
-	if(rootPath.empty())
-	{
-		lastBarIdx = path.find_last_of("/");
-		newPath = path.substr(0, lastBarIdx);
-		alias = config.getLocationAlias(newPath);
-		if (!alias.empty())
-			alias +=  path.substr(lastBarIdx);
-	}
-	else
-		alias = config.getLocationAlias(path);
-
-	if (rootPath.empty() && alias.empty())
-		rootPath = config.getMasterRoot();
-		
-	if (!alias.empty())
-		fullPath = alias;
-	else
-		fullPath = rootPath + path;
-	index = config.getLocationIndex(path);
-	if (!index.empty())
-		fullPath += "/" + index;
-	if (!_isFolder(fullPath))
-	{
-		type = FILE_TYPE;
-		return (fullPath);
-	}
-	type = FOLDER_TYPE;
-	fullPathIndex = fullPath + "/index.html";
-	if (access(fullPathIndex.c_str(), F_OK) == 0)
-	{
-		type = FILE_TYPE;
-		return (fullPathIndex);
-	}
-	return (fullPath);
-}
-*/
