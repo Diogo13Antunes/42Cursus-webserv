@@ -16,6 +16,7 @@ CGIExecuter::CGIExecuter(void): _statusCode(0)
 
 CGIExecuter::CGIExecuter(ServerConfig *config, RequestParser &request, std::string scriptName): _statusCode(0)
 {
+
 	_serverConfigs = config;
 	_request = request;
 	if (!_initPipes())
@@ -165,17 +166,24 @@ void CGIExecuter::_execute(char **env, std::string path)
 char	**CGIExecuter::_getEnvVariables(void)
 {
 	std::vector<std::string>	temp;
+	std::vector<std::string>	contentType;
+
 
 	temp.push_back("SERVER_PROTOCOL=HTTP/1.1");
 	temp.push_back("REQUEST_METHOD=" + _request.getReqLineMethod());
 	temp.push_back("CONTENT_LENGTH=" + StringUtils::toString(_request.getRequestBody().size()));
-	temp.push_back("CONTENT_TYPE=" + _request.getHeaderField("content-type").at(0));
+	contentType = _request.getHeaderField("content-type");
+	if (!contentType.empty())
+		temp.push_back("CONTENT_TYPE=" + _request.getHeaderField("content-type").at(0));
+	else
+		temp.push_back("CONTENT_TYPE=");
 	temp.push_back("QUERY_STRING=" + _request.getQueryString());
 	temp.push_back("DOCUMENT_ROOT=" + _serverConfigs->getUploadStore(_request.getReqLinePath()));
 	temp.push_back("REMOTE_ADDR=" + _serverConfigs->getIp());
 	temp.push_back("SERVER_NAME=webserve");
 	temp.push_back("SERVER_PORT=" + _serverConfigs->getPort());
 	temp.push_back("SERVER_SOFTWARE=" + std::string(SERVER_SOFTWARE));
+
 
 	char **env = new char*[temp.size() + 1];
 
