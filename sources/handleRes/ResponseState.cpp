@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 12:36:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 19:51:47 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ ResponseState::ResponseState(void) {}
 
 ResponseState::~ResponseState(void) {}
 
-StateResType ResponseState::handle(Event *event, ServerConfig config)
+StateResType ResponseState::handle(Event *event, ServerConfig& config)
 {
 	ssize_t		numBytesSend;
 	size_t		resSize;

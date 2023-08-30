@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:45 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/28 16:47:41 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 19:55:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class DirectoryListingState: public IStateRes
 		std::string	_createPageHtml(std::string path, std::map<std::string, std::string> dirCont);
 		std::string _createHeader(int contLength);
 		std::string _resizeName(std::string name);
-		bool		_checkDirectoryAccess(Event *event, ServerConfig config);
+		bool		_checkDirectoryAccess(Event *event, ServerConfig& config);
 		std::string _getErrorResponse(void);
 		void		_getPreviousRoute(std::string& route);
 
@@ -31,5 +31,5 @@ class DirectoryListingState: public IStateRes
 		DirectoryListingState(void);
 		~DirectoryListingState(void);
 
-		StateResType handle(Event *event, ServerConfig config);
+		StateResType handle(Event *event, ServerConfig& config);
 };

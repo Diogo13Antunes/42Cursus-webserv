@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:53:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 12:34:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 19:55:35 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ StaticFileHandlingState::StaticFileHandlingState(void) {}
 
 StaticFileHandlingState::~StaticFileHandlingState(void) {}
 
-StateResType StaticFileHandlingState::handle(Event *event, ServerConfig config)
+StateResType StaticFileHandlingState::handle(Event *event, ServerConfig& config)
 {
 	std::string	filePath;
 	std::string	data;
@@ -115,7 +115,7 @@ std::string StaticFileHandlingState::_getInternalMimeTypes(std::string fileType)
 	return (mimeType);
 }
 
-std::string StaticFileHandlingState::_getMimeTypes(ServerConfig config, std::string filePath)
+std::string StaticFileHandlingState::_getMimeTypes(ServerConfig& config, std::string filePath)
 {
 	std::string	fileType;
 	std::string	mimeType;

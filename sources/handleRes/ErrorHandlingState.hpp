@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 11:07:25 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/25 14:46:44 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 19:51:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,5 @@ class ErrorHandlingState: public IStateRes
 		ErrorHandlingState(void);
 		~ErrorHandlingState(void);
 
-		StateResType handle(Event *event, ServerConfig config);
+		StateResType handle(Event *event, ServerConfig& config);
 };

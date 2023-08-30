@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 09:14:45 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 18:34:00 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 19:55:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ RedirectionHandlingState::RedirectionHandlingState(void)
 
 RedirectionHandlingState::~RedirectionHandlingState(void) {}
 
-StateResType RedirectionHandlingState::handle(Event *event, ServerConfig config)
+StateResType RedirectionHandlingState::handle(Event *event, ServerConfig& config)
 {
 	std::string header;
 	std::string	resource;
@@ -38,7 +38,7 @@ StateResType RedirectionHandlingState::handle(Event *event, ServerConfig config)
 	return (RESPONSE);
 }
 
-std::string RedirectionHandlingState::_createHeader(ServerConfig config, int code, std::string resource)
+std::string RedirectionHandlingState::_createHeader(ServerConfig& config, int code, std::string resource)
 {
 	HttpHeaderBuilder	httpHeader;
 	std::string			location;

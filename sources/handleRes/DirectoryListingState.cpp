@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 12:25:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 19:55:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ DirectoryListingState::DirectoryListingState(void) {}
 
 DirectoryListingState::~DirectoryListingState(void) {}
 
-StateResType DirectoryListingState::handle(Event *event, ServerConfig config)
+StateResType DirectoryListingState::handle(Event *event, ServerConfig& config)
 {
 	std::map<std::string, std::string>	dirCont;
 	std::string							dir;
@@ -127,7 +127,7 @@ std::string DirectoryListingState::_resizeName(std::string name)
 	return (name);
 }
 
-bool DirectoryListingState::_checkDirectoryAccess(Event *event, ServerConfig config)
+bool DirectoryListingState::_checkDirectoryAccess(Event *event, ServerConfig& config)
 {
 	std::string	route;
 	std::string	autoIndex;

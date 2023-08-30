@@ -4,7 +4,7 @@ CgiResponseProcess::CgiResponseProcess(void) {}
 
 CgiResponseProcess::~CgiResponseProcess(void) {}
 
-StateResType	CgiResponseProcess::handle(Event *event, ServerConfig configsData)
+StateResType	CgiResponseProcess::handle(Event *event, ServerConfig& configsData)
 {
 	(void)configsData;
 	HttpHeaderBuilder								header;

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 18:45:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 19:55:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ InitialState::InitialState(void) {}
 
 InitialState::~InitialState(void) {}
 
-StateResType InitialState::handle(Event *event, ServerConfig config)
+StateResType InitialState::handle(Event *event, ServerConfig& config)
 {
 	std::string resourcePath;
 	std::string reqPath;
@@ -57,7 +57,7 @@ StateResType InitialState::handle(Event *event, ServerConfig config)
 	return (STATIC_FILE_HANDLING);
 }
 
-bool InitialState::_hasRedirection(Event *event, ServerConfig config)
+bool InitialState::_hasRedirection(Event *event, ServerConfig& config)
 {
 	std::string	path;
 	std::string	resource;

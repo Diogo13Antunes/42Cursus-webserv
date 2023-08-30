@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:17:19 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 17:55:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 19:50:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 class IStateRes
 {
 	public:
-		virtual ~IStateRes(void) {};
-		//virtual StateResType handle(Event *event, ConfigsData configsData) = 0;
-		virtual StateResType handle(Event *event, ServerConfig config) = 0;
+		virtual ~IStateRes(void) {};;
+		virtual StateResType handle(Event *event, ServerConfig& config) = 0;
 };

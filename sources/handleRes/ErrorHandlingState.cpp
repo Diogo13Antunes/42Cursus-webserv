@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 11:07:22 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 12:27:15 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 19:51:17 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ ErrorHandlingState::ErrorHandlingState(void)
 
 ErrorHandlingState::~ErrorHandlingState(void) {}
 
-StateResType ErrorHandlingState::handle(Event *event, ServerConfig config)
+StateResType ErrorHandlingState::handle(Event *event, ServerConfig& config)
 {
 	int			errorCode;
 	std::string	pagePath;
