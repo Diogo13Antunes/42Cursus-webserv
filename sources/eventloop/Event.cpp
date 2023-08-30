@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/28 18:24:47 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 12:19:41 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -503,12 +503,23 @@ const std::string& Event::getRes(void)
 	return (_res);
 }
 
-void Event::setRes(std::string res)
+void Event::setRes(std::string& res)
 {
 	_res = res;
 }
 
-void Event::updateRes(std::string res)
+void Event::clearRes(void)
+{
+	_res.clear();
+}
+
+void Event::eraseRes(size_t start, size_t end)
+{
+	_res.erase(start, end);
+}
+
+
+void Event::updateRes(std::string& res)
 {
 	_res += res;
 }
@@ -971,6 +982,11 @@ size_t Event::getFileSize(void)
 void Event::setFileNumBytesRead(size_t fileNumBytesRead)
 {
 	_fileNumBytesRead = fileNumBytesRead;
+}
+
+void Event::updateFileNumBytesRead(size_t fileNumBytesRead)
+{
+	_fileNumBytesRead += fileNumBytesRead;
 }
 
 size_t Event::getFileNumBytesRead(void)

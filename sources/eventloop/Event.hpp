@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/28 18:24:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 12:21:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,8 +185,10 @@ class Event
 		void		setBodySize1(size_t bodySize);
 
 		const std::string&	getRes(void);
-		void				setRes(std::string res);
-		void				updateRes(std::string res);
+		void				setRes(std::string& res);
+		void 				clearRes(void);
+		void				eraseRes(size_t start, size_t end);
+		void				updateRes(std::string& res);
 
 		size_t				getResSize(void);
 		void				setResSize(size_t resSize);
@@ -304,5 +306,6 @@ class Event
 		void setFileSize(size_t fileSize);
 		size_t getFileSize(void);
 		void setFileNumBytesRead(size_t fileNumBytesRead);
+		void updateFileNumBytesRead(size_t fileNumBytesRead);
 		size_t getFileNumBytesRead(void);
 };

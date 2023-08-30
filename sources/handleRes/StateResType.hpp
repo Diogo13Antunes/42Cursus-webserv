@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 11:31:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/28 16:42:12 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 12:07:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ typedef enum
 	GET_BODY,
 	REDIRECT,
 	DIRECTORY_LISTING,
-	STATIC_FILE_READ,
+	STATIC_FILE_HANDLING,
 	RESPONSE,
 	RESPONSE_END
 }	StateResType;

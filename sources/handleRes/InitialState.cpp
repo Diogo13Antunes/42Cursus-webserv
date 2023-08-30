@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/29 15:07:22 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 12:13:15 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ StateResType InitialState::handle(Event *event, ServerConfig config)
 {
 	std::string resourcePath;
 
-	std::cout << "InitialState" << std::endl;
 
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);
@@ -53,12 +52,7 @@ StateResType InitialState::handle(Event *event, ServerConfig config)
 		return (ERROR_HANDLING);
 	}
 
-	std::cout << "tem de chegar aqui" << std::endl;
-
-	return (STATIC_FILE_READ);
-	
-
-	
+	return (STATIC_FILE_HANDLING);
 
 
 

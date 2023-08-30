@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/28 16:04:48 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 12:25:35 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ StateResType DirectoryListingState::handle(Event *event, ServerConfig config)
 	std::map<std::string, std::string>	dirCont;
 	std::string							dir;
 	std::string							page;
+	std::string							header;
+	std::string							res;
 
 	dir = event->getResourcePath();
 	if (!_checkDirectoryAccess(event, config))
@@ -40,8 +42,10 @@ StateResType DirectoryListingState::handle(Event *event, ServerConfig config)
 	}
 	dirCont = _getDirContent(dir);
 	page = _createPageHtml(dir, dirCont);
-	event->setRes(_createHeader(page.size()));
-	event->updateRes(page);
+	header = _createHeader(page.size());
+	res = header + page;
+	event->setRes(res);
+	event->setResSize(res.size());
 	return (RESPONSE);
 }
 
