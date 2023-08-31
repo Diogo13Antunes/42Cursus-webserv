@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 11:07:22 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 19:51:17 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 11:04:16 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ ErrorHandlingState::ErrorHandlingState(void)
 	_errorCodes.insert(std::make_pair(414, "URI Too Long"));
 	_errorCodes.insert(std::make_pair(403, "Forbidden"));
 	_errorCodes.insert(std::make_pair(501, "Not Implemented"));
+	_errorCodes.insert(std::make_pair(500, "Internal Server Error"));
 }
 
 ErrorHandlingState::~ErrorHandlingState(void) {}
@@ -67,9 +68,15 @@ void ErrorHandlingState::_getPageFromFile(std::string path, std::string& page)
 
 void ErrorHandlingState::_getDefaultPage(int errorCode, std::string& page)
 {
-	ErrorPageBuilder errorPageBuilder;
+	std::map<int, std::string>::iterator	it;
+	ErrorPageBuilder						errorPageBuilder;
 
 	errorPageBuilder.setErrorCode(errorCode);
+	it = _errorCodes.find(errorCode);
+	if (it != _errorCodes.end())
+		errorPageBuilder.setReasonPhrase(it->second);
+	else
+		errorPageBuilder.setReasonPhrase("Error");
 	page.assign(errorPageBuilder.getErrorPageHtml());
 }
 

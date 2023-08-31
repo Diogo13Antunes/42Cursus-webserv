@@ -6,69 +6,26 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 09:35:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/24 13:54:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 11:05:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ErrorPageBuilder.hpp"
-
+#include "StringUtils.hpp"
 #include <iostream>
-#include <sstream>
 
-ErrorPageBuilder::ErrorPageBuilder(void): _errorCode(0)
-{
-	_initErrorCodes();
-}
+ErrorPageBuilder::ErrorPageBuilder(void) {}
 
-ErrorPageBuilder::ErrorPageBuilder(int errorCode): _errorCode(errorCode)
-{
-	_initErrorCodes();
-}
-
-ErrorPageBuilder::ErrorPageBuilder(const ErrorPageBuilder &src)
-{
-	//ErrorPageBuilder Copy Constructor
-}
-
-ErrorPageBuilder::~ErrorPageBuilder(void)
-{
-	//Default ErrorPageBuilder Destructor
-}
-
-/*
-ErrorPageBuilder &ErrorPageBuilder::operator=(const ErrorPageBuilder &src)
-{
-	//ErrorPageBuilder Copy Assignment Operator
-}
-*/
-
-int ErrorPageBuilder::getErrorCode(void)
-{
-	return (_errorCode);
-}
+ErrorPageBuilder::~ErrorPageBuilder(void) {}
 
 void ErrorPageBuilder::setErrorCode(int errorCode)
 {
 	_errorCode = errorCode;
 }
 
-std::string	ErrorPageBuilder::getReasonPhrase(void)
+void ErrorPageBuilder::setReasonPhrase(std::string reasonPhrase)
 {
-	std::map<int, std::string>::iterator	it;
-	std::string								reasonPhrase;
-	
-	it = _reasonPhrase.find(_errorCode);
-	if (it != _reasonPhrase.end())
-    	reasonPhrase = it->second;
-	return (reasonPhrase);
-}
-
-std::string ErrorPageBuilder::getErrorCodeToString(void)
-{
-	std::stringstream errorCode;
-
-	errorCode << _errorCode;
-	return (errorCode.str());
+	_reasonPhrase = reasonPhrase;
 }
 
 std::string ErrorPageBuilder::getErrorPageHtml(void)
@@ -98,32 +55,23 @@ std::string ErrorPageBuilder::getErrorPageHtml(void)
 				</html>";
 
 	idxTitle = errorPage.find("</title>");
-	errorPage.insert(idxTitle, this->getCodeAndPhrase());
+	errorPage.insert(idxTitle, this->_getCodeAndPhrase());
 	idxCode = errorPage.find("</h1>");
-	errorPage.insert(idxCode, this->getErrorCodeToString());
+	errorPage.insert(idxCode, StringUtils::toString(_errorCode));
 	idxPhrase = errorPage.find("</h2>");
-	errorPage.insert(idxPhrase, this->getReasonPhrase());
+	errorPage.insert(idxPhrase, _reasonPhrase);
 	return (errorPage);
 }
 
-std::string	ErrorPageBuilder::getCodeAndPhrase(void)
+std::string	ErrorPageBuilder::_getCodeAndPhrase(void)
 {
 	std::string statusAndPhrase;
 
-	statusAndPhrase = this->getErrorCodeToString() + " " + this->getReasonPhrase();
+	statusAndPhrase = StringUtils::toString(_errorCode) + " " + _reasonPhrase;
 	return (statusAndPhrase);
 }
 
 int ErrorPageBuilder::getErrorPageSize(void)
 {
 	return (this->getErrorPageHtml().size());
-}
-
-void ErrorPageBuilder::_initErrorCodes(void)
-{
-	_reasonPhrase.insert(std::make_pair(400, "Bad Request"));
-	_reasonPhrase.insert(std::make_pair(404, "Not Found"));
-	_reasonPhrase.insert(std::make_pair(414, "URI Too Long"));
-	_reasonPhrase.insert(std::make_pair(403, "Forbidden"));
-	_reasonPhrase.insert(std::make_pair(501, "Not Implemented"));
 }
