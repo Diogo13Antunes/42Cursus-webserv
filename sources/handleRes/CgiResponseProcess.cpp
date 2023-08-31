@@ -15,9 +15,6 @@ StateResType	CgiResponseProcess::handle(Event *event, ServerConfig& configsData)
 	std::string										res;
 	std::string										key;
 
-
-	std::cout << "CgiResponseProcess" << std::endl;
-
 	scriptRes = event->getCgiScriptResult();
 	headerMap = _getHeaderMap(scriptRes);
 	for (it = headerMap.begin(); it !=  headerMap.end(); it++)
@@ -37,12 +34,11 @@ StateResType	CgiResponseProcess::handle(Event *event, ServerConfig& configsData)
 	if (_existContent(headerMap))
 	{
 		cgiBody = _getCgiBody(scriptRes);
-		if (!_existContentLength(headerMap))
-			header.setContentLength(cgiBody.size());
+		header.setContentLength(cgiBody.size());
 	}
 	res = header.getHeader();
 	event->setRes(res);
-	event->setCgiBodyRes(cgiBody);
+	event->updateRes(cgiBody);
 	event->setResSize(res.size() + cgiBody.size());
 	return (RESPONSE);
 }
@@ -127,14 +123,4 @@ std::pair<std::string, std::string>	CgiResponseProcess::_makePair(std::string &l
 	key = _getKey(line);
 	value = _getValue(line);
 	return (std::make_pair(key, value));
-}
-
-bool	CgiResponseProcess::_existContentLength(std::map<std::string, std::string> &map)
-{
-	std::map<std::string, std::string>::iterator	it;
-
-	it = map.find("Content-Length");
-	if (it != map.end())
-		return (true);
-	return (false);
 }

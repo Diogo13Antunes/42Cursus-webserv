@@ -16,7 +16,6 @@ class CgiResponseProcess: public IStateRes
 		bool								_existContent(std::map<std::string, std::string> &header);
 		std::string							_getCgiBody(std::string &src);
 		std::pair<std::string, std::string>	_makePair(std::string &line);
-		bool								_existContentLength(std::map<std::string, std::string> &map);
 
 	public:
 		CgiResponseProcess(void);
