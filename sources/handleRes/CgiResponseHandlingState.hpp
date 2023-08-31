@@ -7,7 +7,7 @@
 #include "TimeDate.hpp"
 #include "HttpHeaderBuilder.hpp"
 
-class CgiResponseProcess: public IStateRes
+class CgiResponseHandlingState: public IStateRes
 {
 	private:
 		std::map<std::string, std::string>	_getHeaderMap(std::string &src);
@@ -18,8 +18,8 @@ class CgiResponseProcess: public IStateRes
 		std::pair<std::string, std::string>	_makePair(std::string &line);
 
 	public:
-		CgiResponseProcess(void);
-		~CgiResponseProcess(void);
+		CgiResponseHandlingState(void);
+		~CgiResponseHandlingState(void);
 
 		StateResType handle(Event *event, ServerConfig& configsData);
 };

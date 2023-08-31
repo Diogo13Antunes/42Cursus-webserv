@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 18:52:34 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 10:14:19 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include "StaticFileHandlingState.hpp"
 #include "RedirectionHandlingState.hpp"
 #include "ResponseState.hpp"
-#include "CgiResponseProcess.hpp"
+#include "CgiResponseHandlingState.hpp"
 
 HandleRes::HandleRes(ConfigsData *configsData):
 	_event(NULL),
@@ -32,7 +32,7 @@ HandleRes::HandleRes(ConfigsData *configsData):
 	_stateMap.insert(std::make_pair(REDIRECTION_HANDLING, new RedirectionHandlingState()));
 	_stateMap.insert(std::make_pair(DIRECTORY_LISTING, new DirectoryListingState()));
 	_stateMap.insert(std::make_pair(STATIC_FILE_HANDLING, new StaticFileHandlingState()));
-	_stateMap.insert(std::make_pair(CGI_RES_PROCESS, new CgiResponseProcess()));
+	_stateMap.insert(std::make_pair(CGI_RES_HANDLING, new CgiResponseHandlingState()));
 	_stateMap.insert(std::make_pair(RESPONSE, new ResponseState()));
 }
 

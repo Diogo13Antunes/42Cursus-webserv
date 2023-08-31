@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 19:55:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 10:14:35 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);
 	if (!event->getCgiScriptResult().empty())
-		return (CGI_RES_PROCESS);
+		return (CGI_RES_HANDLING);
 	// verificar se o metodo é permitido.
 	if (_hasRedirection(event, config))
 		return (REDIRECTION_HANDLING);

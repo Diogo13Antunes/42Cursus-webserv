@@ -1,10 +1,10 @@
-#include "CgiResponseProcess.hpp"
+#include "CgiResponseHandlingState.hpp"
 
-CgiResponseProcess::CgiResponseProcess(void) {}
+CgiResponseHandlingState::CgiResponseHandlingState(void) {}
 
-CgiResponseProcess::~CgiResponseProcess(void) {}
+CgiResponseHandlingState::~CgiResponseHandlingState(void) {}
 
-StateResType	CgiResponseProcess::handle(Event *event, ServerConfig& configsData)
+StateResType	CgiResponseHandlingState::handle(Event *event, ServerConfig& configsData)
 {
 	(void)configsData;
 	HttpHeaderBuilder								header;
@@ -45,7 +45,7 @@ StateResType	CgiResponseProcess::handle(Event *event, ServerConfig& configsData)
 
 /* PRIVATE METHODS */
 
-std::map<std::string, std::string>	CgiResponseProcess::_getHeaderMap(std::string &src)
+std::map<std::string, std::string>	CgiResponseHandlingState::_getHeaderMap(std::string &src)
 {
 	std::map<std::string, std::string>	result;
 	std::istringstream					iss(src);
@@ -61,7 +61,7 @@ std::map<std::string, std::string>	CgiResponseProcess::_getHeaderMap(std::string
 	return (result);
 }
 
-std::string	CgiResponseProcess::_getKey(std::string &line)
+std::string	CgiResponseHandlingState::_getKey(std::string &line)
 {
 	std::string	key;
 	size_t	i;
@@ -75,7 +75,7 @@ std::string	CgiResponseProcess::_getKey(std::string &line)
 	return (key);
 }
 
-std::string	CgiResponseProcess::_getValue(std::string &line)
+std::string	CgiResponseHandlingState::_getValue(std::string &line)
 {
 	std::string	value;
 	size_t	i;
@@ -89,7 +89,7 @@ std::string	CgiResponseProcess::_getValue(std::string &line)
 	return (value);
 }
 
-bool	CgiResponseProcess::_existContent(std::map<std::string, std::string> &header)
+bool	CgiResponseHandlingState::_existContent(std::map<std::string, std::string> &header)
 {
 	std::map<std::string, std::string>::iterator	it;
 	std::string										key;
@@ -104,7 +104,7 @@ bool	CgiResponseProcess::_existContent(std::map<std::string, std::string> &heade
 	return (false);
 }
 
-std::string	CgiResponseProcess::_getCgiBody(std::string &src)
+std::string	CgiResponseHandlingState::_getCgiBody(std::string &src)
 {
 	std::string body;
 	size_t		i;
@@ -115,7 +115,7 @@ std::string	CgiResponseProcess::_getCgiBody(std::string &src)
 	return (body);
 }
 
-std::pair<std::string, std::string>	CgiResponseProcess::_makePair(std::string &line)
+std::pair<std::string, std::string>	CgiResponseHandlingState::_makePair(std::string &line)
 {
 	std::string key;
 	std::string value;
