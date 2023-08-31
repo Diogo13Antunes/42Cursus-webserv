@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 17:30:15 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 12:05:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,19 @@ TypeTransitionHandler::~TypeTransitionHandler(void) {}
 
 void TypeTransitionHandler::handleEvent(Event *event)
 {
-	//std::cout << "StateTransitionHandler" << std::endl;
-
 	ServerConfig*	serverConf;
 	std::string		cgiName;
 
 	if (event->getOldState() == READ_SOCKET)
 	{
 		serverConf = _getServerConfig(event, _configs->getServers());
-
+		event->setServerConfing(serverConf);
+		if (!serverConf)
+		{
+			event->setActualState(WRITE_EVENT);
+			return ;
+		}
 		cgiName = serverConf->getCgiScriptName(event->getReqLinePath());
-
 		if (!cgiName.empty())
 		{
 			std::cout << "Script name: " << cgiName << std::endl;

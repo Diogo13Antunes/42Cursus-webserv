@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 08:18:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 11:40:32 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,8 @@ class Event
 
 		size_t	_fileSize;
 		size_t	_fileNumBytesRead;
+
+		ServerConfig*	_serverConf;
 
 	public:
 		Event(void);
@@ -308,4 +310,7 @@ class Event
 		void setFileNumBytesRead(size_t fileNumBytesRead);
 		void updateFileNumBytesRead(size_t fileNumBytesRead);
 		size_t getFileNumBytesRead(void);
+
+		void			setServerConfing(ServerConfig* serverConf);
+		ServerConfig*	getServerConfing(void);
 };

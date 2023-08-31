@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 10:14:19 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 12:07:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,9 @@ void HandleRes::handle(void)
 	StateResType	state;
 	bool			loop;
 
-	_serverConf = _setServerConfig(_configsData->getServers());
-
+	_serverConf = _event->getServerConfing();
+	if (!_serverConf)
+		_event->setStatusCode(500);
 	loop = true;
 	while (loop && _event->getResState1() != RESPONSE_END)
 	{
@@ -79,43 +80,9 @@ StateResType HandleRes::_handleState(StateResType state)
 	{
 		it = _stateMap.find(state);
 		if (it != _stateMap.end())
-			//state = it->second->handle(_event, _configsData);
 			state = it->second->handle(_event, *_serverConf);
 	}
 	return (state);
-}
-
-
-
-// Se returnar NULL deve responder 500 Internal error
-// decidir onde deve ser verificado e adicionado o server config. 
-//devera existir um ponteiro no evento para o serverconfig?
-ServerConfig* HandleRes::_setServerConfig(std::vector<ServerConfig>& serverConfigs)
-{
-	std::vector<ServerConfig>::iterator	it;
-	std::string							ipReq;
-	std::string							portReq;
-	std::string							hostReq;
-	ServerConfig						*serverConf;
-	
-	ipReq = _event->getIp();
-	portReq = _event->getPort();
-	hostReq = _event->getReqHost();
-	serverConf = NULL;
-	for (it = serverConfigs.begin(); it != serverConfigs.end(); it++)
-	{
-		if (!ipReq.compare(it->getIp()) && !portReq.compare(it->getPort()))
-		{
-			if (!hostReq.compare(it->getServerName()))
-			{
-				serverConf = &(*it);
-				break ;
-			}
-			else if (serverConf == NULL)
-				serverConf = &(*it);
-		}
-	}
-	return (serverConf);
 }
 
 bool HandleRes::isResProcessingComplete(void)

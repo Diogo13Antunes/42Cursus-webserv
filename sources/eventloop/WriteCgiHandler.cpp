@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:39:35 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 08:24:39 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 11:55:12 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void WriteCgiHandler::handleEvent(Event *event)
 		bodyStr += sentChars;
 		nwrite = event->writeToCgi(bodyStr, bodySize - sentChars);
 
-		// Se falhar tem de ser mandado um 501 Internal Server Error
+		// Se falhar tem de ser mandado um 500 Internal Server Error
 		event->updateCgiSentChars(nwrite);
 
 		if (event->getCgiSentChars() >= bodySize)

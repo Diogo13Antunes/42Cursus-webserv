@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 10:14:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 11:58:45 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 {
 	std::string resourcePath;
 	std::string reqPath;
+
+	
 
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);

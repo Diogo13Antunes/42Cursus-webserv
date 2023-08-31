@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:12 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 18:50:26 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 12:08:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 #include "IStateRes.hpp"
 #include "ServerConfig.hpp"
 
-
-
 class HandleRes
 {
 	private:
@@ -26,16 +24,14 @@ class HandleRes
 		ConfigsData							*_configsData;
 		ServerConfig						*_serverConf;
 		Event								*_event;
-		//StateResType						_state;
 
-		StateResType	_handleState(StateResType state);
-		ServerConfig*	_setServerConfig(std::vector<ServerConfig>& serverConfigs);
+		StateResType _handleState(StateResType state);
 
 	public:
 		HandleRes(ConfigsData *configsData);
 		~HandleRes(void);
-		void setEvent(Event *event);
 
-		void handle(void);
-		bool isResProcessingComplete(void);
+		void	setEvent(Event *event);
+		void	handle(void);
+		bool	isResProcessingComplete(void);
 };

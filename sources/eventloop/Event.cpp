@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 08:19:48 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 11:41:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ Event::Event(int fd, int state):
 	_statusCode(0),
 	_redirectCode(0),
 	_fileSize(0),
-	_fileNumBytesRead(0)
+	_fileNumBytesRead(0),
+	_serverConf(NULL)
 	
 {
 	SocketUtils::getHostAndPort(_fd, _ip, _port);
@@ -992,4 +993,14 @@ void Event::updateFileNumBytesRead(size_t fileNumBytesRead)
 size_t Event::getFileNumBytesRead(void)
 {
 	return (_fileNumBytesRead);
+}
+
+void Event::setServerConfing(ServerConfig* serverConf)
+{
+	_serverConf = serverConf;
+}
+
+ServerConfig* Event::getServerConfing(void)
+{
+	return (_serverConf);
 }
