@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 15:56:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 17:28:59 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 17:39:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int CgiExec::execute(Event *event)
 	}
 
 	// Executar CGI
-	if (_execute(env, event->getResourcePath()))
+	if (_execute(env, event->getResourcePath(), p1, p2))
 		return (-1);
 
 	return (0);
@@ -90,7 +90,7 @@ std::string	CgiExec::_getScriptInterpreter(std::string scriptPath)
 	return (result);
 }
 
-int CgiExec::_execute(char **env, std::string scriptPath)
+int CgiExec::_execute(char **env, std::string scriptPath, int *p1, int *p2)
 {
 	std::string scriptRunner;
 	int pid;
@@ -104,6 +104,11 @@ int CgiExec::_execute(char **env, std::string scriptPath)
 		return (-1);
 	if (pid == 0)
 	{
+		dup2(p1[0], STDIN_FILENO);
+		dup2(p2[1], STDOUT_FILENO);
+		_closePipe(p1);
+		_closePipe(p2);
+		execve(scriptRunner.c_str(), const_cast<char**>(av), env);
 		exit(-1);
 	}
 	return (0);
