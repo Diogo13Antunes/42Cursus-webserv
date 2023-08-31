@@ -61,11 +61,11 @@ int	CGIExecuter::getWriteFD(void)
 	return (_pipe1[1]);
 }
 
-int CGIExecuter::writeToScript(const char *str)
+int CGIExecuter::writeToScript(const char *str, size_t size)
 {
 	int fd;
 	fd = this->getWriteFD();
-	return (write(fd, str, std::strlen(str)));
+	return (write(fd, str, size));
 }
 
 int CGIExecuter::readFromScript(std::string &str)

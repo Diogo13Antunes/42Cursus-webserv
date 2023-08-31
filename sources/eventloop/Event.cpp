@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 12:19:41 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 08:19:48 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -853,10 +853,10 @@ void Event::cgiExecute(ServerConfig *config, std::string scriptName)
 		_cgiEx = new CGIExecuter(config, _reqParser, scriptName);
 }
 
-int Event::writeToCgi(const char *str)
+int Event::writeToCgi(const char *str, size_t size)
 {
 	if (_cgiEx)
-		return (_cgiEx->writeToScript(str));
+		return (_cgiEx->writeToScript(str, size));
 	return (-1);
 }
 

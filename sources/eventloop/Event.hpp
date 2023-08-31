@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 12:21:13 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 08:18:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,7 +267,7 @@ class Event
 
 
 		void	cgiExecute(ServerConfig *config, std::string scriptName);
-		int		writeToCgi(const char *str);
+		int		writeToCgi(const char *str, size_t size);
 		int		readFromCgi(std::string &str);
 
 		void	setCgiExitStatus(int cgiExitStatus);
