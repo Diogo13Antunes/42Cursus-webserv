@@ -15,7 +15,6 @@ class RequestParser
 {
 	private:
 
-		std::vector<std::string>							_implementedMethods;
 		std::string											_requestLine;
 		std::map<std::string, std::vector<std::string> >	_requestHeader;
 		std::string											_requestBody;
@@ -36,7 +35,6 @@ class RequestParser
 		int													_addHeaderElement(std::string &line);
 		bool												_existAlreadyHeader(std::string &key);
 		void												_requestTargetParser(void);
-		bool												_isImplementedRequestMethod(void);
 		int													_hasContentLengthAndTransferEncoded(void);
 		int													_isValidRequestHeader(void);
 		int													_isValidTransferEncodingValue(void);

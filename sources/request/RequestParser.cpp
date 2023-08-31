@@ -24,12 +24,7 @@ static std::string				getQueryStr(std::string &src);
 static bool						isValidServerName(std::string &serverName);
 static bool						withConsecutiveChars(std::string &src, char c);
 
-RequestParser::RequestParser(void) : _statusCode(SUCCESSFULL_HEADER)
-{
-	_implementedMethods.push_back("GET");
-	_implementedMethods.push_back("POST");
-	_implementedMethods.push_back("DELETE");
-}
+RequestParser::RequestParser(void) : _statusCode(SUCCESSFULL_HEADER) {}
 
 RequestParser::~RequestParser(void) {}
 
@@ -254,8 +249,6 @@ int RequestParser::_requestLineParser(void)
 	_reqLineHttpVersion = getRequestLineElement(_requestLine, index_2, _requestLine.size());
 	if (_reqLineMethod.empty() || _reqLineTarget.empty() || _reqLineHttpVersion.empty())
 		return (BAD_REQUEST);
-	if (!_isImplementedRequestMethod())
-		return (NOT_IMPLEMENTED);
 	if (StringUtils::hasWhiteSpaces(_reqLineTarget))
 		return (BAD_REQUEST);
 	if (_reqLineTarget.size() > MAX_REQUEST_TARGET_LEN)
@@ -274,16 +267,6 @@ void RequestParser::_requestTargetParser(void)
 	}
 	else
 		_reqLinePath = _reqLineTarget;
-}
-
-bool RequestParser::_isImplementedRequestMethod()
-{
-	for (size_t i = 0; i < _implementedMethods.size(); i++)
-	{
-		if (!_implementedMethods.at(i).compare(_reqLineMethod))
-			return (true);
-	}
-	return (false);
 }
 
 int RequestParser::_addHeaderElement(std::string &line)
