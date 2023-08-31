@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 11:41:24 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 16:23:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -712,10 +712,7 @@ std::string	Event::getReqContentType(void)
 
 	contentType = _reqParser.getHeaderField("content-type");
 	if (!contentType.empty())
-	{
-		std::cout << "Não vazio getHeaderField()" << std::endl;
 		return (contentType.at(0));
-	}
 	return (std::string());
 }
 
