@@ -60,6 +60,8 @@ Location::Location(std::string masterRoot, std::vector<std::string> locationInfo
 		if (_root.empty() && masterRoot.empty())
 			_updateLocationError(false);
 	}
+	if (!_alias.empty() && _root.empty())
+		_updateLocationError(false);
 }
 
 Location::~Location(void)
