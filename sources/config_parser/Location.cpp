@@ -55,21 +55,13 @@ Location::Location(std::string masterRoot, std::vector<std::string> locationInfo
 	}
 	if (getLocationError() != false)
 	{
-		if (!masterRoot.empty() && _root.empty())
-			_setRootMasterRoot(masterRoot);
+		//if (!masterRoot.empty() && _root.empty())
+		//	_setRootMasterRoot(masterRoot);
 		if (_root.empty() && masterRoot.empty())
 			_updateLocationError(false);
 	}
-	if (!_root.empty())
-	{
-		if (!_alias.empty())
-			_updateLocationError(false);
-	}
-	else if (!_alias.empty())
-	{
-		if (!_root.empty())
-			_updateLocationError(false);
-	}
+	if (!_root.empty() && !_alias.empty())
+		_updateLocationError(false);
 }
 
 Location::~Location(void)
