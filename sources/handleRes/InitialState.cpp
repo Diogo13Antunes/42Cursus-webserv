@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   InitialState.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/01 09:13:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/01 10:09:18 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ std::string InitialState::_getResourceFromURLPath(ServerConfig& config, std::str
 	aliasPath = config.getLocationAlias(path);
 	if (aliasPath.empty())
 		rootPath = config.getLocationRootPath(path);
-	if (rootPath.empty())
+	if (rootPath.empty() && aliasPath.empty())
 		rootPath = config.getMasterRoot();
 	if (!aliasPath.empty())
 		fullPath = aliasPath;
@@ -121,7 +121,7 @@ std::string InitialState::_getResourceFromURLPath(ServerConfig& config, std::str
 	{
 		if (access((fullPath + "index.html").c_str(), F_OK) == 0)
 			fullPath += "index.html";
-	}
+	}	
 	return (fullPath);
 }
 
