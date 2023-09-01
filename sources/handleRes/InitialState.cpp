@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/01 09:13:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/01 10:37:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,16 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 {
 	std::string resourcePath;
 	std::string reqPath;
+	std::string	method;
 
-
-
+	method = event->getReqLineMethod();
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);
 	if (!event->getCgiScriptResult().empty())
 		return (CGI_RES_HANDLING);
+
+	
+
 	// verificar se o metodo é permitido.
 	if (_hasRedirection(event, config))
 		return (REDIRECTION_HANDLING);
@@ -100,29 +103,29 @@ bool InitialState::_isFolder(std::string path)
 
 std::string InitialState::_getResourceFromURLPath(ServerConfig& config, std::string path)
 {
-	std::string fullPath;
-	std::string	rootPath;
-	std::string	aliasPath;
-	std::string	index;
+    std::string fullPath;
+    std::string    rootPath;
+    std::string    aliasPath;
+    std::string    index;
 
-	aliasPath = config.getLocationAlias(path);
-	if (aliasPath.empty())
-		rootPath = config.getLocationRootPath(path);
-	if (rootPath.empty())
-		rootPath = config.getMasterRoot();
-	if (!aliasPath.empty())
-		fullPath = aliasPath;
-	else
-		fullPath = rootPath + path;
-	index = config.getLocationIndex(path);
-	if (!index.empty())
-		fullPath += index;
-	else
-	{
-		if (access((fullPath + "index.html").c_str(), F_OK) == 0)
-			fullPath += "index.html";
-	}
-	return (fullPath);
+    aliasPath = config.getLocationAlias(path);
+    if (aliasPath.empty())
+        rootPath = config.getLocationRootPath(path);
+    if (rootPath.empty() && aliasPath.empty())
+        rootPath = config.getMasterRoot();
+    if (!aliasPath.empty())
+        fullPath = aliasPath;
+    else
+        fullPath = rootPath + path;
+    index = config.getLocationIndex(path);
+    if (!index.empty())
+        fullPath += index;
+    else
+    {
+        if (access((fullPath + "index.html").c_str(), F_OK) == 0)
+            fullPath += "index.html";
+    }
+    return (fullPath);
 }
 
 std::string InitialState::_getPreviousRouteResourcePath(ServerConfig& config, std::string path)
