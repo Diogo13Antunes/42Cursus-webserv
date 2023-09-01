@@ -46,7 +46,7 @@ fileData["last_id"] = new_id
 with open(dataBasePath, "w") as file:
 	json.dump(fileData, file, indent=4)
 
-htmlfile = "<!DOCTYPE html> <html> <body> <h1> User added to DataBase </h1> </body> </html>"
+htmlfile = """ <!DOCTYPE html> <html> <body> <h1> User added to DataBase </h1> <button onclick="window.location.href='/'" type="button">Initial Page</button> </body> </html> """
 
 out = "Status: 201 Created\n"
 out += "Content-Length: " + str(len(htmlfile)) + "\n"

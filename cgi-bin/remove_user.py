@@ -32,7 +32,7 @@ else:
 
 htmlfile = "<!DOCTYPE html> <html> <body> <h1> "
 htmlfile += msg
-htmlfile += " </h1> </body> </html>"
+htmlfile += """ </h1> <button onclick="window.location.href='/'" type="button">Initial Page</button> </body> </html> """
 
 out = "Status: 200 OK\n"
 out += "Content-Length: " + str(len(htmlfile)) + "\n"

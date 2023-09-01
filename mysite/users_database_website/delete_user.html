@@ -21,7 +21,7 @@
 				</table>
 				<script>
 					var table = document.querySelector("table");
-					fetch("DataBase/db.json")
+					fetch("/DataBase/db.json")
 					.then(response => response.json())
 					.then(data => {
 						var users = data.users;
