@@ -55,8 +55,6 @@ Location::Location(std::string masterRoot, std::vector<std::string> locationInfo
 	}
 	if (getLocationError() != false)
 	{
-		//if (!masterRoot.empty() && _root.empty())
-		//	_setRootMasterRoot(masterRoot);
 		if (_root.empty() && masterRoot.empty())
 			_updateLocationError(false);
 	}

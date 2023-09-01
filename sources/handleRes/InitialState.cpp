@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 11:58:45 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/01 09:13:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 #include <sys/stat.h>
 
 #define MOVED_PERMANENTLY	301
-
-
 
 InitialState::InitialState(void) {}
 
@@ -27,7 +25,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	std::string resourcePath;
 	std::string reqPath;
 
-	
+
 
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);
@@ -67,7 +65,6 @@ bool InitialState::_hasRedirection(Event *event, ServerConfig& config)
 	
 	code = 0;
 	path = event->getReqLinePath();
-	config.getRedirectionInfo(path, code, resource);
 	if (!code && path.at(path.size() - 1) != '/')
 	{
 		if (config.isConfiguredRoute(path) || _isFolder(config.getMasterRoot() + path))
@@ -76,6 +73,8 @@ bool InitialState::_hasRedirection(Event *event, ServerConfig& config)
 			code = MOVED_PERMANENTLY;
 		}
 	}
+	if (!code)
+		config.getRedirectionInfo(path, code, resource);
 	if (code && !resource.empty())
 	{
 		event->setRredirectCode(code);
