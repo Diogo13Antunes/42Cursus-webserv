@@ -34,8 +34,10 @@ htmlfile += msg
 
 htmlfile += """		
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-		<button onclick="window.location.href='/'" type="button" class="btn btn-outline-primary">Initial Page</button>
- 	</body>
+		<div class="d-grid gap-2 mx-3">
+			<button onclick="window.location.href='/'" type="button" class="btn btn-outline-primary">Initial Page</button>
+		</div>
+	</body>
 </html>
 """
 
