@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/01 10:37:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/01 11:38:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,22 +22,28 @@ InitialState::~InitialState(void) {}
 
 StateResType InitialState::handle(Event *event, ServerConfig& config)
 {
-	std::string resourcePath;
 	std::string reqPath;
+	std::string resourcePath;
 	std::string	method;
+	int			acceptMethod;
 
 	method = event->getReqLineMethod();
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);
 	if (!event->getCgiScriptResult().empty())
 		return (CGI_RES_HANDLING);
-
-	
-
-	// verificar se o metodo é permitido.
 	if (_hasRedirection(event, config))
 		return (REDIRECTION_HANDLING);
+
 	reqPath =  event->getReqLinePath();
+	acceptMethod = config.isLocationAcceptedMethod(reqPath, method);
+	if (!acceptMethod)
+	{
+		event->setStatusCode(405);
+		return (ERROR_HANDLING);
+	}
+
+	
 	resourcePath = _getResourceFromURLPath(config, reqPath);
 	event->setResourcePath(resourcePath);
 	if (_isFolder(resourcePath))

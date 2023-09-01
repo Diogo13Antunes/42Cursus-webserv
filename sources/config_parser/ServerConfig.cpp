@@ -157,6 +157,17 @@ void ServerConfig::getRedirectionInfo(std::string route, int &code, std::string 
 	resource.assign(redir.second);
 }
 
+int ServerConfig::isLocationAcceptedMethod(std::string route, std::string method)
+{
+	Location								*location;
+	std::pair<int, std::string>				redir;
+
+	location = _getSpecificLocations(route);
+	if (location)
+		return (location->isAcceptedMethod(method));
+	return (-1);
+}
+
 std::string ServerConfig::getCgiScriptName(std::string route)
 {
 	Location	*location;
