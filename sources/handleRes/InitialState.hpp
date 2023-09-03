@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:48 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 19:55:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/02 11:26:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ class InitialState: public IStateRes
 		std::string	_getResourceFromURLPath(ServerConfig& config, std::string path);
 		std::string _getPreviousRouteResourcePath(ServerConfig& config, std::string path);
 		std::string	_getPreviousRoute(std::string path);
+
+
+		std::string _getPreviousPath(std::string reqPath);
+		std::string _getRouteName(ServerConfig& config, std::string reqPath);
+		std::string	_getRealPath(ServerConfig& config, std::string reqPath, std::string route);
 
 	public:
 		InitialState(void);

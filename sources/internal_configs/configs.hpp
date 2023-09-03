@@ -20,6 +20,7 @@
 // Error codes
 #define FORBIDEN_CODE		403
 #define NOT_FOUND_CODE		404
+#define NOT_ALLOWED         405
 
 // Colors
 #define RESET		"\033[0m"

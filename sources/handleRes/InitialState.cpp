@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/01 11:38:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/03 11:26:14 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ InitialState::InitialState(void) {}
 
 InitialState::~InitialState(void) {}
 
+/*
 StateResType InitialState::handle(Event *event, ServerConfig& config)
 {
 	std::string reqPath;
@@ -65,6 +66,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	}
 	return (STATIC_FILE_HANDLING);
 }
+*/
 
 bool InitialState::_hasRedirection(Event *event, ServerConfig& config)
 {
@@ -173,3 +175,101 @@ std::string InitialState::_getPreviousRoute(std::string path)
 		return (std::string());
 	return (path);
 }
+
+
+
+// New Functions
+
+StateResType InitialState::handle(Event *event, ServerConfig& config)
+{
+	std::string	reqPath;
+	std::string realPath;
+	std::string	route;
+	std::string	method;
+	int			acceptMethod;
+
+	if (event->getStatusCode())
+		return (ERROR_HANDLING);
+	reqPath = event->getReqLinePath();
+	route = _getRouteName(config, reqPath);
+	realPath = _getRealPath(config, reqPath, route);
+	event->setResourcePath(realPath);
+	method = event->getReqLineMethod();
+	acceptMethod = config.isLocationAcceptedMethod(route, method);
+	
+	//Criar função de check dos erros
+	if (!acceptMethod)
+	{
+		event->setStatusCode(NOT_ALLOWED);
+		return (ERROR_HANDLING);
+	}
+	if (access(realPath.c_str(), F_OK))
+	{
+		event->setStatusCode(NOT_FOUND_CODE);
+		return (ERROR_HANDLING);
+	}
+	if (access(realPath.c_str(), R_OK))
+	{
+		event->setStatusCode(FORBIDEN_CODE);
+		return (ERROR_HANDLING);
+	}
+	return (STATIC_FILE_HANDLING);
+}
+
+
+std::string InitialState::_getPreviousPath(std::string path)
+{
+	size_t		idx;
+	if (path.size() == 1)
+		return (path);
+	if (path.at(path.size() - 1) == '/')
+		path.erase(path.size() - 1);
+	idx = path.find_last_of("/");
+	if (idx != path.npos)
+			path.erase(idx + 1);
+	return (path);
+}
+
+std::string InitialState::_getRouteName(ServerConfig& config, std::string reqPath)
+{
+	std::string	prevPath;
+
+	if (config.isConfiguredRoute(reqPath))
+		return (reqPath);
+	prevPath = _getPreviousPath(reqPath);
+	while (prevPath.compare("/"))
+	{
+		if (config.isConfiguredRoute(prevPath))
+			return (prevPath);
+		prevPath = _getPreviousPath(prevPath);
+	}
+	return (prevPath);
+}
+
+std::string InitialState::_getRealPath(ServerConfig& config, std::string reqPath, std::string route)
+{
+	std::string realPath;
+	std::string alias;
+	std::string root;
+	std::string index;
+
+	alias = config.getLocationAlias(route);
+	if (alias.empty())
+		root = config.getLocationRootPath(route);
+    if (root.empty() && alias.empty())
+        root = config.getMasterRoot();
+	if (!root.empty())
+		realPath = root + reqPath;
+	else
+		realPath = alias + reqPath.substr(route.size());
+	if (_isFolder(realPath))
+	{
+		index = config.getLocationIndex(route);
+		if (index.empty())
+			realPath += "index.html";
+		else
+			realPath += index;
+	}
+	return (realPath);
+}
+
