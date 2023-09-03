@@ -9,7 +9,6 @@
 		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
 	<body>
-
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 			<div class="container">
 			  <a class="navbar-brand" href="/">WebServ</a>
@@ -19,7 +18,7 @@
 			  <div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav ml-auto">
 				  <li class="nav-item active">
-					<a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+					<a class="nav-link" href="/">Home</a>
 				  </li>
 				  <li class="nav-item">
 					<a class="nav-link" href="/about">About</a>
@@ -28,7 +27,7 @@
 					<a class="nav-link" href="/team">Team</a>
 				  </li>
 				  <li class="nav-item">
-					<a class="nav-link" href="/database_managment">DataBase Managment</a>
+					<a class="nav-link" href="/database_managment">DataBase Managment <span class="sr-only">(current)</span></a>
 				  </li>
 				</ul>
 			  </div>
@@ -37,15 +36,11 @@
 
 		<div class="bg-image">
 
-			<h1 class="welcome_to_webserv_header"> Welcome to WebServ </h1>
+			<h1> To demonstrate the CGI you can ADD, REMOVE or SHOW Users from a Database </h1>
 
-			<div class="centered-button">
-				<button
-					onclick="window.location.href='about'"
-					type="button"
-					class="about_webserv_btn btn btn-dark"
-					>ABOUT WEBSERV
-				</button>
+			<div class="d-grid gap-2 col-6 mx-auto">
+				  <button onclick="window.location.href='create_user'" type="button" class="btn btn-outline-primary">Create New User</button>
+				  <button onclick="window.location.href='delete_user'" type="button" class="btn btn-outline-primary">Show Users List and Delete User</button>
 			</div>
 
 		</div>

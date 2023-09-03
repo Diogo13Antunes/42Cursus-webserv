@@ -1,0 +1,44 @@
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.bg-image {
+	background-image: url('https://muralsyourway.vtexassets.com/arquivos/ids/230958/View-Inside-Large-Server-Room-Wall-Mural.jpg?v=638165387401270000');
+	background-size: cover;
+	background-repeat: no-repeat;
+	height: 100vh;
+	position: relative;
+}
+
+.bg-image::before {
+	content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.centered-button {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.welcome_to_webserv_header {
+	position: absolute;
+	top: 35%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 75px;
+	color: white;
+}
+
+.about_webserv_btn {
+	--bs-btn-padding-y: 1.25rem;
+	--bs-btn-padding-x: 2.5rem;
+	--bs-btn-font-size: 1rem;
+}

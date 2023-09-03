@@ -9,7 +9,7 @@
 	<body>
 		<h1> Here you can delete a specific user from the DataBase </h1>
 		<div>
-			<div class="text-center">
+			<div class="text-center mx-4">
 				<h2> Users in DataBase </h1>
 				<table class="table table-bordered table-ligth rounded border border-dark">
 					<tr>
@@ -43,17 +43,15 @@
 				</script>
 			</div>
 		</div>
-		<div class="container">
 			<div class="text-center">
 				<form action="/deleted_user" method="POST">
-					<div class="d-grid gap-2 col-6 mx-auto">
-						<label for="id" class="col-form-label">ID</label>
-						<input type="number" id="id" name="id" class="form-control" required><br><br>
-						<input type="submit" value="Remove User">
-						<button onclick="window.location.href='/'" type="button" class="btn btn-outline-primary">Initial Page</button>
-					</div>
-				</form>
-			</div>
+				<div class="d-grid gap-2 col-6 mx-auto row">
+					<label for="id" class="col-form-label">ID to Remove</label>
+					<input type="number" id="id" name="id" class="form-control" required><br><br>
+					<input type="submit" value="Remove User">
+					<button onclick="window.location.href='/'" type="button" class="btn btn-outline-primary">Initial Page</button>
+				</div>
+			</form>
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 	</body>
