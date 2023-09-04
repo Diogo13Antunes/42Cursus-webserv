@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/04 09:55:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/04 11:35:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,8 +198,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	method = event->getReqLineMethod();
 	acceptMethod = config.isLocationAcceptedMethod(route, method);
 
-
-	//Criar função de check dos erros
+	//Verificação de erros
 	if (!acceptMethod)
 	{
 		event->setStatusCode(NOT_ALLOWED_CODE);
@@ -218,11 +217,6 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 			return (ERROR_HANDLING);
 		}
 	}
-
-
-
-
-
 	if (access(realPath.c_str(), F_OK))
 	{
 		event->setStatusCode(NOT_FOUND_CODE);
@@ -233,6 +227,22 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 		event->setStatusCode(FORBIDEN_CODE);
 		return (ERROR_HANDLING);
 	}
+
+
+	if (_isFolder(realPath))
+	{
+		if (!config.getLocationAutoIndex(route).compare("on"))
+			return (DIRECTORY_LISTING);
+		else
+		{
+			event->setStatusCode(FORBIDEN_CODE);
+			return (ERROR_HANDLING);	
+		}
+	}
+
+
+
+	
 	return (STATIC_FILE_HANDLING);
 }
 
@@ -286,7 +296,10 @@ std::string InitialState::_getRealPath(ServerConfig& config, std::string reqPath
 	{
 		index = config.getLocationIndex(route);
 		if (index.empty())
-			realPath += "/index.html";
+		{
+			if (!access((realPath + "/index.html").c_str(), F_OK))
+				realPath += "/index.html";
+		}
 		else
 			realPath += "/" + index;
 	}
