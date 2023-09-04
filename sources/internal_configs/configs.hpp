@@ -18,9 +18,12 @@
 #define EPOLL_TIMEOUT		5
 
 // Error codes
-#define FORBIDEN_CODE		403
-#define NOT_FOUND_CODE		404
-#define NOT_ALLOWED         405
+#define FORBIDEN_CODE		    403
+#define NOT_FOUND_CODE		    404
+#define NOT_ALLOWED_CODE        405
+#define NOT_IMPLEMENTED_CODE    501
+
+#define IMPLEMENTED_METHODS "GET, POST, DELETE"
 
 // Colors
 #define RESET		"\033[0m"

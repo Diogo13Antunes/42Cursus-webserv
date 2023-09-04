@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/03 11:26:14 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/04 09:55:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,7 @@ std::string InitialState::_getPreviousRoute(std::string path)
 
 
 
+
 // New Functions
 
 StateResType InitialState::handle(Event *event, ServerConfig& config)
@@ -196,13 +197,32 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	event->setResourcePath(realPath);
 	method = event->getReqLineMethod();
 	acceptMethod = config.isLocationAcceptedMethod(route, method);
-	
+
+
 	//Criar função de check dos erros
 	if (!acceptMethod)
 	{
-		event->setStatusCode(NOT_ALLOWED);
+		event->setStatusCode(NOT_ALLOWED_CODE);
 		return (ERROR_HANDLING);
 	}
+	else
+	{
+		if (!_isMethodImplemented(method))
+		{
+			event->setStatusCode(NOT_IMPLEMENTED_CODE);
+			return (ERROR_HANDLING);
+		}
+		else if (event->getCgiScriptResult().empty() && method.compare("GET"))
+		{
+			event->setStatusCode(FORBIDEN_CODE);
+			return (ERROR_HANDLING);
+		}
+	}
+
+
+
+
+
 	if (access(realPath.c_str(), F_OK))
 	{
 		event->setStatusCode(NOT_FOUND_CODE);
@@ -266,10 +286,19 @@ std::string InitialState::_getRealPath(ServerConfig& config, std::string reqPath
 	{
 		index = config.getLocationIndex(route);
 		if (index.empty())
-			realPath += "index.html";
+			realPath += "/index.html";
 		else
-			realPath += index;
+			realPath += "/" + index;
 	}
 	return (realPath);
 }
 
+bool InitialState::_isMethodImplemented(std::string method)
+{
+	std::string	implMethods;
+	
+	implMethods = IMPLEMENTED_METHODS;
+	if (implMethods.find(method) != implMethods.npos)
+		return (true);
+	return (false);
+}
