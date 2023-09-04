@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/04 11:35:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/04 16:09:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 }
 */
 
+/*
 bool InitialState::_hasRedirection(Event *event, ServerConfig& config)
 {
 	std::string	path;
@@ -94,6 +95,7 @@ bool InitialState::_hasRedirection(Event *event, ServerConfig& config)
 	}
 	return (false);
 }
+*/
 
 bool InitialState::_isFolder(std::string path)
 {
@@ -193,10 +195,13 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 		return (ERROR_HANDLING);
 	reqPath = event->getReqLinePath();
 	route = _getRouteName(config, reqPath);
-	realPath = _getRealPath(config, reqPath, route);
-	event->setResourcePath(realPath);
 	method = event->getReqLineMethod();
 	acceptMethod = config.isLocationAcceptedMethod(route, method);
+	realPath = _getRealPath(config, reqPath, route);
+	if (_hasForcedRedirection(event, reqPath, realPath) || _hasConfRedirection(event, config, route))
+		return (REDIRECTION_HANDLING);
+	realPath = _getPathWithIndex(config, realPath, route);
+	event->setResourcePath(realPath);
 
 	//Verificação de erros
 	if (!acceptMethod)
@@ -240,7 +245,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 		}
 	}
 
-
+	
 
 	
 	return (STATIC_FILE_HANDLING);
@@ -249,7 +254,8 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 
 std::string InitialState::_getPreviousPath(std::string path)
 {
-	size_t		idx;
+	size_t	idx;
+
 	if (path.size() == 1)
 		return (path);
 	if (path.at(path.size() - 1) == '/')
@@ -276,7 +282,8 @@ std::string InitialState::_getRouteName(ServerConfig& config, std::string reqPat
 	return (prevPath);
 }
 
-std::string InitialState::_getRealPath(ServerConfig& config, std::string reqPath, std::string route)
+
+std::string InitialState::_getRealPath1(ServerConfig& config, std::string reqPath, std::string route)
 {
 	std::string realPath;
 	std::string alias;
@@ -306,6 +313,43 @@ std::string InitialState::_getRealPath(ServerConfig& config, std::string reqPath
 	return (realPath);
 }
 
+
+std::string InitialState::_getRealPath(ServerConfig& config, std::string reqPath, std::string route)
+{
+	std::string realPath;
+	std::string alias;
+	std::string root;
+
+	alias = config.getLocationAlias(route);
+	if (alias.empty())
+		root = config.getLocationRootPath(route);
+    if (root.empty() && alias.empty())
+        root = config.getMasterRoot();
+	if (!root.empty())
+		realPath = root + reqPath;
+	else
+		realPath = alias + reqPath.substr(route.size());
+	return (realPath);
+}
+
+std::string InitialState::_getPathWithIndex(ServerConfig& config, std::string path, std::string route)
+{
+	std::string index;
+
+	if (!_isFolder(path))
+		return (path);
+	index = config.getLocationIndex(route);
+	if (index.empty())
+	{
+		if (!access((path + "/index.html").c_str(), F_OK))
+			path += "/index.html";
+	}
+	else
+		path += "/" + index;
+	return (path);
+}
+
+
 bool InitialState::_isMethodImplemented(std::string method)
 {
 	std::string	implMethods;
@@ -313,5 +357,65 @@ bool InitialState::_isMethodImplemented(std::string method)
 	implMethods = IMPLEMENTED_METHODS;
 	if (implMethods.find(method) != implMethods.npos)
 		return (true);
+	return (false);
+}
+
+/*
+bool InitialState::_hasRedirection(Event *event, ServerConfig& config, std::string path, std::string route)
+{
+	std::string	path;
+	std::string	resource;
+	int			code;
+	
+	code = 0;
+	path = event->getReqLinePath();
+	if (path.at(path.size() - 1) != '/')
+	{
+		if (_isFolder(path))
+		{
+			resource = path + "/";
+			code = MOVED_PERMANENTLY;
+		}
+	}
+	if (!code)
+		config.getRedirectionInfo(route, code, resource);
+	if (code && !resource.empty())
+	{
+		event->setRredirectCode(code);
+		event->setRredirectResource(resource);
+		return (true);
+	}
+	return (false);
+}*/
+
+bool InitialState::_hasForcedRedirection(Event *event, std::string reqPath, std::string realPath)
+{
+	std::string	method;
+
+	method = event->getReqLineMethod();
+	if (reqPath.at(reqPath.size() - 1) != '/' && !method.compare("GET"))
+	{
+		if (_isFolder(realPath))
+		{
+			event->setRredirectCode(MOVED_PERMANENTLY);
+			event->setRredirectResource(reqPath + "/");
+			return (true);
+		}
+	}
+	return (false);
+}
+
+bool InitialState::_hasConfRedirection(Event *event, ServerConfig& config, std::string route)
+{
+	std::string	resource;
+	int			code;
+
+	config.getRedirectionInfo(route, code, resource);
+	if (code && !resource.empty())
+	{
+		event->setRredirectCode(code);
+		event->setRredirectResource(resource);
+		return (true);
+	}
 	return (false);
 }
