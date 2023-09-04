@@ -29,21 +29,19 @@ body {
 	background-color: rgba(0, 0, 0, 0.5);
 }
 
-.centered-button {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-}
-
 .welcome_to_webserv_header {
-	position: absolute;
-	top: 35%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+	position: relative;
+    padding-top: 16%;
+    text-align: center;
 	font-size: 75px;
 	font-family: 'Paytone One', sans-serif;
 	color: white;
+}
+
+.centered-button {
+	position: relative;
+	padding-top: 3%;
+	text-align: center;
 }
 
 .about_webserv_btn {
@@ -89,4 +87,99 @@ body {
 	margin-top: 0.15%;
 	max-width: 600px;
 	color: white;
+}
+
+.team_container {
+	padding-top: 4.5%;
+	padding-left: 3.75%;
+}
+
+.team_header {
+	font-family: 'Paytone One', sans-serif;
+	color: white;
+	font-size: 300%;
+}
+
+.diogo_antunes_img {
+	vertical-align: middle;
+	width: 102%;
+	height: 2%;
+	border-radius: 50%;
+	max-width: 10%;
+	max-height: 10%;
+	margin-top: 2%;
+	margin-left: 8%;
+}
+
+.diogo_pereira_img {
+	vertical-align: middle;
+	width: 102%;
+	height: 2%;
+	border-radius: 50%;
+	max-width: 10%;
+	max-height: 10%;
+	margin-top: 2%;
+	margin-left: 11.75%;
+}
+
+.team_name_da,
+.team_name_dp {
+	font-family: 'Paytone One', sans-serif;
+	color: white;
+	font-size: 165%;
+}
+
+.team_name_da {
+	padding-top: 1%;
+	padding-left: 8%;
+}
+
+.team_name_dp {
+	margin-top: -3%;
+	padding-left: 30.5%;
+}
+
+.database_managment_container {
+	padding-top: 4.5%;
+	padding-left: 3.75%;
+}
+
+.database_managment_header {
+	font-family: 'Paytone One', sans-serif;
+	color: white;
+	font-size: 300%;
+}
+
+.database_managment_functionalities_header {
+	font-family: 'Paytone One', sans-serif;
+	color: white;
+	font-size: 200%;
+}
+
+.database_about_text {
+	max-width: 900px;
+	color: white;
+}
+
+.database_buttons {
+	text-align: center;
+	margin-left: 3%;
+	margin-top: 1%;
+	--bs-btn-padding-y: 1.25rem;
+	--bs-btn-padding-x: 2.5rem;
+	--bs-btn-font-size: 1rem;
+}
+
+.database_add_container {
+	padding-top: 4.5%;
+	padding-left: 3.75%;
+}
+
+.database_add_text {
+	color: white;
+}
+
+.database_form_style {
+	padding-top: 1.5%;
+	padding-left: 2%;
 }
