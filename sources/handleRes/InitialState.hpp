@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:48 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/04 16:03:25 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:08:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,8 @@ class InitialState: public IStateRes
 		bool		_isMethodImplemented(std::string method);
 		//bool		_hasRedirection(Event *event, ServerConfig& config);
 		//bool		_hasRedirection(Event *event, ServerConfig& config, std::string path, std::string route);
-		bool		_hasForcedRedirection(Event *event, std::string reqPath, std::string realPath);
+		bool		_hasForcedRedirection(Event *event, std::string reqPath, std::string realPath, std::string route);
 		bool		_hasConfRedirection(Event *event, ServerConfig& config, std::string route);
-
-		std::string _getRealPath1(ServerConfig& config, std::string reqPath, std::string route);
 
 	public:
 		InitialState(void);

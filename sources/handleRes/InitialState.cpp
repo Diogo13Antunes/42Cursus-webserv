@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/04 16:09:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/04 17:34:34 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,12 +193,15 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);
+	if (!event->getCgiScriptResult().empty())
+		return (CGI_RES_HANDLING);
+
 	reqPath = event->getReqLinePath();
 	route = _getRouteName(config, reqPath);
 	method = event->getReqLineMethod();
 	acceptMethod = config.isLocationAcceptedMethod(route, method);
 	realPath = _getRealPath(config, reqPath, route);
-	if (_hasForcedRedirection(event, reqPath, realPath) || _hasConfRedirection(event, config, route))
+	if (_hasForcedRedirection(event, reqPath, realPath, route) || _hasConfRedirection(event, config, route))
 		return (REDIRECTION_HANDLING);
 	realPath = _getPathWithIndex(config, realPath, route);
 	event->setResourcePath(realPath);
@@ -247,10 +250,8 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 
 	
 
-	
 	return (STATIC_FILE_HANDLING);
 }
-
 
 std::string InitialState::_getPreviousPath(std::string path)
 {
@@ -281,38 +282,6 @@ std::string InitialState::_getRouteName(ServerConfig& config, std::string reqPat
 	}
 	return (prevPath);
 }
-
-
-std::string InitialState::_getRealPath1(ServerConfig& config, std::string reqPath, std::string route)
-{
-	std::string realPath;
-	std::string alias;
-	std::string root;
-	std::string index;
-
-	alias = config.getLocationAlias(route);
-	if (alias.empty())
-		root = config.getLocationRootPath(route);
-    if (root.empty() && alias.empty())
-        root = config.getMasterRoot();
-	if (!root.empty())
-		realPath = root + reqPath;
-	else
-		realPath = alias + reqPath.substr(route.size());
-	if (_isFolder(realPath))
-	{
-		index = config.getLocationIndex(route);
-		if (index.empty())
-		{
-			if (!access((realPath + "/index.html").c_str(), F_OK))
-				realPath += "/index.html";
-		}
-		else
-			realPath += "/" + index;
-	}
-	return (realPath);
-}
-
 
 std::string InitialState::_getRealPath(ServerConfig& config, std::string reqPath, std::string route)
 {
@@ -349,7 +318,6 @@ std::string InitialState::_getPathWithIndex(ServerConfig& config, std::string pa
 	return (path);
 }
 
-
 bool InitialState::_isMethodImplemented(std::string method)
 {
 	std::string	implMethods;
@@ -360,42 +328,15 @@ bool InitialState::_isMethodImplemented(std::string method)
 	return (false);
 }
 
-/*
-bool InitialState::_hasRedirection(Event *event, ServerConfig& config, std::string path, std::string route)
-{
-	std::string	path;
-	std::string	resource;
-	int			code;
-	
-	code = 0;
-	path = event->getReqLinePath();
-	if (path.at(path.size() - 1) != '/')
-	{
-		if (_isFolder(path))
-		{
-			resource = path + "/";
-			code = MOVED_PERMANENTLY;
-		}
-	}
-	if (!code)
-		config.getRedirectionInfo(route, code, resource);
-	if (code && !resource.empty())
-	{
-		event->setRredirectCode(code);
-		event->setRredirectResource(resource);
-		return (true);
-	}
-	return (false);
-}*/
-
-bool InitialState::_hasForcedRedirection(Event *event, std::string reqPath, std::string realPath)
+bool InitialState::_hasForcedRedirection(Event *event, std::string reqPath, std::string realPath, std::string route)
 {
 	std::string	method;
-
 	method = event->getReqLineMethod();
 	if (reqPath.at(reqPath.size() - 1) != '/' && !method.compare("GET"))
 	{
-		if (_isFolder(realPath))
+		if (route.at(route.size() - 1) == '/')
+			route.erase(route.size() - 1);
+		if (_isFolder(realPath) || !reqPath.compare(route))
 		{
 			event->setRredirectCode(MOVED_PERMANENTLY);
 			event->setRredirectResource(reqPath + "/");
