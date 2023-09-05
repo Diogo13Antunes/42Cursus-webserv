@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 16:23:24 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/05 11:18:38 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1001,3 +1001,15 @@ ServerConfig* Event::getServerConfing(void)
 {
 	return (_serverConf);
 }
+
+/*
+void Event::setAutoindex(bool autoindex)
+{
+	_autoindex = autoindex;
+}
+
+bool Event::isAutoindex(void)
+{
+	return (_autoindex);
+}
+*/

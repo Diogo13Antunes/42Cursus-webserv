@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 11:40:32 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/04 11:10:05 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,8 @@ class Event
 		size_t	_fileNumBytesRead;
 
 		ServerConfig*	_serverConf;
+
+		//bool	_autoindex;
 
 	public:
 		Event(void);
@@ -313,4 +315,7 @@ class Event
 
 		void			setServerConfing(ServerConfig* serverConf);
 		ServerConfig*	getServerConfing(void);
+
+		//void setAutoindex(bool autoindex);
+		//bool isAutoindex(void);
 };

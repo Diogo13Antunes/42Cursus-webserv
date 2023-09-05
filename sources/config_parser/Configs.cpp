@@ -51,7 +51,7 @@ void	Configs::_initValidOptions(void)
 	_validOptions.push_back("cgi");
 	_validOptions.push_back("upload_store");
 	_validOptions.push_back("redirect");
-	_validOptions.push_back("limit_except");
+	_validOptions.push_back("allowed");
 	_validOptions.push_back("master_root");
 	_validOptions.push_back("mime_types");
 	_validOptions.push_back("alias");

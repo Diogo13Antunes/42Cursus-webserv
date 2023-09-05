@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:53:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 19:55:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/04 11:58:49 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,8 +110,10 @@ std::string StaticFileHandlingState::_getInternalMimeTypes(std::string fileType)
 		mimeType = "image/x-png";
 	else if (!fileType.compare("jpg"))
 		mimeType = "image/jpeg";
-	else
+	else if(!fileType.compare("txt"))
 		mimeType = "text/plain";
+	else
+		mimeType = "application/octet-stream";
 	return (mimeType);
 }
 
