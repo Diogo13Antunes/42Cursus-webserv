@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/04 18:22:13 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/05 10:35:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 		return (REDIRECTION_HANDLING);
 	realPath = _getPathWithIndex(config, realPath, route);
 	event->setResourcePath(realPath);
+	if (event->getStatusCode())
+		return (ERROR_HANDLING);
 	if (!_isValidFile(event, realPath))
 		return (ERROR_HANDLING);
 	if (!_isValidMethod(event, config, route))
@@ -150,15 +152,23 @@ bool InitialState::_hasForcedRedirection(Event *event, std::string reqPath, std:
 {
 	std::string	method;
 	method = event->getReqLineMethod();
-	if (reqPath.at(reqPath.size() - 1) != '/' && !method.compare("GET"))
+	if (reqPath.at(reqPath.size() - 1) != '/')
 	{
 		if (route.at(route.size() - 1) == '/')
 			route.erase(route.size() - 1);
 		if (_isFolder(realPath) || !reqPath.compare(route))
 		{
-			event->setRredirectCode(MOVED_PERMANENTLY);
-			event->setRredirectResource(reqPath + "/");
-			return (true);
+			if (!method.compare("GET"))
+			{
+				event->setRredirectCode(MOVED_PERMANENTLY);
+				event->setRredirectResource(reqPath + "/");
+				return (true);
+			}
+			else
+			{
+				event->setRredirectCode(FORBIDEN_CODE);
+				return (false);
+			}
 		}
 	}
 	return (false);
