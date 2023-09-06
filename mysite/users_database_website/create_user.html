@@ -27,9 +27,18 @@
 					<li class="nav-item">
 					<a class="nav-link" href="/team">Team</span></a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="/cgi_demonstration">Cgi Demonstration</a>
-				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" id="cgi_demoDropDownMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Cgi Demonstration
+					</a>
+					<div class="dropdown-menu navbar_color" aria-labelledby="cgi_demoDropDownMenu">
+						<a class="dropdown-item navbar_dropdown_items" href="/cgi_demonstration/">CGI Home Page</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item navbar_dropdown_items" href="/cgi_demonstration/create_user/">Add User</a>
+						<a class="dropdown-item navbar_dropdown_items" href="/cgi_demonstration/delete_user/">List & Remove Users</a>
+						<a class="dropdown-item navbar_dropdown_items" href="#">Specific User Info (NOT WORKING)</a>
+					</div>
+				  </li>
 				</ul>
 			</div>
 		</div>
@@ -41,7 +50,7 @@
 
 					<h1 class="database_managment_header"> CGI DEMONSTRATION - ADD USER </h1>
 
-					<form class="database_form_style">
+					<form class="database_form_style" action="/created_user" method="POST">
 						<div class="row mb-4">
 							<label for="name" class="col-sm-1 col-form-label database_add_text">Name</label>
 							<div class="col-sm-4">
