@@ -49,33 +49,12 @@
 		<div class="bg-image">
 			<div class="darker_bg">
 				<div class="database_add_container">
-
-					<h1 class="database_managment_header"> CGI DEMONSTRATION - ADD USER </h1>
-
-					<form class="database_form_style" action="/created_user" method="POST">
-						<div class="row mb-4">
-							<label for="name" class="col-sm-1 col-form-label database_add_text">Name</label>
-							<div class="col-sm-4">
-								<input type="text" id="name" name="name" class="form-control database_form_input_style" required>
-							</div>
-						</div>
-
-						<div class="row mb-4">
-							<label for="age" class="col-sm-1 col-form-label database_add_text">Age</label>
-							<div class="col-sm-1">
-								<input type="number" id="age" name="age" class="form-control database_form_input_style" required>
-							</div>
-						</div>
-
-						<div class="row mb-4">
-							<label for="email" class="col-sm-1 col-form-label database_add_text">Email</label>
-							<div class="col-sm-4">
-								<input type="email" id="email" name="email" class="form-control database_form_input_style" required>
-							</div>
-						</div>
-
-						<div class="row mb-4">
-							<button type="submit" class="btn btn-dark database_form_input_style" style="width: 100px;">Add User</button>
+					<h1 class="database_managment_header"> CGI DEMONSTRATION - UPLOAD FILES </h1>
+					<form class="database_form_style" enctype="multipart/form-data" action="/uploads" method="POST">
+						<div class="col-sm-4">
+							<label for="fileTest" class="col-sm-1 col-form-label database_add_text" style="width: 200px;">Choose a file to upload:</label><br>
+							<input type="file" id="fileTest" name="fileTest" class="form-control database_form_input_style"><br>
+							<button type="submit" class="btn btn-dark database_form_input_style" style="width: 150px;">Make Upload</button>
 						</div>
 					</form>
 				</div>
