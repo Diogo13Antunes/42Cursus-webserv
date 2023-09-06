@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   InitialState.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/05 10:35:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/06 09:48:31 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 		return (ERROR_HANDLING);
 	if (_isFolder(realPath))
 	{
-		if (!config.getLocationAutoIndex(route).compare("on"))
+		if (config.getLocationAutoIndex(route))
 			return (DIRECTORY_LISTING);
 		else
 		{

@@ -20,7 +20,8 @@ Location::Location(void):
 
 Location::Location(std::string masterRoot, std::vector<std::string> locationInfo):
 	_locationError(true),
-	_redirection(std::make_pair(0, ""))
+	_redirection(std::make_pair(0, "")),
+	_autoIndex(false)
 {
 	std::vector<std::string>::iterator	it;
 	std::string	key;
@@ -109,7 +110,7 @@ std::pair<int, std::string>	Location::getRedirection(void)
 	return (_redirection);
 }
 
-std::string	Location::getAutoIndex(void)
+bool	Location::getAutoIndex(void)
 {
 	return (_autoIndex);
 }
@@ -264,9 +265,7 @@ void	Location::_setAutoIndex(std::string &autoindex)
 
 	value = getValue(autoindex);
 	if (!value.compare("on"))
-		_autoIndex = "on";
-	else
-		_autoIndex = "off";
+		_autoIndex = true;
 }
 
 /* STATIC FUNCTIONS */

@@ -296,13 +296,13 @@ std::string ServerConfig::getLocationAlias(std::string route)
 	return (std::string());
 }
 
-std::string ServerConfig::getLocationAutoIndex(std::string route)
+bool	ServerConfig::getLocationAutoIndex(std::string route)
 {
 	Location *location;
 
 	location = _getSpecificLocations(route);
 	if (!location)
-		return (std::string());
+		return (false);
 	return (location->getAutoIndex());
 }
 

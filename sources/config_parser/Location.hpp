@@ -19,7 +19,7 @@ class Location
 	std::vector<std::string>		_acceptedDefault;
 	std::pair<int, std::string>		_redirection;
 	std::string						_alias;
-	std::string						_autoIndex;
+	bool							_autoIndex;
 
 	void	_initAcceptedDefault(void);
 	void	_updateLocationError(bool newLocationError);
@@ -51,5 +51,5 @@ class Location
 		bool						existCgi(void);
 		bool						existUploadStore(void);
 		bool						isAcceptedMethod(std::string method);
-		std::string					getAutoIndex(void);
+		bool						getAutoIndex(void);
 };
