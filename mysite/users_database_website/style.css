@@ -55,6 +55,31 @@ body {
 	background-color: rgb(97, 103, 122);
 }
 
+/* ERROR PAGES STYLES */
+
+.error_pages_container {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	/* padding-top: 20vh; */
+	text-align: center;
+}
+
+.error_number {
+	font-family: 'Azeret Mono', monospace;
+	font-family: 'Paytone One', sans-serif;
+	font-size: 250px;
+}
+
+.type_of_error {
+	font-family: 'Azeret Mono', monospace;
+	font-family: 'Paytone One', sans-serif;
+	font-size: 70px;
+}
+
+/* ERROR PAGES STYLES */
+
 .welcome_to_webserv_header {
 	position: relative;
     padding-top: 16%;
