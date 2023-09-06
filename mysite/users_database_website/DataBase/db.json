@@ -1,0 +1,17 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "name": "diogo",
+            "age": "69",
+            "email": "cdsa@gmail.com"
+        },
+        {
+            "id": 2,
+            "name": "pedro",
+            "age": "11",
+            "email": "pedro@sapo.pt"
+        }
+    ],
+    "last_id": 2
+}
