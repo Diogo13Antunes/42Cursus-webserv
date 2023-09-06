@@ -10,7 +10,7 @@
 		<link href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" rel="stylesheet">
 	</head>
 	<body>
-		<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+		<nav class="navbar fixed-top navbar-expand-lg navbar-dark navbar_color">
 			<div class="container">
 			  <a class="navbar-brand" href="/">WebServ</a>
 			  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +28,7 @@
 					<a class="nav-link" href="/team">Team</span></a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="/database_managment">DataBase Managment</a>
+					<a class="nav-link" href="/cgi_demonstration">Cgi Demonstration</a>
 				</li>
 				</ul>
 			</div>
@@ -39,32 +39,34 @@
 			<div class="darker_bg">
 				<div class="database_add_container">
 
-					<h1 class="database_managment_header"> DATABASE MANAGMENT - ADD USER </h1>
+					<h1 class="database_managment_header"> CGI DEMONSTRATION - ADD USER </h1>
 
 					<form class="database_form_style">
-						<div class="row mb-3">
+						<div class="row mb-4">
 							<label for="name" class="col-sm-1 col-form-label database_add_text">Name</label>
 							<div class="col-sm-4">
-								<input type="text" id="name" name="name" class="form-control" required>
+								<input type="text" id="name" name="name" class="form-control database_form_input_style" required>
 							</div>
 						</div>
 
 						<div class="row mb-4">
 							<label for="age" class="col-sm-1 col-form-label database_add_text">Age</label>
 							<div class="col-sm-1">
-								<input type="number" id="age" name="age" class="form-control" required>
+								<input type="number" id="age" name="age" class="form-control database_form_input_style" required>
 							</div>
 						</div>
 
 						<div class="row mb-4">
 							<label for="email" class="col-sm-1 col-form-label database_add_text">Email</label>
 							<div class="col-sm-4">
-								<input type="email" id="email" name="email" class="form-control" required>
+								<input type="email" id="email" name="email" class="form-control database_form_input_style" required>
 							</div>
 						</div>
-
-						<button type="submit" class="btn btn-dark"> Add User</button>
-					</form>					
+						
+						<div class="row mb-4 col-sm-1">
+							<button type="submit" class="btn btn-dark database_form_input_style" style="width: 100px"> Add User</button>
+						</div>
+					</form>
 				</div>
 			</div>
 		</div>
