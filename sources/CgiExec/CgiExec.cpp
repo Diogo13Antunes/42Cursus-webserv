@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 15:56:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 17:39:07 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/06 14:53:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ int CgiExec::execute(Event *event)
 {
 	int		p1[2];
 	int		p2[2];
+	int		pid;
 	char	**env;
-	
+
 	if (pipe(p1) == -1 || pipe(p2) == -1)
 		return (-1);
-
 	env = _getEnvVars(event);
 	if (!env)
 	{
@@ -31,12 +31,41 @@ int CgiExec::execute(Event *event)
 		_closePipe(p2);
 		return (-1);
 	}
-
-	// Executar CGI
-	if (_execute(env, event->getResourcePath(), p1, p2))
+	pid = _execute(env, event->getResourcePath(), p1, p2);
+	if (pid == -1)
+	{
+		_freeEnvVariables(env);
 		return (-1);
-
+	}
+	_freeEnvVariables(env);
+	event->setCgiWriteFd(p1[1]);
+	close(p1[0]);
+	event->setCgiReadFd(p2[0]);
+	close(p2[1]);
+	event->setCgiPid(pid);
 	return (0);
+}
+
+bool CgiExec::isEnded(Event *event)
+{
+	int	cgiPid;
+	int res;
+	int	status;
+
+	cgiPid = event->getCgiPid();
+	res = waitpid(cgiPid, &status, WNOHANG);
+	if (res < 0)
+	{
+		event->setCgiExitStatus(res);
+		return (true);
+	}
+	if (res == cgiPid)
+	{
+		status = WEXITSTATUS(status);
+		event->setCgiExitStatus(status);
+		return (true);
+	}
+	return (false);
 }
 
 char** CgiExec::_getEnvVars(Event *event)
@@ -74,7 +103,6 @@ void CgiExec::_closePipe(int *p)
 	close(p[1]);
 }
 
-
 std::string	CgiExec::_getScriptInterpreter(std::string scriptPath)
 {
 	std::ifstream	file(scriptPath.c_str());
@@ -90,11 +118,22 @@ std::string	CgiExec::_getScriptInterpreter(std::string scriptPath)
 	return (result);
 }
 
+void CgiExec::_freeEnvVariables(char **env)
+{
+	if (env)
+	{
+		for (size_t i = 0; env[i] ; i++)
+			delete[] env[i];
+		delete[] env;
+	}
+}
+
 int CgiExec::_execute(char **env, std::string scriptPath, int *p1, int *p2)
 {
 	std::string scriptRunner;
 	int pid;
 
+	// pode ser um executável nesse caso tentar executar na mesma
 	scriptRunner = _getScriptInterpreter(scriptPath);
 	if (scriptRunner.empty())
 		return (-1);
@@ -109,7 +148,8 @@ int CgiExec::_execute(char **env, std::string scriptPath, int *p1, int *p2)
 		_closePipe(p1);
 		_closePipe(p2);
 		execve(scriptRunner.c_str(), const_cast<char**>(av), env);
+		_freeEnvVariables(env);
 		exit(-1);
 	}
-	return (0);
+	return (pid);
 }

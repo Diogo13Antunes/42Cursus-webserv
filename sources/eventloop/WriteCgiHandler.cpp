@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:39:35 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 11:55:12 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/06 15:43:15 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,45 @@ WriteCgiHandler::~WriteCgiHandler(void) {}
 void WriteCgiHandler::handleEvent(Event *event)
 {
 	const char*	bodyStr;
+	int			bodySize;
+	ssize_t		numBytesSend;
+	ssize_t		numBytesSent;
+
+	std::cout << "WriteCgiHandler" << std::endl;
+
+	bodyStr = event->getReqBody().c_str();
+	bodySize = event->getReqBody().size();
+	numBytesSent = event->getNumBytesSendCgi();
+	if (numBytesSent < numBytesSend)
+		bodyStr += numBytesSent;
+	numBytesSend = write(event->getCgiWriteFd(), bodyStr, bodySize - numBytesSent);
+
+	std::cout << "numBytesSend: " << numBytesSend << std::endl;
+
+	if (numBytesSend == -1 || numBytesSend == 0)
+	{
+		event->setActualState(TYPE_TRANSITION);
+		event->setStatusCode(500);
+		event->closeCgiWriteFd();
+	}
+	event->updateNumBytesSendCgi(numBytesSend);
+	if (event->getNumBytesSendCgi() >= bodySize)
+	{
+		event->setActualState(TYPE_TRANSITION);
+		event->closeCgiWriteFd();
+	}
+}
+
+/*
+void WriteCgiHandler::handleEvent(Event *event)
+{
+	const char*	bodyStr;
 	size_t		bodySize;
 	size_t		sentChars;
 	int			nwrite;
+
+
+	std::cout << "WriteCgiHandler" << std::endl;
 
 	bodyStr = event->getReqBody().c_str();
 	bodySize = event->getReqBody().size();
@@ -49,7 +85,7 @@ void WriteCgiHandler::handleEvent(Event *event)
 		event->setActualState(TYPE_TRANSITION);
 	}
 }
-
+*/
 
 /*
 void WriteCgiHandler::handleEvent(Event *event)

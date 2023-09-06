@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/05 11:18:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/06 16:53:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,19 @@ Event::Event(int fd, int state):
 	_finished(false),
 	_connectionClosed(-1),
 	_clientDisconnect(false),
-	_cgiExitStatus(NO_EXIT_STATUS),
+	//_cgiExitStatus(NO_EXIT_STATUS),
 	_cgiSentChars(0),
 	_statusCode(0),
 	_redirectCode(0),
 	_fileSize(0),
 	_fileNumBytesRead(0),
-	_serverConf(NULL)
-	
+	_serverConf(NULL),
+	_numBytesSendCgi(0),
+	_cgiWriteFd(-1),
+	_cgiReadFd(-1),
+	_cgiPid(0),
+	_cgiExitStatus(0),
+	_cgiScriptEndend(false)
 {
 	SocketUtils::getHostAndPort(_fd, _ip, _port);
 }
@@ -64,6 +69,8 @@ Event::~Event(void)
 {
 	if (_cgiEx)
 		delete _cgiEx;
+	this->closeCgiWriteFd();
+	this->closeCgiReadFd();
 }
 
 /*
@@ -83,7 +90,7 @@ short Event::getState(void)
 	return (_state);
 }
 
-std::string&	Event::getResponse(void)
+std::string& Event::getResponse(void)
 {
 	return (_res);
 }
@@ -630,6 +637,8 @@ int Event::getCgiFd(void)
 	return (-1);
 }
 
+
+/*
 int Event::getCgiWriteFd(void)
 {
 	if (_cgiEx)
@@ -643,13 +652,17 @@ int Event::getCgiReadFd(void)
 		return (_cgiEx->getReadFD());
 	return (-1);
 }
+*/
+
+
+
 
 std::string		Event::getCgiScriptResult(void)
 {
 	return (_cgiScriptResult);
 }
 
-void	Event::updateCgiScriptResult(std::string src)
+void	Event::updateCgiScriptResult(std::string& src)
 {
 	_cgiScriptResult += src;
 }
@@ -865,15 +878,19 @@ int Event::readFromCgi(std::string &str)
 	return (-1);
 }
 
+/*
 void Event::setCgiExitStatus(int cgiExitStatus)
 {
 	_cgiExitStatus = cgiExitStatus;
 }
+*/
 
+/*
 int Event::getCgiExitStatus(void)
 {
 	return (_cgiExitStatus);
 }
+*/
 
 void	Event::updateCgiSentChars(size_t value)
 {
@@ -1013,3 +1030,119 @@ bool Event::isAutoindex(void)
 	return (_autoindex);
 }
 */
+
+/*
+void Event::setFdCgiW(int fdCgiW)
+{
+	_fdCgiW = fdCgiW;
+}
+
+int Event::getFdCgiW(void)
+{
+	return (_fdCgiW);
+}
+
+void Event::setFdCgiR(int fdCgiR)
+{
+	_fdCgiR = fdCgiR;
+}
+
+int Event::getFdCgiR(void)
+{
+	return (_fdCgiR);
+}
+
+void Event::setPidCgi(int pidCgi)
+{
+	_pidCgi = pidCgi;
+}
+
+int Event::getPidCgi(void)
+{
+	return (_pidCgi);
+}
+*/
+
+int Event::getCgiWriteFd(void)
+{
+	return (_cgiWriteFd);
+}
+
+void Event::setCgiWriteFd(int cgiWriteFd)
+{
+	_cgiWriteFd = cgiWriteFd;
+}
+
+int Event::getCgiReadFd(void)
+{
+	return (_cgiReadFd);
+}
+
+void Event::setCgiReadFd(int cgiReadFd)
+{
+	_cgiReadFd = cgiReadFd;
+}
+
+int Event::getCgiPid(void)
+{
+	return (_cgiPid);
+}
+
+void Event::setCgiPid(int pidCgi)
+{
+	_cgiPid = pidCgi;
+}
+
+ssize_t Event::getNumBytesSendCgi(void)
+{
+	return (_numBytesSendCgi);
+}
+
+void Event::setNumBytesSendCgi(ssize_t numBytesSendCgi)
+{
+	_numBytesSendCgi = numBytesSendCgi;
+}
+
+void Event::updateNumBytesSendCgi(ssize_t numBytesSendCgi)
+{
+	_numBytesSendCgi += numBytesSendCgi;
+}
+
+void Event::closeCgiWriteFd(void)
+{
+	if (_cgiWriteFd < 0)
+		return ;
+	close(_cgiWriteFd);
+	_cgiWriteFd = -1;
+}
+
+void Event::closeCgiReadFd(void)
+{
+	if (_cgiReadFd < 0)
+		return ;
+	close(_cgiReadFd);
+	_cgiReadFd = -1;
+}
+
+//bool	cgiScriptEndend
+
+
+int Event::getCgiExitStatus(void)
+{
+	return (_cgiExitStatus);
+}
+
+void Event::setCgiExitStatus(int cgiExitStatus)
+{
+	_cgiExitStatus = cgiExitStatus;
+}
+
+bool Event::isCgiScriptEndend(void)
+{
+	return (_cgiScriptEndend);
+}
+
+void Event::setCgiScriptEndend(bool cgiScriptEndend)
+{
+	_cgiScriptEndend = cgiScriptEndend;
+}

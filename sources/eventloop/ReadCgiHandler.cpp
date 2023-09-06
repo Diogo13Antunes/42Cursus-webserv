@@ -3,35 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   ReadCgiHandler.cpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:38:17 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/16 11:52:51 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/09/06 16:00:29 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ReadCgiHandler.hpp"
-
 #include <iostream>
 
-ReadCgiHandler::ReadCgiHandler(void)
-{
+#define BUFFER_SIZE	50000
 
-}
+ReadCgiHandler::ReadCgiHandler(void) {}
 
-ReadCgiHandler::~ReadCgiHandler(void)
-{
-
-}
+ReadCgiHandler::~ReadCgiHandler(void) {}
 
 void ReadCgiHandler::handleEvent(Event *event)
 {
-	std::string str;
-	int			nRead;
+	char	buffer[BUFFER_SIZE];
+	ssize_t	nRead;
+	std::string	dataRead;
 
-	nRead = event->readFromCgi(str);
-	if (nRead > 0)
-		event->updateCgiScriptResult(str);
+	std::cout << "ReadCgiHandler" << std::endl;
+
+	nRead = read(event->getCgiReadFd(), buffer, BUFFER_SIZE);
+	if (nRead <= 0)
+		event->setStatusCode(500);
+	dataRead.assign(buffer, nRead);
+	event->updateCgiScriptResult(dataRead);
 }
 
 EventType ReadCgiHandler::getHandleType(void)

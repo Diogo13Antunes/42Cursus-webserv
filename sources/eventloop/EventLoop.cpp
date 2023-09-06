@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/21 16:33:45 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/09/06 16:56:09 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventLoop.hpp"
 #include "CGIExecuter.hpp"
 #include "Signals.hpp"
+#include "CgiExec.hpp"
 
 EventLoop::EventLoop(void): AMessengerClient(NULL) {}
 
@@ -20,7 +21,6 @@ EventLoop::~EventLoop(void)
 {
 	_cleanUpMap(_handlers.begin(), _handlers.end());
 	_cleanUpMap(_eventMap.begin(), _eventMap.end());
-	//std::cout << "~EventLoop" << std::endl;
 }
 
 void EventLoop::registerEventHandler(IEventHandler *eventHandler)
@@ -213,6 +213,46 @@ void EventLoop::_closeTimeoutEvents(void)
 	}
 }
 
+
+void EventLoop::_checkIfCgiScriptsFinished(void)
+{
+	std::map<int, Event*>::iterator	itMap;
+	std::map<int, Event*>::iterator	itMapBackUp;
+	Event							*event;
+	int								fd;
+	int								status;
+
+	if (_cgiEventMap.empty())
+		return ;
+	itMap = _cgiEventMap.begin();
+	while (itMap != _cgiEventMap.end())
+	{
+		fd = itMap->first;
+		if (!_getEventFromMap(_eventMap, fd))
+		{
+			_cgiEventMap.erase(itMap);
+			continue ;
+		}
+		event = itMap->second;
+
+		if (event->isCgiScriptEndend())
+		{
+			event->setActualState(TYPE_TRANSITION);
+			_addEventToQueue(fd);
+			itMapBackUp = itMap;
+			itMapBackUp++;
+			_cgiEventMap.erase(itMap);
+			itMap = itMapBackUp;
+			continue ;		
+		}
+		else if (CgiExec::isEnded(event))
+			event->setCgiScriptEndend(true);
+		itMap++;
+	}
+}
+
+
+/*
 void EventLoop::_checkIfCgiScriptsFinished(void)
 {
 	std::map<int, Event*>::iterator	itMap;
@@ -249,6 +289,7 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 		itMap++;
 	}
 }
+*/
 
 void EventLoop::_finalizeEvent(Event *event)
 {

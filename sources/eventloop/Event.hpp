@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/04 11:10:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/06 14:38:09 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,21 @@ class Event
 
 		ServerConfig*	_serverConf;
 
+
+		/*int _fdCgiW;
+		int _fdCgiR;
+		int _pidCgi;*/
+
+		int	_cgiWriteFd;
+		int	_cgiReadFd;
+		int _cgiPid;
+
 		//bool	_autoindex;
+
+		ssize_t _numBytesSendCgi;
+
+		bool	_cgiScriptEndend;
+		//int		_cgiExitStatus;
 
 	public:
 		Event(void);
@@ -213,7 +227,7 @@ class Event
 
 
 		std::string		getCgiScriptResult(void);
-		void			updateCgiScriptResult(std::string src);
+		void			updateCgiScriptResult(std::string& src);
 
 		bool				isEventTimeout(void);
 
@@ -274,8 +288,8 @@ class Event
 		int		writeToCgi(const char *str, size_t size);
 		int		readFromCgi(std::string &str);
 
-		void	setCgiExitStatus(int cgiExitStatus);
-		int		getCgiExitStatus(void);
+		//void	setCgiExitStatus(int cgiExitStatus);
+		//int		getCgiExitStatus(void);
 
 		std::string	getBody(void);		
 		void		updateReqBody(std::string body);
@@ -318,4 +332,33 @@ class Event
 
 		//void setAutoindex(bool autoindex);
 		//bool isAutoindex(void);
+
+
+		/*
+		void setFdCgiW(int fdCgiW);
+		int getFdCgiW(void);
+		void setFdCgiR(int fdCgiR);
+		int getFdCgiR(void);
+		void setPidCgi(int pidCgi);
+		int getPidCgi(void);
+		*/
+
+		void setCgiWriteFd(int cgiWriteFd);
+		void setCgiReadFd(int cgiReadFd);
+
+		int getCgiPid(void);
+		void setCgiPid(int pidCgi);
+
+		ssize_t getNumBytesSendCgi(void);
+		void setNumBytesSendCgi(ssize_t numBytesSendCgi);
+		void updateNumBytesSendCgi(ssize_t numBytesSendCgi);
+
+		void closeCgiWriteFd(void);
+		void closeCgiReadFd(void);
+
+		int getCgiExitStatus(void);
+		void setCgiExitStatus(int cgiExitStatus);
+
+		bool isCgiScriptEndend(void);
+		void setCgiScriptEndend(bool cgiScriptEndend);
 };
