@@ -5,6 +5,8 @@ import json
 import os
 
 def getUserInfo(db, userToRemove):
+	if userToRemove == None:
+		return None
 	users_list = db["users"]
 	for user in users_list:
 		if user["id"] == userToRemove:
@@ -13,7 +15,11 @@ def getUserInfo(db, userToRemove):
 
 data = os.getenv('QUERY_STRING')
 dataDict = parse_qs(data)
-id = int(dataDict['id'][0])
+
+if 'id' in dataDict and dataDict['id']:
+	id = int(dataDict['id'][0])
+else:
+	id = None
 
 dataBaseDir = "mysite/users_database_website/DataBase"
 dataBaseFileName = "db.json"
