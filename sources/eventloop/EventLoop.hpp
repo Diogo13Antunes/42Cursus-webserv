@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/07 15:28:33 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/08 16:24:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,8 @@ class EventLoop: public AMessengerClient
 		void	_handleClientDisconnect(Event *event);
 		int		_getNextEventFromQueue(void);
 		void	_sendMessages(Event *event);
-
-		template <typename T>
-		void _cleanUpMap(T begin, T end);
+		void	_cleanHandlers(void);
+		void	_cleanEvents(void);
 
 		// DEBUG
 		void _showEventMap(void);

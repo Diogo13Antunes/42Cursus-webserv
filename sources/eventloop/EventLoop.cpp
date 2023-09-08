@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/08 15:18:27 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/08 16:29:11 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ EventLoop::EventLoop(void): AMessengerClient(NULL) {}
 
 EventLoop::~EventLoop(void)
 {
-	_cleanUpMap(_handlers.begin(), _handlers.end());
-	_cleanUpMap(_eventMap.begin(), _eventMap.end());
+	_cleanHandlers();
+	_cleanEvents();
 }
 
 void EventLoop::registerEventHandler(IEventHandler *eventHandler)
@@ -249,101 +249,15 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 	}
 }
 
-/*
-void EventLoop::_checkIfCgiScriptsFinished(void)
-{
-	std::map<int, Event*>::iterator	itMap;
-	std::map<int, Event*>::iterator	itMapBackUp;
-	Event							*event;
-	int								fd;
-	int								status;
-
-	if (_cgiEventMap.empty())
-		return ;
-	itMap = _cgiEventMap.begin();
-	while (itMap != _cgiEventMap.end())
-	{
-		fd = itMap->first;
-		if (!_getEventFromMap(_eventMap, fd))
-		{
-			_cgiEventMap.erase(itMap);
-			continue ;
-		}
-		event = itMap->second;
-
-		if (event->isCgiScriptEndend())
-		{
-			event->setActualState(TYPE_TRANSITION);
-			_addEventToQueue(fd);
-			itMapBackUp = itMap;
-			itMapBackUp++;
-			_cgiEventMap.erase(itMap);
-			itMap = itMapBackUp;
-			continue ;
-		}
-		else if (CgiExec::isEnded(event))
-			event->setCgiScriptEndend(true);
-		itMap++;
-	}
-}
-*/
-
-
-/*
-void EventLoop::_checkIfCgiScriptsFinished(void)
-{
-	std::map<int, Event*>::iterator	itMap;
-	std::map<int, Event*>::iterator	itMapBackUp;
-	Event							*event;
-	int								fd;
-	int								status;
-
-	if (_cgiEventMap.empty())
-		return ;
-	itMap = _cgiEventMap.begin();
-	while (itMap != _cgiEventMap.end())
-	{
-		fd = itMap->first;
-		if (!_getEventFromMap(_eventMap, fd))
-		{
-			_cgiEventMap.erase(itMap);
-			continue ;
-		}
-		event = itMap->second;
-		status = event->getCgiExitStatus();
-		if (status == NO_EXIT_STATUS)
-			event->isCgiScriptEnd();
-		else if (status != NO_EXIT_STATUS)
-		{
-			event->setActualState(TYPE_TRANSITION);
-			_addEventToQueue(fd);
-			itMapBackUp = itMap;
-			itMapBackUp++;
-			_cgiEventMap.erase(itMap);
-			itMap = itMapBackUp;
-			continue ;
-		}
-		itMap++;
-	}
-}
-*/
-
 void EventLoop::_finalizeEvent(Event *event)
 {
 	int	fd;
 
 	fd = event->getFd();
-
-	//std::cout << "fd que tem de eliminar: " << fd << std::endl;
-
-	//_showEventMap();
-
 	if (event->isConnectionClose())
 		_handleClientDisconnect(event);
 	else
 		_deleteEvent(fd);
-	
-	//_showEventMap();
 }
 
 void EventLoop::_handleClientDisconnect(Event *event)
@@ -400,7 +314,6 @@ void EventLoop::_sendMessages(Event *event)
 	else if (type == WRITE_CGI)
 	{
 		_cgiEventMap.insert(std::make_pair(event->getFd(), event));
-		//event->cgiExecute();
 		_eventMap.insert(std::make_pair(event->getCgiWriteFd(), event));
 		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_ADD_NEW));
 		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_CHANGE_TO_WRITE));
@@ -413,15 +326,35 @@ void EventLoop::_sendMessages(Event *event)
 	}
 }
 
-template <typename T>
-void EventLoop::_cleanUpMap(T begin, T end)
+void EventLoop::_cleanHandlers(void)
 {
-	T it;
+	std::map<EventType, IEventHandler*>::iterator it;
 
-	for (it = begin; it != end; it++)
+	for(it = _handlers.begin(); it != _handlers.end(); it++)
 		delete it->second;
 }
 
+void EventLoop::_cleanEvents(void)
+{
+	std::map<int, Event*>::iterator	it;
+	Event							*event;
+	int								fd;
+
+	for(it = _eventMap.begin(); it != _eventMap.end(); it++)
+	{
+		fd = it->first;
+		event = it->second;
+		if (fd != event->getFd())
+			it->second = NULL;
+	}
+	for(it = _eventMap.begin(); it != _eventMap.end(); it++)
+	{
+		if (it->second)
+			delete it->second;
+	}	
+}
+
+// DEBUG
 void EventLoop::_showEventMap(void)
 {
 	std::map<int, Event*>::iterator it;
@@ -429,8 +362,6 @@ void EventLoop::_showEventMap(void)
 	std::cout << "show _eventMap" << std::endl;
 	for (it = _eventMap.begin(); it != _eventMap.end(); it++)
 		std::cout << "fd: " << it->first << std::endl;
-	
-	//_eventMap.clear();
 }
 
 void EventLoop::_showCgiEventMap(void)
@@ -440,6 +371,4 @@ void EventLoop::_showCgiEventMap(void)
 	std::cout << "show _cgiEventMap" << std::endl;
 	for (it = _cgiEventMap.begin(); it != _cgiEventMap.end(); it++)
 		std::cout << it->first << std::endl;
-
-	//_cgiEventMap.clear();
 }
