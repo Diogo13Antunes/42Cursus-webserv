@@ -10,6 +10,7 @@ static bool		isNewLocations(std::string &src);
 static bool		isInsideNewLocations(std::string &src);
 static bool		isInsideMimeTypes(std::string &src);
 static int		strToInt(std::string &str);
+static bool		alreadyExistLocation(std::map<std::string, Location> &locations, std::string newLocation);
 
 ServerConfig::ServerConfig(void)
 {
@@ -460,6 +461,11 @@ void	ServerConfig::_setLocations(std::vector<std::string>::iterator &it,
 			{
 				newLocationURL = _getKey(*it);
 				it++;
+				if (alreadyExistLocation(_locations, newLocationURL))
+				{
+					_updateConfigError(false);
+					break;
+				}
 				while (it != itEnd && isInsideNewLocations(*it))
 				{
 					locationInfo.push_back(*it);
@@ -559,8 +565,6 @@ void	ServerConfig::_checkAllLocationsStatus(void)
 	}
 }
 
-
-// mudificar o nome "Location *_getLocation(std::string route)"
 Location	*ServerConfig::_getSpecificLocations(std::string location)
 {
 	std::map<std::string, Location>::iterator	it;
@@ -677,6 +681,16 @@ static int	strToInt(std::string &str)
 	int					intValue;
 	out >> intValue;
 	return (intValue);
+}
+
+static bool	alreadyExistLocation(std::map<std::string, Location> &locations, std::string newLocation)
+{
+	std::map<std::string, Location>::iterator	it;
+
+	it = locations.find(newLocation);
+	if (it != locations.end())
+		return (true);
+	return (false);
 }
 
 // Just for debug

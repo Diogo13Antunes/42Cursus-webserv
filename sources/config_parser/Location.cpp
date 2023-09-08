@@ -48,6 +48,8 @@ Location::Location(std::string masterRoot, std::vector<std::string> locationInfo
 				_setAlias(*it);
 			else if (!key.compare("autoindex"))
 				_setAutoIndex(*it);
+			else if (!key.compare("client_max_body_size"))
+				_setClientMaxBodySize(*it);
 			else
 				_updateLocationError(false);
 			if (getLocationError() == false)
@@ -266,6 +268,23 @@ void	Location::_setAutoIndex(std::string &autoindex)
 	value = getValue(autoindex);
 	if (!value.compare("on"))
 		_autoIndex = true;
+}
+
+void	Location::_setClientMaxBodySize(std::string &value)
+{
+	std::stringstream	out;
+	std::string strValue;
+	size_t	size;
+
+	strValue = getValue(value);
+	if (strValue.find_first_not_of("0123456789") != strValue.npos)
+		_updateLocationError(false);
+	else
+	{
+		out << strValue;
+		out >> size;
+		_clientMaxBodySize = size;
+	}
 }
 
 /* STATIC FUNCTIONS */

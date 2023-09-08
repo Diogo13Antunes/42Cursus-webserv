@@ -20,6 +20,7 @@ class Location
 	std::pair<int, std::string>		_redirection;
 	std::string						_alias;
 	bool							_autoIndex;
+	size_t							_clientMaxBodySize;
 
 	void	_initAcceptedDefault(void);
 	void	_updateLocationError(bool newLocationError);
@@ -33,6 +34,7 @@ class Location
 		std::vector<std::string>::iterator	itEnd);
 	void	_setAlias(std::string &alias);
 	void	_setAutoIndex(std::string &autoindex);
+	void	_setClientMaxBodySize(std::string &value);
 
 	public:
 		Location(void);
