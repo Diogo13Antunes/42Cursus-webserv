@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/06 14:38:09 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/07 16:55:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,13 @@ class Event
 
 		int	_cgiWriteFd;
 		int	_cgiReadFd;
+
+		bool	_cgiWriteFdRemoved;
+		bool	_cgiReadFdRemoved;
+
+		bool	_cgiWriteFdClosed;
+		bool	_cgiReadFdClosed;
+
 		int _cgiPid;
 
 		//bool	_autoindex;
@@ -361,4 +368,23 @@ class Event
 
 		bool isCgiScriptEndend(void);
 		void setCgiScriptEndend(bool cgiScriptEndend);
+
+
+	/*
+		bool	_cgiWriteFdRemoved;
+		bool	_cgiReadFdRemoved;
+
+		bool	_cgiWriteFdClosed;
+		bool	_cgiReadFdClosed;
+	*/
+
+	//bool _isCgiFdRemoved(int cgiFd);
+	//bool _isCgiFdClosed(int cgiFd);
+
+	//void _markCgiFdAsRemoved(int cgiFd);
+	//void _markCgiFdAsClosed(int cgiFd);
+
+
+
+
 };

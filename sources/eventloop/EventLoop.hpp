@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/22 10:02:44 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/09/07 15:28:33 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,10 @@ class EventLoop: public AMessengerClient
 
 		template <typename T>
 		void _cleanUpMap(T begin, T end);
+
+		// DEBUG
+		void _showEventMap(void);
+		void _showCgiEventMap(void);
 
 	public:
 		EventLoop(void);

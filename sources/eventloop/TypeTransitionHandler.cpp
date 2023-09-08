@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/06 16:54:35 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/08 15:32:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void TypeTransitionHandler::handleEvent(Event *event)
 		cgiName = serverConf->getCgiScriptName(event->getReqLinePath());
 		if (!cgiName.empty())
 		{
-			std::cout << "Script name: " << cgiName << std::endl;
+			//std::cout << "Script name: " << cgiName << std::endl;
 
 			//apenas de teste
 			event->setResourcePath(cgiName);
@@ -96,6 +96,9 @@ void TypeTransitionHandler::handleEvent(Event *event)
 			event->setActualState(WRITE_EVENT);
 		else
 			event->setActualState(READ_CGI);
+
+
+		//event->closeCgiWriteFd();
 
 		/*
 		if (event->getCgiExitStatus() != NO_EXIT_STATUS)

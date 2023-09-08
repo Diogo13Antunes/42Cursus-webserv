@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 15:56:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/06 14:53:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/07 17:18:11 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,10 @@ int CgiExec::execute(Event *event)
 	}
 	_freeEnvVariables(env);
 	event->setCgiWriteFd(p1[1]);
+	//std::cout << "-------Write Fd cgi: " << p1[1] << std::endl;
 	close(p1[0]);
 	event->setCgiReadFd(p2[0]);
+	//std::cout << "-------Read Fd cgi: " << p2[0] << std::endl;
 	close(p2[1]);
 	event->setCgiPid(pid);
 	return (0);
@@ -59,7 +61,7 @@ bool CgiExec::isEnded(Event *event)
 		event->setCgiExitStatus(res);
 		return (true);
 	}
-	if (res == cgiPid)
+	else if (res == cgiPid)
 	{
 		status = WEXITSTATUS(status);
 		event->setCgiExitStatus(status);

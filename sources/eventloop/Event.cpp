@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/06 16:53:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/08 12:42:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,9 @@ Event::Event(int fd, int state):
 	_cgiReadFd(-1),
 	_cgiPid(0),
 	_cgiExitStatus(0),
-	_cgiScriptEndend(false)
+	_cgiScriptEndend(false),
+	_cgiWriteFdClosed(false),
+	_cgiReadFdClosed(false)
 {
 	SocketUtils::getHostAndPort(_fd, _ip, _port);
 }
@@ -67,8 +69,12 @@ Event::Event(const Event &src) {}
 
 Event::~Event(void)
 {
-	if (_cgiEx)
-		delete _cgiEx;
+	if (_cgiPid > 0 && !_cgiScriptEndend)
+	{
+		std::cout << "Tenta fazer o kill" << std::endl;
+		if (kill(_cgiPid, SIGTERM) == -1)
+			std::cout << "Webserv: Error terminating SGI script Event" << std::endl;
+	}
 	this->closeCgiWriteFd();
 	this->closeCgiReadFd();
 }
@@ -1108,6 +1114,7 @@ void Event::updateNumBytesSendCgi(ssize_t numBytesSendCgi)
 	_numBytesSendCgi += numBytesSendCgi;
 }
 
+/*
 void Event::closeCgiWriteFd(void)
 {
 	if (_cgiWriteFd < 0)
@@ -1123,6 +1130,24 @@ void Event::closeCgiReadFd(void)
 	close(_cgiReadFd);
 	_cgiReadFd = -1;
 }
+*/
+
+void Event::closeCgiWriteFd(void)
+{
+	if (_cgiWriteFd < 0 || _cgiWriteFdClosed)
+		return ;
+	close(_cgiWriteFd);
+	_cgiWriteFdClosed = true;
+}
+
+void Event::closeCgiReadFd(void)
+{
+	if (_cgiReadFd < 0 || _cgiReadFdClosed)
+		return ;
+	close(_cgiReadFd);
+	_cgiReadFdClosed = true;
+}
+
 
 //bool	cgiScriptEndend
 
