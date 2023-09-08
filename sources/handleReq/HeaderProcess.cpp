@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HeaderProcess.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 10:50:27 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/01 10:27:12 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

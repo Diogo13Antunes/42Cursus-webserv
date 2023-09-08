@@ -22,12 +22,12 @@
 					<a class="nav-link" href="/">Home</a>
 				  </li>
 				  <li class="nav-item">
-					  <a class="nav-link" href="/about">About</a>
-					</li>
-					<li class="nav-item">
-					<a class="nav-link" href="/team">Team</span></a>
-				</li>
-				<li class="nav-item dropdown">
+					<a class="nav-link" href="/about">About</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="/team">Team <span class="sr-only">(current)</span></a>
+				  </li>
+				  <li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" id="cgi_demoDropDownMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Cgi Demonstration
 					</a>
@@ -42,42 +42,21 @@
 					</div>
 				  </li>
 				</ul>
+			  </div>
 			</div>
-		</div>
 		</nav>
 
 		<div class="bg-image">
 			<div class="darker_bg">
-				<div class="database_add_container">
+				<div class="team_container">
+					
+					<h1 class="team_header"> TEAM </h1>
+										
+					<img class="diogo_antunes_img" src="https://avatars.githubusercontent.com/u/87118740?v=4" alt="Clickable Image" onclick="window.location.href='https://github.com/Diogo13Antunes'">
+					<img class="diogo_pereira_img" src="https://avatars.githubusercontent.com/u/10051787?v=4" alt="Clickable Image" onclick="window.location.href='https://github.com/dspereira'">
+					<p class="team_name_da"> Diogo Antunes </p>
+					<p class="team_name_dp"> Diogo Pereira </p>
 
-					<h1 class="database_managment_header"> CGI DEMONSTRATION - ADD USER </h1>
-
-					<form class="database_form_style" action="/created_user" method="POST">
-						<div class="row mb-4">
-							<label for="name" class="col-sm-1 col-form-label database_add_text">Name</label>
-							<div class="col-sm-4">
-								<input type="text" id="name" name="name" class="form-control database_form_input_style" required>
-							</div>
-						</div>
-
-						<div class="row mb-4">
-							<label for="age" class="col-sm-1 col-form-label database_add_text">Age</label>
-							<div class="col-sm-1">
-								<input type="number" id="age" name="age" class="form-control database_form_input_style" required>
-							</div>
-						</div>
-
-						<div class="row mb-4">
-							<label for="email" class="col-sm-1 col-form-label database_add_text">Email</label>
-							<div class="col-sm-4">
-								<input type="email" id="email" name="email" class="form-control database_form_input_style" required>
-							</div>
-						</div>
-
-						<div class="row mb-4">
-							<button type="submit" class="btn btn-dark database_form_input_style" style="width: 100px;">Add User</button>
-						</div>
-					</form>
 				</div>
 			</div>
 		</div>

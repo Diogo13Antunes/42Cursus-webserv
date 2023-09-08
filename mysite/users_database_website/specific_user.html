@@ -48,51 +48,18 @@
 			<div class="darker_bg">
 				<div class="database_add_container">
 
-					<h1 class="database_managment_header"> CGI DEMONSTRATION - LIST & REMOVE USERS </h1>
+					<h1 class="database_managment_header"> CGI DEMONSTRATION - SPECIFIC USER INFO </h1>
 
-					<div class="text-center" style="padding-right: 3.75%;">
-						<table class="table table-bordered rounded border border-dark database_users_table">
-							<tr>
-								<th>ID</th>
-								<th>Name</th>
-								<th>Age</th>
-								<th>Email</th>
-							</tr>
-						</table>
-						<script>
-							var table = document.querySelector("table");
-							fetch("/DataBase/db.json")
-							.then(response => response.json())
-							.then(data => {
-								var users = data.users;
-								for (var i = 0; i < users.length; i++) {
-									var user = users[i];
-								
-									var row = table.insertRow();
-									var idCell = row.insertCell(0);
-									var nameCell = row.insertCell(1);
-									var ageCell = row.insertCell(2);
-									var emailCell = row.insertCell(3);
-									idCell.textContent = user.id;
-									nameCell.textContent = user.name;
-									ageCell.textContent = user.age;
-									emailCell.textContent = user.email;
-								}
-							})
-							.catch(error => console.error("Error loading JSON:", error));
-						</script>
-					</div>
-
-					<form class="database_form_style" action="/deleted_user" method="POST">
+					<form class="database_form_style" action="/specific_user_info" method="GET">
 						<div class="row mb-4">
-							<label for="name" class="col-sm-1 col-form-label database_add_text">ID to Remove</label>
+							<label for="name" class="col-sm-1 col-form-label database_add_text">ID to Search</label>
 							<div class="col-sm-4">
 								<input type="number" id="id" name="id" class="form-control database_form_input_style" required>
 							</div>
 						</div>
 
 						<div class="row mb-4">
-							<button type="submit" class="btn btn-dark database_form_input_style" style="width: 150px;">Remove User</button>
+							<button type="submit" class="btn btn-dark database_form_input_style" style="width: 150px;">Search User</button>
 						</div>
 					</form>
 				</div>

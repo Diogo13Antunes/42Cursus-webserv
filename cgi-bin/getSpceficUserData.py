@@ -4,17 +4,22 @@ from urllib.parse import parse_qs
 import json
 import os
 
-def removeUserFromDataBase(db, userToRemove):
+def getUserInfo(db, userToRemove):
+	if userToRemove == None:
+		return None
 	users_list = db["users"]
 	for user in users_list:
 		if user["id"] == userToRemove:
-			users_list.remove(user)
-			return True
-	return False
+			return user
+	return None
 
-data = input()
+data = os.getenv('QUERY_STRING')
 dataDict = parse_qs(data)
-id = int(dataDict['id'][0])
+
+if 'id' in dataDict and dataDict['id']:
+	id = int(dataDict['id'][0])
+else:
+	id = None
 
 dataBaseDir = "mysite/users_database_website/DataBase"
 dataBaseFileName = "db.json"
@@ -23,10 +28,14 @@ dataBasePath = os.path.join(dataBaseDir, dataBaseFileName)
 with open(dataBasePath, "r") as file:
 	fileData = json.load(file)
 
-if removeUserFromDataBase(fileData, id) == True:
-	with open(dataBasePath, "w") as file:
-		json.dump(fileData, file, indent=4)
-	msg = "User removed from DataBase"
+user_data = getUserInfo(fileData, id)
+
+if user_data:
+	id_str = f"<h2>USER ID -> {user_data['id']} </h2>"
+	name = f"<p>Name:  {user_data['name']} </p>"
+	age = f"<p>Age:   {user_data['age']} </p>"
+	email = f"<p>Email: {user_data['email']} </p>"
+	msg = id_str + name + age + email
 else:
 	msg = "Id does not match any existent user in DataBase"
 
