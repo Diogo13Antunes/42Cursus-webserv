@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/08 15:32:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/10 15:03:40 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,7 @@ void TypeTransitionHandler::handleEvent(Event *event)
 		cgiName = serverConf->getCgiScriptName(event->getReqLinePath());
 		if (!cgiName.empty())
 		{
-			//std::cout << "Script name: " << cgiName << std::endl;
 
-			//apenas de teste
 			event->setResourcePath(cgiName);
 			if (CgiExec::execute(event) == -1)
 			{
@@ -75,12 +73,6 @@ void TypeTransitionHandler::handleEvent(Event *event)
 				return ;
 			}
 			event->setActualState(WRITE_CGI);
-
-			/*
-			std::cout << "R  : " << event->getCgiReadFd() << std::endl;
-			std::cout << "W  : " << event->getCgiWriteFd() << std::endl;
-			std::cout << "pid: " << event->getCgiPid() << std::endl;
-			*/
 		}
 		else
 			event->setActualState(WRITE_EVENT);
@@ -96,16 +88,6 @@ void TypeTransitionHandler::handleEvent(Event *event)
 			event->setActualState(WRITE_EVENT);
 		else
 			event->setActualState(READ_CGI);
-
-
-		//event->closeCgiWriteFd();
-
-		/*
-		if (event->getCgiExitStatus() != NO_EXIT_STATUS)
-			event->setActualState(WRITE_EVENT);
-		else
-			event->setActualState(READ_CGI);
-		*/
 	}
 	else if (event->getOldState() == READ_CGI)
 		event->setActualState(WRITE_EVENT);

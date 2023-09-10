@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:38:17 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/07 17:24:45 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/10 15:09:16 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@ void ReadCgiHandler::handleEvent(Event *event)
 {
 	ssize_t		nRead;
 	std::string	dataRead;
-
-	//std::cout << "ReadCgiHandler" << std::endl;
 
 	nRead = read(event->getCgiReadFd(), _buffer, BUFFER_CGI_READ_SIZE);
 	if (nRead <= 0)

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/31 12:07:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/10 16:06:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,8 @@
 #include "ResponseState.hpp"
 #include "CgiResponseHandlingState.hpp"
 
-HandleRes::HandleRes(ConfigsData *configsData):
+HandleRes::HandleRes(void):
 	_event(NULL),
-	_configsData(configsData),
 	_serverConf(NULL)
 {
 	_stateMap.insert(std::make_pair(INITIAL_STATE, new InitialState()));
