@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 11:42:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 11:56:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	std::cout << "resourcePath: " << resourcePath << std::endl;
 
 
+	if (!event->getReqLineMethod().compare("GET"))
+		return (REQUEST_END);
 	if (event->getStatusCode())
 		return (REQUEST_END);
 	if (_isChunkedTransfer(event))
