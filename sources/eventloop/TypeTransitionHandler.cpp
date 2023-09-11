@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/10 15:03:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 09:37:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,17 @@ void TypeTransitionHandler::handleEvent(Event *event)
 	
 	if (event->getOldState() == READ_SOCKET)
 	{
-		serverConf = _getServerConfig(event, _configs->getServers());
+		/*serverConf = _getServerConfig(event, _configs->getServers());
 		event->setServerConfing(serverConf);
 		if (!serverConf)
 		{
 			event->setActualState(WRITE_EVENT);
 			return ;
-		}
-		// esta função precisa ser alterada por causa da rota
+		}*/
+		//esta função precisa ser alterada por causa da rota
+
+		serverConf = event->getServerConfing();
+
 		cgiName = serverConf->getCgiScriptName(event->getReqLinePath());
 		if (!cgiName.empty())
 		{

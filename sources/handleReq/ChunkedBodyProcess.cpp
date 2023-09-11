@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/02 14:19:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 13:56:30 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 08:41:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ ChunkedBodyProcess::ChunkedBodyProcess(void) {}
 
 ChunkedBodyProcess::~ChunkedBodyProcess(void) {}
 
-StateReqType ChunkedBodyProcess::handle(Event *event)
+StateReqType ChunkedBodyProcess::handle(Event *event, ConfigsData *configsData)
 {
 	std::string	bodyChunked = event->getReqRaw1();
 	size_t				index;

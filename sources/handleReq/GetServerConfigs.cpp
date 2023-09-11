@@ -1,24 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   BodyProcess.hpp                                    :+:      :+:    :+:   */
+/*   GetServerConfigs.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:49:49 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 08:40:50 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/09/11 08:53:06 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/09/11 08:59:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "GetServerConfigs.hpp"
 
-#include "IState.hpp"
+#include <iostream>
 
-class BodyProcess: public IState
+GetServerConfigs::GetServerConfigs(void) {}
+
+GetServerConfigs::~GetServerConfigs(void) {}
+
+StateReqType GetServerConfigs::handle(Event *event, ConfigsData *configsData)
 {
-	public:
-		BodyProcess(void);
-		~BodyProcess(void);
-
-		StateReqType handle(Event *event, ConfigsData *configsData);
-};
+	std::cout << "GetServerConfigs" << std::endl;
+	exit(0);
+}

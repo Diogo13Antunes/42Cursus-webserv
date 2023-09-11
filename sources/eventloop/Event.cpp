@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/08 15:55:11 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 11:32:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -960,6 +960,7 @@ void	Event::setCgiBodyRes(std::string &src)
 	_cgiBodyRes = src;
 }
 
+/*
 void Event::setResourcePath(std::string resourcePath)
 {
 	_resourcePath = resourcePath;
@@ -968,7 +969,7 @@ std::string Event::getResourcePath(void)
 {
 	return (_resourcePath);
 }
-
+*/
 
 void Event::setRredirectCode(int redirectCode)
 {
@@ -1171,3 +1172,34 @@ void Event::setCgiScriptEndend(bool cgiScriptEndend)
 {
 	_cgiScriptEndend = cgiScriptEndend;
 }
+
+std::string Event::getRoute(void)
+{
+	return (_route);
+}
+
+void Event::setRoute(std::string route)
+{
+	_route = route;
+}
+
+std::string Event::getRequestedPath(void)
+{
+	return (_requestedPath);
+}
+
+void Event::setRequestedPath(std::string requestedPath)
+{
+	_requestedPath = requestedPath;
+}
+
+std::string Event::getResourcePath(void)
+{
+	return (_resourcePath);
+}
+
+void Event::setResourcePath(std::string resourcePath)
+{
+	_resourcePath = resourcePath;
+}
+

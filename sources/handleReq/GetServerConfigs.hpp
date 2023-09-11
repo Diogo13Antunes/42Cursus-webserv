@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   BodyProcess.hpp                                    :+:      :+:    :+:   */
+/*   GetServerConfigs.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:49:49 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 08:40:50 by dsilveri         ###   ########.fr       */
+/*   Created: 2023/09/11 08:53:09 by dsilveri          #+#    #+#             */
+/*   Updated: 2023/09/11 08:58:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 #include "IState.hpp"
 
-class BodyProcess: public IState
+class GetServerConfigs: public IState
 {
 	public:
-		BodyProcess(void);
-		~BodyProcess(void);
+		GetServerConfigs(void);
+		~GetServerConfigs(void);
 
 		StateReqType handle(Event *event, ConfigsData *configsData);
 };

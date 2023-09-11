@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/07 16:55:13 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 11:32:02 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ class Event
 		std::string _port;
 		std::string	_cgiBodyRes;
 
-		std::string	_resourcePath;
+		//std::string	_resourcePath;
 
 		int			_redirectCode;
 		std::string	_redirectResource;
@@ -132,6 +132,10 @@ class Event
 
 		bool	_cgiScriptEndend;
 		//int		_cgiExitStatus;
+
+		std::string _route;
+		std::string _requestedPath;
+		std::string _resourcePath;
 
 	public:
 		Event(void);
@@ -317,8 +321,8 @@ class Event
 		std::string getIp(void);
 		std::string getPort(void);
 
-		void setResourcePath(std::string resourcePath);
-		std::string getResourcePath(void);
+		//void setResourcePath(std::string resourcePath);
+		//std::string getResourcePath(void);
 
 		int _redirectionCode;
 		std::string _redirectionResource;
@@ -368,6 +372,19 @@ class Event
 
 		bool isCgiScriptEndend(void);
 		void setCgiScriptEndend(bool cgiScriptEndend);
+
+		std::string getRoute(void);
+		void setRoute(std::string route);
+
+		std::string getRequestedPath(void);
+		void setRequestedPath(std::string requestedPath);
+
+		std::string getResourcePath(void);
+		void setResourcePath(std::string resourcePath);
+
+
+		//void setResourcePath(std::string resourcePath);
+		//std::string getResourcePath(void);
 
 
 	/*

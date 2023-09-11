@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:15:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 11:12:49 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 08:42:59 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 #include "BodyProcess.hpp"
 #include "ChunkedBodyProcess.hpp"
 
-HandleReq::HandleReq(void): _event(NULL)
+HandleReq::HandleReq(ConfigsData *configsData):
+	_event(NULL),
+	_configsData(configsData)
 {
 	_stateMap.insert(std::make_pair(HEADER_PROCESS, new HeaderProcess()));
 	_stateMap.insert(std::make_pair(BODY_PROCESS, new BodyProcess()));
@@ -63,7 +65,7 @@ StateReqType HandleReq::_handleCurrentState(StateReqType state)
 	{
 		it = _stateMap.find(state);
 		if (it != _stateMap.end())
-			state = it->second->handle(_event);
+			state = it->second->handle(_event, _configsData);
 		else
 			state = REQUEST_END;
 	}
