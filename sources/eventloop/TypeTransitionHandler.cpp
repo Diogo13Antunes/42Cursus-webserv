@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 15:17:16 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 17:34:54 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,9 @@ void TypeTransitionHandler::handleEvent(Event *event)
 	}
 	*/
 	
-	if (event->getOldState() == READ_SOCKET)
+	/*if (event->getOldState() == READ_SOCKET)
 	{
-		/*serverConf = _getServerConfig(event, _configs->getServers());
-		event->setServerConfing(serverConf);
-		if (!serverConf)
-		{
-			event->setActualState(WRITE_EVENT);
-			return ;
-		}*/
+
 		//esta função precisa ser alterada por causa da rota
 
 		serverConf = event->getServerConfing();
@@ -69,6 +63,24 @@ void TypeTransitionHandler::handleEvent(Event *event)
 		{
 
 			event->setResourcePath(cgiName);
+			if (CgiExec::execute(event) == -1)
+			{
+				event->setStatusCode(500);
+				event->setActualState(WRITE_EVENT);
+				return ;
+			}
+			event->setActualState(WRITE_CGI);
+		}
+		else
+			event->setActualState(WRITE_EVENT);
+	}*/
+
+	if (event->getOldState() == READ_SOCKET)
+	{
+
+		if (event->isCgi())
+		{
+			//event->setResourcePath(cgiName);
 			if (CgiExec::execute(event) == -1)
 			{
 				event->setStatusCode(500);
