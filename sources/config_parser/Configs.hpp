@@ -11,14 +11,19 @@
 #define UPPER_CASE_LETTERS	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 #define LOWER_CASE_LETTERS	"abcdefghijklmnopqrstuvwxyz"
 #define DIGITS				"0123456789"
-#define SPECIAL_CHARS		"_-/\""
+#define SPECIAL_CHARS		"*._-/\""
 
 #define VALID_KEY_LETTERS	UPPER_CASE_LETTERS LOWER_CASE_LETTERS DIGITS SPECIAL_CHARS
 #define WHITE_SPACE			"\n\t\r "
 
 #define ERROR_FAIL_TO_OPEN_FILE				"Impossible to open or read from file: "
-#define ERROR_INVALID_TABS					"Invalid tab inside config file"
-#define ERROR_INVALID_IDENTATION_COUNT		"Invalid identation count in config file"
+#define ERROR_INVALID_TABS					"Invalid tab"
+#define ERROR_INVALID_IDENTATION_COUNT		"Invalid identation count"
+#define ERROR_INVALID_NBR_QUOTES			"Invalid number of quotes"
+#define ERROR_MISSING_SINGLE_COLON			"Missing single colon"
+#define ERROR_INVALID_KEY					"Invalid key"
+#define ERROR_INVALID_VALUE					"Invalid value"
+#define ERROR_INVALID_CONFIG_OPTION			"Invalid config option: "
 
 class Configs
 {
@@ -41,8 +46,9 @@ class Configs
 		bool	_isOnlyServerWithoutIndentation(std::string &line);
 
 		void	_setErrorMessage(size_t line, std::string msg, std::string lineContent);
+		void	_setErrorMessage(size_t line, std::string msg, std::string msg2, std::string lineContent);
 		void	_setErrorMessage(std::string msg);
-		void	_setErrorMessage(std::string msg, std::string fileName);
+		void	_setErrorMessage(std::string msg, std::string msg2);
 
 	public:
 		Configs(void);

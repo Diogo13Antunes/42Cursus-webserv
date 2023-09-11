@@ -112,64 +112,66 @@ bool	Configs::_isValidConfigFile(void)
 				_setErrorMessage(it->first, ERROR_INVALID_IDENTATION_COUNT,it->second);
 				return (false);
 			}
-			/*if (!_isOnlyServerWithoutIndentation(_fileContentVector.at(i)))
+			if (!_isOnlyServerWithoutIndentation(it->second))
+			{
+				_setErrorMessage(it->first, ERROR_INVALID_IDENTATION_COUNT,it->second);
 				return (false);
-			if (!isValidNbrQuotes(_fileContentVector.at(i)))
-				return (false);
-			if (!isSingleColon(_fileContentVector.at(i)))
-				return (false);
-			if (!_isValidKey(_fileContentVector.at(i)))
-				return (false);
-			if (!_isValidValue(_fileContentVector.at(i)))
-				return (false);		 */
 			}
+			if (!isValidNbrQuotes(it->second))
+			{
+				_setErrorMessage(it->first, ERROR_INVALID_NBR_QUOTES,it->second);
+				return (false);
+			}
+			if (!isSingleColon(it->second))
+			{
+				_setErrorMessage(it->first, ERROR_MISSING_SINGLE_COLON,it->second);
+				return (false);
+			}
+			if (!_isValidKey(it->second))
+			{
+				_setErrorMessage(it->first, ERROR_INVALID_KEY,it->second);
+				return (false);
+			}
+			if (!_isValidValue(it->second))
+			{
+				_setErrorMessage(it->first, ERROR_INVALID_VALUE,it->second);
+				return (false);
+			}
+		}
 	}
-
-	/* for (size_t i = 0; i < _fileContentVector.size(); i++)
-	{
-		if (_fileContentVector.at(i).find_first_of('\t') != _fileContentVector.at(i).npos)
-			return (false);
-		if (!_isValidIndentationCount(_fileContentVector.at(i)))
-			return (false);
-		if (!_isOnlyServerWithoutIndentation(_fileContentVector.at(i)))
-			return (false);
-		if (!isValidNbrQuotes(_fileContentVector.at(i)))
-			return (false);
-		if (!isSingleColon(_fileContentVector.at(i)))
-			return (false);
-		if (!_isValidKey(_fileContentVector.at(i)))
-			return (false);
-		if (!_isValidValue(_fileContentVector.at(i)))
-			return (false);
-	} */
 	return (true);
 }
 
 bool	Configs::_isValidConfigOptions(void)
 {
-	std::vector<std::string>::iterator	it;
-	std::string							key;
-	bool								isValidOpt;
+	std::map<size_t, std::string>::iterator	it;
+	std::string								key;
+	bool									isValidOpt;
 
-	it = _fileContentVector.begin();
-	while (it != _fileContentVector.end())
+	
+	for (it = _fileContentMap.begin(); it != _fileContentMap.end(); it++)
 	{
 		isValidOpt = false;
-		key = (*it).substr(0, (*it).find_first_of(":"));
-		if (key.find_first_of("\"") == key.npos)
+		if (!it->second.empty())
 		{
-			stringTrim(key);
-			for (size_t i = 0; i < _validOptions.size(); i++)
+			key = (it->second).substr(0, (it->second).find_first_of(":"));
+			if (key.find_first_of("\"") == key.npos)
 			{
-				if (key.compare(_validOptions.at(i)) == 0)
-					isValidOpt = true;
+				stringTrim(key);
+				for (size_t i = 0; i < _validOptions.size(); i++)
+				{
+					if (key.compare(_validOptions.at(i)) == 0)
+						isValidOpt = true;
+				}
+			}
+			else
+				isValidOpt = true;
+			if (!isValidOpt)
+			{
+				_setErrorMessage(it->first, ERROR_INVALID_CONFIG_OPTION, key, it->second);
+				return (false);
 			}
 		}
-		else
-			isValidOpt = true;
-		if (!isValidOpt)
-			return (false);
-		it++;
 	}
 	return (true);
 }
@@ -246,14 +248,23 @@ void	Configs::_setErrorMessage(size_t line, std::string msg, std::string lineCon
 	_errorMessage += lineContent;
 }
 
+void	Configs::_setErrorMessage(size_t line, std::string msg, std::string msg2, std::string lineContent)
+{
+	std::stringstream ss;
+
+	ss << line;
+	_errorMessage = msg + msg2 + " | Line: " + std::string(ss.str()) + "\n";
+	_errorMessage += lineContent;
+}
+
 void	Configs::_setErrorMessage(std::string msg)
 {
 	_errorMessage = msg;
 }
 
-void	Configs::_setErrorMessage(std::string msg, std::string fileName)
+void	Configs::_setErrorMessage(std::string msg, std::string msg2)
 {
-	_errorMessage = msg + fileName;
+	_errorMessage = msg + msg2;
 }
 
 /* UTILS FUNCTIONS */
