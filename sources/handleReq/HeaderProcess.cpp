@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 17:38:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 19:22:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	std::cout << "Route: " << route << std::endl;
 	std::cout << "requestPath: " << requestPath << std::endl;
 	std::cout << "resourcePath: " << resourcePath << std::endl;
-
 
 	event->setRoute(route);
 	event->setRequestPath(requestPath);

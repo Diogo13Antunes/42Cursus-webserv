@@ -6,13 +6,14 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 17:34:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 19:58:38 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "TypeTransitionHandler.hpp"
 #include "iostream"
 #include "CgiExec.hpp"
+#include "FileSystemUtils.hpp"
 
 TypeTransitionHandler::TypeTransitionHandler(ConfigsData *configs): _configs(configs) {}
 
@@ -77,17 +78,20 @@ void TypeTransitionHandler::handleEvent(Event *event)
 
 	if (event->getOldState() == READ_SOCKET)
 	{
-
 		if (event->isCgi())
 		{
-			//event->setResourcePath(cgiName);
-			if (CgiExec::execute(event) == -1)
+			if (!FileSystemUtils::fileExists(event->getResourcePath()))
+			{
+				event->setStatusCode(404);
+				event->setActualState(WRITE_EVENT);
+			}
+			else if (CgiExec::execute(event) == -1)
 			{
 				event->setStatusCode(500);
 				event->setActualState(WRITE_EVENT);
-				return ;
 			}
-			event->setActualState(WRITE_CGI);
+			else
+				event->setActualState(WRITE_CGI);
 		}
 		else
 			event->setActualState(WRITE_EVENT);
