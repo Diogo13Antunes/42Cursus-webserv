@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:38:17 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/10 15:09:16 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 20:09:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void ReadCgiHandler::handleEvent(Event *event)
 
 	nRead = read(event->getCgiReadFd(), _buffer, BUFFER_CGI_READ_SIZE);
 	if (nRead <= 0)
-		event->setStatusCode(500);
+		event->setStatusCode(INTERNAL_SERVER_ERROR);
 	dataRead.assign(_buffer, nRead);
 	event->updateCgiScriptResult(dataRead);
 }

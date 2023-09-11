@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 19:58:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 20:08:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void TypeTransitionHandler::handleEvent(Event *event)
 			}
 			else if (CgiExec::execute(event) == -1)
 			{
-				event->setStatusCode(500);
+				event->setStatusCode(INTERNAL_SERVER_ERROR);
 				event->setActualState(WRITE_EVENT);
 			}
 			else

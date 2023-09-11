@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 19:31:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 20:08:27 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,11 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);
+	if (event->getCgiExitStatus())
+	{
+		event->setStatusCode(INTERNAL_SERVER_ERROR);
+		return (ERROR_HANDLING);
+	}
 	if (!event->getCgiScriptResult().empty())
 		return (CGI_RES_HANDLING);
 	//reqPath = event->getReqLinePath();
