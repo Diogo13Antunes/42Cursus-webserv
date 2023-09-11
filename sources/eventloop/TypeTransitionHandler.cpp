@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 09:37:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 15:17:16 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void TypeTransitionHandler::handleEvent(Event *event)
 
 		serverConf = event->getServerConfing();
 
-		cgiName = serverConf->getCgiScriptName(event->getReqLinePath());
+		//cgiName = serverConf->getCgiScriptName(event->getReqLinePath());
 		if (!cgiName.empty())
 		{
 

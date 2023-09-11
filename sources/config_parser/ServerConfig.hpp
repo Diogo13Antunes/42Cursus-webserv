@@ -64,7 +64,8 @@ class ServerConfig
 		bool								hasRedirection(std::string route);
 		void								getRedirectionInfo(std::string route, int &code, std::string &resource);
 		bool								isLocationAcceptedMethod(std::string route, std::string method);
-		std::string							getCgiScriptName(std::string route);
+		//std::string							getCgiScriptName(std::string route);
+		std::string							getLocationCgi(std::string route);
 		std::string							getMimeTypeByFileName(std::string src);
 		std::string							getMimeTypeByFileType(std::string fileType);
 		std::string 						getHost(void);

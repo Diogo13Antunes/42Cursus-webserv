@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 11:40:34 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 16:19:45 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 		return (ERROR_HANDLING);
 	if (!event->getCgiScriptResult().empty())
 		return (CGI_RES_HANDLING);
-	reqPath = event->getReqLinePath();
+	//reqPath = event->getReqLinePath();
 
 	//route = _getRouteName(config, reqPath);
 	//realPath = _getRealPath(config, reqPath, route);
@@ -39,9 +39,9 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	realPath = event->getResourcePath();
 
 
-	if (_hasForcedRedirection(event, reqPath, realPath, route) || _hasConfRedirection(event, config, route))
+	if (_hasForcedRedirection(event, event->getReqLinePath(), event->getRequestPath(), route) || _hasConfRedirection(event, config, route))
 		return (REDIRECTION_HANDLING);
-	realPath = _getPathWithIndex(config, realPath, route);
+	//realPath = _getPathWithIndex(config, realPath, route);
 	event->setResourcePath(realPath);
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);

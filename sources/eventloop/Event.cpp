@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 11:32:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 16:45:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ Event::Event(int fd, int state):
 	_cgiExitStatus(0),
 	_cgiScriptEndend(false),
 	_cgiWriteFdClosed(false),
-	_cgiReadFdClosed(false)
+	_cgiReadFdClosed(false),
+	_isCgi(false)
 {
 	SocketUtils::getHostAndPort(_fd, _ip, _port);
 }
@@ -1183,14 +1184,14 @@ void Event::setRoute(std::string route)
 	_route = route;
 }
 
-std::string Event::getRequestedPath(void)
+std::string Event::getRequestPath(void)
 {
-	return (_requestedPath);
+	return (_requestPath);
 }
 
-void Event::setRequestedPath(std::string requestedPath)
+void Event::setRequestPath(std::string requestPath)
 {
-	_requestedPath = requestedPath;
+	_requestPath = requestPath;
 }
 
 std::string Event::getResourcePath(void)
@@ -1203,3 +1204,12 @@ void Event::setResourcePath(std::string resourcePath)
 	_resourcePath = resourcePath;
 }
 
+void Event::setIsCgi(bool isCgi)
+{
+	_isCgi = isCgi;
+}
+
+bool Event::isCgi(void)
+{
+	return (_isCgi);
+}

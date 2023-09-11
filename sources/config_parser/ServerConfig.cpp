@@ -169,7 +169,19 @@ bool ServerConfig::isLocationAcceptedMethod(std::string route, std::string metho
 	return (false);
 }
 
+/*
 std::string ServerConfig::getCgiScriptName(std::string route)
+{
+	Location	*location;
+
+	location = _getSpecificLocations(route);
+	if (!location)
+		return (std::string());
+	return (location->getCgi());
+}
+*/
+
+std::string ServerConfig::getLocationCgi(std::string route)
 {
 	Location	*location;
 

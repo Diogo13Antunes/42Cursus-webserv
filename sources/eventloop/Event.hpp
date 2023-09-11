@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 11:32:02 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/11 16:44:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,8 +134,10 @@ class Event
 		//int		_cgiExitStatus;
 
 		std::string _route;
-		std::string _requestedPath;
+		std::string _requestPath;
 		std::string _resourcePath;
+
+		bool _isCgi;
 
 	public:
 		Event(void);
@@ -376,8 +378,8 @@ class Event
 		std::string getRoute(void);
 		void setRoute(std::string route);
 
-		std::string getRequestedPath(void);
-		void setRequestedPath(std::string requestedPath);
+		std::string getRequestPath(void);
+		void setRequestPath(std::string requestPath);
 
 		std::string getResourcePath(void);
 		void setResourcePath(std::string resourcePath);
@@ -402,6 +404,9 @@ class Event
 	//void _markCgiFdAsClosed(int cgiFd);
 
 
+	
+	void setIsCgi(bool isCgi);
+	bool isCgi(void);
 
 
 };
