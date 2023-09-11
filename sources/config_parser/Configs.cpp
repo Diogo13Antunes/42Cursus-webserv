@@ -1,28 +1,29 @@
 #include "Configs.hpp"
 
-static void			stringTrim(std::string &str);
-static std::string	removeComments(std::string src);
-static bool			isInsideQuotes(std::string src, size_t index);
-static bool			isSingleColon(std::string &line);
-static void			removeForwardWhiteSpaces(std::string &src);
-static bool			isValidArray(std::string &array);
-static bool			isValidNbrQuotes(std::string &data);
+static void								stringTrim(std::string &str);
+static std::string						removeComments(std::string src);
+static bool								isInsideQuotes(std::string src, size_t index);
+static bool								isSingleColon(std::string &line);
+static void								removeForwardWhiteSpaces(std::string &src);
+static bool								isValidArray(std::string &array);
+static bool								isValidNbrQuotes(std::string &data);
+static std::pair<size_t, std::string>	createLinePair(size_t lineNbr, std::string lineContent);
 
 Configs::Configs(void)
 {
 	//Default Configs Constructor
 }
 
-Configs::Configs(const char *configsFileName)
+Configs::Configs(const char *configsFileName): _errorMessage(std::string())
 {
 	_initValidOptions();
 
 	if (!_getConfigFile(configsFileName))
-		throw InvalidConfigFileException();
+		throw InvalidConfigFileException(_errorMessage);
 	if (!_isValidConfigFile())
-		throw InvalidConfigFileException();
+		throw InvalidConfigFileException(_errorMessage);
 	if (!_isValidConfigOptions())
-		throw InvalidConfigFileException();
+		throw InvalidConfigFileException(_errorMessage);
 }
 
 Configs::~Configs(void)
@@ -35,11 +36,16 @@ std::vector<std::string>	&Configs::getFileContentVector(void)
 	return (_fileContentVector);
 }
 
+std::string	Configs::getErrorMessage(void)
+{
+	return (_errorMessage);
+}
+
 /* PRIVATE METHODS */
 
 void	Configs::_initValidOptions(void)
 {
-	_validOptions.reserve(14);
+	_validOptions.reserve(16);
 	_validOptions.push_back("server");
 	_validOptions.push_back("listen");
 	_validOptions.push_back("error_pages");
@@ -62,25 +68,64 @@ bool	Configs::_getConfigFile(const char *configFile)
 {
 	std::ifstream	file(configFile);
 	std::string		buff;
+	size_t			lineNbr;
 
+	lineNbr = 1;
 	if (file.is_open())
 	{
 		while (std::getline(file, buff))
 		{
 			buff = removeComments(buff);
+
+			// Retirar depois de estar tudo com o mapa aplicado 
 			if (!buff.empty())
 				_fileContentVector.push_back(buff);
+
+			_fileContentMap.insert(createLinePair(lineNbr, buff));
+			lineNbr++;
 		}
 		file.close();
 	}
 	else
+	{
+		_setErrorMessage(ERROR_FAIL_TO_OPEN_FILE, configFile);
 		return (false);
+	}
 	return (true);
 }
 
 bool	Configs::_isValidConfigFile(void)
 {
-	for (size_t i = 0; i < _fileContentVector.size(); i++)
+	std::map<size_t, std::string>::iterator	it;
+
+	for (it = _fileContentMap.begin(); it != _fileContentMap.end(); it++)
+	{
+		if (!it->second.empty())
+		{
+			if (it->second.find_first_of('\t') != it->second.npos)
+			{
+				_setErrorMessage(it->first, ERROR_INVALID_TABS,it->second);
+				return (false);
+			}
+			if (!_isValidIndentationCount(it->second))
+			{
+				_setErrorMessage(it->first, ERROR_INVALID_IDENTATION_COUNT,it->second);
+				return (false);
+			}
+			/*if (!_isOnlyServerWithoutIndentation(_fileContentVector.at(i)))
+				return (false);
+			if (!isValidNbrQuotes(_fileContentVector.at(i)))
+				return (false);
+			if (!isSingleColon(_fileContentVector.at(i)))
+				return (false);
+			if (!_isValidKey(_fileContentVector.at(i)))
+				return (false);
+			if (!_isValidValue(_fileContentVector.at(i)))
+				return (false);		 */
+			}
+	}
+
+	/* for (size_t i = 0; i < _fileContentVector.size(); i++)
 	{
 		if (_fileContentVector.at(i).find_first_of('\t') != _fileContentVector.at(i).npos)
 			return (false);
@@ -96,7 +141,7 @@ bool	Configs::_isValidConfigFile(void)
 			return (false);
 		if (!_isValidValue(_fileContentVector.at(i)))
 			return (false);
-	}
+	} */
 	return (true);
 }
 
@@ -190,6 +235,25 @@ bool	Configs::_isOnlyServerWithoutIndentation(std::string &line)
 			return (false);
 	}
 	return (true);
+}
+
+void	Configs::_setErrorMessage(size_t line, std::string msg, std::string lineContent)
+{
+	std::stringstream ss;
+
+	ss << line;
+	_errorMessage = msg + " | Line: " + std::string(ss.str()) + "\n";
+	_errorMessage += lineContent;
+}
+
+void	Configs::_setErrorMessage(std::string msg)
+{
+	_errorMessage = msg;
+}
+
+void	Configs::_setErrorMessage(std::string msg, std::string fileName)
+{
+	_errorMessage = msg + fileName;
 }
 
 /* UTILS FUNCTIONS */
@@ -303,9 +367,32 @@ static bool	isValidNbrQuotes(std::string &data)
 	return (true);
 }
 
+static std::pair<size_t, std::string>	createLinePair(size_t lineNbr, std::string lineContent)
+{
+	return (std::make_pair<size_t, std::string>(lineNbr, lineContent));
+}
+
 /* EXCEPTIONS */
 
-const char *Configs::InvalidConfigFileException::what(void) const throw()
+Configs::InvalidConfigFileException::InvalidConfigFileException(std::string msg):
+	_msg(msg), _fullMsg(NULL)
 {
-	return ("Webserv: Invalid Config File");
+	std::string str;
+
+	str = "WebServ: ";
+	str += _msg;
+
+	_fullMsg = new char[str.size() + 1];
+	_fullMsg[str.size()] = '\0';
+	std::strcpy(_fullMsg, str.c_str());
+}
+
+Configs::InvalidConfigFileException::~InvalidConfigFileException() throw()
+{
+	delete[] _fullMsg;
+}
+
+const char *Configs::InvalidConfigFileException::what() const throw()
+{
+	return (_fullMsg);
 }

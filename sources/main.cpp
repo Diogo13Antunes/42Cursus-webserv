@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/21 10:44:00 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/09/11 00:19:01 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ bool	initConfigs(const char *filename, ConfigsData &data)
 	catch(const std::exception& e)
 	{
 		// Criar mensagens apropriadas
-		std::cerr << BOLDRED << "Webserv: Invalid Configuration" << RESET << std::endl;
+		// std::cerr << BOLDRED << "Webserv: Invalid Configuration" << RESET << std::endl;
+		std::cerr << BOLDRED << e.what() << RESET << std::endl;
 		return (false);
 	}
 	return (true);
