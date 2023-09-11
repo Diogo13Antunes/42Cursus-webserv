@@ -31,14 +31,9 @@ Configs::~Configs(void)
 	//Default Configs Destructor
 }
 
-std::vector<std::string>	&Configs::getFileContentVector(void)
+std::map<size_t, std::string> &Configs::getFileContentMap(void)
 {
-	return (_fileContentVector);
-}
-
-std::string	Configs::getErrorMessage(void)
-{
-	return (_errorMessage);
+	return (_fileContentMap);
 }
 
 /* PRIVATE METHODS */
@@ -76,10 +71,6 @@ bool	Configs::_getConfigFile(const char *configFile)
 		while (std::getline(file, buff))
 		{
 			buff = removeComments(buff);
-
-			// Retirar depois de estar tudo com o mapa aplicado 
-			if (!buff.empty())
-				_fileContentVector.push_back(buff);
 
 			_fileContentMap.insert(createLinePair(lineNbr, buff));
 			lineNbr++;

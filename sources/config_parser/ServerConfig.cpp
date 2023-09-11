@@ -1,44 +1,45 @@
 #include "ServerConfig.hpp"
 #include "configs.hpp"
 
-static size_t	getNumberOfIdentations(std::string &line);
-static void		stringTrim(std::string &str);
-static void		removeQuotes(std::string &str);
-static bool		isInsideErrorPages(std::string &src);
-static bool		isInsideLocations(std::string &src);
-static bool		isNewLocations(std::string &src);
-static bool		isInsideNewLocations(std::string &src);
-static bool		isInsideMimeTypes(std::string &src);
-static int		strToInt(std::string &str);
-static bool		alreadyExistLocation(std::map<std::string, Location> &locations, std::string newLocation);
+static size_t							getNumberOfIdentations(std::string &line);
+static void								stringTrim(std::string &str);
+static void								removeQuotes(std::string &str);
+static bool								isInsideErrorPages(std::string &src);
+static bool								isInsideLocations(std::string &src);
+static bool								isNewLocations(std::string &src);
+static bool								isInsideNewLocations(std::string &src);
+static bool								isInsideMimeTypes(std::string &src);
+static int								strToInt(std::string &str);
+static bool								alreadyExistLocation(std::map<std::string, Location> &locations, std::string newLocation);
+static std::pair<size_t, std::string>	createPair(size_t lineNbr, std::string lineContent);
 
 ServerConfig::ServerConfig(void)
 {
 	//Default ServerConfig Constructor
 }
 
-ServerConfig::ServerConfig(std::vector<std::string>	configs):
+ServerConfig::ServerConfig(std::map<size_t, std::string> configs):
 	_configError(true),
 	_clientMaxBodySize(10000)
 {
-	std::vector<std::string>::iterator	it;
-	std::string							key;
-	std::string							value;
+	std::map<size_t, std::string>::iterator	it;
+	std::string								key;
+	std::string								value;
 
 	it = configs.begin();
 	while (it != configs.end() && _configError)
 	{
-		if (it != configs.end() && getNumberOfIdentations(*it) == 1)
+		if (it != configs.end() && getNumberOfIdentations(it->second) == 1)
 		{
-			key = _getKey(*it);
+			key = _getKey(it->second);
 			if (key.compare("listen") == 0)
-				_setListen(*it);
+				_setListen(it);
 			else if (key.compare("server_name") == 0)
-				_setServerName(*it);
+				_setServerName(it);
 			else if (key.compare("master_root") == 0)
-				_setMasterRoot(*it);
+				_setMasterRoot(it);
 			else if (key.compare("client_max_body_size") == 0)
-				_setClientMaxBodySize(*it);
+				_setClientMaxBodySize(it);
 			else if (key.compare("error_pages") == 0)
 				_setErrorPages(it, configs.end());
 			else if (key.compare("location") == 0)
@@ -46,7 +47,10 @@ ServerConfig::ServerConfig(std::vector<std::string>	configs):
 			else if (key.compare("mime_types") == 0)
 				_setMimeTypes(it, configs.end());
 			else
+			{
+				_setErrorMessage(it->first, ERROR_INVALID_CONFIGURATION, it->second);
 				_updateConfigError(false);
+			}
 		}
 		if (!_isValidConfigError())
 			break;
@@ -65,6 +69,11 @@ ServerConfig::~ServerConfig(void)
 bool	ServerConfig::getConfigError(void)
 {
 	return (_configError);
+}
+
+std::string	ServerConfig::getConfigErrorMessage(void)
+{
+	return (_configErrorMsg);
 }
 
 std::string	ServerConfig::getListen(void)
@@ -352,11 +361,14 @@ std::string	ServerConfig::_getKey(std::string &src)
 	return (key);
 }
 
-void	ServerConfig::_setListen(std::string newListen)
+void	ServerConfig::_setListen(std::map<size_t, std::string>::iterator &it)
 {
-	_listen = _getValue(newListen);
+	_listen = _getValue(it->second);
 	if (_listen.empty())
+	{
+		_setErrorMessage(it->first, ERROR_INVALID_LISTEN, it->second);
 		_updateConfigError(false);
+	}
 	else 
 	{
 		_host = _getHostFromListen(_listen);
@@ -364,71 +376,87 @@ void	ServerConfig::_setListen(std::string newListen)
 	}
 }
 
-void	ServerConfig::_setServerName(std::string newServerName)
+void	ServerConfig::_setServerName(std::map<size_t, std::string>::iterator &it)
 {
-	_serverName = _getValue(newServerName);
+	_serverName = _getValue(it->second);
 	if (_serverName.empty())
+	{
+		_setErrorMessage(it->first, ERROR_INVALID_SERVER_NAME, it->second);
 		_updateConfigError(false);
+	}
 }
 
-void	ServerConfig::_setMasterRoot(std::string newMasterRoot)
+void	ServerConfig::_setMasterRoot(std::map<size_t, std::string>::iterator &it)
 {
-	_masterRoot = _getValue(newMasterRoot);
+	_masterRoot = _getValue(it->second);
 	if (_masterRoot.empty())
+	{
+		_setErrorMessage(it->first, ERROR_INVALID_MASTER_ROOT, it->second);
 		_updateConfigError(false);
+	}
 }
 
-void	ServerConfig::_setErrorPages(std::vector<std::string>::iterator &it,
-	std::vector<std::string>::iterator itEnd)
+void	ServerConfig::_setErrorPages(std::map<size_t, std::string>::iterator &it,
+	std::map<size_t, std::string>::iterator itEnd)
 {
 	std::string temp;
 
-	temp = _getValue(*it);
+	temp = _getValue(it->second);
 	if (!temp.empty())
 	{
 		_updateConfigError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_VALUE,it->second);
 		return ;
 	}
 	it++;
-	if (!isInsideErrorPages(*it))
+	if (!isInsideErrorPages(it->second))
+	{
+		_setErrorMessage(it->first, ERROR_INVALID_IDENTATION_LEVEL,it->second);
 		_updateConfigError(false);
+	}
 	else
 	{
-		while (it != itEnd && isInsideErrorPages(*it))
+		while (it != itEnd && isInsideErrorPages(it->second))
 		{
-			_addNewErrorPage(*it);
+			_addNewErrorPage(it);
 			it++;
 		}
 		it--;
 	}
 }
 
-void	ServerConfig::_addNewErrorPage(std::string &src)
+void	ServerConfig::_addNewErrorPage(std::map<size_t, std::string>::iterator &it)
 {
 	std::string key;
 	int			intKey;
 	std::string value;
 
-	key = _getKey(src);
-	value = _getValue(src);
+	key = _getKey(it->second);
+	value = _getValue(it->second);
 	if (key.find_first_not_of("0123456789") == key.npos)
 	{
 		intKey = strToInt(key);
 		_errorPages.insert(std::make_pair(intKey, value));
 	}
 	else
+	{
+		_setErrorMessage(it->first, ERROR_INVALID_ERROR_PAGE_KEY, it->second);
 		_updateConfigError(false);
+	}
 }
 
-void	ServerConfig::_setClientMaxBodySize(std::string &value)
+void	ServerConfig::_setClientMaxBodySize(std::map<size_t, std::string>::iterator &it)
 {
 	std::stringstream	out;
 	std::string strValue;
 	size_t	size;
 
-	strValue = _getValue(value);
+	strValue = _getValue(it->second);
 	if (strValue.find_first_not_of("0123456789") != strValue.npos)
+	{
 		_updateConfigError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_CLIENT_BODY_SIZE,it->second);
+	}
 	else
 	{
 		out << strValue;
@@ -437,38 +465,43 @@ void	ServerConfig::_setClientMaxBodySize(std::string &value)
 	}
 }
 
-void	ServerConfig::_setLocations(std::vector<std::string>::iterator &it,
-	std::vector<std::string>::iterator itEnd)
+void	ServerConfig::_setLocations(std::map<size_t, std::string>::iterator &it,
+	std::map<size_t, std::string>::iterator itEnd)
 {
-	std::string					newLocationURL;
-	std::vector<std::string>	locationInfo;
+	std::string						newLocationURL;
+	std::map<size_t, std::string>	locationInfo;
 	std::string temp;
 
-	temp = _getValue(*it);
+	temp = _getValue(it->second);
 	if (!temp.empty())
 	{
 		_updateConfigError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_VALUE,it->second);
 		return ;
 	}
 	it++;
-	if (!isInsideLocations(*it))
+	if (!isInsideLocations(it->second))
+	{
+		_setErrorMessage(it->first, ERROR_INVALID_IDENTATION_LEVEL,it->second);
 		_updateConfigError(false);
+	}
 	else
 	{
-		while (it != itEnd && isInsideLocations(*it))
+		while (it != itEnd && isInsideLocations(it->second))
 		{
-			if (it != itEnd && isNewLocations(*it))
+			if (it != itEnd && isNewLocations(it->second))
 			{
-				newLocationURL = _getKey(*it);
+				newLocationURL = _getKey(it->second);
 				it++;
 				if (alreadyExistLocation(_locations, newLocationURL))
 				{
 					_updateConfigError(false);
+					_setErrorMessage(it->first, ERROR_INVALID_LOCATION_ALREADY_EXIST, newLocationURL,it->second);
 					break;
 				}
-				while (it != itEnd && isInsideNewLocations(*it))
+				while (it != itEnd && isInsideNewLocations(it->second))
 				{
-					locationInfo.push_back(*it);
+					locationInfo.insert(createPair(it->first, it->second));
 					it++;
 				}
 				_locations.insert(std::make_pair(newLocationURL, Location(_masterRoot, locationInfo)));
@@ -477,6 +510,7 @@ void	ServerConfig::_setLocations(std::vector<std::string>::iterator &it,
 			}
 			else
 			{
+				_setErrorMessage(it->first, ERROR_INVALID_IDENTATION_LEVEL, it->second);
 				_updateConfigError(false);
 				break;
 			}
@@ -486,25 +520,29 @@ void	ServerConfig::_setLocations(std::vector<std::string>::iterator &it,
 	}
 }
 
-void	ServerConfig::_setMimeTypes(std::vector<std::string>::iterator &it,
-	std::vector<std::string>::iterator itEnd)
+void	ServerConfig::_setMimeTypes(std::map<size_t, std::string>::iterator &it,
+	std::map<size_t, std::string>::iterator itEnd)
 {
 	std::string temp;
 
-	temp = _getValue(*it);
+	temp = _getValue(it->second);
 	if (!temp.empty())
 	{
 		_updateConfigError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_VALUE,it->second);
 		return ;
 	}
 	it++;
-	if (!isInsideMimeTypes(*it))
+	if (!isInsideMimeTypes(it->second))
+	{
 		_updateConfigError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_IDENTATION_LEVEL,it->second);
+	}
 	else
 	{
-		while (it != itEnd && isInsideMimeTypes(*it))
+		while (it != itEnd && isInsideMimeTypes(it->second))
 		{
-			_addNewMimeType(*it);
+			_addNewMimeType(it);
 			it++;
 		}
 		it--;
@@ -541,13 +579,13 @@ std::string ServerConfig::_getPortFromListen(std::string listen)
 	return (port);
 }
 
-void	ServerConfig::_addNewMimeType(std::string &src)
+void	ServerConfig::_addNewMimeType(std::map<size_t, std::string>::iterator &it)
 {
 	std::string key;
 	std::string value;
 
-	key = _getKey(src);
-	value = _getValue(src);
+	key = _getKey(it->second);
+	value = _getValue(it->second);
 	_mimeTypes.insert(std::make_pair(key, value));
 }
 
@@ -560,6 +598,7 @@ void	ServerConfig::_checkAllLocationsStatus(void)
 		if (it->second.getLocationError() == false)
 		{
 			_updateConfigError(false);
+			_setErrorMessage(it->second.getLocationErrorMsg());
 			break;
 		}
 	}
@@ -587,7 +626,38 @@ Location	*ServerConfig::_getSpecificLocations(std::string location)
 void	ServerConfig::_checkMasterRoot(void)
 {
 	if (_masterRoot.empty())
+	{
+		_setErrorMessage(ERROR_MISSING_MASTER_ROOT);
 		_updateConfigError(false);
+	}
+}
+
+void	ServerConfig::_setErrorMessage(size_t line, std::string msg, std::string lineContent)
+{
+	std::stringstream ss;
+
+	ss << line;
+	_configErrorMsg = msg + " | Line: " + std::string(ss.str()) + "\n";
+	_configErrorMsg += lineContent;
+}
+
+void	ServerConfig::_setErrorMessage(size_t line, std::string msg, std::string msg2, std::string lineContent)
+{
+	std::stringstream ss;
+
+	ss << line;
+	_configErrorMsg = msg + msg2 + " | Line: " + std::string(ss.str()) + "\n";
+	_configErrorMsg += lineContent;
+}
+
+void	ServerConfig::_setErrorMessage(std::string msg)
+{
+	_configErrorMsg = msg;
+}
+
+void	ServerConfig::_setErrorMessage(std::string msg, std::string msg2)
+{
+	_configErrorMsg = msg + msg2;
 }
 
 /* STATIC FUNCTIONS */
@@ -691,6 +761,11 @@ static bool	alreadyExistLocation(std::map<std::string, Location> &locations, std
 	if (it != locations.end())
 		return (true);
 	return (false);
+}
+
+static std::pair<size_t, std::string>	createPair(size_t lineNbr, std::string lineContent)
+{
+	return (std::make_pair<size_t, std::string>(lineNbr, lineContent));
 }
 
 // Just for debug

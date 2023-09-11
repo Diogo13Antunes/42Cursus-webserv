@@ -53,12 +53,9 @@ class Configs
 	public:
 		Configs(void);
 		Configs(const char *configsFileName);
-
-		std::string	getErrorMessage(void);
-
 		~Configs(void);
 
-		std::vector<std::string>	&getFileContentVector(void);
+		std::map<size_t, std::string>	&getFileContentMap(void);
 
 		class InvalidConfigFileException: public std::exception
 		{
