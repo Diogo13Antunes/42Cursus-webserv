@@ -1,7 +1,7 @@
 #include "RequestParser.hpp"
 #include "StringUtils.hpp"
 
-#define DIGITS "0123456789"
+#define DIGITS					"0123456789"
 #define MAX_REQUEST_TARGET_LEN	8000
 #define	MAX_HEADER_SIZE			24576
 #define NAX_HEADER_LINE_SIZE	8192

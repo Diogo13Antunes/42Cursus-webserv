@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 19:22:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/12 17:05:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "RequestParser.hpp"
 #include "SocketUtils.hpp"
 #include "ServerConfig.hpp"
+#include "FileSystemUtils.hpp"
 
 
 static void getHostPortFromSocket(int fd, std::string& hostIP, std::string& port);
@@ -71,8 +72,15 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	event->setRequestPath(requestPath);
 	event->setResourcePath(resourcePath);
 
-	if (!event->getReqLineMethod().compare("GET"))
+
+
+	if (event->getReqLineMethod().compare("POST"))
 		return (REQUEST_END);
+	else
+	{
+		if (!serverConf->isLocationAcceptedMethod(route, "POST") || !event->isCgi())
+			return (REQUEST_END);
+	}
 	if (event->getStatusCode())
 		return (REQUEST_END);
 	if (_isChunkedTransfer(event))

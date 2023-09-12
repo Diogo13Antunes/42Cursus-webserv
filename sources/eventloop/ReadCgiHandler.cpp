@@ -6,11 +6,12 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:38:17 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 20:09:00 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/12 16:08:49 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ReadCgiHandler.hpp"
+#include "configs.hpp"
 #include <iostream>
 
 #define BUFFER_SIZE	50000
@@ -26,7 +27,7 @@ void ReadCgiHandler::handleEvent(Event *event)
 
 	nRead = read(event->getCgiReadFd(), _buffer, BUFFER_CGI_READ_SIZE);
 	if (nRead <= 0)
-		event->setStatusCode(INTERNAL_SERVER_ERROR);
+		event->setStatusCode(INTERNAL_SERVER_ERROR_CODE);
 	dataRead.assign(_buffer, nRead);
 	event->updateCgiScriptResult(dataRead);
 }

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 20:08:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/12 17:08:54 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,19 +75,21 @@ void TypeTransitionHandler::handleEvent(Event *event)
 		else
 			event->setActualState(WRITE_EVENT);
 	}*/
-
+	serverConf = event->getServerConfing();
 	if (event->getOldState() == READ_SOCKET)
 	{
-		if (event->isCgi())
+		if (event->isCgi() && !event->getStatusCode())
 		{
-			if (!FileSystemUtils::fileExists(event->getResourcePath()))
+			if (!serverConf->isLocationAcceptedMethod(event->getRoute(), event->getReqLineMethod()))
+				event->setStatusCode(405);
+			else if (!FileSystemUtils::fileExists(event->getResourcePath()))
 			{
 				event->setStatusCode(404);
 				event->setActualState(WRITE_EVENT);
 			}
 			else if (CgiExec::execute(event) == -1)
 			{
-				event->setStatusCode(INTERNAL_SERVER_ERROR);
+				event->setStatusCode(INTERNAL_SERVER_ERROR_CODE);
 				event->setActualState(WRITE_EVENT);
 			}
 			else

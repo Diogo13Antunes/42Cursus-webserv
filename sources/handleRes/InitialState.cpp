@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/12 07:52:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/12 16:46:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 		return (ERROR_HANDLING);
 	if (event->getCgiExitStatus())
 	{
-		event->setStatusCode(INTERNAL_SERVER_ERROR);
+		event->setStatusCode(500);
 		return (ERROR_HANDLING);
 	}
 	if (!event->getCgiScriptResult().empty())
@@ -45,16 +45,16 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	realPath = event->getResourcePath();
 
 
-	if (_hasForcedRedirection(event) || _hasConfRedirection(event, config))
+	/*->*/if (_hasForcedRedirection(event) || _hasConfRedirection(event, config))
 		return (REDIRECTION_HANDLING);
 
 	//realPath = _getPathWithIndex(config, realPath, route);
 	event->setResourcePath(realPath);
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);
-	if (!_isValidFile(event, realPath))
+	/*->*/if (!_isValidFile(event, realPath))
 		return (ERROR_HANDLING);
-	if (!_isValidMethod(event, config, route))
+	/*->*/if (!_isValidMethod(event, config))
 		return (ERROR_HANDLING);
 	if (FileSystemUtils::isFolder(realPath))
 	{
@@ -209,12 +209,14 @@ bool InitialState::_hasConfRedirection(Event *event, ServerConfig& config)
 	return (false);
 }
 
-bool InitialState::_isValidMethod(Event *event, ServerConfig& config, std::string route)
+bool InitialState::_isValidMethod(Event *event, ServerConfig& config)
 {
 	std::string	method;
+	std::string	route;
 	int			acceptMethod;
 	
 	method = event->getReqLineMethod();
+	route = event->getRoute();
 	acceptMethod = config.isLocationAcceptedMethod(route, method);
 	if (!acceptMethod)
 	{

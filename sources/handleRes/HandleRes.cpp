@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 20:08:49 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/12 16:05:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void HandleRes::handle(void)
 
 	_serverConf = _event->getServerConfing();
 	if (!_serverConf)
-		_event->setStatusCode(INTERNAL_SERVER_ERROR);
+		_event->setStatusCode(500);
 	loop = true;
 	while (loop && _event->getResState1() != RESPONSE_END)
 	{

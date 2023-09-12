@@ -18,11 +18,12 @@
 #define EPOLL_TIMEOUT		5
 
 // Error codes
-#define FORBIDEN_CODE		    403
-#define NOT_FOUND_CODE		    404
-#define NOT_ALLOWED_CODE        405
-#define NOT_IMPLEMENTED_CODE    501
-#define INTERNAL_SERVER_ERROR   500
+#define FORBIDEN_CODE               403
+#define NOT_FOUND_CODE              404
+#define NOT_ALLOWED_CODE            405
+#define NOT_IMPLEMENTED_CODE        501
+#define INTERNAL_SERVER_ERROR_CODE  500
+#define MOVED_PERMANENTLY_CODE      301
 
 #define IMPLEMENTED_METHODS "GET, POST, DELETE"
 
