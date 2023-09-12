@@ -6,11 +6,12 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 20:08:27 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/12 07:52:21 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "InitialState.hpp"
+#include "FileSystemUtils.hpp"
 #include <iostream>
 #include <sys/stat.h>
 
@@ -44,8 +45,9 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	realPath = event->getResourcePath();
 
 
-	if (_hasForcedRedirection(event, event->getReqLinePath(), event->getRequestPath(), route) || _hasConfRedirection(event, config, route))
+	if (_hasForcedRedirection(event) || _hasConfRedirection(event, config))
 		return (REDIRECTION_HANDLING);
+
 	//realPath = _getPathWithIndex(config, realPath, route);
 	event->setResourcePath(realPath);
 	if (event->getStatusCode())
@@ -54,7 +56,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 		return (ERROR_HANDLING);
 	if (!_isValidMethod(event, config, route))
 		return (ERROR_HANDLING);
-	if (_isFolder(realPath))
+	if (FileSystemUtils::isFolder(realPath))
 	{
 		if (config.getLocationAutoIndex(route))
 			return (DIRECTORY_LISTING);
@@ -68,6 +70,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 }
 
 
+/*
 bool InitialState::_isFolder(std::string path)
 {
 	struct stat	pathInfo;
@@ -81,7 +84,7 @@ bool InitialState::_isFolder(std::string path)
 	}
 	return (false);
 }
-
+*/
 
 std::string InitialState::_getPreviousPath(std::string path)
 {
@@ -135,7 +138,7 @@ std::string InitialState::_getPathWithIndex(ServerConfig& config, std::string pa
 {
 	std::string index;
 
-	if (!_isFolder(path))
+	if (!FileSystemUtils::isFolder(path))
 		return (path);
 	index = config.getLocationIndex(route);
 	if (index.empty())
@@ -158,15 +161,22 @@ bool InitialState::_isMethodImplemented(std::string method)
 	return (false);
 }
 
-bool InitialState::_hasForcedRedirection(Event *event, std::string reqPath, std::string realPath, std::string route)
+bool InitialState::_hasForcedRedirection(Event *event)
 {
 	std::string	method;
+	std::string reqPath;
+	std::string realPath;
+	std::string route;
+
 	method = event->getReqLineMethod();
+	reqPath = event->getReqLinePath();
+	realPath = event->getRequestPath();
+	route = event->getRoute();
 	if (reqPath.at(reqPath.size() - 1) != '/')
 	{
 		if (route.at(route.size() - 1) == '/')
 			route.erase(route.size() - 1);
-		if (_isFolder(realPath) || !reqPath.compare(route))
+		if (FileSystemUtils::isFolder(realPath) || !reqPath.compare(route))
 		{
 			if (!method.compare("GET"))
 			{
@@ -176,7 +186,7 @@ bool InitialState::_hasForcedRedirection(Event *event, std::string reqPath, std:
 			}
 			else
 			{
-				event->setRredirectCode(FORBIDEN_CODE);
+				event->setStatusCode(FORBIDEN_CODE);
 				return (false);
 			}
 		}
@@ -184,12 +194,12 @@ bool InitialState::_hasForcedRedirection(Event *event, std::string reqPath, std:
 	return (false);
 }
 
-bool InitialState::_hasConfRedirection(Event *event, ServerConfig& config, std::string route)
+bool InitialState::_hasConfRedirection(Event *event, ServerConfig& config)
 {
 	std::string	resource;
 	int			code;
 
-	config.getRedirectionInfo(route, code, resource);
+	config.getRedirectionInfo(event->getRoute(), code, resource);
 	if (code && !resource.empty())
 	{
 		event->setRredirectCode(code);
