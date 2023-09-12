@@ -1,4 +1,5 @@
 #include "CgiResponseHandlingState.hpp"
+#include "configs.hpp"
 
 CgiResponseHandlingState::CgiResponseHandlingState(void) {}
 
@@ -35,6 +36,11 @@ StateResType	CgiResponseHandlingState::handle(Event *event, ServerConfig& config
 	{
 		cgiBody = _getCgiBody(scriptRes);
 		header.setContentLength(cgiBody.size());
+	}
+	else
+	{
+		event->setStatusCode(INTERNAL_SERVER_ERROR_CODE);
+		return (INITIAL_STATE);
 	}
 	res = header.getHeader();
 	event->setRes(res);
@@ -98,7 +104,7 @@ bool	CgiResponseHandlingState::_existContent(std::map<std::string, std::string> 
 	{
 		key = it->first;
 		StringUtils::stringToLower(key);
-		if (key.compare("content-type"))	
+		if (!key.compare("content-type"))
 			return (true);
 	}
 	return (false);
