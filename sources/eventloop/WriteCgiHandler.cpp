@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WriteCgiHandler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:39:35 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/08 15:32:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/12 18:35:42 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,10 @@ void WriteCgiHandler::handleEvent(Event *event)
 		numBytesSend = write(fd, bodyStr, bodySize - numBytesSend);
 		event->updateNumBytesSendCgi(numBytesSend);
 		if (event->getNumBytesSendCgi() >= bodySize)
+		{
+			write(fd, "\n", 1);
 			event->setActualState(TYPE_TRANSITION);
+		}
 	}
 	else
 		event->setActualState(TYPE_TRANSITION);

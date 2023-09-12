@@ -12,9 +12,13 @@ def removeUserFromDataBase(db, userToRemove):
 			return True
 	return False
 
-data = input()
+data = os.getenv('QUERY_STRING')
 dataDict = parse_qs(data)
-id = int(dataDict['id'][0])
+
+if 'id' in dataDict and dataDict['id']:
+	id = int(dataDict['id'][0])
+else:
+	id = None
 
 dataBaseDir = "mysite/users_database_website/DataBase"
 dataBaseFileName = "db.json"
