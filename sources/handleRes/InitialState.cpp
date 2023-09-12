@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/12 16:46:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/12 17:22:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	route = event->getRoute();
 	realPath = event->getResourcePath();
 
+
+	
 
 	/*->*/if (_hasForcedRedirection(event) || _hasConfRedirection(event, config))
 		return (REDIRECTION_HANDLING);

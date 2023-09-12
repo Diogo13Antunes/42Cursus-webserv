@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/12 17:08:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/12 17:57:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,13 +75,32 @@ void TypeTransitionHandler::handleEvent(Event *event)
 		else
 			event->setActualState(WRITE_EVENT);
 	}*/
+
+	std::string reqPath = event->getReqLinePath();
+	std::string route = event->getRoute();
+	if (route.at(route.size() - 1) == '/')
+		route.erase(route.size() - 1);	
 	serverConf = event->getServerConfing();
 	if (event->getOldState() == READ_SOCKET)
 	{
 		if (event->isCgi() && !event->getStatusCode())
 		{
-			if (!serverConf->isLocationAcceptedMethod(event->getRoute(), event->getReqLineMethod()))
+			std::cout << "Tem de entrar aqui 1" << std::endl;
+			std::cout << "reqPath: " << reqPath << std::endl;
+			std::cout << "route: " << route << std::endl;
+
+			if (!reqPath.compare(route))
+			{
+				std::cout << "Tem de entrar aqui" << std::endl;
+
+				event->setIsCgi(false);
+				event->setActualState(WRITE_EVENT);
+			}
+			else if (!serverConf->isLocationAcceptedMethod(event->getRoute(), event->getReqLineMethod()))
+			{
 				event->setStatusCode(405);
+				event->setActualState(WRITE_EVENT);
+			}
 			else if (!FileSystemUtils::fileExists(event->getResourcePath()))
 			{
 				event->setStatusCode(404);

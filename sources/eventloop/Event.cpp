@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 16:45:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/12 17:47:27 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,7 +365,7 @@ void Event::updateNumWrited(ssize_t numWrited)
 
 std::string& Event::getNextRes(void)
 {
-	//if (_resVect[_idx].empty() && _idx < _resVect.size() - 1)
+	//if (_resVect[_idx].empty() && _idx < _resVect.)
 	//	_idx++;
 
 	//std::cout << "idx: " << _idx << std::endl;
