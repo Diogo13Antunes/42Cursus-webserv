@@ -6,7 +6,7 @@
 /*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 11:52:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 20:12:25 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/09/12 20:35:53 by dcandeia         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <csignal>
 
 #include "Signals.hpp"
+
+#define DEFAULT_CONFIG_PATH		"default_configs/default.conf"
 
 bool	initConfigs(const char *filename, ConfigsData &data)
 {
@@ -40,9 +42,15 @@ int main(int argc, char **argv)
 	Signals::init();
 
 	if (argc != 2)
-		return (0);
-	if (!initConfigs(argv[1], confData))
-		return (-1);
+	{
+		if (!initConfigs(DEFAULT_CONFIG_PATH, confData))
+			return (-1);
+	}
+	else
+	{
+		if (!initConfigs(argv[1], confData))
+			return (-1);
+	}
 
 	Server		server;
 	server.setConfigs(&confData);
