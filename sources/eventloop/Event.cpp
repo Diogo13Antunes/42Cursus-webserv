@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/12 17:47:27 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 13:00:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -613,6 +613,12 @@ bool Event::isConnectionClose(void)
 		return (true);
 	return (false);
 }
+
+void Event::setConnectionClose(void)
+{
+	_connectionClosed = CONNECTION_CLOSED;
+}
+
 
 // Não usado
 bool Event::isClientClosed(void)

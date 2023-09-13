@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:49:57 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 08:41:11 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 16:20:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,18 @@ BodyProcess::~BodyProcess(void) {}
 StateReqType BodyProcess::handle(Event *event, ConfigsData *configsData)
 {
 	event->updateReqBody(event->getReqRawData());
-	event->clearReqRawData();
-	if (event->getReqBodySize() >= event->getReqContentLength())
+	if (event->getReqRawData().empty() && event->getReqContentLength())
+	{
+		event->setStatusCode(BAD_REQUEST_CODE);
 		return (REQUEST_END);
+	}
+	event->clearReqRawData();
+	if (event->getReqBodySize() == event->getReqContentLength())
+		return (REQUEST_END);
+	if (event->getReqBodySize() > event->getReqContentLength())
+	{
+		event->setStatusCode(CONTENT_TOO_LARGE_CODE);
+		return (REQUEST_END);
+	}
 	return (BODY_PROCESS);
 }

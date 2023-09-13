@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 08:16:30 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 12:15:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,16 +95,19 @@ void TypeTransitionHandler::handleEvent(Event *event)
 			}
 			else if (!serverConf->isLocationAcceptedMethod(event->getRoute(), event->getReqLineMethod()))
 			{
+				event->setIsCgi(false);
 				event->setStatusCode(405);
 				event->setActualState(WRITE_EVENT);
 			}
 			else if (!FileSystemUtils::fileExists(event->getResourcePath()))
 			{
+				event->setIsCgi(false);
 				event->setStatusCode(404);
 				event->setActualState(WRITE_EVENT);
 			}
 			else if (CgiExec::execute(event) == -1)
 			{
+				event->setIsCgi(false);
 				event->setStatusCode(INTERNAL_SERVER_ERROR_CODE);
 				event->setActualState(WRITE_EVENT);
 			}
@@ -112,7 +115,10 @@ void TypeTransitionHandler::handleEvent(Event *event)
 				event->setActualState(WRITE_CGI);
 		}
 		else
+		{
+			event->setIsCgi(false);
 			event->setActualState(WRITE_EVENT);
+		}
 	}
 	else if (event->getOldState() == WRITE_EVENT)
 	{

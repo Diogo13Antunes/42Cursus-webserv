@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 16:44:30 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 13:00:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -245,6 +245,8 @@ class Event
 		bool				isEventTimeout(void);
 
 		bool				isConnectionClose(void);
+		void				setConnectionClose(void);
+
 
 		bool				isClientClosed(void);
 		void				setClientClosed(void);

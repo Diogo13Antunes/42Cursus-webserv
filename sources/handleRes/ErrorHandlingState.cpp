@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 11:07:22 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 10:12:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 15:04:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ ErrorHandlingState::ErrorHandlingState(void)
 	_errorCodes.insert(std::make_pair(404, "Not Found"));
 	_errorCodes.insert(std::make_pair(405, "Method Not Allowed"));
 	_errorCodes.insert(std::make_pair(414, "URI Too Long"));
-	_errorCodes.insert(std::make_pair(413, "Payload Too Large"));
+	_errorCodes.insert(std::make_pair(413, "Content Too Large"));
 	_errorCodes.insert(std::make_pair(403, "Forbidden"));
 	_errorCodes.insert(std::make_pair(501, "Not Implemented"));
 	_errorCodes.insert(std::make_pair(500, "Internal Server Error"));
@@ -41,7 +41,11 @@ StateResType ErrorHandlingState::handle(Event *event, ServerConfig& config)
 	std::string pageHtml;
 	std::string res;
 
+	std::cout << "ErrorHandlingState" << std::endl;
+
 	errorCode = event->getStatusCode();
+	if (errorCode != 404)
+		event->setConnectionClose();
 	if (event->getServerConfing())
 		pagePath = config.getErrorPagePath(errorCode);
 	if (!pagePath.empty())

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 10:06:47 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 16:20:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,12 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 {
 	std::string		header;
 	ServerConfig	*serverConf;
-
+	std::string path;
+	std::string route;
+	std::string resourcePath;
+	std::string requestPath;
+	size_t		maxBodySize;
+	size_t		contentLength;
 
 	if (!event->isReqHeaderComplete())
 		return (HEADER_PROCESS);
@@ -48,56 +53,33 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	serverConf = _getServerConfig(event, configsData);
 	event->setServerConfing(serverConf);
 
-	std::string path;
-	std::string route;
-	std::string resourcePath;
-	std::string requestPath;
-	size_t		maxBodySize;
+
 
 
 	path = event->getReqLinePath();
 	route = _getExtesionRoute(*serverConf, path);
 	if (route.empty())
 		route = _getRouteName(*serverConf, path);
-	
 	requestPath = _getRealPath(*serverConf, event, route);
 	resourcePath = requestPath;
 	if (!event->isCgi())
 		resourcePath = _getPathWithIndex(*serverConf, requestPath, route);
-	
-	std::cout << "Route: " << route << std::endl;
-	std::cout << "requestPath: " << requestPath << std::endl;
-	std::cout << "resourcePath: " << resourcePath << std::endl;
-
 	event->setRoute(route);
 	event->setRequestPath(requestPath);
 	event->setResourcePath(resourcePath);
 	maxBodySize = serverConf->getLocationBodySize(route);
+	contentLength = event->getReqContentLength();
 
-	if (event->getReqLineMethod().compare("POST"))
-		return (REQUEST_END);
-	else
+	if (contentLength > maxBodySize)
 	{
-		if (!serverConf->isLocationAcceptedMethod(route, "POST") || !event->isCgi())
-			return (REQUEST_END);
-	}
-	
-	if (event->getReqContentLength() > maxBodySize)
-	{
-		//colocar o codigo corret
-		event->setStatusCode(PAYLOAD_TOO_LARGE);
+		event->setStatusCode(CONTENT_TOO_LARGE_CODE);
 		return (REQUEST_END);
 	}
-
-
 	if (event->getStatusCode())
 		return (REQUEST_END);
 	if (_isChunkedTransfer(event))
 		return (CHUNKED_BODY_PROCESS);
-	if (event->getReqContentLength())
-		return (BODY_PROCESS);
-	return (REQUEST_END);
-
+	return (BODY_PROCESS);
 }
 
 ServerConfig* HeaderProcess::_getServerConfig(Event *event, ConfigsData *configsData)
