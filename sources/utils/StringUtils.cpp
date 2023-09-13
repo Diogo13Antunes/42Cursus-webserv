@@ -9,9 +9,10 @@ std::string&	StringUtils::stringTrim(std::string &str)
 	size_t		end;
 	size_t		len;
 
+	if (str.empty())
+		return (str);
 	start = str.find_first_not_of(WHITE_SPACE);
 	end = str.find_last_not_of(WHITE_SPACE);
-
 	if (start == str.npos || end == str.npos)
 		str.clear();
 	else

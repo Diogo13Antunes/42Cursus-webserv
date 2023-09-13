@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 15:56:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 08:19:14 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 18:54:29 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,13 +108,17 @@ std::string	CgiExec::_getScriptInterpreter(std::string scriptPath)
 	std::ifstream	file(scriptPath.c_str());
 	std::string		result;
 	std::string		line;
+	size_t			idx;
 
-	if (file.is_open())
-	{
-		std::getline(file, line);
-		line = StringUtils::stringTrim(line);
-		result = line.substr(line.find_first_not_of("#!"));
-	}
+	if (!file.is_open())
+		return (result);
+	std::getline(file, line);
+	if (line.empty())
+		return (result);
+	line = StringUtils::stringTrim(line);
+	idx = line.find("#!");
+	if (idx == 0)
+		result = line.substr(2);
 	return (result);
 }
 
@@ -133,10 +137,12 @@ int CgiExec::_execute(char **env, std::string scriptPath, int *p1, int *p2)
 	std::string scriptRunner;
 	int pid;
 
-	// pode ser um executável nesse caso tentar executar na mesma
 	scriptRunner = _getScriptInterpreter(scriptPath);
 	if (scriptRunner.empty())
-		return (-1);
+		scriptRunner.assign(scriptPath);
+	//scriptRunner = "./cgi-bin//exe.py";
+	//std::cout << "scriptPath:   " << scriptPath << std::endl;
+	std::cout << "scriptRunner: " << scriptRunner << std::endl;
 	const char *av[] = {scriptRunner.c_str(), scriptPath.c_str(), NULL};
 	pid = fork();
 	if (pid == -1)

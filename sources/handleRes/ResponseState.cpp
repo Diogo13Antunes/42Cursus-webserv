@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 12:04:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 18:01:27 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,9 @@ StateResType ResponseState::handle(Event *event, ServerConfig& config)
 	size_t		resSize;
 	std::string	res;
 
-	std::cout << "ResponseState" << std::endl;
-
 	res = event->getRes();
 	resSize = res.size();
-
-	//std::cout << "--------------------" << std::endl;
-	//std::cout << res << std::endl;
-
 	numBytesSend = send(event->getFd(), res.c_str(), resSize, 0);
-
-	std::cout << "numBytesSend: " << numBytesSend << std::endl;
-	std::cout << "resSize: " << resSize << std::endl;
 	if (numBytesSend <= 0)
 	{
 		event->setClientDisconnected();
@@ -50,7 +41,6 @@ StateResType ResponseState::handle(Event *event, ServerConfig& config)
 	event->updateTotalBytesSend(numBytesSend);
 	if (_isResponseFullySend(event->getTotalBytesSend(), event->getResSize()))
 	{
-		std::cout << "CHEGA AO FINAL" << std::endl;
 		return (RESPONSE_END);
 	}
 	if (event->getFileSize())
