@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 15:56:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 19:54:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 08:19:14 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ char** CgiExec::_getEnvVars(Event *event)
 	temp.push_back("CONTENT_LENGTH=" + StringUtils::toString(event->getReqBodySize()));
 	temp.push_back("CONTENT_TYPE=" + event->getReqContentType());
 	temp.push_back("QUERY_STRING=" + event->getQueryString());
-	temp.push_back("DOCUMENT_ROOT=" + serverConfigs->getUploadStore(event->getReqLinePath()));
+	temp.push_back("DOCUMENT_ROOT=" + serverConfigs->getUploadStore(event->getRoute()));
 	temp.push_back("REMOTE_ADDR=" + event->getIp());
 	temp.push_back("SERVER_NAME=" + event->getReqHost());
 	temp.push_back("SERVER_PORT=" + event->getPort());

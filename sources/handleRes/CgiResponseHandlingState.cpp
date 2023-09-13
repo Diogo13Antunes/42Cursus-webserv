@@ -40,7 +40,7 @@ StateResType	CgiResponseHandlingState::handle(Event *event, ServerConfig& config
 	else
 	{
 		event->setStatusCode(INTERNAL_SERVER_ERROR_CODE);
-		return (INITIAL_STATE);
+		return (ERROR_HANDLING);
 	}
 	res = header.getHeader();
 	event->setRes(res);

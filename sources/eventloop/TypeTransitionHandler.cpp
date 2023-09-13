@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/12 18:49:16 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 08:16:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,16 +85,11 @@ void TypeTransitionHandler::handleEvent(Event *event)
 	{
 		if (event->isCgi() && !event->getStatusCode())
 		{
-			std::cout << "Tem de entrar aqui 1" << std::endl;
 			std::cout << "reqPath: " << reqPath << std::endl;
 			std::cout << "route: " << route << std::endl;
 
-
-			// ERRO: NAO FAZ UPLOAD RESOLVER
 			if (!reqPath.compare(route))
 			{
-				std::cout << "Tem de entrar aqui" << std::endl;
-
 				event->setIsCgi(false);
 				event->setActualState(WRITE_EVENT);
 			}
