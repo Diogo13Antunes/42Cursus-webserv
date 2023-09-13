@@ -16,6 +16,7 @@ class Unbuffered(object):
    def __getattr__(self, attr):
        return getattr(self.stream, attr)
 
+exit(-1)
 
 sys.stdout = Unbuffered(sys.stdout)
 
@@ -27,7 +28,10 @@ content_length = 9
 htmlfile = "<!DOCTYPE html> <html> <body> <h1> Script de teste </h1> </body> </html>"
 
 out = "Status: 200 OK\n"
-out = "Content-Type: text/html" + "\n"
+out += "Server: webserv\n"
+out += "Connection: keep-alive\n"
+out += "Content-Type: text/html" + "\n"
+out += "Content-Length: " + str(len(htmlfile)) + "\n"
 out += "\n"
 out += htmlfile
 

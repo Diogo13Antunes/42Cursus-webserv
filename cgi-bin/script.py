@@ -1,16 +1,8 @@
 #!/usr/bin/python3
 
-input_data = input()
-input_data += input()
-input_data += input()
-input_data += input()
-input_data += input()
-input_data += input()
-input_data += input()
-input_data += input()
-input_data += input()
 
-htmlfile = "<!DOCTYPE html> <html> <body> <h1> Mensagem enviada para o Script </h1> " + "<h2>" + input_data + "</h2>" " </body> </html>"
+
+htmlfile = "<!DOCTYPE html> <html> <body> <h1> Mensagem enviada para o Script </h1> " + "<h2>" + "input_data "+ "</h2>" " </body> </html>"
 
 out = "Status: 200 OK\n"
 out += "Server: webserv\n"
