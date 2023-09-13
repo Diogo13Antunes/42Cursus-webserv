@@ -12,14 +12,11 @@ static bool		isInsideMimeTypes(std::string &src);
 static int		strToInt(std::string &str);
 static bool		alreadyExistLocation(std::map<std::string, Location> &locations, std::string newLocation);
 
-ServerConfig::ServerConfig(void)
-{
-	//Default ServerConfig Constructor
-}
+ServerConfig::ServerConfig(void) {}
 
 ServerConfig::ServerConfig(std::vector<std::string>	configs):
 	_configError(true),
-	_clientMaxBodySize(10000)
+	_clientMaxBodySize(MAX_BODY_SIZE)
 {
 	std::vector<std::string>::iterator	it;
 	std::string							key;
@@ -57,10 +54,7 @@ ServerConfig::ServerConfig(std::vector<std::string>	configs):
 		_checkAllLocationsStatus();
 }
 
-ServerConfig::~ServerConfig(void)
-{
-	//Default ServerConfig Destructor
-}
+ServerConfig::~ServerConfig(void) {}
 
 bool	ServerConfig::getConfigError(void)
 {
@@ -169,18 +163,6 @@ bool ServerConfig::isLocationAcceptedMethod(std::string route, std::string metho
 	return (false);
 }
 
-/*
-std::string ServerConfig::getCgiScriptName(std::string route)
-{
-	Location	*location;
-
-	location = _getSpecificLocations(route);
-	if (!location)
-		return (std::string());
-	return (location->getCgi());
-}
-*/
-
 std::string ServerConfig::getLocationCgi(std::string route)
 {
 	Location	*location;
@@ -260,19 +242,7 @@ std::string ServerConfig::getUploadStore(std::string route)
 	return (location->getUploadStore());
 }
 
-/*
-std::string ServerConfig::getRootPath(std::string route)
-{
-	Location *location;
 
-	location = _getSpecificLocations(route);
-	if (!location)
-		location = _getSpecificLocations("/");		
-	if (location)
-		return (location->getRoot());
-	return (_masterRoot);
-}
-*/
 
 std::string ServerConfig::getLocationRootPath(std::string route)
 {
@@ -324,6 +294,21 @@ bool ServerConfig::isConfiguredRoute(std::string path)
 	if (_getSpecificLocations(path))
 		return (true);
 	return (false);
+}
+
+size_t ServerConfig::getLocationBodySize(std::string route)
+{
+	Location	*location;
+	size_t		maxBodySize;
+
+	location = _getSpecificLocations(route);
+	if (location)
+	{
+		maxBodySize = location->getClientMaxBodySize();
+		if (maxBodySize)
+			return (maxBodySize);
+	}
+	return (_clientMaxBodySize);
 }
 
 /* PRIVATE METHODS */

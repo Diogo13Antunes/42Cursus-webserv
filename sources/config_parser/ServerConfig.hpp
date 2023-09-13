@@ -2,6 +2,8 @@
 
 #include "Location.hpp"
 
+#define MAX_BODY_SIZE	10000
+
 class ServerConfig
 {
 	private:
@@ -80,5 +82,6 @@ class ServerConfig
 		std::string							getLocationAlias(std::string route);
 		bool								getLocationAutoIndex(std::string route);
 		bool								isConfiguredRoute(std::string path);
+		size_t								getLocationBodySize(std::string route);
 
 };

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 11:07:22 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/01 11:37:45 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 10:12:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ ErrorHandlingState::ErrorHandlingState(void)
 	_errorCodes.insert(std::make_pair(404, "Not Found"));
 	_errorCodes.insert(std::make_pair(405, "Method Not Allowed"));
 	_errorCodes.insert(std::make_pair(414, "URI Too Long"));
+	_errorCodes.insert(std::make_pair(413, "Payload Too Large"));
 	_errorCodes.insert(std::make_pair(403, "Forbidden"));
 	_errorCodes.insert(std::make_pair(501, "Not Implemented"));
 	_errorCodes.insert(std::make_pair(500, "Internal Server Error"));

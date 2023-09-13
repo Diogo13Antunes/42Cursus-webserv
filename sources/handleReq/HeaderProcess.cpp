@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/12 17:05:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 10:06:47 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	std::string route;
 	std::string resourcePath;
 	std::string requestPath;
+	size_t		maxBodySize;
 
 
 	path = event->getReqLinePath();
@@ -71,8 +72,7 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	event->setRoute(route);
 	event->setRequestPath(requestPath);
 	event->setResourcePath(resourcePath);
-
-
+	maxBodySize = serverConf->getLocationBodySize(route);
 
 	if (event->getReqLineMethod().compare("POST"))
 		return (REQUEST_END);
@@ -81,6 +81,15 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 		if (!serverConf->isLocationAcceptedMethod(route, "POST") || !event->isCgi())
 			return (REQUEST_END);
 	}
+	
+	if (event->getReqContentLength() > maxBodySize)
+	{
+		//colocar o codigo corret
+		event->setStatusCode(PAYLOAD_TOO_LARGE);
+		return (REQUEST_END);
+	}
+
+
 	if (event->getStatusCode())
 		return (REQUEST_END);
 	if (_isChunkedTransfer(event))

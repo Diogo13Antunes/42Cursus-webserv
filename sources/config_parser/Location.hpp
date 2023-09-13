@@ -54,4 +54,5 @@ class Location
 		bool						existUploadStore(void);
 		bool						isAcceptedMethod(std::string method);
 		bool						getAutoIndex(void);
+		size_t						getClientMaxBodySize(void);
 };

@@ -158,6 +158,11 @@ bool	Location::isAcceptedMethod(std::string method)
 	return (false);
 }
 
+size_t Location::getClientMaxBodySize(void)
+{
+	return (_clientMaxBodySize);
+}
+
 /* PRIVATE METHODS */
 
 void	Location::_initAcceptedDefault(void)
