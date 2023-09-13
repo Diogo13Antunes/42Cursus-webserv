@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 16:20:44 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 17:21:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	ServerConfig	*serverConf;
 	std::string path;
 	std::string route;
+	std::string	routeExt;
 	std::string resourcePath;
 	std::string requestPath;
 	size_t		maxBodySize;
@@ -57,9 +58,11 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 
 
 	path = event->getReqLinePath();
-	route = _getExtesionRoute(*serverConf, path);
-	if (route.empty())
-		route = _getRouteName(*serverConf, path);
+	route = _getRouteName(*serverConf, path);
+	if (route.empty() || !route.compare("/"))
+		routeExt = _getExtesionRoute(*serverConf, path);
+	if (!routeExt.empty())
+		route = routeExt;
 	requestPath = _getRealPath(*serverConf, event, route);
 	resourcePath = requestPath;
 	if (!event->isCgi())
