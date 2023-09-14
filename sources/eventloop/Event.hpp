@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 11:56:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 14:25:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,72 +146,17 @@ class Event
 		Event &operator=(const Event &src);
 
 		int			getFd(void);
-		short		getState(void);
-		std::string&	getResponse(void);
-		std::string getReqRaw(void);
-		std::string getHeaderRaw(void);
-		short		getParseState(void);
-		size_t		getBodySize(void);
-
-
-		void		setState(short state);
-		void		setResponse(std::string	res);
-
-		void		setResquestHeader(std::string reqLine, std::map<std::string, std::vector<std::string> > reqHeader);
-		void		setResquestBody(std::string body);
-
-		void		setParseState(int state);
-
-		//void		updateReqRaw(std::string req);
-
-		bool		isBodyComplete(void);
-
-		// void		createResponse(ConfigsData &configsData);
-
 
 		//New
 		StateReqType			getReqState(void);
+
+		// não está a ser usado o valor 
 		void				setReqState(StateReqType reqState);
 		void				updateReqRawData(std::string &req);
 		const std::string&  getReqRaw1(void);
 
-		void setHeaderRaw(std::string header);
-		void setBodyRaw(std::string body);
-		std::string getHeaderRaw1(void);
-		std::string getBodyRaw(void);
 		void setReqRaw1(std::string req);
 
-
-		void setResState(int resState);
-		int getResState(void);
-
-		void setResVect(void);
-
-		void printVectDebug(void);
-
-		std::string& getNextRes(void);
-
-		void updateRes1(std::string res);
-
-		void updateIdx(void);
-
-		bool lastIdx(void);
-
-		ssize_t getNumWrited(void);
-		void updateNumWrited(ssize_t numWrited);
-
-		std::string getReqPath(void);
-
-
-		// for andleRes
-		std::string	getFileName(void);
-		void		setFileName(std::string fileName);
-
-		size_t		getBytesReadBody(void);
-		void		setBytesReadBody(size_t bytesReadBody);
-		void		updateBytesReadBody(size_t bytesReadBody);
-
-		size_t		getBodySize1(void);
 		void		setBodySize1(size_t bodySize);
 
 		const std::string&	getRes(void);
@@ -224,19 +169,13 @@ class Event
 		void				setResSize(size_t resSize);
 
 		size_t				getTotalBytesSend(void);
-		void				setTotalBytesSend(size_t totalBytesSend);
 		void				updateTotalBytesSend(size_t totalBytesSend);
 
 		StateResType		getResState1(void);
 		void				setResState1(StateResType resState);
-
-		int					getErrorCode(void);
 		void				setErrorCode(int errorCode);
 
 		//CGI functions
-		bool			getCgiFlag(void);
-		void			setCgiFlag(bool cgiFlag);
-
 
 		std::string		getCgiScriptResult(void);
 		void			updateCgiScriptResult(std::string& src);
@@ -246,27 +185,10 @@ class Event
 		bool				isConnectionClose(void);
 		void				setConnectionClose(void);
 
-
-		bool				isClientClosed(void);
-		void				setClientClosed(void);
-
-		void				updateCgiSentChars(size_t value);
-		size_t				getCgiSentChars(void);
-
-		std::string			getCgiBodyRes(void);
-		void				setCgiBodyRes(std::string &src);
-
-		// Important Criar uma função para eliminar o CGI (Fazer delete) Verificar se já é feito
-		int					getCgiFd(void);
-
 		int					getCgiWriteFd(void);
 		int					getCgiReadFd(void);
 
-		int					isCgiScriptEnd(void);
 		std::string					getQueryString(void);
-		std::vector<std::string>	getRequestHeaderValue(std::string key);
-		std::string					getReqMethod(void);
-		std::string					getServerProtocol(void);
 		std::string					getReqContentType(void);
 		size_t						getReqContentLength(void);
 		
@@ -277,9 +199,7 @@ class Event
 		std::string		getReqLineHttpVersion(void);
 		std::string		getReqLineMethod(void);
 		std::string		getReqLinePath(void);
-		void			setReqBody(std::string body);
 		std::string&	getReqBody(void);
-		void			parseHeader(std::string &header);
 
 		std::string		getReqTransferEncoding(void);
 		std::string		getReqHost(void);
@@ -295,15 +215,6 @@ class Event
 		bool	isClientDisconnect(void);
 		void	setClientDisconnected(void);
 
-
-		void	cgiExecute(ServerConfig *config, std::string scriptName);
-		int		writeToCgi(const char *str, size_t size);
-		int		readFromCgi(std::string &str);
-
-		//void	setCgiExitStatus(int cgiExitStatus);
-		//int		getCgiExitStatus(void);
-
-		std::string	getBody(void);		
 		void		updateReqBody(std::string body);
 		size_t		getReqBodySize(void);
 
@@ -313,9 +224,6 @@ class Event
 		const std::string& getReqHeader(void);
 		const std::string& getReqRawData(void);
 		void clearReqRawData(void);
-
-		void	setBody(std::string &src);
-
 		int getStatusCode(void);
 		void setStatusCode(int statusCode);
 
@@ -335,25 +243,11 @@ class Event
 
 		void setFileSize(size_t fileSize);
 		size_t getFileSize(void);
-		void setFileNumBytesRead(size_t fileNumBytesRead);
 		void updateFileNumBytesRead(size_t fileNumBytesRead);
 		size_t getFileNumBytesRead(void);
 
 		void			setServerConfing(ServerConfig* serverConf);
 		ServerConfig*	getServerConfing(void);
-
-		//void setAutoindex(bool autoindex);
-		//bool isAutoindex(void);
-
-
-		/*
-		void setFdCgiW(int fdCgiW);
-		int getFdCgiW(void);
-		void setFdCgiR(int fdCgiR);
-		int getFdCgiR(void);
-		void setPidCgi(int pidCgi);
-		int getPidCgi(void);
-		*/
 
 		void setCgiWriteFd(int cgiWriteFd);
 		void setCgiReadFd(int cgiReadFd);
@@ -362,7 +256,6 @@ class Event
 		void setCgiPid(int pidCgi);
 
 		ssize_t getNumBytesSendCgi(void);
-		void setNumBytesSendCgi(ssize_t numBytesSendCgi);
 		void updateNumBytesSendCgi(ssize_t numBytesSendCgi);
 
 		void closeCgiWriteFd(void);
@@ -383,29 +276,8 @@ class Event
 		std::string getResourcePath(void);
 		void setResourcePath(std::string resourcePath);
 
-
-		//void setResourcePath(std::string resourcePath);
-		//std::string getResourcePath(void);
-
-
-	/*
-		bool	_cgiWriteFdRemoved;
-		bool	_cgiReadFdRemoved;
-
-		bool	_cgiWriteFdClosed;
-		bool	_cgiReadFdClosed;
-	*/
-
-	//bool _isCgiFdRemoved(int cgiFd);
-	//bool _isCgiFdClosed(int cgiFd);
-
-	//void _markCgiFdAsRemoved(int cgiFd);
-	//void _markCgiFdAsClosed(int cgiFd);
-
-
-	
-	void setIsCgi(bool isCgi);
-	bool isCgi(void);
+		void setIsCgi(bool isCgi);
+		bool isCgi(void);
 
 
 };
