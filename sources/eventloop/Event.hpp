@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 14:25:24 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 14:32:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 #include <string>
 #include <vector>
-#include "RequestData.hpp"
 #include "RequestParser.hpp"
 #include "Configs.hpp"
 #include "ConfigsData.hpp"
@@ -38,7 +37,6 @@ class Event
 {
 	private:
 		std::string		_reqRaw;
-		RequestData		_reqParsed;
 		RequestParser 	_reqParser;
 		std::string		_res;
 
