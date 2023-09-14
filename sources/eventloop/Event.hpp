@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 14:32:04 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 14:52:31 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,41 +40,20 @@ class Event
 		RequestParser 	_reqParser;
 		std::string		_res;
 
-		std::string	_headerRaw;
-		std::string _bodyRaw;
-
 		int			_fd;
-		short		_state;
-		short		_parseState;
 
 		StateReqType	_reqState;
 
 		int			_resState;
-
-		std::vector<std::string> _resVect;
-		ssize_t _numWrited;
-		int _idx;
-
-		// for andleRes
-		std::string		_fileName;
-		size_t			_bodySize;   // talvez não seja necessário devido ao _resSize
-		size_t			_bytesReadBody;
 		size_t			_resSize;
 		size_t			_totalBytesSend;
 		StateResType	_resState1;
-		int				_errorCode;
-
-		//CGI
-		bool			_cgiFlag;
-
 
 		std::string		_cgiScriptResult;
 
-		//Timeout: time for handle all request and all response 
 		int 	_timeoutSec;
 		time_t	_creationTime;
 
-		bool	_clientClosed;
 
 
 		EventType _oldState;
@@ -85,9 +64,7 @@ class Event
 		short	_connectionClosed;
 		bool	_clientDisconnect;
 		int		_cgiExitStatus;
-		size_t	_cgiSentChars;
 
-		std::string _body;
 
 		std::string _reqHeader;
 
@@ -95,9 +72,6 @@ class Event
 
 		std::string _ip;
 		std::string _port;
-		std::string	_cgiBodyRes;
-
-		//std::string	_resourcePath;
 
 		int			_redirectCode;
 		std::string	_redirectResource;
@@ -107,28 +81,17 @@ class Event
 
 		ServerConfig*	_serverConf;
 
-
-		/*int _fdCgiW;
-		int _fdCgiR;
-		int _pidCgi;*/
-
 		int	_cgiWriteFd;
 		int	_cgiReadFd;
-
-		bool	_cgiWriteFdRemoved;
-		bool	_cgiReadFdRemoved;
-
 		bool	_cgiWriteFdClosed;
 		bool	_cgiReadFdClosed;
 
 		int _cgiPid;
 
-		//bool	_autoindex;
 
 		ssize_t _numBytesSendCgi;
 
 		bool	_cgiScriptEndend;
-		//int		_cgiExitStatus;
 
 		std::string _route;
 		std::string _requestPath;
@@ -155,8 +118,6 @@ class Event
 
 		void setReqRaw1(std::string req);
 
-		void		setBodySize1(size_t bodySize);
-
 		const std::string&	getRes(void);
 		void				setRes(std::string& res);
 		void 				clearRes(void);
@@ -171,7 +132,6 @@ class Event
 
 		StateResType		getResState1(void);
 		void				setResState1(StateResType resState);
-		void				setErrorCode(int errorCode);
 
 		//CGI functions
 

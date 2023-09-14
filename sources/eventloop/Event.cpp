@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 14:22:29 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 14:49:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,27 +26,16 @@ Event::Event(void) {}
 
 Event::Event(int fd, int state):
 	_fd(fd),
-	_state(state),
-	_parseState(HEADER_HANDLE),
 	_reqState(HEADER_PROCESS),
 	_resState(0),
-	_numWrited(0),
-	_idx(0),
-	_bytesReadBody(0),
 	_totalBytesSend(0),
 	_resState1(INITIAL_STATE),
-	_errorCode(0),
-	_cgiFlag(false),
 	_timeoutSec(TIMEOUT_SEC),
 	_creationTime(Timer::getActualTimeStamp()),
-	_clientClosed(false),
-	//_cgiEx(NULL),
 	_actualState(READ_SOCKET),
 	_finished(false),
 	_connectionClosed(-1),
 	_clientDisconnect(false),
-	//_cgiExitStatus(NO_EXIT_STATUS),
-	_cgiSentChars(0),
 	_statusCode(0),
 	_redirectCode(0),
 	_fileSize(0),
@@ -175,11 +164,6 @@ static std::string getFileType(std::string path)
 	return (type);
 }
 
-void Event::setBodySize1(size_t bodySize)
-{
-	_bodySize = bodySize;
-}
-
 const std::string& Event::getRes(void)
 {
 	return (_res);
@@ -234,11 +218,6 @@ StateResType Event::getResState1(void)
 void Event::setResState1(StateResType resState)
 {
 	_resState1 = resState;
-}
-
-void Event::setErrorCode(int errorCode)
-{
-	_errorCode = errorCode;
 }
 
 bool Event::isEventTimeout(void)
