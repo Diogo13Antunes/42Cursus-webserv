@@ -6,11 +6,12 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/02 14:19:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 08:09:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 12:11:14 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ChunkedBodyProcess.hpp"
+#include "configs.hpp"
 #include <iostream>
 
 ChunkedBodyProcess::ChunkedBodyProcess(void) {}

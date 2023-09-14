@@ -6,11 +6,12 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:49:57 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 16:20:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 12:09:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BodyProcess.hpp"
+#include "configs.hpp"
 
 BodyProcess::BodyProcess(void) {}
 

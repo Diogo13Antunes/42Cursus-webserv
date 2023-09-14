@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 13:00:39 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 11:56:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 #include "ConfigsData.hpp"
 #include "StateReqType.hpp"
 #include "StateResType.hpp"
-#include "CGIExecuter.hpp"
 
 #include "EventType.hpp"
 #include "SocketUtils.hpp"
@@ -69,7 +68,7 @@ class Event
 
 		//CGI
 		bool			_cgiFlag;
-		CGIExecuter		*_cgiEx;
+
 
 		std::string		_cgiScriptResult;
 
@@ -258,8 +257,6 @@ class Event
 		void				setCgiBodyRes(std::string &src);
 
 		// Important Criar uma função para eliminar o CGI (Fazer delete) Verificar se já é feito
-		CGIExecuter*		getCgiEx(void);
-		void				setCgiEx(CGIExecuter *cgiEx);
 		int					getCgiFd(void);
 
 		int					getCgiWriteFd(void);

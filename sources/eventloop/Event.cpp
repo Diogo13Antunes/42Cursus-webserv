@@ -6,13 +6,14 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 10:37:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 12:06:01 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Event.hpp"
 #include "Timer.hpp"
 #include "EventType.hpp"
+#include <signal.h>
 
 #define TIMEOUT_SEC				2
 #define CONNECTION_CLOSED		1
@@ -41,7 +42,7 @@ Event::Event(int fd, int state):
 	_timeoutSec(TIMEOUT_SEC),
 	_creationTime(Timer::getActualTimeStamp()),
 	_clientClosed(false),
-	_cgiEx(NULL),
+	//_cgiEx(NULL),
 	_actualState(READ_SOCKET),
 	_finished(false),
 	_connectionClosed(-1),
@@ -632,7 +633,7 @@ void Event::setClientClosed(void)
 }
 
 // CGI Functions
-CGIExecuter* Event::getCgiEx(void)
+/*CGIExecuter* Event::getCgiEx(void)
 {
 	return (_cgiEx);
 }
@@ -641,12 +642,13 @@ void Event::setCgiEx(CGIExecuter *cgiEx)
 {
 	_cgiEx = cgiEx;
 }
+*/
 
 // Deprecated
 int Event::getCgiFd(void)
 {
-	if (_cgiEx)
-		return (_cgiEx->getReadFD());
+	//if (_cgiEx)
+	//	return (_cgiEx->getReadFD());
 	return (-1);
 }
 
@@ -694,8 +696,8 @@ bool Event::isCgiScriptEnd(void)
 
 int Event::isCgiScriptEnd(void)
 {
-	if (_cgiEx && _cgiExitStatus == NO_EXIT_STATUS)
-		_cgiExitStatus = _cgiEx->isEnded();
+	//if (_cgiEx && _cgiExitStatus == NO_EXIT_STATUS)
+		//_cgiExitStatus = _cgiEx->isEnded();
 	return (_cgiExitStatus);
 }
 
@@ -873,21 +875,21 @@ void Event::setClientDisconnected(void)
 
 void Event::cgiExecute(ServerConfig *config, std::string scriptName)
 {
-	if (!_cgiEx)
-		_cgiEx = new CGIExecuter(config, _reqParser, scriptName);
+	//if (!_cgiEx)
+		//_cgiEx = new CGIExecuter(config, _reqParser, scriptName);
 }
 
 int Event::writeToCgi(const char *str, size_t size)
 {
-	if (_cgiEx)
-		return (_cgiEx->writeToScript(str, size));
+	//if (_cgiEx)
+	//	return (_cgiEx->writeToScript(str, size));
 	return (-1);
 }
 
 int Event::readFromCgi(std::string &str)
 {
-	if (_cgiEx)
-		return (_cgiEx->readFromScript(str));
+	//if (_cgiEx)
+	//	return (_cgiEx->readFromScript(str));
 	return (-1);
 }
 

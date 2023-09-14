@@ -6,11 +6,12 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:39:35 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/08 18:06:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 12:01:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "WriteCgiHandler.hpp"
+#include <unistd.h>
 
 WriteCgiHandler::WriteCgiHandler(void) {}
 

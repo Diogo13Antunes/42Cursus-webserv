@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 15:56:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 08:01:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 12:14:46 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 #include "ServerConfig.hpp"
 #include "StringUtils.hpp"
 #include "configs.hpp"
+#include <unistd.h>
+#include <sys/wait.h>
+#include <cstring>
 
 int CgiExec::execute(Event *event)
 {

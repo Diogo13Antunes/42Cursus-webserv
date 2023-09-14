@@ -6,19 +6,20 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 21:01:29 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 12:08:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include <iostream>
-#include <sys/stat.h>
 
 #include "HeaderProcess.hpp"
 #include "RequestParser.hpp"
 #include "SocketUtils.hpp"
 #include "ServerConfig.hpp"
 #include "FileSystemUtils.hpp"
+#include "configs.hpp"
 
+#include <iostream>
+#include <sys/stat.h>
+#include <unistd.h>
 
 static void getHostPortFromSocket(int fd, std::string& hostIP, std::string& port);
 

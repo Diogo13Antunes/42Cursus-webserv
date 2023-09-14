@@ -6,12 +6,11 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 11:12:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 11:59:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventLoop.hpp"
-#include "CGIExecuter.hpp"
 #include "Signals.hpp"
 #include "CgiExec.hpp"
 

@@ -6,13 +6,14 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:38:17 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/12 16:08:49 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 12:00:26 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ReadCgiHandler.hpp"
 #include "configs.hpp"
 #include <iostream>
+#include <unistd.h>
 
 #define BUFFER_SIZE	50000
 

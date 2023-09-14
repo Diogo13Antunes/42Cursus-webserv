@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 10:25:12 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 12:01:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "iostream"
 #include "CgiExec.hpp"
 #include "FileSystemUtils.hpp"
+#include "configs.hpp"
 
 TypeTransitionHandler::TypeTransitionHandler(ConfigsData *configs): _configs(configs) {}
 
