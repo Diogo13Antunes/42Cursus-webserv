@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 14:52:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 15:12:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,85 +19,50 @@
 #include "ConfigsData.hpp"
 #include "StateReqType.hpp"
 #include "StateResType.hpp"
-
 #include "EventType.hpp"
 #include "SocketUtils.hpp"
-
-
-//#define	NONE			0
-#define HEADER_HANDLE	0
-#define	HEADER_DONE		1
-#define	BODY_HANDLE		2
-#define	BODY_DONE		3
-
-#define	NO_EXIT_STATUS	256
-
 
 class Event
 {
 	private:
 		std::string		_reqRaw;
-		RequestParser 	_reqParser;
+		RequestParser	_reqParser;
 		std::string		_res;
-
-		int			_fd;
-
+		int				_fd;
 		StateReqType	_reqState;
-
-		int			_resState;
+		int				_resState;
 		size_t			_resSize;
 		size_t			_totalBytesSend;
 		StateResType	_resState1;
-
 		std::string		_cgiScriptResult;
-
-		int 	_timeoutSec;
-		time_t	_creationTime;
-
-
-
-		EventType _oldState;
-		EventType _actualState;
-
-		bool	_finished;
-
-		short	_connectionClosed;
-		bool	_clientDisconnect;
-		int		_cgiExitStatus;
-
-
-		std::string _reqHeader;
-
-		int _statusCode;
-
-		std::string _ip;
-		std::string _port;
-
-		int			_redirectCode;
-		std::string	_redirectResource;
-
-		size_t	_fileSize;
-		size_t	_fileNumBytesRead;
-
+		int 			_timeoutSec;
+		time_t			_creationTime;
+		EventType		_oldState;
+		EventType		_actualState;
+		bool			_finished;
+		short			_connectionClosed;
+		bool			_clientDisconnect;
+		int				_cgiExitStatus;
+		std::string		_reqHeader;
+		int				_statusCode;
+		std::string		_ip;
+		std::string		_port;
+		int				_redirectCode;
+		std::string		_redirectResource;
+		size_t			_fileSize;
+		size_t			_fileNumBytesRead;
 		ServerConfig*	_serverConf;
-
-		int	_cgiWriteFd;
-		int	_cgiReadFd;
-		bool	_cgiWriteFdClosed;
-		bool	_cgiReadFdClosed;
-
-		int _cgiPid;
-
-
-		ssize_t _numBytesSendCgi;
-
-		bool	_cgiScriptEndend;
-
-		std::string _route;
-		std::string _requestPath;
-		std::string _resourcePath;
-
-		bool _isCgi;
+		int				_cgiWriteFd;
+		int				_cgiReadFd;
+		bool			_cgiWriteFdClosed;
+		bool			_cgiReadFdClosed;
+		int				_cgiPid;
+		ssize_t			_numBytesSendCgi;
+		bool			_cgiScriptEndend;
+		std::string		_route;
+		std::string		_requestPath;
+		std::string		_resourcePath;
+		bool			_isCgi;
 
 	public:
 		Event(void);
@@ -106,136 +71,88 @@ class Event
 		~Event(void);
 		Event &operator=(const Event &src);
 
-		int			getFd(void);
-
-		//New
+		int						getFd(void);
 		StateReqType			getReqState(void);
-
-		// não está a ser usado o valor 
-		void				setReqState(StateReqType reqState);
-		void				updateReqRawData(std::string &req);
-		const std::string&  getReqRaw1(void);
-
-		void setReqRaw1(std::string req);
-
-		const std::string&	getRes(void);
-		void				setRes(std::string& res);
-		void 				clearRes(void);
-		void				eraseRes(size_t start, size_t end);
-		void				updateRes(std::string& res);
-
-		size_t				getResSize(void);
-		void				setResSize(size_t resSize);
-
-		size_t				getTotalBytesSend(void);
-		void				updateTotalBytesSend(size_t totalBytesSend);
-
-		StateResType		getResState1(void);
-		void				setResState1(StateResType resState);
-
-		//CGI functions
-
-		std::string		getCgiScriptResult(void);
-		void			updateCgiScriptResult(std::string& src);
-
-		bool				isEventTimeout(void);
-
-		bool				isConnectionClose(void);
-		void				setConnectionClose(void);
-
-		int					getCgiWriteFd(void);
-		int					getCgiReadFd(void);
-
-		std::string					getQueryString(void);
-		std::string					getReqContentType(void);
-		size_t						getReqContentLength(void);
-		
-
-		
-		//New functions of request parser
-		std::string		getReqLineTarget(void);
-		std::string		getReqLineHttpVersion(void);
-		std::string		getReqLineMethod(void);
-		std::string		getReqLinePath(void);
-		std::string&	getReqBody(void);
-
-		std::string		getReqTransferEncoding(void);
-		std::string		getReqHost(void);
-
-
-		EventType	getOldState(void);
-		EventType	getActualState(void);
-		void		setActualState(EventType actualState);
-
-		bool	isFinished(void);
-		void	setAsFinished(void);
-
-		bool	isClientDisconnect(void);
-		void	setClientDisconnected(void);
-
-		void		updateReqBody(std::string body);
-		size_t		getReqBodySize(void);
-
-
-		bool isReqHeaderComplete(void);
-		void parseReqHeader(std::string &header);
-		const std::string& getReqHeader(void);
-		const std::string& getReqRawData(void);
-		void clearReqRawData(void);
-		int getStatusCode(void);
-		void setStatusCode(int statusCode);
-
-		std::string getIp(void);
-		std::string getPort(void);
-
-		//void setResourcePath(std::string resourcePath);
-		//std::string getResourcePath(void);
-
-		int _redirectionCode;
-		std::string _redirectionResource;
-
-		void		setRredirectCode(int redirectCode);
-		int			getRredirectCode(void);
-		void		setRredirectResource(std::string redirectResource);
-		std::string	getRredirectResource(void);
-
-		void setFileSize(size_t fileSize);
-		size_t getFileSize(void);
-		void updateFileNumBytesRead(size_t fileNumBytesRead);
-		size_t getFileNumBytesRead(void);
-
-		void			setServerConfing(ServerConfig* serverConf);
-		ServerConfig*	getServerConfing(void);
-
-		void setCgiWriteFd(int cgiWriteFd);
-		void setCgiReadFd(int cgiReadFd);
-
-		int getCgiPid(void);
-		void setCgiPid(int pidCgi);
-
-		ssize_t getNumBytesSendCgi(void);
-		void updateNumBytesSendCgi(ssize_t numBytesSendCgi);
-
-		void closeCgiWriteFd(void);
-		void closeCgiReadFd(void);
-
-		int getCgiExitStatus(void);
-		void setCgiExitStatus(int cgiExitStatus);
-
-		bool isCgiScriptEndend(void);
-		void setCgiScriptEndend(bool cgiScriptEndend);
-
-		std::string getRoute(void);
-		void setRoute(std::string route);
-
-		std::string getRequestPath(void);
-		void setRequestPath(std::string requestPath);
-
-		std::string getResourcePath(void);
-		void setResourcePath(std::string resourcePath);
-
-		void setIsCgi(bool isCgi);
-		bool isCgi(void);
-
-
+		void					setReqState(StateReqType reqState);
+		void					updateReqRawData(std::string &req);
+		const std::string&		getReqRaw1(void);
+		void					setReqRaw1(std::string req);
+		const std::string&		getRes(void);
+		void					setRes(std::string& res);
+		void					clearRes(void);
+		void					eraseRes(size_t start, size_t end);
+		void					updateRes(std::string& res);
+		size_t					getResSize(void);
+		void					setResSize(size_t resSize);
+		size_t					getTotalBytesSend(void);
+		void					updateTotalBytesSend(size_t totalBytesSend);
+		StateResType			getResState1(void);
+		void					setResState1(StateResType resState);
+		std::string				getCgiScriptResult(void);
+		void					updateCgiScriptResult(std::string& src);
+		bool					isEventTimeout(void);
+		bool					isConnectionClose(void);
+		void					setConnectionClose(void);
+		int						getCgiWriteFd(void);
+		int						getCgiReadFd(void);
+		std::string				getQueryString(void);
+		std::string				getReqContentType(void);
+		size_t					getReqContentLength(void);
+		std::string				getReqLineTarget(void);
+		std::string				getReqLineHttpVersion(void);
+		std::string				getReqLineMethod(void);
+		std::string				getReqLinePath(void);
+		std::string&			getReqBody(void);
+		std::string				getReqTransferEncoding(void);
+		std::string				getReqHost(void);
+		EventType				getOldState(void);
+		EventType				getActualState(void);
+		void					setActualState(EventType actualState);
+		bool					isFinished(void);
+		void					setAsFinished(void);
+		bool					isClientDisconnect(void);
+		void					setClientDisconnected(void);
+		void					updateReqBody(std::string body);
+		size_t					getReqBodySize(void);
+		bool					isReqHeaderComplete(void);
+		void					parseReqHeader(std::string &header);
+		const std::string&		getReqHeader(void);
+		const std::string&		getReqRawData(void);
+		void					clearReqRawData(void);
+		int						getStatusCode(void);
+		void					setStatusCode(int statusCode);
+		std::string				getIp(void);
+		std::string				getPort(void);
+		int						_redirectionCode;
+		std::string				_redirectionResource;
+		void					setRredirectCode(int redirectCode);
+		int						getRredirectCode(void);
+		void					setRredirectResource(std::string redirectResource);
+		std::string				getRredirectResource(void);
+		void					setFileSize(size_t fileSize);
+		size_t					getFileSize(void);
+		void					updateFileNumBytesRead(size_t fileNumBytesRead);
+		size_t					getFileNumBytesRead(void);
+		void					setServerConfing(ServerConfig* serverConf);
+		ServerConfig*			getServerConfing(void);
+		void					setCgiWriteFd(int cgiWriteFd);
+		void					setCgiReadFd(int cgiReadFd);
+		int						getCgiPid(void);
+		void					setCgiPid(int pidCgi);
+		ssize_t					getNumBytesSendCgi(void);
+		void					updateNumBytesSendCgi(ssize_t numBytesSendCgi);
+		void					closeCgiWriteFd(void);
+		void					closeCgiReadFd(void);
+		int						getCgiExitStatus(void);
+		void					setCgiExitStatus(int cgiExitStatus);
+		bool					isCgiScriptEndend(void);
+		void					setCgiScriptEndend(bool cgiScriptEndend);
+		std::string				getRoute(void);
+		void					setRoute(std::string route);
+		std::string				getRequestPath(void);
+		void					setRequestPath(std::string requestPath);
+		std::string				getResourcePath(void);
+		void					setResourcePath(std::string resourcePath);
+		void					setIsCgi(bool isCgi);
+		bool					isCgi(void);
 };
