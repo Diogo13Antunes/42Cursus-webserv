@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 17:21:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/13 21:01:29 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,13 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	serverConf = _getServerConfig(event, configsData);
 	event->setServerConfing(serverConf);
 
-
-
-
 	path = event->getReqLinePath();
 	route = _getRouteName(*serverConf, path);
 	if (route.empty() || !route.compare("/"))
+		routeExt = _getExtesionRoute(*serverConf, path);
+	if (!routeExt.empty())
+		route = routeExt;
+	if (routeExt.empty() && !serverConf->isLocationAcceptedMethod(route, event->getReqLineMethod()))
 		routeExt = _getExtesionRoute(*serverConf, path);
 	if (!routeExt.empty())
 		route = routeExt;
