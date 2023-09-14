@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 19:50:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 20:22:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,8 +205,6 @@ void EventLoop::_closeTimeoutEvents(void)
 		{
 			if (event->getActualState() != WRITE_EVENT)
 			{
-				//std::cout << "ENTRA NO TIMEOUT" << std::endl;
-
 				event->setStatusCode(REQUEST_TIMEOUT_CODE);
 				event->setActualState(TYPE_TRANSITION);
 				_addEventToQueue(event->getFd());
@@ -283,15 +281,15 @@ void EventLoop::_handleClientDisconnect(Event *event)
 	if (!event->isFdRemoved())
 	{
 		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
+		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
 		event->isFdRemoved();
 	}
-	sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
-	if (cgiReadFd > 0 && type == READ_CGI && !event->isCgiReadFdRemoved())
+	if (cgiReadFd > 0 && !event->isCgiReadFdRemoved())
 	{
 		sendMessage(new Message(EVENTDEMUX_ID, cgiReadFd, EVENT_REMOVE));
 		event->setCgiReadFdRemoved();
 	}
-	if (cgiWriteFd > 0 && type == WRITE_CGI && !event->isCgiWriteFdRemoved())
+	if (cgiWriteFd > 0 && !event->isCgiWriteFdRemoved())
 	{
 		sendMessage(new Message(EVENTDEMUX_ID, cgiWriteFd, EVENT_REMOVE));
 		event->setCgiWriteFdRemoved();
