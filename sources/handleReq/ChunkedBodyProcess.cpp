@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/02 14:19:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/11 08:41:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 08:09:55 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,16 @@ StateReqType ChunkedBodyProcess::handle(Event *event, ConfigsData *configsData)
 	int					bodySize;
 	std::string			body;
 	int					totalSize;
+	ServerConfig*		serverConf;
+	std::string			route;
 
+	serverConf = event->getServerConfing();
+	route = event->getRoute();
+	if (event->getReqBodySize() > serverConf->getLocationBodySize(route))
+	{
+		event->setStatusCode(CONTENT_TOO_LARGE_CODE);
+		return (REQUEST_END);
+	}
 	while (true)
 	{
 		index = bodyChunked.find("0\r\n\r\n");
