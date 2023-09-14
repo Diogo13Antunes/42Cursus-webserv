@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 13:00:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 10:37:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "Timer.hpp"
 #include "EventType.hpp"
 
-#define TIMEOUT_SEC				200
+#define TIMEOUT_SEC				2
 #define CONNECTION_CLOSED		1
 #define CONNECTION_KEEPALIVE	0
 
@@ -72,7 +72,7 @@ Event::~Event(void)
 {
 	if (_cgiPid > 0 && !_cgiScriptEndend)
 	{
-		std::cout << "Tenta fazer o kill" << std::endl;
+		//std::cout << "Tenta fazer o kill" << std::endl;
 		if (kill(_cgiPid, SIGTERM) == -1)
 			std::cout << "Webserv: Error terminating SGI script Event" << std::endl;
 	}

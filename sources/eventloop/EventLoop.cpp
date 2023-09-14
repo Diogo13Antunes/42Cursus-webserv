@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 12:38:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 11:12:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,7 @@ void EventLoop::handleEvents(void)
 		else if (event && event->getActualState() == TYPE_TRANSITION)
 			_addEventToQueue(event->getFd());
 	}
-	//if (Signals::isChildSignalTriggered())
-		_checkIfCgiScriptsFinished();
+	_checkIfCgiScriptsFinished();
 	//_closeTimeoutEvents();
 }
 
@@ -89,7 +88,7 @@ void EventLoop::_handleEvent(Event *ev)
 		if (it != _handlers.end())
 			it->second->handleEvent(ev);
 		if (type == TYPE_TRANSITION)
-			_sendMessages(ev); // change name
+			_sendMessages(ev);
 	}
 }
 
@@ -183,7 +182,7 @@ void EventLoop::_deleteEvent(int fd)
 }
 
 // Not used but will be used and changed
-void EventLoop::_closeTimeoutEvents(void)
+/*void EventLoop::_closeTimeoutEvents(void)
 {
 	std::map<int, Event*>::iterator	it;
 	Event							*event;
@@ -211,8 +210,54 @@ void EventLoop::_closeTimeoutEvents(void)
 			sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
 		}
 	}
+}*/
+
+void EventLoop::_closeTimeoutEvents(void)
+{
+	std::map<int, Event*>::iterator	it;
+	Event							*event;
+	int								fd;
+	int								cgiReadFd;
+	int								cgiWriteFd;
+
+	if (_eventMap.empty())
+		return ;
+	for (it = _eventMap.begin(); it != _eventMap.end(); it++)
+	{
+		event = it->second;
+		fd = event->getFd();
+
+		if (fd != it->first)
+			continue ;
+		//cgiReadFd = event->getCgiReadFd();
+		//cgiWriteFd = event->getCgiWriteFd();
+
+		if (event->isEventTimeout())
+		{
+			if (event->getActualState() != WRITE_EVENT)
+			{
+				//std::cout << "ENTRA NO TIMEOUT" << std::endl;
+
+				event->setStatusCode(REQUEST_TIMEOUT_CODE);
+				event->setActualState(TYPE_TRANSITION);
+				_addEventToQueue(event->getFd());
+			}
+		}
+
+		/*if (event->isEventTimeout())
+		{
+			if (cgiReadFd > 0)
+				sendMessage(new Message(EVENTDEMUX_ID, cgiReadFd, EVENT_REMOVE));
+			if (cgiWriteFd > 0)
+				sendMessage(new Message(EVENTDEMUX_ID, cgiWriteFd, EVENT_REMOVE));
+			sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
+			sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
+			_deleteEvent(fd);
+		}*/
+	}
 }
 
+/*
 void EventLoop::_checkIfCgiScriptsFinished(void)
 {
 	std::map<int, Event*>::iterator	itMap;
@@ -248,6 +293,47 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 		itMap++;
 	}
 }
+*/
+
+void EventLoop::_checkIfCgiScriptsFinished(void)
+{
+	std::map<int, Event*>::iterator	itMap;
+	std::map<int, Event*>::iterator	itMapBackUp;
+	Event							*event;
+	int								fd;
+
+	if (_cgiEventMap.empty())
+		return ;
+	itMap = _cgiEventMap.begin();
+	while (itMap != _cgiEventMap.end())
+	{
+		fd = itMap->first;
+		if (!_getEventFromMap(_eventMap, fd))
+		{
+			itMapBackUp = itMap;
+			itMapBackUp++;
+			_cgiEventMap.erase(itMap);
+			itMap = itMapBackUp;
+			continue ;
+		}
+		event = itMap->second;
+
+		if (event->isCgiScriptEndend())
+		{
+			event->setActualState(TYPE_TRANSITION);
+			_addEventToQueue(fd);
+			itMapBackUp = itMap;
+			itMapBackUp++;
+			_cgiEventMap.erase(itMap);
+			itMap = itMapBackUp;
+			continue ;
+		}
+		else if (CgiExec::isEnded(event))
+			event->setCgiScriptEndend(true);
+		itMap++;
+	}
+}
+
 
 void EventLoop::_finalizeEvent(Event *event)
 {

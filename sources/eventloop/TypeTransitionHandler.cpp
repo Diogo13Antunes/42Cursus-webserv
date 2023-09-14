@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 12:15:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 10:25:12 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,12 +81,16 @@ void TypeTransitionHandler::handleEvent(Event *event)
 	if (route.at(route.size() - 1) == '/')
 		route.erase(route.size() - 1);	
 	serverConf = event->getServerConfing();
+
+	//if (event->getStatusCode())
+	//	event->setActualState(WRITE_EVENT);
+
 	if (event->getOldState() == READ_SOCKET)
 	{
 		if (event->isCgi() && !event->getStatusCode())
 		{
-			std::cout << "reqPath: " << reqPath << std::endl;
-			std::cout << "route: " << route << std::endl;
+			//std::cout << "reqPath: " << reqPath << std::endl;
+			//std::cout << "route: " << route << std::endl;
 
 			if (!reqPath.compare(route))
 			{
@@ -127,13 +131,20 @@ void TypeTransitionHandler::handleEvent(Event *event)
 	}
 	else if (event->getOldState() == WRITE_CGI)
 	{
-		if (event->isCgiScriptEndend())
+		//std::cout << "old = WRITE_CGI: " << event->getStatusCode() << std::endl;
+		if (event->isCgiScriptEndend() || event->getStatusCode())
+		{
+			//std::cout << "event->getOldState() == WRITE_CGI" << std::endl;
 			event->setActualState(WRITE_EVENT);
+		}
 		else
 			event->setActualState(READ_CGI);
 	}
 	else if (event->getOldState() == READ_CGI)
+	{
+		//std::cout << "event->getOldState() == READ_CGI" << std::endl;
 		event->setActualState(WRITE_EVENT);
+	}
 }
 
 EventType TypeTransitionHandler::getHandleType(void)

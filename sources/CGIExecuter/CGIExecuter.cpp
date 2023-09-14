@@ -29,7 +29,7 @@ CGIExecuter::~CGIExecuter(void)
 {
 	if (this->isEnded() == NO_EXIT_STATUS)
 	{
-		std::cout << "Tenta fazer o kill" << std::endl;
+		//std::cout << "Tenta fazer o kill" << std::endl;
 		if (kill(_pid, SIGTERM) == -1)
 			std::cout << "Webserv: Error terminating SGI script" << std::endl;
 	}

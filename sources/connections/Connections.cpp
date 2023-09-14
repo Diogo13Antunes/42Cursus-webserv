@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/17 11:04:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 10:51:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ Connections::~Connections(void)
 void Connections::updateAllConnections(void)
 {
 	std::map<int, Connection *>::iterator it;
+	std::map<int, Connection *>::iterator itBuff;
 
 	if (Timer::isTimeoutExpired(_lastUpdateTime, 1))
 	{
@@ -34,9 +35,13 @@ void Connections::updateAllConnections(void)
 			if (it->second->isKeepAliveTimeout())
 			{
 				sendMessage(new Message(EVENTDEMUX_ID, it->second->getFd(), EVENT_REMOVE));
+				itBuff = it;
+				itBuff++;
 				_removeConnection(it);
+				it == itBuff;
 				break;
 			}
+
 			it++;
 		}
 		_lastUpdateTime = Timer::getActualTimeStamp();
