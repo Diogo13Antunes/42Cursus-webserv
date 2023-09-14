@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 15:56:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 18:54:29 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 08:01:38 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ char** CgiExec::_getEnvVars(Event *event)
 	temp.push_back("SERVER_NAME=" + event->getReqHost());
 	temp.push_back("SERVER_PORT=" + event->getPort());
 	temp.push_back("SERVER_SOFTWARE=" + std::string(SERVER_SOFTWARE));
+	temp.push_back("PATH_INFO=" + event->getReqLinePath());
 
 	env = new char*[temp.size() + 1];
 	for (size_t i = 0; i < temp.size(); ++i) {
@@ -140,9 +141,6 @@ int CgiExec::_execute(char **env, std::string scriptPath, int *p1, int *p2)
 	scriptRunner = _getScriptInterpreter(scriptPath);
 	if (scriptRunner.empty())
 		scriptRunner.assign(scriptPath);
-	//scriptRunner = "./cgi-bin//exe.py";
-	//std::cout << "scriptPath:   " << scriptPath << std::endl;
-	std::cout << "scriptRunner: " << scriptRunner << std::endl;
 	const char *av[] = {scriptRunner.c_str(), scriptPath.c_str(), NULL};
 	pid = fork();
 	if (pid == -1)
