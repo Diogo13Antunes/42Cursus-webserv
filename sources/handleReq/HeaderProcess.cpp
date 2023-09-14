@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 12:08:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 16:01:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,6 @@ HeaderProcess::HeaderProcess(void) {}
 
 HeaderProcess::~HeaderProcess(void) {}
 
-
-
-// requestPath    -> path com o que vem no request
-// resourcePath   -> path com o fichiro configurado na rota seja cgi ou index
-
-// verificar primeiro se é permitido o metodo e lancar erro se necessário
-
-// verificar o tamanho do body e lançar erro
 StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 {
 	std::string		header;
@@ -74,7 +66,6 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	event->setResourcePath(resourcePath);
 	maxBodySize = serverConf->getLocationBodySize(route);
 	contentLength = event->getReqContentLength();
-
 	if (contentLength > maxBodySize)
 	{
 		event->setStatusCode(CONTENT_TOO_LARGE_CODE);

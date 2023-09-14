@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/22 15:00:53 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 12:01:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 16:02:54 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,75 +24,18 @@ void TypeTransitionHandler::handleEvent(Event *event)
 {
 	ServerConfig*	serverConf;
 	std::string		cgiName;
+	std::string 	reqPath;
+	std::string 	route;
 
-	/*if (event->getOldState() == READ_SOCKET)
-	{
-		serverConf = _getServerConfig(event, _configs->getServers());
-		event->setServerConfing(serverConf);
-		if (!serverConf)
-		{
-			event->setActualState(WRITE_EVENT);
-			return ;
-		}
-		cgiName = serverConf->getCgiScriptName(event->getReqLinePath());
-		if (!cgiName.empty())
-		{
-			std::cout << "Script name: " << cgiName << std::endl;
-			event->cgiExecute(serverConf, cgiName);
-			event->setActualState(WRITE_CGI);			
-		}
-		else
-			event->setActualState(WRITE_EVENT);
-	}*/
-
-	/*
-	if (event->getStatusCode())
-	{
-		event->setActualState(WRITE_EVENT);
-		return ;
-	}
-	*/
-	
-	/*if (event->getOldState() == READ_SOCKET)
-	{
-
-		//esta função precisa ser alterada por causa da rota
-
-		serverConf = event->getServerConfing();
-
-		//cgiName = serverConf->getCgiScriptName(event->getReqLinePath());
-		if (!cgiName.empty())
-		{
-
-			event->setResourcePath(cgiName);
-			if (CgiExec::execute(event) == -1)
-			{
-				event->setStatusCode(500);
-				event->setActualState(WRITE_EVENT);
-				return ;
-			}
-			event->setActualState(WRITE_CGI);
-		}
-		else
-			event->setActualState(WRITE_EVENT);
-	}*/
-
-	std::string reqPath = event->getReqLinePath();
-	std::string route = event->getRoute();
+	reqPath = event->getReqLinePath();
+	route = event->getRoute();
 	if (route.at(route.size() - 1) == '/')
 		route.erase(route.size() - 1);	
 	serverConf = event->getServerConfing();
-
-	//if (event->getStatusCode())
-	//	event->setActualState(WRITE_EVENT);
-
 	if (event->getOldState() == READ_SOCKET)
 	{
 		if (event->isCgi() && !event->getStatusCode())
 		{
-			//std::cout << "reqPath: " << reqPath << std::endl;
-			//std::cout << "route: " << route << std::endl;
-
 			if (!reqPath.compare(route))
 			{
 				event->setIsCgi(false);
@@ -132,27 +75,19 @@ void TypeTransitionHandler::handleEvent(Event *event)
 	}
 	else if (event->getOldState() == WRITE_CGI)
 	{
-		//std::cout << "old = WRITE_CGI: " << event->getStatusCode() << std::endl;
 		if (event->isCgiScriptEndend() || event->getStatusCode())
-		{
-			//std::cout << "event->getOldState() == WRITE_CGI" << std::endl;
 			event->setActualState(WRITE_EVENT);
-		}
 		else
 			event->setActualState(READ_CGI);
 	}
 	else if (event->getOldState() == READ_CGI)
-	{
-		//std::cout << "event->getOldState() == READ_CGI" << std::endl;
 		event->setActualState(WRITE_EVENT);
-	}
 }
 
 EventType TypeTransitionHandler::getHandleType(void)
 {
 	return (TYPE_TRANSITION);
 }
-
 
 ServerConfig* TypeTransitionHandler::_getServerConfig(Event *event, std::vector<ServerConfig>& serverConfigs)
 {

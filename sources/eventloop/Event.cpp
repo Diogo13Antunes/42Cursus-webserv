@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 15:09:12 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 18:36:19 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,10 @@ Event::Event(int fd, int state):
 	_cgiScriptEndend(false),
 	_cgiWriteFdClosed(false),
 	_cgiReadFdClosed(false),
-	_isCgi(false)
+	_isCgi(false),
+	_cgiWriteFdRemoved(false),
+	_cgiReadFdRemoved(false),
+	_fdRemoved(false)
 {
 	SocketUtils::getHostAndPort(_fd, _ip, _port);
 }
@@ -66,7 +69,6 @@ Event::~Event(void)
 	this->closeCgiWriteFd();
 	this->closeCgiReadFd();
 }
-
 
 int Event::getFd(void)
 {
@@ -562,4 +564,34 @@ void Event::setIsCgi(bool isCgi)
 bool Event::isCgi(void)
 {
 	return (_isCgi);
+}
+
+bool Event::isCgiWriteFdRemoved(void)
+{
+	return (_cgiWriteFdRemoved);
+}
+
+void Event::setCgiWriteFdRemoved(void)
+{
+	_cgiWriteFdRemoved = true;
+}
+
+bool Event::isCgiReadFdRemoved(void)
+{
+	return (_cgiReadFdRemoved);
+}
+
+void Event::setCgiReadFdRemoved(void)
+{
+	_cgiReadFdRemoved = true;
+}
+
+bool Event::isFdRemoved(void)
+{
+	return (_fdRemoved);
+}
+
+void Event::setfdRemoved(void)
+{
+	_fdRemoved = true;
 }

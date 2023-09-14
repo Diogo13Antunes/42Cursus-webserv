@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 15:12:06 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 18:27:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,9 @@ class Event
 		std::string		_requestPath;
 		std::string		_resourcePath;
 		bool			_isCgi;
+		bool			_fdRemoved;
+		bool			_cgiWriteFdRemoved;
+		bool			_cgiReadFdRemoved;
 
 	public:
 		Event(void);
@@ -155,4 +158,10 @@ class Event
 		void					setResourcePath(std::string resourcePath);
 		void					setIsCgi(bool isCgi);
 		bool					isCgi(void);
+		bool					isCgiWriteFdRemoved(void);
+		void					setCgiWriteFdRemoved(void);
+		bool					isCgiReadFdRemoved(void);
+		void					setCgiReadFdRemoved(void);
+		bool					isFdRemoved(void);
+		void					setfdRemoved(void);
 };
