@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 20:29:40 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 22:06:18 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ void Connections::_removeConnection(int fd)
 	if (it != _activeConnects.end())
 	{
 		delete it->second;
-		_activeConnects.erase(it);
+		_activeConnects.erase(fd);
 	}
 }
 

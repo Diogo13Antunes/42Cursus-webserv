@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 20:22:06 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/14 21:52:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void EventLoop::handleEvents(void)
 			_addEventToQueue(event->getFd());
 	}
 	_checkIfCgiScriptsFinished();
-	_closeTimeoutEvents();
+	//_closeTimeoutEvents();
 }
 
 ClientID EventLoop::getId(void)
@@ -319,6 +319,11 @@ void EventLoop::_sendMessages(Event *event)
 		{
 			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_REMOVE));
 			event->setCgiReadFdRemoved();
+		}
+		if (event->getCgiWriteFd() > 0 && !event->isCgiWriteFdRemoved())
+		{
+			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
+			event->setCgiWriteFdRemoved();
 		}
 		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_WRITE));
 
