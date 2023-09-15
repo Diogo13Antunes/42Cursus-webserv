@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AMessengerClient.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 14:29:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 10:33:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 11:18:31 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,13 @@ AMessengerClient::AMessengerClient(Messenger *messenger):
 	_messenger(messenger)
 {}
 
-AMessengerClient::AMessengerClient(const AMessengerClient &src) {}
-
 AMessengerClient::~AMessengerClient(void)
 {
 	if (_messenger)
 		_messenger->unregisterClient(clientID);
 }
 
-/*
-AMessengerClient &AMessengerClient::operator=(const AMessengerClient &src)
-{
-	//AMessegerClient Copy Assignment Operator
-}
-*/
-
-void AMessengerClient::sendMessage(Message *msg)
+void AMessengerClient::sendMessage(Message msg)
 {
 	if (_messenger)
 		_messenger->sendMessage(msg);

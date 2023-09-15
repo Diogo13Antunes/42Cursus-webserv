@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventDemux.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 10:41:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 11:30:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,7 @@
 
 EventDemux::EventDemux(void): AMessengerClient(NULL) {}
 
-EventDemux::~EventDemux(void)
-{
-	//std::cout << "~EventDemux" << std::endl;
-}
+EventDemux::~EventDemux(void) {}
 
 ClientID EventDemux::getId(void)
 {
@@ -48,26 +45,26 @@ void EventDemux::waitAndDispatchEvents(void)
 		if (newClientFd != -1)
 		{
 			_addNewEvent(newClientFd);
-			sendMessage(new Message(CONNECTIONS_ID, newClientFd, CONNECTION_ADD_NEW));
+			sendMessage(Message(CONNECTIONS_ID, newClientFd, CONNECTION_ADD_NEW));
 		}
 		else
 		{
 			if (_isReadEvent(_events[i].events))
-				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_READ_TRIGGERED));
+				sendMessage(Message(EVENTLOOP_ID, eventFd, EVENT_READ_TRIGGERED));
 
 			else if (_isWriteEvent(_events[i].events))
-				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_WRITE_TRIGGERED));
+				sendMessage(Message(EVENTLOOP_ID, eventFd, EVENT_WRITE_TRIGGERED));
 		}
 	}
 }
 
-void EventDemux::receiveMessage(Message *msg)
+void EventDemux::receiveMessage(Message msg)
 {
 	MessageType	type;
 	int			fd;
 
-	type = msg->getType();
-	fd = msg->getFd();
+	type = msg.getType();
+	fd = msg.getFd();
 	if (type == EVENT_ADD_NEW)
 		_addNewEvent(fd);
 	else if (type == EVENT_CHANGE_TO_READ)

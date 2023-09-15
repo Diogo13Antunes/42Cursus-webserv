@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 18:36:19 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 10:04:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "Timer.hpp"
 #include "EventType.hpp"
 #include <signal.h>
+#include <unistd.h>
 
 #define TIMEOUT_SEC				2
 #define CONNECTION_CLOSED		1
@@ -75,8 +76,6 @@ int Event::getFd(void)
 	return (_fd);
 }
 
-
-// New Methods
 StateReqType Event::getReqState(void)
 {
 	return (_reqState);
@@ -135,7 +134,7 @@ void Event::clearReqRawData(void)
 {
 	_reqRaw.clear();
 }
-
+#include <unistd.h>
 static std::string getFileContent(std::string fileName)
 {
 	std::ifstream	file(fileName.c_str());

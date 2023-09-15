@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/08 16:24:59 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 11:22:34 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,6 @@ class EventLoop: public AMessengerClient
 		void		unregisterEventHandler(IEventHandler *eventHandler);
 		void		handleEvents(void);
 		ClientID	getId(void);
-		void		receiveMessage(Message *msg);
+		void		receiveMessage(Message msg);
 
 };

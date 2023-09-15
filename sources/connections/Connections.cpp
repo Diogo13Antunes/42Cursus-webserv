@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connections.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 22:06:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 11:28:55 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void Connections::updateAllConnections(void)
 		{
 			if (it->second->isKeepAliveTimeout())
 			{
-				sendMessage(new Message(EVENTDEMUX_ID, it->second->getFd(), EVENT_REMOVE));
+				sendMessage(Message(EVENTDEMUX_ID, it->second->getFd(), EVENT_REMOVE));
 				delete it->second;
 				elmToRemove.push_back(it->first);
 			}
@@ -79,13 +79,13 @@ ClientID Connections::getId(void)
 	return (CONNECTIONS_ID);
 }
 
-void Connections::receiveMessage(Message *msg)
+void Connections::receiveMessage(Message msg)
 {
 	MessageType	type;
 	int			fd;
 
-	type = msg->getType();
-	fd = msg->getFd();
+	type = msg.getType();
+	fd = msg.getFd();
 	if (type == CONNECTION_ADD_NEW)
 		_addNewConnection(fd);
 	else if (type == CONNECTION_REMOVE)
@@ -123,7 +123,7 @@ void Connections::_removeAllConnections(void)
 
 	for(it = _activeConnects.begin(); it != _activeConnects.end(); it++)
 	{
-		sendMessage(new Message(EVENTDEMUX_ID, it->first, EVENT_REMOVE));
+		sendMessage(Message(EVENTDEMUX_ID, it->first, EVENT_REMOVE));
 		delete it->second;
 	}
 }

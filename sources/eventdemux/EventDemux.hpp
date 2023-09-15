@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventDemux.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:09:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/11 15:26:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 11:29:16 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,5 @@ class EventDemux: public AMessengerClient
 		void		init(std::map<int, struct sockaddr_in> servers);
 		void		waitAndDispatchEvents(void);
 		ClientID	getId(void);
-		void		receiveMessage(Message *msg);
+		void		receiveMessage(Message msg);
 };

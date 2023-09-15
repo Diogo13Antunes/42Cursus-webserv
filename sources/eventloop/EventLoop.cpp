@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 21:52:20 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 11:27:38 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void EventLoop::handleEvents(void)
 			_addEventToQueue(event->getFd());
 	}
 	_checkIfCgiScriptsFinished();
-	//_closeTimeoutEvents();
+	_closeTimeoutEvents();
 }
 
 ClientID EventLoop::getId(void)
@@ -62,13 +62,13 @@ ClientID EventLoop::getId(void)
 	return (EVENTLOOP_ID);
 }
 
-void EventLoop::receiveMessage(Message *msg)
+void EventLoop::receiveMessage(Message msg)
 {
 	MessageType	type;
 	int			fd;
 
-	type = msg->getType();
-	fd = msg->getFd();
+	type = msg.getType();
+	fd = msg.getFd();
 	if (type == EVENT_READ_TRIGGERED)
 		_registerReadEvent(fd);
 	else if (type == EVENT_WRITE_TRIGGERED)
@@ -101,7 +101,7 @@ void EventLoop::_registerReadEvent(int fd)
 	{
 		event = new Event(fd, READ_SOCKET);
 		_addEventToMap(fd, event);
-		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
+		sendMessage(Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
 	}
 	else if (event)
 	{
@@ -280,18 +280,18 @@ void EventLoop::_handleClientDisconnect(Event *event)
 	type = event->getActualState();
 	if (!event->isFdRemoved())
 	{
-		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
-		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
+		sendMessage(Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
+		sendMessage(Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
 		event->isFdRemoved();
 	}
 	if (cgiReadFd > 0 && !event->isCgiReadFdRemoved())
 	{
-		sendMessage(new Message(EVENTDEMUX_ID, cgiReadFd, EVENT_REMOVE));
+		sendMessage(Message(EVENTDEMUX_ID, cgiReadFd, EVENT_REMOVE));
 		event->setCgiReadFdRemoved();
 	}
 	if (cgiWriteFd > 0 && !event->isCgiWriteFdRemoved())
 	{
-		sendMessage(new Message(EVENTDEMUX_ID, cgiWriteFd, EVENT_REMOVE));
+		sendMessage(Message(EVENTDEMUX_ID, cgiWriteFd, EVENT_REMOVE));
 		event->setCgiWriteFdRemoved();
 	}
 	_deleteEvent(fd);
@@ -317,38 +317,38 @@ void EventLoop::_sendMessages(Event *event)
 	{
 		if (event->getCgiReadFd() > 0 && !event->isCgiReadFdRemoved())
 		{
-			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_REMOVE));
+			sendMessage(Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_REMOVE));
 			event->setCgiReadFdRemoved();
 		}
 		if (event->getCgiWriteFd() > 0 && !event->isCgiWriteFdRemoved())
 		{
-			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
+			sendMessage(Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
 			event->setCgiWriteFdRemoved();
 		}
-		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_WRITE));
+		sendMessage(Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_WRITE));
 
 	}
 	else if (type == READ_SOCKET)
 	{
-		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_READ));
-		sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_RESTART_TIMER));
+		sendMessage(Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_READ));
+		sendMessage(Message(CONNECTIONS_ID, fd, CONNECTION_RESTART_TIMER));
 	}
 	else if (type == WRITE_CGI)
 	{
 		_cgiEventMap.insert(std::make_pair(event->getFd(), event));
 		_eventMap.insert(std::make_pair(event->getCgiWriteFd(), event));
-		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_ADD_NEW));
-		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_CHANGE_TO_WRITE));
+		sendMessage(Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_ADD_NEW));
+		sendMessage(Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_CHANGE_TO_WRITE));
 	}
 	else if (type == READ_CGI)
 	{
 		if (event->getCgiWriteFd() > 0 && !event->isCgiWriteFdRemoved())
 		{
-			sendMessage(new Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
+			sendMessage(Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
 			event->setCgiWriteFdRemoved();
 		}
 		_eventMap.insert(std::make_pair(event->getCgiReadFd(), event));
-		sendMessage(new Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_ADD_NEW));
+		sendMessage(Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_ADD_NEW));
 	}
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Messenger.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 15:02:09 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 10:37:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 11:20:17 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,8 @@ class Messenger
 		Messenger(void);
 		Messenger(const Messenger &src);
 		~Messenger(void);
-		Messenger &operator=(const Messenger &src);
 
 		void	registerClient(AMessengerClient *client);
 		void	unregisterClient(ClientID clientID);
-		void	sendMessage(Message *msg);
+		void	sendMessage(Message msg);
 };
