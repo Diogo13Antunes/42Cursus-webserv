@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/15 11:22:34 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 15:24:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,9 @@ class EventLoop: public AMessengerClient
 		void	_sendMessages(Event *event);
 		void	_cleanHandlers(void);
 		void	_cleanEvents(void);
+		
+		// NEW
+		void _changeEventStatus(Event *event);
 
 		// DEBUG
 		void _showEventMap(void);

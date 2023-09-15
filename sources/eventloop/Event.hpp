@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 18:27:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 14:34:46 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,9 @@ class Event
 		bool			_fdRemoved;
 		bool			_cgiWriteFdRemoved;
 		bool			_cgiReadFdRemoved;
+		int				_redirectionCode;
+		std::string		_redirectionResource;
+		bool			_isStateChange;
 
 	public:
 		Event(void);
@@ -100,20 +103,20 @@ class Event
 		int						getCgiReadFd(void);
 		std::string				getQueryString(void);
 		std::string				getReqContentType(void);
-		size_t					getReqContentLength(void);
+		size_t					getReqContentLength(void);		
 		std::string				getReqLineTarget(void);
 		std::string				getReqLineHttpVersion(void);
 		std::string				getReqLineMethod(void);
 		std::string				getReqLinePath(void);
 		std::string&			getReqBody(void);
-		std::string				getReqTransferEncoding(void);
+		std::string				getReqTransferEncoding(void)		;
 		std::string				getReqHost(void);
 		EventType				getOldState(void);
 		EventType				getActualState(void);
 		void					setActualState(EventType actualState);
 		bool					isFinished(void);
 		void					setAsFinished(void);
-		bool					isClientDisconnect(void);
+		bool					isClientDisconnect(void);		
 		void					setClientDisconnected(void);
 		void					updateReqBody(std::string body);
 		size_t					getReqBodySize(void);
@@ -126,8 +129,6 @@ class Event
 		void					setStatusCode(int statusCode);
 		std::string				getIp(void);
 		std::string				getPort(void);
-		int						_redirectionCode;
-		std::string				_redirectionResource;
 		void					setRredirectCode(int redirectCode);
 		int						getRredirectCode(void);
 		void					setRredirectResource(std::string redirectResource);
@@ -164,4 +165,6 @@ class Event
 		void					setCgiReadFdRemoved(void);
 		bool					isFdRemoved(void);
 		void					setfdRemoved(void);
+		bool					isStateChange(void);
+		void					setIsStateChange(bool isStateChange);
 };

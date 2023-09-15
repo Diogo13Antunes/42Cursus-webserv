@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventType.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/01 12:35:40 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 14:21:33 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 15:58:01 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef enum
 	READ_SOCKET,
 	READ_CGI,
 	WRITE_CGI,
+	CLOSE_EVENT,
 	TYPE_TRANSITION
 }	EventType;
 

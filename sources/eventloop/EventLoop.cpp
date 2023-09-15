@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/15 11:27:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 16:03:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,26 @@ void EventLoop::unregisterEventHandler(IEventHandler *eventHandler)
 	_handlers.erase(eventHandler->getHandleType());
 }
 
+/*
+void EventLoop::handleEvents(void)
+{
+	Event	*event;
+	int		fd;
+
+	while (!_eventQueue.empty())
+	{
+		fd = _getNextEventFromQueue();
+		event = _getEventFromMap(_eventMap, fd);exit(0);
+		else if (event && event->isFinished())
+			_finalizeEvent(event);
+		else if (event && event->getActualState() == TYPE_TRANSITION)
+			_addEventToQueue(event->getFd());
+	}
+	_checkIfCgiScriptsFinished();
+	_closeTimeoutEvents();
+}
+*/
+
 void EventLoop::handleEvents(void)
 {
 	Event	*event;
@@ -46,15 +66,9 @@ void EventLoop::handleEvents(void)
 		event = _getEventFromMap(_eventMap, fd);
 		if (event)
 			_handleEvent(event);
-		if (event && event->isClientDisconnect())
- 			_handleClientDisconnect(event);
-		else if (event && event->isFinished())
-			_finalizeEvent(event);
-		else if (event && event->getActualState() == TYPE_TRANSITION)
-			_addEventToQueue(event->getFd());
+		if (event->isStateChange())
+			_changeEventStatus(event);
 	}
-	_checkIfCgiScriptsFinished();
-	_closeTimeoutEvents();
 }
 
 ClientID EventLoop::getId(void)
@@ -86,10 +100,26 @@ void EventLoop::_handleEvent(Event *ev)
 		it = _handlers.find(type);
 		if (it != _handlers.end())
 			it->second->handleEvent(ev);
+	}
+}
+
+/*
+void EventLoop::_handleEvent(Event *ev)
+{
+	std::map<EventType, IEventHandler*>::iterator	it;
+	EventType										type;
+
+	if (ev)
+	{
+		type = ev->getActualState();
+		it = _handlers.find(type);
+		if (it != _handlers.end())
+			it->second->handleEvent(ev);
 		if (type == TYPE_TRANSITION)
 			_sendMessages(ev);
 	}
 }
+*/
 
 void EventLoop::_registerReadEvent(int fd)
 {
@@ -379,6 +409,38 @@ void EventLoop::_cleanEvents(void)
 			delete it->second;
 	}	
 }
+
+
+// criar o Status Disconect
+void EventLoop::_changeEventStatus(Event *event)
+{
+	EventType	type;
+	int			fd;
+	
+	type = event->getActualState();
+	fd = event->getFd();
+	if (type == WRITE_EVENT)
+	{
+		if (event->getCgiReadFd() > 0 && !event->isCgiReadFdRemoved())
+		{
+			sendMessage(Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_REMOVE));
+			event->setCgiReadFdRemoved();
+		}
+		if (event->getCgiWriteFd() > 0 && !event->isCgiWriteFdRemoved())
+		{
+			sendMessage(Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
+			event->setCgiWriteFdRemoved();
+		}
+		sendMessage(Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_WRITE));
+	}
+	if (type == CLOSE_EVENT)
+	{
+		sendMessage(Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_READ));
+		sendMessage(Message(CONNECTIONS_ID, fd, CONNECTION_RESTART_TIMER));	
+	}
+	event->setIsStateChange(false);
+}
+
 
 // DEBUG
 void EventLoop::_showEventMap(void)

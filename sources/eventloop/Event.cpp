@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/15 10:04:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 15:17:09 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 static std::string getFileContent(std::string fileName);
 static std::string getFileType(std::string path);
 
-Event::Event(void) {}
+//Event::Event(void) {}
 
 Event::Event(int fd, int state):
 	_fd(fd),
@@ -53,7 +53,8 @@ Event::Event(int fd, int state):
 	_isCgi(false),
 	_cgiWriteFdRemoved(false),
 	_cgiReadFdRemoved(false),
-	_fdRemoved(false)
+	_fdRemoved(false),
+	_isStateChange(false)
 {
 	SocketUtils::getHostAndPort(_fd, _ip, _port);
 }
@@ -593,4 +594,14 @@ bool Event::isFdRemoved(void)
 void Event::setfdRemoved(void)
 {
 	_fdRemoved = true;
+}
+
+bool Event::isStateChange(void)
+{
+	return (_isStateChange);
+}
+
+void Event::setIsStateChange(bool isStateChange)
+{
+	_isStateChange = isStateChange;
 }
