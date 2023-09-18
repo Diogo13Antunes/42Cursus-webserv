@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/15 16:03:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/18 15:26:31 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,10 @@ void EventLoop::handleEvents(void)
 		fd = _getNextEventFromQueue();
 		event = _getEventFromMap(_eventMap, fd);
 		if (event)
+		{
 			_handleEvent(event);
-		if (event->isStateChange())
 			_changeEventStatus(event);
+		}
 	}
 }
 
@@ -410,13 +411,14 @@ void EventLoop::_cleanEvents(void)
 	}	
 }
 
-
-// criar o Status Disconect
 void EventLoop::_changeEventStatus(Event *event)
 {
 	EventType	type;
 	int			fd;
 	
+	if (!event->isStateChange())
+		return ;
+	event->setIsStateChange(false);
 	type = event->getActualState();
 	fd = event->getFd();
 	if (type == WRITE_EVENT)
@@ -436,11 +438,26 @@ void EventLoop::_changeEventStatus(Event *event)
 	if (type == CLOSE_EVENT)
 	{
 		sendMessage(Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_READ));
-		sendMessage(Message(CONNECTIONS_ID, fd, CONNECTION_RESTART_TIMER));	
+		sendMessage(Message(CONNECTIONS_ID, fd, CONNECTION_RESTART_TIMER));
+		_deleteEvent(fd);
 	}
-	event->setIsStateChange(false);
+	if (type == DISCONNECT_EVENT)
+	{
+		sendMessage(Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
+		sendMessage(Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
+		if (event->getCgiReadFd() > 0 && !event->isCgiReadFdRemoved())
+		{
+			sendMessage(Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_REMOVE));
+			event->setCgiReadFdRemoved();
+		}
+		if (event->getCgiWriteFd() > 0 && !event->isCgiWriteFdRemoved())
+		{
+			sendMessage(Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
+			event->setCgiWriteFdRemoved();
+		}
+		_deleteEvent(fd);
+	}
 }
-
 
 // DEBUG
 void EventLoop::_showEventMap(void)

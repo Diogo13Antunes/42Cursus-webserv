@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   WriteHandler.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/15 16:03:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/18 12:03:02 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,10 @@ void WriteHandler::handleEvent(Event *event)
 	if (_handleRes->isResProcessingComplete())
 	{
 		event->setIsStateChange(true);
-		event->setActualState(CLOSE_EVENT);	
+		if (event->isConnectionClose())
+			event->setActualState(DISCONNECT_EVENT);
+		else 
+			event->setActualState(CLOSE_EVENT);
 	}
 }
 
