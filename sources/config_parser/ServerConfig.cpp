@@ -411,8 +411,10 @@ void	ServerConfig::_setErrorPages(std::map<size_t, std::string>::iterator &it,
 	it++;
 	if (!isInsideErrorPages(it->second))
 	{
-		_setErrorMessage(it->first, ERROR_INVALID_IDENTATION_LEVEL,it->second);
+		it--;
+		_setErrorMessage(it->first, ERROR_INVALID_ERROR_PAGES,it->second);
 		_updateConfigError(false);
+		it++;
 	}
 	else
 	{
@@ -535,8 +537,10 @@ void	ServerConfig::_setMimeTypes(std::map<size_t, std::string>::iterator &it,
 	it++;
 	if (!isInsideMimeTypes(it->second))
 	{
+		it--;
 		_updateConfigError(false);
-		_setErrorMessage(it->first, ERROR_INVALID_IDENTATION_LEVEL,it->second);
+		_setErrorMessage(it->first, ERROR_INVALID_MIME_TYPES,it->second);
+		it++;
 	}
 	else
 	{

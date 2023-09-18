@@ -12,6 +12,8 @@
 #define ERROR_INVALID_CONFIGURATION				"Invalid configuration"
 #define ERROR_MISSING_MASTER_ROOT				"Missing master root configuration"
 #define ERROR_INVALID_LOCATION_ALREADY_EXIST	"Location already exit: "
+#define ERROR_INVALID_MIME_TYPES				"Invalid mime types"
+#define ERROR_INVALID_ERROR_PAGES				"Invalid error pages"
 
 class ServerConfig
 {

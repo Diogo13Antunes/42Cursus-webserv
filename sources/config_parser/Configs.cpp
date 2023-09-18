@@ -71,8 +71,8 @@ bool	Configs::_getConfigFile(const char *configFile)
 		while (std::getline(file, buff))
 		{
 			buff = removeComments(buff);
-
-			_fileContentMap.insert(createLinePair(lineNbr, buff));
+			if (!buff.empty())
+				_fileContentMap.insert(createLinePair(lineNbr, buff));
 			lineNbr++;
 		}
 		file.close();

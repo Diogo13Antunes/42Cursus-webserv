@@ -254,11 +254,12 @@ void	Location::_setAccepted(std::map<size_t, std::string>::iterator &it)
 void	Location::_setRedirection(std::map<size_t, std::string>::iterator &it,
 	std::map<size_t, std::string>::iterator	itEnd)
 {
-	it++;
+	if (it++ != itEnd)
+		it++;
 	if (it != itEnd && !isRedirection(it->second))
 	{
 		_updateLocationError(false);
-		_setErrorMessage(it->first, ERROR_INVALID_LOCATION_IDENTATION_LEVEL, it->second);
+		_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION, it->second);
 	}
 	else
 	{
