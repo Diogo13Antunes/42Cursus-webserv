@@ -567,6 +567,8 @@ Location	*ServerConfig::_getSpecificLocations(std::string location)
 	std::map<std::string, Location>::iterator	it;
 	size_t										routeSize;
 
+	if (_locations.empty())
+		return (NULL);
 	it = _locations.find(location);
 	if (it != _locations.end())
 		return (&(it->second));

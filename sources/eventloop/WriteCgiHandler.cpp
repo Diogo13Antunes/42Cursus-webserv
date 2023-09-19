@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:39:35 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 12:01:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/19 09:49:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,15 @@ void WriteCgiHandler::handleEvent(Event *event)
 		if (event->getNumBytesSendCgi() >= bodySize)
 		{
 			write(fd, "\n", 1);
-			event->setActualState(TYPE_TRANSITION);
+			event->setIsStateChange(true);
+			event->setActualState(READ_CGI);
 		}
 	}
 	else
-		event->setActualState(TYPE_TRANSITION);
+	{
+		event->setIsStateChange(true);
+		event->setActualState(READ_CGI);
+	}
 }
 
 EventType WriteCgiHandler::getHandleType(void)

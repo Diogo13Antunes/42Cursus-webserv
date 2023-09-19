@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/18 15:26:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/19 10:48:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void EventLoop::handleEvents(void)
 			_changeEventStatus(event);
 		}
 	}
+	_checkIfCgiScriptsFinished();
 }
 
 ClientID EventLoop::getId(void)
@@ -255,6 +256,7 @@ void EventLoop::_closeTimeoutEvents(void)
 	}
 }
 
+/*
 void EventLoop::_checkIfCgiScriptsFinished(void)
 {
 	std::map<int, Event*>::iterator	it;
@@ -285,6 +287,43 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 		return ;
 	for (itVect = elmToRemove.begin(); itVect != elmToRemove.end(); itVect++)
 		_cgiEventMap.erase(*itVect);
+}
+*/
+
+void EventLoop::_checkIfCgiScriptsFinished(void)
+{
+	std::map<int, Event*>::iterator	it;
+	std::vector<int>::iterator		itVect;
+	std::vector<int>				elmToRemove;
+	Event							*event;
+	int								fd;
+
+	for (it = _cgiEventMap.begin(); it != _cgiEventMap.end(); it++)
+	{
+		fd = it->first;
+		if (!_getEventFromMap(_eventMap, fd))
+			elmToRemove.push_back(fd);
+		else
+		{
+			event = it->second;
+			if (event->isCgiScriptEndend())
+			{
+				//event->setActualState(TYPE_TRANSITION);
+				//_addEventToQueue(fd);
+				event->setIsStateChange(true);
+				event->setActualState(WRITE_EVENT);
+				_changeEventStatus(event);
+				elmToRemove.push_back(fd);
+			}
+			else if (CgiExec::isEnded(event))
+				event->setCgiScriptEndend(true);
+		}
+	}
+	if (elmToRemove.empty())
+		return ;
+	for (itVect = elmToRemove.begin(); itVect != elmToRemove.end(); itVect++)
+		_cgiEventMap.erase(*itVect);
+
 }
 
 void EventLoop::_finalizeEvent(Event *event)
@@ -421,6 +460,33 @@ void EventLoop::_changeEventStatus(Event *event)
 	event->setIsStateChange(false);
 	type = event->getActualState();
 	fd = event->getFd();
+	
+	if (type == WRITE_CGI)
+	{
+		if (CgiExec::execute(event) == -1)
+		{
+			event->setStatusCode(INTERNAL_SERVER_ERROR_CODE);
+			event->setActualState(WRITE_EVENT);
+		}
+		else
+		{
+			_cgiEventMap.insert(std::make_pair(event->getFd(), event));
+			_eventMap.insert(std::make_pair(event->getCgiWriteFd(), event));
+			sendMessage(Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_ADD_NEW));
+			sendMessage(Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_CHANGE_TO_WRITE));
+		}
+	}
+	if (type == READ_CGI)
+	{
+		if (event->getCgiWriteFd() > 0 && !event->isCgiWriteFdRemoved())
+		{
+			sendMessage(Message(EVENTDEMUX_ID, event->getCgiWriteFd(), EVENT_REMOVE));
+			event->setCgiWriteFdRemoved();
+			_eventMap.erase(event->getCgiWriteFd());
+		}
+		_eventMap.insert(std::make_pair(event->getCgiReadFd(), event));
+		sendMessage(Message(EVENTDEMUX_ID, event->getCgiReadFd(), EVENT_ADD_NEW));		
+	}
 	if (type == WRITE_EVENT)
 	{
 		if (event->getCgiReadFd() > 0 && !event->isCgiReadFdRemoved())

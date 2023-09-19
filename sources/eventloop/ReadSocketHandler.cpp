@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/18 15:32:30 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/18 17:23:43 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,11 @@ void ReadSocketHandler::handleEvent(Event *event)
 	if (_handleReq->isProcessingComplete())
 	{
 		event->setIsStateChange(true);
-		event->setActualState(WRITE_EVENT);
+
+		if (event->isCgi())
+			event->setActualState(WRITE_CGI);
+		else
+			event->setActualState(WRITE_EVENT);
 	}
 }
 
