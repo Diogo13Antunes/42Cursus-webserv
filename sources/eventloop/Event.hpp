@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/20 14:17:22 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/20 17:05:49 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ class Event
 		size_t			_totalBytesSend;
 		StateResType	_resState1;
 		std::string		_cgiScriptResult;
-		int 			_timeoutSec;
 		time_t			_creationTime;
 		EventType		_oldState;
 		EventType		_actualState;

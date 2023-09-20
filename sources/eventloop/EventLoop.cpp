@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/20 12:49:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/20 17:29:29 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void EventLoop::handleEvents(void)
 		}
 	}
 	_checkIfCgiScriptsFinished();
+	_closeTimeoutEvents();
 }
 
 ClientID EventLoop::getId(void)
@@ -147,6 +148,7 @@ void EventLoop::_closeTimeoutEvents(void)
 	int								fd;
 	int								cgiReadFd;
 	int								cgiWriteFd;
+	EventType						state;
 
 	if (_eventMap.empty())
 		return ;
@@ -154,32 +156,22 @@ void EventLoop::_closeTimeoutEvents(void)
 	{
 		event = it->second;
 		fd = event->getFd();
-
 		if (fd != it->first)
 			continue ;
-		//cgiReadFd = event->getCgiReadFd();
-		//cgiWriteFd = event->getCgiWriteFd();
-
 		if (event->isEventTimeout())
 		{
-			if (event->getActualState() != WRITE_EVENT)
-			{
+			state = event->getActualState();
+			if (state == READ_SOCKET)
 				event->setStatusCode(REQUEST_TIMEOUT_CODE);
-				event->setActualState(TYPE_TRANSITION);
-				_addEventToQueue(event->getFd());
-			}
+			else if (state == WRITE_CGI || state == READ_CGI)
+				event->setStatusCode(GATEWAY_TIMEOUT_CODE);
+			if (event->getStatusCode())
+				event->setActualState(WRITE_EVENT);
+			else
+				event->setActualState(DISCONNECT_EVENT);
+			event->setIsStateChange(true);
+			_changeEventStatus(event);
 		}
-
-		/*if (event->isEventTimeout())
-		{
-			if (cgiReadFd > 0)
-				sendMessage(new Message(EVENTDEMUX_ID, cgiReadFd, EVENT_REMOVE));
-			if (cgiWriteFd > 0)
-				sendMessage(new Message(EVENTDEMUX_ID, cgiWriteFd, EVENT_REMOVE));
-			sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
-			sendMessage(new Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
-			_deleteEvent(fd);
-		}*/
 	}
 }
 
@@ -341,12 +333,8 @@ void EventLoop::_disconnectEvent(Event *event)
 	int fd;
 
 	fd = event->getFd();
-	//if (!event->isFdRemoved())
-	//{
-		sendMessage(Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
-		sendMessage(Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
-		//event->setfdRemoved();
-	//}
+	sendMessage(Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
+	sendMessage(Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
 	_removeAllCgiFds(event);
 	_deleteEvent(fd);
 }

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 11:07:22 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 09:30:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/20 16:24:54 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "StringUtils.hpp"
 #include <fstream>
 
-#define ERROR_PAGE_MAX_SIZE	100000
+#define ERROR_PAGE_MAX_SIZE	1000
 #define ERRO_PAGE_MIME_TYPE	"text/html"
 
 ErrorHandlingState::ErrorHandlingState(void)
@@ -30,6 +30,7 @@ ErrorHandlingState::ErrorHandlingState(void)
 	_errorCodes.insert(std::make_pair(408, "Request Timeout"));
 	_errorCodes.insert(std::make_pair(501, "Not Implemented"));
 	_errorCodes.insert(std::make_pair(500, "Internal Server Error"));
+	_errorCodes.insert(std::make_pair(504, "Gateway Timeout"));
 }
 
 ErrorHandlingState::~ErrorHandlingState(void) {}

@@ -6,17 +6,17 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/20 14:17:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/20 17:16:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Event.hpp"
 #include "Timer.hpp"
 #include "EventType.hpp"
+#include "configs.hpp"
 #include <signal.h>
 #include <unistd.h>
 
-#define TIMEOUT_SEC				2
 #define CONNECTION_CLOSED		1
 #define CONNECTION_KEEPALIVE	0
 
@@ -31,7 +31,6 @@ Event::Event(int fd, int state):
 	_resState(0),
 	_totalBytesSend(0),
 	_resState1(INITIAL_STATE),
-	_timeoutSec(TIMEOUT_SEC),
 	_creationTime(Timer::getActualTimeStamp()),
 	_actualState(READ_SOCKET),
 	_finished(false),
@@ -224,7 +223,7 @@ void Event::setResState1(StateResType resState)
 
 bool Event::isEventTimeout(void)
 {
-	return (Timer::isTimeoutExpired(_creationTime, _timeoutSec));
+	return (Timer::isTimeoutExpired(_creationTime, EVENT_TIMEOUT_SEC));
 }
 
 bool Event::isConnectionClose(void)

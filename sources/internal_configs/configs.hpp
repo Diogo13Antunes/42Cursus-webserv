@@ -11,6 +11,8 @@
 #define DEFAULT_HOST			"localhost"
 #define LOOPBACK_ADD			"127.0.0.1"
 
+#define EVENT_TIMEOUT_SEC       30
+
 // socket defines (max size of internal queue of listen)
 #define DEFAULT_BACKLOG 		128
 
@@ -26,6 +28,7 @@
 #define CONTENT_TOO_LARGE_CODE      413
 #define NOT_IMPLEMENTED_CODE        501
 #define INTERNAL_SERVER_ERROR_CODE  500
+#define GATEWAY_TIMEOUT_CODE        504
 #define MOVED_PERMANENTLY_CODE      301
 
 #define IMPLEMENTED_METHODS "GET, POST, DELETE"
