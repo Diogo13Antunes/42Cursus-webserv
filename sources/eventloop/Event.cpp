@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Event.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/15 15:17:09 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/19 15:53:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -584,6 +584,23 @@ bool Event::isCgiReadFdRemoved(void)
 void Event::setCgiReadFdRemoved(void)
 {
 	_cgiReadFdRemoved = true;
+}
+
+bool Event::isCgiFdRemoved(int cgiFd)
+{
+	if (cgiFd == _cgiReadFd)
+		return (_cgiReadFdRemoved);
+	if (cgiFd == _cgiWriteFd)
+		return (_cgiWriteFdRemoved);
+	return (false);
+}
+
+void Event::setCgiFdRemoved(int cgiFd)
+{
+	if (cgiFd == _cgiReadFd)
+		_cgiReadFdRemoved = true;
+	else if (cgiFd == _cgiWriteFd)
+		_cgiWriteFdRemoved = true;	
 }
 
 bool Event::isFdRemoved(void)

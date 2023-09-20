@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   EventLoop.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/15 15:24:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/19 15:58:33 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ class EventLoop: public AMessengerClient
 		
 		// NEW
 		void _changeEventStatus(Event *event);
+		void _removeCgiFd(Event *event, int cgiFd);
+		void _removeAllCgiFds(Event *event);
 
 		// DEBUG
 		void _showEventMap(void);

@@ -22,6 +22,7 @@ ServerConfig::ServerConfig(std::vector<std::string>	configs):
 	std::string							key;
 	std::string							value;
 
+	_locations.clear();
 	it = configs.begin();
 	while (it != configs.end() && _configError)
 	{
