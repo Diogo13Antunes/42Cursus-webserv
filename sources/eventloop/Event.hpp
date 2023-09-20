@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/19 15:49:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/20 14:17:22 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,9 +164,7 @@ class Event
 		bool					isCgiReadFdRemoved(void);
 		void					setCgiReadFdRemoved(void);
 		bool					isCgiFdRemoved(int cgiFd);
-		void					setCgiFdRemoved(int cgiFd);		
-		bool					isFdRemoved(void);
-		void					setfdRemoved(void);
+		void					setCgiFdRemoved(int cgiFd, bool value);
 		bool					isStateChange(void);
 		void					setIsStateChange(bool isStateChange);
 };

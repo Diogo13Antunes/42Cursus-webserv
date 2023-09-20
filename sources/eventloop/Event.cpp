@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/19 15:53:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/20 14:17:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ Event::Event(int fd, int state):
 	_cgiWriteFdClosed(false),
 	_cgiReadFdClosed(false),
 	_isCgi(false),
-	_cgiWriteFdRemoved(false),
-	_cgiReadFdRemoved(false),
+	_cgiWriteFdRemoved(true),
+	_cgiReadFdRemoved(true),
 	_fdRemoved(false),
 	_isStateChange(false)
 {
@@ -595,22 +595,12 @@ bool Event::isCgiFdRemoved(int cgiFd)
 	return (false);
 }
 
-void Event::setCgiFdRemoved(int cgiFd)
+void Event::setCgiFdRemoved(int cgiFd, bool value)
 {
 	if (cgiFd == _cgiReadFd)
-		_cgiReadFdRemoved = true;
+		_cgiReadFdRemoved = value;
 	else if (cgiFd == _cgiWriteFd)
-		_cgiWriteFdRemoved = true;	
-}
-
-bool Event::isFdRemoved(void)
-{
-	return (_fdRemoved);
-}
-
-void Event::setfdRemoved(void)
-{
-	_fdRemoved = true;
+		_cgiWriteFdRemoved = value;
 }
 
 bool Event::isStateChange(void)
