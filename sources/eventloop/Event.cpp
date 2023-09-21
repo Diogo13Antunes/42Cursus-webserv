@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/21 11:11:17 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/21 11:39:34 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,11 +332,6 @@ std::string& Event::getReqBody(void)
 	return (_reqParser.getRequestBodyRef());
 }
 
-EventType Event::getOldState(void)
-{
-	return (_oldState);
-}
-
 EventType Event::getActualState(void)
 {
 	return (_actualState);
@@ -344,7 +339,6 @@ EventType Event::getActualState(void)
 
 void Event::setActualState(EventType newState)
 {
-	//_oldState = _actualState;
 	_actualState = newState;
 	this->setIsStateChange(true);
 }

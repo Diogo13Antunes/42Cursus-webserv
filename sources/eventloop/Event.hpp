@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/20 17:05:49 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/21 11:39:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ class Event
 		StateResType	_resState1;
 		std::string		_cgiScriptResult;
 		time_t			_creationTime;
-		EventType		_oldState;
 		EventType		_actualState;
 		bool			_finished;
 		short			_connectionClosed;
@@ -110,7 +109,6 @@ class Event
 		std::string&			getReqBody(void);
 		std::string				getReqTransferEncoding(void)		;
 		std::string				getReqHost(void);
-		EventType				getOldState(void);
 		EventType				getActualState(void);
 		void					setActualState(EventType actualState);
 		bool					isFinished(void);

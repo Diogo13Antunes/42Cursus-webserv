@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/20 11:27:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/21 11:40:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 #include "WriteHandler.hpp"
 #include "ReadCgiHandler.hpp"
 #include "WriteCgiHandler.hpp"
-#include "TypeTransitionHandler.hpp"
 #include "AMessengerClient.hpp"
 #include "Event.hpp"
 
