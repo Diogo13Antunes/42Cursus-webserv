@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/18 17:23:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/21 11:32:49 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ void ReadSocketHandler::handleEvent(Event *event)
 	valread = read(event->getFd(), _buffer, SOCKET_READ_BUFF_SIZE);
 	if (valread <= 0)
 	{
-		event->setIsStateChange(true);
 		event->setActualState(DISCONNECT_EVENT);
 		event->setClientDisconnected();
 		return ;
@@ -43,13 +42,8 @@ void ReadSocketHandler::handleEvent(Event *event)
 	buffer.assign(_buffer, valread);
 	event->updateReqRawData(buffer);
 	_handleReq->handle();
-	//if (!_handleReq->isProcessingComplete())
-	//	return ;
-	//event->setActualState(TYPE_TRANSITION);
 	if (_handleReq->isProcessingComplete())
 	{
-		event->setIsStateChange(true);
-
 		if (event->isCgi())
 			event->setActualState(WRITE_CGI);
 		else

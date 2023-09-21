@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/21 11:04:03 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/21 11:32:18 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,10 +105,7 @@ void EventLoop::_registerReadEvent(int fd)
 			|| (type == READ_CGI && event->getCgiReadFd() == fd))
 			_addEventToQueue(fd);
 		else
-		{
-			event->setIsStateChange(true);
 			event->setActualState(DISCONNECT_EVENT);
-		}
 	}
 }
 
@@ -172,7 +169,6 @@ void EventLoop::_closeTimeoutEvents(void)
 			else
 				event->setActualState(DISCONNECT_EVENT);
 			elmWithTimeout.push_back(it->first);
-			event->setIsStateChange(true);
 		}
 	}
 	if (elmWithTimeout.empty())
@@ -201,7 +197,6 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 			event = it->second;
 			if (event->isCgiScriptEndend())
 			{
-				event->setIsStateChange(true);
 				event->setActualState(WRITE_EVENT);
 				elmToRemove.push_back(fd);
 			}
@@ -294,7 +289,7 @@ void EventLoop::_changeToWriteCgi(Event *event)
 		sendMessage(Message(EVENTDEMUX_ID, fd, EVENT_CHANGE_TO_WRITE));
 		event->setCgiFdRemoved(fd, false);
 	}
-	event->setIsStateChange(false);
+	//event->setIsStateChange(false);
 }
 
 void EventLoop::_changeToReadCgi(Event *event)
