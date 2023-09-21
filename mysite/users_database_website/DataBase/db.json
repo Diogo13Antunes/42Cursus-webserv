@@ -1,0 +1,11 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "name": "dsadsd",
+            "age": "23",
+            "email": "diogo@sadad"
+        }
+    ],
+    "last_id": 1
+}

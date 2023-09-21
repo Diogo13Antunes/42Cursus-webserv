@@ -6,8 +6,11 @@
 		<title> WebServ </title>
 		<link rel="icon" href="favicon.ico" type="image/x-icon">
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">  
-		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="stylesheet" type="text/css" href="../style.css">
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@800&family=Paytone+One&display=swap" rel="stylesheet">
 	</head>
 	<body>
 		<nav class="navbar fixed-top navbar-expand-lg navbar-dark navbar_color">
@@ -22,12 +25,12 @@
 					<a class="nav-link" href="/">Home</a>
 				  </li>
 				  <li class="nav-item">
-					  <a class="nav-link" href="/about">About</a>
-					</li>
-					<li class="nav-item">
-					<a class="nav-link" href="/team">Team</span></a>
-				</li>
-				<li class="nav-item dropdown">
+					<a class="nav-link" href="/about">About <span class="sr-only">(current)</span></a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="/team">Team</a>
+				  </li>
+				  <li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" id="cgi_demoDropDownMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						Cgi Demonstration
 					</a>
@@ -42,45 +45,19 @@
 					</div>
 				  </li>
 				</ul>
+			  </div>
 			</div>
-		</div>
 		</nav>
 
 		<div class="bg-image">
 			<div class="darker_bg">
-				<div class="database_add_container">
-
-					<h1 class="database_managment_header"> CGI DEMONSTRATION - ADD USER </h1>
-
-					<form class="database_form_style" action="/created_user/" method="POST">
-						<div class="row mb-4">
-							<label for="name" class="col-sm-1 col-form-label database_add_text">Name</label>
-							<div class="col-sm-4">
-								<input type="text" id="name" name="name" class="form-control database_form_input_style" required>
-							</div>
-						</div>
-
-						<div class="row mb-4">
-							<label for="age" class="col-sm-1 col-form-label database_add_text">Age</label>
-							<div class="col-sm-1">
-								<input type="number" id="age" name="age" class="form-control database_form_input_style" required>
-							</div>
-						</div>
-
-						<div class="row mb-4">
-							<label for="email" class="col-sm-1 col-form-label database_add_text">Email</label>
-							<div class="col-sm-4">
-								<input type="email" id="email" name="email" class="form-control database_form_input_style" required>
-							</div>
-						</div>
-
-						<div class="row mb-4">
-							<button type="submit" class="btn btn-dark database_form_input_style" style="width: 100px;">Add User</button>
-						</div>
-					</form>
+				<div class="error_pages_container">
+					<h1 class="error_number">404</h1>
+					<h2 class="type_of_error">PAGE NOT FOUND</h2>
 				</div>
 			</div>
 		</div>
+
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 	</body>
 </html>

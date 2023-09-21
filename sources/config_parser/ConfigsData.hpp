@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <vector>
 #include <map>
 
@@ -12,22 +13,25 @@ class ConfigsData
 	private:
 		std::vector<ServerConfig>		_servers;
 
-		void	_allocServersMemory(std::vector<std::string> &src);
+		void	_allocServersMemory(std::map<size_t, std::string> &fileContent);
 
 	public:
 		ConfigsData(void);
-		ConfigsData(const ConfigsData &src);
 		~ConfigsData(void);
-		ConfigsData &operator=(const ConfigsData &src);
 
-
-
-		void						setupConfigs(std::vector<std::string> &src);
+		void						setupConfigs(std::map<size_t, std::string> &fileContent);
 		std::vector<ServerConfig>	&getServers(void);
 
-		class InvalidConfigFileException: public std::exception
+		class InvalidConfigFileDataException: public std::exception
 		{
+			private:
+				std::string _msg;
+				char		*_fullMsg;
+
 			public:
+				InvalidConfigFileDataException(std::string msg);
+				virtual ~InvalidConfigFileDataException() throw();
+
 				const char *what() const throw();
 		};
 };

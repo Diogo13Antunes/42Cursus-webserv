@@ -22,7 +22,7 @@ sys.stdout = Unbuffered(sys.stdout)
 content_length = 9
 
 #input_data = input()
-#time.sleep(3)
+#time.sleep(35)
 
 htmlfile = "<!DOCTYPE html> <html> <body> <h1> Script de teste </h1> </body> </html>"
 
