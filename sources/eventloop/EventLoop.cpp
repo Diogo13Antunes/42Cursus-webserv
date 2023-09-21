@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/20 17:29:29 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/21 11:04:03 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,8 @@ Event* EventLoop::_getEventFromMap(std::map<int, Event*> &map, int fd)
 void EventLoop::_closeTimeoutEvents(void)
 {
 	std::map<int, Event*>::iterator	it;
+	std::vector<int>::iterator		itVect;
+	std::vector<int>				elmWithTimeout;
 	Event							*event;
 	int								fd;
 	int								cgiReadFd;
@@ -169,10 +171,14 @@ void EventLoop::_closeTimeoutEvents(void)
 				event->setActualState(WRITE_EVENT);
 			else
 				event->setActualState(DISCONNECT_EVENT);
+			elmWithTimeout.push_back(it->first);
 			event->setIsStateChange(true);
-			_changeEventStatus(event);
 		}
 	}
+	if (elmWithTimeout.empty())
+		return ;
+	for (itVect = elmWithTimeout.begin(); itVect != elmWithTimeout.end(); itVect++)
+		_changeEventStatus(_getEventFromMap(_eventMap, *itVect));
 }
 
 void EventLoop::_checkIfCgiScriptsFinished(void)
@@ -182,7 +188,9 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 	std::vector<int>				elmToRemove;
 	Event							*event;
 	int								fd;
-
+	
+	if (_cgiEventMap.empty())
+		return ;
 	for (it = _cgiEventMap.begin(); it != _cgiEventMap.end(); it++)
 	{
 		fd = it->first;
@@ -195,18 +203,16 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 			{
 				event->setIsStateChange(true);
 				event->setActualState(WRITE_EVENT);
-				_changeEventStatus(event);
 				elmToRemove.push_back(fd);
 			}
-			else if (CgiExec::isEnded(event))
+			else if(CgiExec::isEnded(event))
 				event->setCgiScriptEndend(true);
 		}
 	}
 	if (elmToRemove.empty())
 		return ;
 	for (itVect = elmToRemove.begin(); itVect != elmToRemove.end(); itVect++)
-		_cgiEventMap.erase(*itVect);
-
+		_changeEventStatus(_getEventFromMap(_cgiEventMap, *itVect));
 }
 
 int EventLoop::_getNextEventFromQueue(void)
@@ -250,13 +256,14 @@ void EventLoop::_changeEventStatus(Event *event)
 {
 	EventType	type;
 	int			fd;
-	
+
+	if (!event)
+		return ;
 	if (!event->isStateChange())
 		return ;
 	event->setIsStateChange(false);
 	type = event->getActualState();
 	fd = event->getFd();
-	
 	if (type == WRITE_CGI)
 		_changeToWriteCgi(event);
 	if (type == READ_CGI)
@@ -266,7 +273,7 @@ void EventLoop::_changeEventStatus(Event *event)
 	if (type == CLOSE_EVENT)
 		_closeEvent(event);
 	if (type == DISCONNECT_EVENT)
-		_disconnectEvent(event);	
+		_disconnectEvent(event);
 }
 
 void EventLoop::_changeToWriteCgi(Event *event)
