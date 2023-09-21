@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 11:58:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/21 17:04:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ InitialState::InitialState(void) {}
 
 InitialState::~InitialState(void) {}
 
+/*
 StateResType InitialState::handle(Event *event, ServerConfig& config)
 {
 	std::string	reqPath;
@@ -50,16 +51,56 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 
 	
 
-	/*->*/if (_hasForcedRedirection(event) || _hasConfRedirection(event, config))
+	if (_hasForcedRedirection(event) || _hasConfRedirection(event, config))
 		return (REDIRECTION_HANDLING);
 
 	//realPath = _getPathWithIndex(config, realPath, route);
 	event->setResourcePath(realPath);
 	if (event->getStatusCode())
 		return (ERROR_HANDLING);
-	/*->*/if (!_isValidFile(event, realPath))
+	if (!_isValidFile(event, realPath))
 		return (ERROR_HANDLING);
-	/*->*/if (!_isValidMethod(event, config))
+	if (!_isValidMethod(event, config))
+		return (ERROR_HANDLING);
+	if (FileSystemUtils::isFolder(realPath))
+	{
+		if (config.getLocationAutoIndex(route))
+			return (DIRECTORY_LISTING);
+		else
+		{
+			event->setStatusCode(FORBIDEN_CODE);
+			return (ERROR_HANDLING);	
+		}
+	}
+	return (STATIC_FILE_HANDLING);
+}
+*/
+
+StateResType InitialState::handle(Event *event, ServerConfig& config)
+{
+	std::string	reqPath;
+	std::string realPath;
+	std::string	route;
+	
+	if (event->getStatusCode())
+		return (ERROR_HANDLING);
+	if (event->getCgiExitStatus())
+	{
+		event->setStatusCode(500);
+		return (ERROR_HANDLING);
+	}
+	route = event->getRoute();
+	realPath = event->getResourcePath();
+	if (event->isCgi())
+		return (CGI_RES_HANDLING);
+	if (_hasForcedRedirection(event) || _hasConfRedirection(event, config))
+		return (REDIRECTION_HANDLING);
+	event->setResourcePath(realPath);
+	if (event->getStatusCode())
+		return (ERROR_HANDLING);
+	if (!_isValidFile(event, realPath))
+		return (ERROR_HANDLING);
+	if (!_isValidMethod(event, config))
 		return (ERROR_HANDLING);
 	if (FileSystemUtils::isFolder(realPath))
 	{

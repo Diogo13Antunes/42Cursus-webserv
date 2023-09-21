@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 16:01:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/21 17:28:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,42 +29,19 @@ HeaderProcess::~HeaderProcess(void) {}
 
 StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 {
-	std::string		header;
 	ServerConfig	*serverConf;
-	std::string path;
-	std::string route;
-	std::string	routeExt;
-	std::string resourcePath;
-	std::string requestPath;
-	size_t		maxBodySize;
-	size_t		contentLength;
+	std::string		header;
+	size_t			maxBodySize;
+	size_t			contentLength;
 
 	if (!event->isReqHeaderComplete())
 		return (HEADER_PROCESS);
 	header = event->getReqHeader();
-	event->parseReqHeader(header);
-
+	event->parseReqHeader(header);	
 	serverConf = _getServerConfig(event, configsData);
 	event->setServerConfing(serverConf);
-
-	path = event->getReqLinePath();
-	route = _getRouteName(*serverConf, path);
-	if (route.empty() || !route.compare("/"))
-		routeExt = _getExtesionRoute(*serverConf, path);
-	if (!routeExt.empty())
-		route = routeExt;
-	if (routeExt.empty() && !serverConf->isLocationAcceptedMethod(route, event->getReqLineMethod()))
-		routeExt = _getExtesionRoute(*serverConf, path);
-	if (!routeExt.empty())
-		route = routeExt;
-	requestPath = _getRealPath(*serverConf, event, route);
-	resourcePath = requestPath;
-	if (!event->isCgi())
-		resourcePath = _getPathWithIndex(*serverConf, requestPath, route);
-	event->setRoute(route);
-	event->setRequestPath(requestPath);
-	event->setResourcePath(resourcePath);
-	maxBodySize = serverConf->getLocationBodySize(route);
+	_setPathAndRouteInfo(event, *serverConf);
+	maxBodySize = serverConf->getLocationBodySize(event->getRoute());
 	contentLength = event->getReqContentLength();
 	if (contentLength > maxBodySize)
 	{
@@ -175,7 +152,7 @@ std::string HeaderProcess::_getRealPath(ServerConfig& config, Event *event, std:
 	}
 	else
 		event->setIsCgi(true);
-	if (!cgi.empty())
+	if (!cgi.empty() && event->isCgi())
 	{
 		if (!_isFolder(cgi))
 			realPath = cgi;
@@ -229,4 +206,31 @@ bool HeaderProcess::_isChunkedTransfer(Event *event)
 		return (true);
 	else
 		return (false);
+}
+
+void HeaderProcess::_setPathAndRouteInfo(Event *event, ServerConfig& serverConf)
+{
+	std::string path;
+	std::string route;
+	std::string	routeExt;
+	std::string requestPath;
+	std::string resourcePath;
+
+	path = event->getReqLinePath();
+	route = _getRouteName(serverConf, path);
+	if (route.empty() || !route.compare("/"))
+		routeExt = _getExtesionRoute(serverConf, path);
+	if (!routeExt.empty())
+		route = routeExt;
+	if (routeExt.empty() && !serverConf.isLocationAcceptedMethod(route, event->getReqLineMethod()))
+		routeExt = _getExtesionRoute(serverConf, path);
+	if (!routeExt.empty())
+		route = routeExt;
+	requestPath = _getRealPath(serverConf, event, route);
+	resourcePath = requestPath;
+	if (!event->isCgi())
+		resourcePath = _getPathWithIndex(serverConf, requestPath, route);
+	event->setRoute(route);
+	event->setRequestPath(requestPath);
+	event->setResourcePath(resourcePath);	
 }
