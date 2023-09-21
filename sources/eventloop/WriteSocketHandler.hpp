@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   WriteHandler.hpp                                   :+:      :+:    :+:   */
+/*   WriteSocketHandler.hpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:30:30 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/04 17:29:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/21 11:52:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@
 #include "HandleRes.hpp"
 #include "ConfigsData.hpp"
 
-class WriteHandler: public IEventHandler
+class WriteSocketHandler: public IEventHandler
 {
 	private:
 		HandleRes	*_handleRes;
 
 	public:
-		WriteHandler(HandleRes *handleRes);
-		~WriteHandler(void);
+		WriteSocketHandler(HandleRes *handleRes);
+		~WriteSocketHandler(void);
 
 		void		handleEvent(Event *event);
 		EventType	getHandleType(void);

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/21 11:32:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/21 11:57:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void EventLoop::_registerWriteEvent(int fd)
 	if (!event)
 		return ;
 	type = event->getActualState();
-	if ((type == WRITE_EVENT && fd == event->getFd())
+	if ((type == WRITE_SOCKET && fd == event->getFd())
 		|| (type == WRITE_CGI && fd == event->getCgiWriteFd()))
 		_addEventToQueue(fd);
 }
@@ -165,7 +165,7 @@ void EventLoop::_closeTimeoutEvents(void)
 			else if (state == WRITE_CGI || state == READ_CGI)
 				event->setStatusCode(GATEWAY_TIMEOUT_CODE);
 			if (event->getStatusCode())
-				event->setActualState(WRITE_EVENT);
+				event->setActualState(WRITE_SOCKET);
 			else
 				event->setActualState(DISCONNECT_EVENT);
 			elmWithTimeout.push_back(it->first);
@@ -197,7 +197,7 @@ void EventLoop::_checkIfCgiScriptsFinished(void)
 			event = it->second;
 			if (event->isCgiScriptEndend())
 			{
-				event->setActualState(WRITE_EVENT);
+				event->setActualState(WRITE_SOCKET);
 				elmToRemove.push_back(fd);
 			}
 			else if(CgiExec::isEnded(event))
@@ -263,7 +263,7 @@ void EventLoop::_changeEventStatus(Event *event)
 		_changeToWriteCgi(event);
 	if (type == READ_CGI)
 		_changeToReadCgi(event);
-	if (type == WRITE_EVENT)
+	if (type == WRITE_SOCKET)
 		_changeToWriteSocket(event);
 	if (type == CLOSE_EVENT)
 		_closeEvent(event);
@@ -278,7 +278,7 @@ void EventLoop::_changeToWriteCgi(Event *event)
 	if (CgiExec::execute(event) == -1)
 	{
 		event->setStatusCode(INTERNAL_SERVER_ERROR_CODE);
-		event->setActualState(WRITE_EVENT);
+		event->setActualState(WRITE_SOCKET);
 	}
 	else
 	{

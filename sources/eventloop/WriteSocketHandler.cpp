@@ -1,33 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   WriteHandler.cpp                                   :+:      :+:    :+:   */
+/*   WriteSocketHandler.cpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 19:02:47 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/21 11:33:05 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/21 11:57:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sstream>
 #include <sys/socket.h>
 
-#include "WriteHandler.hpp"
+#include "WriteSocketHandler.hpp"
 #include "HandleRes.hpp"
 
-WriteHandler::WriteHandler(HandleRes *handleRes): IEventHandler()
+WriteSocketHandler::WriteSocketHandler(HandleRes *handleRes): IEventHandler()
 {
 	_handleRes = handleRes;
 }
 
-WriteHandler::~WriteHandler(void) 
+WriteSocketHandler::~WriteSocketHandler(void) 
 {
 	if (_handleRes)
 		delete _handleRes;
 }
 
-void WriteHandler::handleEvent(Event *event)
+void WriteSocketHandler::handleEvent(Event *event)
 {
 	_handleRes->setEvent(event);
 	_handleRes->handle();
@@ -40,7 +40,7 @@ void WriteHandler::handleEvent(Event *event)
 	}
 }
 
-EventType WriteHandler::getHandleType(void)
+EventType WriteSocketHandler::getHandleType(void)
 {
-	return (WRITE_EVENT);
+	return (WRITE_SOCKET);
 }

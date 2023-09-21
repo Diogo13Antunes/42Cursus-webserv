@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 17:34:46 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/21 11:40:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/21 11:52:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 #include "IEventHandler.hpp"
 #include "ReadSocketHandler.hpp"
-#include "WriteHandler.hpp"
+#include "WriteSocketHandler.hpp"
 #include "ReadCgiHandler.hpp"
 #include "WriteCgiHandler.hpp"
 #include "AMessengerClient.hpp"
