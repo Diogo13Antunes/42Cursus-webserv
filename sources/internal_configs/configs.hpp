@@ -12,6 +12,7 @@
 #define LOOPBACK_ADD			"127.0.0.1"
 
 #define EVENT_TIMEOUT_SEC       30
+#define KEEP_ALIVE_TIMEOUT_SEC  15
 
 // socket defines (max size of internal queue of listen)
 #define DEFAULT_BACKLOG 		128
