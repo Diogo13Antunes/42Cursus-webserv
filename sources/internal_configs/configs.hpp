@@ -21,16 +21,17 @@
 #define EPOLL_TIMEOUT		5
 
 // Error codes
-#define BAD_REQUEST_CODE            400
-#define FORBIDEN_CODE               403
-#define NOT_FOUND_CODE              404
-#define NOT_ALLOWED_CODE            405
-#define REQUEST_TIMEOUT_CODE        408
-#define CONTENT_TOO_LARGE_CODE      413
-#define NOT_IMPLEMENTED_CODE        501
-#define INTERNAL_SERVER_ERROR_CODE  500
-#define GATEWAY_TIMEOUT_CODE        504
-#define MOVED_PERMANENTLY_CODE      301
+#define BAD_REQUEST_CODE                    400
+#define FORBIDEN_CODE                       403
+#define NOT_FOUND_CODE                      404
+#define NOT_ALLOWED_CODE                    405
+#define REQUEST_TIMEOUT_CODE                408
+#define CONTENT_TOO_LARGE_CODE              413
+#define NOT_IMPLEMENTED_CODE                501
+#define INTERNAL_SERVER_ERROR_CODE          500
+#define GATEWAY_TIMEOUT_CODE                504
+#define HTTP_VERSION_NOT_SUPPORTED_CODE     505
+#define MOVED_PERMANENTLY_CODE              301
 
 #define IMPLEMENTED_METHODS "GET, POST, DELETE"
 

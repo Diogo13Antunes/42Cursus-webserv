@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 11:07:22 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/20 16:24:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 19:26:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ ErrorHandlingState::ErrorHandlingState(void)
 	_errorCodes.insert(std::make_pair(501, "Not Implemented"));
 	_errorCodes.insert(std::make_pair(500, "Internal Server Error"));
 	_errorCodes.insert(std::make_pair(504, "Gateway Timeout"));
+	_errorCodes.insert(std::make_pair(505, "HTTP Version Not Supported"));
 }
 
 ErrorHandlingState::~ErrorHandlingState(void) {}

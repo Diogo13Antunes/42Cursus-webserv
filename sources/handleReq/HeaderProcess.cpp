@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 17:49:16 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 19:35:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,11 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	event->parseReqHeader(header);	
 	serverConf = _getServerConfig(event, configsData);
 	event->setServerConfing(serverConf);
+	if (!_isProtocolSupported(event->getReqLineHttpVersion()))
+	{
+		event->setStatusCode(HTTP_VERSION_NOT_SUPPORTED_CODE);
+		return (REQUEST_END);
+	}
 	_setPathAndRouteInfo(event, *serverConf);
 	maxBodySize = serverConf->getLocationBodySize(event->getRoute());
 	contentLength = event->getReqContentLength();
@@ -224,4 +229,11 @@ void HeaderProcess::_setPathAndRouteInfo(Event *event, ServerConfig& serverConf)
 	//std::cout << "route: " << route << std::endl;
 	//std::cout << "requestPath: " << requestPath << std::endl;
 	//std::cout << "resourcePath: " << resourcePath << std::endl;
+}
+
+bool HeaderProcess::_isProtocolSupported(std::string protocol)
+{
+	if (!protocol.compare("HTTP/1.1") || !protocol.compare("HTTP/1.0"))
+		return (true);
+	return (false);
 }
