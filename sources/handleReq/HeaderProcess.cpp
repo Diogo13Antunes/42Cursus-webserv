@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 11:36:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 13:06:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,12 +224,4 @@ void HeaderProcess::_setPathAndRouteInfo(Event *event, ServerConfig& serverConf)
 	//std::cout << "route: " << route << std::endl;
 	//std::cout << "requestPath: " << requestPath << std::endl;
 	//std::cout << "resourcePath: " << resourcePath << std::endl;
-}
-
-bool HeaderProcess::_cgiPathIsValid(std::string reqPath, std::string realPath)
-{
-	if (reqPath.at(reqPath.size() - 1) == '/')
-		return (true);
-	
-	return (false);
 }

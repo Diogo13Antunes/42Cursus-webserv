@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/21 17:52:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 13:11:48 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	realPath = event->getResourcePath();
 	if (event->isCgi())
 		return (CGI_RES_HANDLING);
-	if (_hasForcedRedirection(event) || _hasConfRedirection(event, config))
+	if (_hasForcedRedirection(event, config) || _hasConfRedirection(event, config))
 		return (REDIRECTION_HANDLING);
 	event->setResourcePath(realPath);
 	if (event->getStatusCode())
@@ -207,7 +207,7 @@ bool InitialState::_isMethodImplemented(std::string method)
 	return (false);
 }
 
-bool InitialState::_hasForcedRedirection(Event *event)
+bool InitialState::_hasForcedRedirection(Event *event, ServerConfig& config)
 {
 	std::string	method;
 	std::string reqPath;
@@ -222,7 +222,7 @@ bool InitialState::_hasForcedRedirection(Event *event)
 	{
 		if (route.at(route.size() - 1) == '/')
 			route.erase(route.size() - 1);
-		if (FileSystemUtils::isFolder(realPath) || !reqPath.compare(route))
+		if (FileSystemUtils::isFolder(realPath) || !reqPath.compare(route) || !config.getLocationCgi(route).empty())
 		{
 			if (!method.compare("GET"))
 			{
