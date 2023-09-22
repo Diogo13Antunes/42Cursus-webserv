@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/21 17:52:06 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 11:28:29 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,14 +132,16 @@ std::string HeaderProcess::_getPreviousPath(std::string path)
 	return (path);
 }
 
-std::string HeaderProcess::_getRealPath(ServerConfig& config, Event *event, std::string route)
+std::string HeaderProcess::_getRealPath(ServerConfig& config, Event *event, bool isExtesionRoute)
 {
 	std::string realPath;
 	std::string alias;
 	std::string root;
 	std::string cgi;
 	std::string	reqPath;
+	std::string route;
 
+	route = event->getRoute();
 	reqPath = event->getReqLinePath();
 	cgi = config.getLocationCgi(route);
 	if (cgi.empty())
@@ -150,14 +152,14 @@ std::string HeaderProcess::_getRealPath(ServerConfig& config, Event *event, std:
 		if (root.empty() && alias.empty())
 			root = config.getMasterRoot();
 	}
-	else
-		event->setIsCgi(true);
-	if (!cgi.empty() && event->isCgi())
+	if (!cgi.empty())
 	{
 		if (!_isFolder(cgi))
 			realPath = cgi;
 		else 
 			realPath = cgi + reqPath;
+		if (isExtesionRoute || reqPath.at(reqPath.size() - 1) == '/')
+			event->setIsCgi(true);
 	}
 	else if (!root.empty())
 		realPath = root + reqPath;
@@ -226,11 +228,22 @@ void HeaderProcess::_setPathAndRouteInfo(Event *event, ServerConfig& serverConf)
 		routeExt = _getExtesionRoute(serverConf, path);
 	if (!routeExt.empty())
 		route = routeExt;
-	requestPath = _getRealPath(serverConf, event, route);
+	event->setRoute(route);
+	requestPath = _getRealPath(serverConf, event, !routeExt.empty());
 	resourcePath = requestPath;
 	if (!event->isCgi())
 		resourcePath = _getPathWithIndex(serverConf, requestPath, route);
-	event->setRoute(route);
 	event->setRequestPath(requestPath);
-	event->setResourcePath(resourcePath);	
+	event->setResourcePath(resourcePath);
+	//std::cout << "route: " << route << std::endl;
+	//std::cout << "requestPath: " << requestPath << std::endl;
+	//std::cout << "resourcePath: " << resourcePath << std::endl;
+}
+
+bool HeaderProcess::_cgiPathIsValid(std::string reqPath, std::string realPath)
+{
+	if (reqPath.at(reqPath.size() - 1) == '/')
+		return (true);
+	
+	return (false);
 }
