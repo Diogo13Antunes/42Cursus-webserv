@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:22 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 11:08:00 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 11:36:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ class HeaderProcess: public IState
 		std::string		_getPreviousPath(std::string path);
 		std::string		_getRealPath(ServerConfig& config, Event *event, bool isExtesionRoute);
 		std::string		_getPathWithIndex(ServerConfig& config, std::string path, std::string route);
-		bool			_isFolder(std::string path);
 		bool			_isChunkedTransfer(Event *event);
 		void			_setPathAndRouteInfo(Event *event, ServerConfig& serverConf);
 		bool			_cgiPathIsValid(std::string reqPath, std::string realPath);

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 11:28:29 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 11:36:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ std::string HeaderProcess::_getRealPath(ServerConfig& config, Event *event, bool
 	}
 	if (!cgi.empty())
 	{
-		if (!_isFolder(cgi))
+		if (!FileSystemUtils::isFolder(cgi))
 			realPath = cgi;
 		else 
 			realPath = cgi + reqPath;
@@ -172,7 +172,7 @@ std::string HeaderProcess::_getPathWithIndex(ServerConfig& config, std::string p
 {
 	std::string index;
 
-	if (!_isFolder(path))
+	if (!FileSystemUtils::isFolder(path))
 		return (path);
 	index = config.getLocationIndex(route);
 	if (index.empty())
@@ -183,20 +183,6 @@ std::string HeaderProcess::_getPathWithIndex(ServerConfig& config, std::string p
 	else
 		path += "/" + index;
 	return (path);
-}
-
-bool HeaderProcess::_isFolder(std::string path)
-{
-	struct stat	pathInfo;
-	int			err;
-
-	err = stat(path.c_str(), &pathInfo);
-	if (!err)
-	{
-		if (S_ISDIR(pathInfo.st_mode))
-			return (true);
-	}
-	return (false);
 }
 
 bool HeaderProcess::_isChunkedTransfer(Event *event)
