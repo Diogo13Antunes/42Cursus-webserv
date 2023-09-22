@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 13:11:48 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 15:25:18 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,59 +22,6 @@
 InitialState::InitialState(void) {}
 
 InitialState::~InitialState(void) {}
-
-/*
-StateResType InitialState::handle(Event *event, ServerConfig& config)
-{
-	std::string	reqPath;
-	std::string realPath;
-	std::string	route;
-	
-	if (event->getStatusCode())
-		return (ERROR_HANDLING);
-	if (event->getCgiExitStatus())
-	{
-		event->setStatusCode(500);
-		return (ERROR_HANDLING);
-	}
-	//if (!event->getCgiScriptResult().empty())
-	if (event->isCgi())
-		return (CGI_RES_HANDLING);
-	//reqPath = event->getReqLinePath();
-
-	//route = _getRouteName(config, reqPath);
-	//realPath = _getRealPath(config, reqPath, route);
-
-	route = event->getRoute();
-	realPath = event->getResourcePath();
-
-
-	
-
-	if (_hasForcedRedirection(event) || _hasConfRedirection(event, config))
-		return (REDIRECTION_HANDLING);
-
-	//realPath = _getPathWithIndex(config, realPath, route);
-	event->setResourcePath(realPath);
-	if (event->getStatusCode())
-		return (ERROR_HANDLING);
-	if (!_isValidFile(event, realPath))
-		return (ERROR_HANDLING);
-	if (!_isValidMethod(event, config))
-		return (ERROR_HANDLING);
-	if (FileSystemUtils::isFolder(realPath))
-	{
-		if (config.getLocationAutoIndex(route))
-			return (DIRECTORY_LISTING);
-		else
-		{
-			event->setStatusCode(FORBIDEN_CODE);
-			return (ERROR_HANDLING);	
-		}
-	}
-	return (STATIC_FILE_HANDLING);
-}
-*/
 
 StateResType InitialState::handle(Event *event, ServerConfig& config)
 {
@@ -114,23 +61,6 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	}
 	return (STATIC_FILE_HANDLING);
 }
-
-
-/*
-bool InitialState::_isFolder(std::string path)
-{
-	struct stat	pathInfo;
-	int			err;
-
-	err = stat(path.c_str(), &pathInfo);
-	if (!err)
-	{
-		if (S_ISDIR(pathInfo.st_mode))
-			return (true);
-	}
-	return (false);
-}
-*/
 
 std::string InitialState::_getPreviousPath(std::string path)
 {

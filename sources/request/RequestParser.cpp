@@ -153,9 +153,6 @@ std::string RequestParser::getReqLinePath(void)
 	return (_reqLinePath);
 }
 
-
-// Deve ficar apenas no evento o evento obetem todos os filds que necessita através do getHeaderField.
-// remover daqui para não ficar codigo repetido
 std::string RequestParser::getConnectionField(void)
 {
 	std::vector<std::string> connection;
