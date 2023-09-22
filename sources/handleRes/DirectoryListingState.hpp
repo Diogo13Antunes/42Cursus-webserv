@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:45 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 19:55:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 15:44:26 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class DirectoryListingState: public IStateRes
 		bool		_checkDirectoryAccess(Event *event, ServerConfig& config);
 		std::string _getErrorResponse(void);
 		void		_getPreviousRoute(std::string& route);
+		void		_sanitizePath(std::string& path);
 
 	public:
 		DirectoryListingState(void);

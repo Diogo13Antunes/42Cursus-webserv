@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/04 11:31:26 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 15:48:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "TimeDate.hpp"
 #include "HttpHeaderBuilder.hpp"
 #include "configs.hpp"
+#include "FileSystemUtils.hpp"
 
 #define NAME_MAX_SIZE	48
 
@@ -86,11 +87,15 @@ std::string DirectoryListingState::_createPageHtml(std::string path, std::map<st
 	std::map<std::string, std::string>::iterator	it;
 	std::string										page;
 
+	_sanitizePath(path);
 	page = "<html><head><title>Index of " + path + "</title></head>";
 	page += "<body><h1> Index of " + path + "</h1><hr><pre>";
 	for(it = dirCont.begin(); it != dirCont.end(); it++)
 	{
-		page += "<a href=\"" + it->first +  "\">" + _resizeName(it->first) + "</a>";
+		if (FileSystemUtils::isFolder(path + it->first))
+			page += "<a href=\"" + it->first + "/" +  "\">" + _resizeName(it->first) + "</a>";
+		else
+			page += "<a href=\"" + it->first + "\">" + _resizeName(it->first) + "</a>";
 		for(int i = it->first.size(); i < NAME_MAX_SIZE; i++)
 			page += " ";
 		page += " ";
@@ -133,4 +138,18 @@ void DirectoryListingState::_getPreviousRoute(std::string& route)
 		route.erase(idx);
 	else if (idx != route.npos)
 		route.erase(idx + 1);
+}
+
+void DirectoryListingState::_sanitizePath(std::string& path)
+{
+	size_t idx;
+
+	while (true)
+	{
+		idx = path.find("//");
+		if (idx == path.npos)
+			break ;
+		else
+			path.erase(idx, 1);
+	}
 }
