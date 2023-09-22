@@ -6,13 +6,14 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/21 11:57:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 16:14:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventLoop.hpp"
 #include "Signals.hpp"
 #include "CgiExec.hpp"
+#include <unistd.h>
 
 EventLoop::EventLoop(void): AMessengerClient(NULL) {}
 
@@ -94,9 +95,12 @@ void EventLoop::_registerReadEvent(int fd)
 	event = _getEventFromMap(_eventMap, fd);
 	if (!event)
 	{
-		event = new Event(fd, READ_SOCKET);
-		_insertEventToMap(_eventMap, fd, event);
-		sendMessage(Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
+		event = _createEventObj(fd);
+		if (event)
+		{
+			_insertEventToMap(_eventMap, fd, event);
+			sendMessage(Message(CONNECTIONS_ID, fd, CONNECTION_PAUSE_TIMER));
+		}
 	}
 	else if (event)
 	{
@@ -108,6 +112,25 @@ void EventLoop::_registerReadEvent(int fd)
 			event->setActualState(DISCONNECT_EVENT);
 	}
 }
+
+Event* EventLoop::_createEventObj(int fd)
+{
+	Event*	event;
+
+	event = NULL;
+	try {
+		event = new Event(fd, READ_SOCKET);
+	}
+	catch (const std::bad_alloc& e)
+	{
+		std::cout << BOLDRED << "Webserv: Connection will be closed - Memory Allocation Error" << RESET << std::endl;
+		sendMessage(Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
+		sendMessage(Message(CONNECTIONS_ID, fd, CONNECTION_REMOVE));
+		close(fd);
+	}
+	return (event);
+}
+
 
 void EventLoop::_registerWriteEvent(int fd)
 {
