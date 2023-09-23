@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Messenger.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 17:11:39 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/15 11:55:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 21:26:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 #include <iostream>
 
 Messenger::Messenger(void) {}
-
-Messenger::Messenger(const Messenger &src) {}
 
 Messenger::~Messenger(void) {}
 

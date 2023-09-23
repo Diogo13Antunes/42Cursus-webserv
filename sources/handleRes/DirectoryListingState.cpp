@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/23 19:03:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 15:54:02 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 23:01:20 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ StateResType DirectoryListingState::handle(Event *event, ServerConfig& config)
 	std::string							header;
 	std::string							res;
 
+	(void)config;
 	dir = event->getResourcePath();
 	dirCont = _getDirContent(dir);
 	page = _createPageHtml(dir, dirCont);

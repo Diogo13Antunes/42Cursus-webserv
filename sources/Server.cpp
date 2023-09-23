@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 16:24:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 21:17:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
+/*
 static void debugPrint(struct sockaddr_in *address);
 static void debugServersPrint(std::vector<int> servers);
 static void debugServersEndpointPrint(std::vector<std::string> endpoints);
+*/
 
 Server::Server(void): _configs(NULL){}
 
@@ -178,7 +179,6 @@ int Server::_initAndStoreSocketInf(std::string host, std::string port)
 
 bool Server::_isServerAlreadyInitialized(std::string host, std::string port)
 {
-	struct addrinfo						hints, *result;
 	std::vector<std::string>::iterator	it;
 	std::string							server;
 	std::string							ip;
@@ -230,6 +230,7 @@ bool Server::_isValidPort(std::string port)
 }
 
 // DEBUG
+/*
 static void debugPrint(struct sockaddr_in *address)
 {
 	std::cout << "sin_family: " << address->sin_family << std::endl;
@@ -254,3 +255,4 @@ static void debugServersEndpointPrint(std::vector<std::string> endpoints)
 	for (it = endpoints.begin(); it != endpoints.end(); it++)
 		std::cout << *it << std::endl;
 }
+*/

@@ -56,7 +56,6 @@ std::map<std::string, std::string>	CgiResponseHandlingState::_getHeaderMap(std::
 	std::map<std::string, std::string>	result;
 	std::istringstream					iss(src);
 	std::string							line;
-	size_t								i;
 
 	while (std::getline(iss, line))
 	{

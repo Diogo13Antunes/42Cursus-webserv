@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 16:14:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 09:01:38 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,8 +168,6 @@ void EventLoop::_closeTimeoutEvents(void)
 	std::vector<int>				elmWithTimeout;
 	Event							*event;
 	int								fd;
-	int								cgiReadFd;
-	int								cgiWriteFd;
 	EventType						state;
 
 	if (_eventMap.empty())
@@ -273,7 +271,6 @@ void EventLoop::_cleanEvents(void)
 void EventLoop::_changeEventStatus(Event *event)
 {
 	EventType	type;
-	int			fd;
 
 	if (!event)
 		return ;
@@ -281,7 +278,6 @@ void EventLoop::_changeEventStatus(Event *event)
 		return ;
 	event->setIsStateChange(false);
 	type = event->getActualState();
-	fd = event->getFd();
 	if (type == WRITE_CGI)
 		_changeToWriteCgi(event);
 	if (type == READ_CGI)

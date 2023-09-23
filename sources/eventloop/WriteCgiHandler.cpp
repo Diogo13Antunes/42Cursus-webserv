@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:39:35 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/21 17:51:27 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 09:03:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ WriteCgiHandler::~WriteCgiHandler(void) {}
 void WriteCgiHandler::handleEvent(Event *event)
 {
 	const char*	bodyStr;
-	size_t		bodySize;
+	ssize_t		bodySize;
 	ssize_t		numBytesSend;
 	int			fd;
 	

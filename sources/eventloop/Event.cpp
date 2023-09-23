@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/21 11:39:34 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 12:52:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,12 @@
 #define CONNECTION_CLOSED		1
 #define CONNECTION_KEEPALIVE	0
 
-static std::string getFileContent(std::string fileName);
-static std::string getFileType(std::string path);
-
 //Event::Event(void) {}
 
+/*
 Event::Event(int fd, int state):
 	_fd(fd),
 	_reqState(HEADER_PROCESS),
-	_resState(0),
 	_totalBytesSend(0),
 	_resState1(INITIAL_STATE),
 	_creationTime(Timer::getActualTimeStamp()),
@@ -57,6 +54,40 @@ Event::Event(int fd, int state):
 {
 	SocketUtils::getHostAndPort(_fd, _ip, _port);
 }
+*/
+
+Event::Event(int fd, int state):
+	_fd(fd),
+	_reqState(HEADER_PROCESS),
+	_totalBytesSend(0),
+	_resState1(INITIAL_STATE),
+	_creationTime(Timer::getActualTimeStamp()),
+	_actualState(READ_SOCKET),
+	_finished(false),
+	_connectionClosed(-1),
+	_clientDisconnect(false),
+	_cgiExitStatus(0),
+	_statusCode(0),
+	_redirectCode(0),
+	_fileSize(0),
+	_fileNumBytesRead(0),
+	_serverConf(NULL),
+	_cgiWriteFd(-1),
+	_cgiReadFd(-1),
+	_cgiWriteFdClosed(false),
+	_cgiReadFdClosed(false),
+	_cgiPid(0),
+	_numBytesSendCgi(0),
+	_cgiScriptEndend(false),
+	_isCgi(false),
+	_fdRemoved(false),
+	_cgiWriteFdRemoved(true),
+	_cgiReadFdRemoved(true),
+	_isStateChange(false)
+{
+	SocketUtils::getHostAndPort(_fd, _ip, _port);
+}
+
 
 Event::Event(const Event &src) {}
 
@@ -133,36 +164,6 @@ const std::string&  Event::getReqRawData(void)
 void Event::clearReqRawData(void)
 {
 	_reqRaw.clear();
-}
-#include <unistd.h>
-static std::string getFileContent(std::string fileName)
-{
-	std::ifstream	file(fileName.c_str());
-	std::string		buff;
-	std::string		body;
-
-	if (file.is_open())
-	{
-		while (std::getline(file, buff))
-		{
-			body += buff + "\n";
-		}
-		file.close();
-	}
-	else
-		std::cout << "Error: can't open file" << std::endl;
-	return (body);
-}
-
-static std::string getFileType(std::string path)
-{
-	std::string type;
-	size_t		dotIdx;
-
-	dotIdx = (path.find_last_of('.')) + 1;
-	if (dotIdx < path.size())
-		type = path.substr(dotIdx, path.size());
-	return (type);
 }
 
 const std::string& Event::getRes(void)
@@ -254,7 +255,6 @@ void	Event::updateCgiScriptResult(std::string& src)
 {
 	_cgiScriptResult += src;
 }
-
 
 std::string	Event::getQueryString(void)
 {

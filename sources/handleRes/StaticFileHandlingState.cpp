@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:53:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/04 11:58:49 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 23:14:54 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,9 @@ size_t StaticFileHandlingState::_getFileContent(std::string& data, std::string f
 	size_t	bytesRead;
 
     std::ifstream file(filePath.c_str());
-    if (!file)
+    if (!file) {
         return (0);
+	}
 	file.seekg(offset);
 	file.read(_buff, FILE_BUFF_SIZE);
 	bytesRead = file.gcount();

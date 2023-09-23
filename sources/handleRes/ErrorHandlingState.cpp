@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 11:07:22 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 19:26:37 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 23:14:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,9 @@ void ErrorHandlingState::_getPageFromFile(std::string path, std::string& page)
 	char	buff[ERROR_PAGE_MAX_SIZE];
 
     std::ifstream file(path.c_str());
-    if (!file)
+    if (!file) {
         return ;
+	}
 	file.read(buff, ERROR_PAGE_MAX_SIZE);
 	bytesRead = file.gcount();
 	page.assign(buff, bytesRead);

@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   Message.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 12:06:05 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/15 11:51:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 21:20:25 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Message.hpp"
 
 Message::Message(int dst, int fd, MessageType type):
+	_type(type),
 	_dst(dst),
-	_fd(fd),
-	_type(type)
+	_fd(fd)
 {}
 
 Message::Message(const Message& other):
+	_type(other.getType()),
 	_dst(other.getDst()),
-	_fd(other.getFd()),
-	_type(other.getType())
+	_fd(other.getFd())
 {}
 
 Message::~Message(void) {}

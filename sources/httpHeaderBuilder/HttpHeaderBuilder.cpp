@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 15:34:03 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/30 08:13:09 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 09:00:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,12 @@
 #include <ctime>
 
 
-HttpHeaderBuilder::HttpHeaderBuilder(void): 
-	_contentLength(0), 
+HttpHeaderBuilder::HttpHeaderBuilder(void):
 	_status("200 OK"),
+	_date(TimeDate::getTimeDateIMFfixdateFormat()),
 	_connection("keep-alive"),
-	_date(TimeDate::getTimeDateIMFfixdateFormat())
+	_contentLength(0)
+	
 {}
 
 HttpHeaderBuilder::~HttpHeaderBuilder(void) {}

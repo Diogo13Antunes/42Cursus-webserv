@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/18 09:14:45 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/01 08:50:59 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 23:03:55 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,9 @@ StateResType RedirectionHandlingState::handle(Event *event, ServerConfig& config
 	std::string res;
 	int			code;
 
+	code = event->getRredirectCode();
 	body = _createBody(code);
-	header = _createHeader(config, event->getRredirectCode(), event->getRredirectResource(), body.size());
+	header = _createHeader(config, code, event->getRredirectResource(), body.size());
 	res = header + body;
 	event->setRes(res);
 	event->setResSize(res.size());

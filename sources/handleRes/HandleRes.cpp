@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 11:52:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/13 11:37:21 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 21:28:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@
 #include "CgiResponseHandlingState.hpp"
 
 HandleRes::HandleRes(void):
-	_event(NULL),
-	_serverConf(NULL)
+	_serverConf(NULL),
+	_event(NULL)
 {
 	_stateMap.insert(std::make_pair(INITIAL_STATE, new InitialState()));
 	_stateMap.insert(std::make_pair(ERROR_HANDLING, new ErrorHandlingState()));

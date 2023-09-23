@@ -102,7 +102,7 @@ static size_t	getNumberOfIdentations(std::string &line)
 
 static std::pair<size_t, std::string>	createPair(size_t lineNbr, std::string lineContent)
 {
-	return (std::make_pair<size_t, std::string>(lineNbr, lineContent));
+	return (std::make_pair<size_t, std::string>(static_cast<size_t>(lineNbr), static_cast<std::string>(lineContent)));
 }
 
 /* EXCEPTIONS */

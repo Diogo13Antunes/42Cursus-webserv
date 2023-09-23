@@ -371,7 +371,7 @@ static bool	isValidNbrQuotes(std::string &data)
 
 static std::pair<size_t, std::string>	createLinePair(size_t lineNbr, std::string lineContent)
 {
-	return (std::make_pair<size_t, std::string>(lineNbr, lineContent));
+	return (std::make_pair<size_t, std::string>(static_cast<size_t>(lineNbr), static_cast<std::string>(lineContent)));
 }
 
 /* EXCEPTIONS */

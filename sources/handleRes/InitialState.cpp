@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/24 17:51:44 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 15:25:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 21:52:55 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,10 +99,12 @@ std::string InitialState::_getRealPath(ServerConfig& config, std::string reqPath
 	std::string root;
 
 	alias = config.getLocationAlias(route);
-	if (alias.empty())
+	if (alias.empty()) {
 		root = config.getLocationRootPath(route);
-    if (root.empty() && alias.empty())
+	}
+    if (root.empty() && alias.empty()) {
         root = config.getMasterRoot();
+	}
 	if (!root.empty())
 		realPath = root + reqPath;
 	else
