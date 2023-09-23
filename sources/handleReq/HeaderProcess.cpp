@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 19:35:56 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 13:11:18 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@
 #include <iostream>
 #include <sys/stat.h>
 #include <unistd.h>
-
-static void getHostPortFromSocket(int fd, std::string& hostIP, std::string& port);
 
 HeaderProcess::HeaderProcess(void) {}
 

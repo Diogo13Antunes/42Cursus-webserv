@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/21 12:31:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 15:07:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 #include "configs.hpp"
 
 Connection::Connection(int fd):
+	_status(TIMER_ACTIVE),
 	_fd(fd),
 	_keepAliveTimeout(KEEP_ALIVE_TIMEOUT_SEC),
-	_lastRequestTime(Timer::getActualTimeStamp()),
-	_status(TIMER_ACTIVE)
+	_lastRequestTime(Timer::getActualTimeStamp())
 {}
 
 Connection::~Connection(void)

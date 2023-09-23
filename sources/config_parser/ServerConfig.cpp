@@ -264,11 +264,6 @@ std::string ServerConfig::getLocationRootPath(std::string route)
 	return (std::string());
 }
 
-std::string ServerConfig::getMasterRootPath(std::string route)
-{
-	return (_masterRoot);
-}
-
 std::string ServerConfig::getLocationIndex(std::string route)
 {
 	Location *location;

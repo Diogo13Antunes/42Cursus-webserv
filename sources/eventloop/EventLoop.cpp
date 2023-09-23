@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/23 09:01:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 13:06:42 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ Event* EventLoop::_createEventObj(int fd)
 
 	event = NULL;
 	try {
-		event = new Event(fd, READ_SOCKET);
+		event = new Event(fd);
 	}
 	catch (const std::bad_alloc& e)
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Connections.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/15 11:28:55 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 15:04:46 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,33 +20,6 @@ Connections::~Connections(void)
 {
 	_removeAllConnections();
 }
-
-/*
-void Connections::updateAllConnections(void)
-{
-	std::map<int, Connection *>::iterator it;
-	std::map<int, Connection *>::iterator itBuff;
-
-	if (Timer::isTimeoutExpired(_lastUpdateTime, 1))
-	{
-		it = _activeConnects.begin();
-		while (it != _activeConnects.end())
-		{
-			if (it->second->isKeepAliveTimeout())
-			{
-				sendMessage(new Message(EVENTDEMUX_ID, it->second->getFd(), EVENT_REMOVE));
-				itBuff = it;
-				itBuff++;
-				_removeConnection(it);
-				it == itBuff;
-				break;
-			}
-
-			it++;
-		}
-		_lastUpdateTime = Timer::getActualTimeStamp();
-	}
-}*/
 
 void Connections::updateAllConnections(void)
 {

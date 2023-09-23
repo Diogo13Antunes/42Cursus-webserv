@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:49:57 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/21 17:51:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 14:59:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ BodyProcess::~BodyProcess(void) {}
 
 StateReqType BodyProcess::handle(Event *event, ConfigsData *configsData)
 {
+	(void)configsData;
 	event->updateReqBody(event->getReqRawData());
 	if (event->getReqRawData().empty() && event->getReqContentLength())
 	{

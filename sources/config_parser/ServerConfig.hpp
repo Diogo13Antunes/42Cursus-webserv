@@ -91,7 +91,6 @@ class ServerConfig
 		void								setPort(std::string port);
 		std::string							getUploadStore(std::string route);
 		std::string							getLocationRootPath(std::string route);
-		std::string							getMasterRootPath(std::string route);
 		std::string							getLocationIndex(std::string route);
 		std::string							getLocationAlias(std::string route);
 		bool								getLocationAutoIndex(std::string route);

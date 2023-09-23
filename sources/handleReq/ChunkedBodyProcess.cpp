@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/02 14:19:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/14 12:11:14 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 15:03:36 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,15 @@ ChunkedBodyProcess::~ChunkedBodyProcess(void) {}
 
 StateReqType ChunkedBodyProcess::handle(Event *event, ConfigsData *configsData)
 {
-	std::string	bodyChunked = event->getReqRaw1();
-	size_t				index;
-	int					bodySize;
-	std::string			body;
-	int					totalSize;
-	ServerConfig*		serverConf;
-	std::string			route;
+	std::string		bodyChunked = event->getReqRaw1();
+	size_t			index;
+	size_t			bodySize;
+	std::string		body;
+	size_t			totalSize;
+	ServerConfig*	serverConf;
+	std::string		route;
 
+	(void)configsData;
 	serverConf = event->getServerConfing();
 	route = event->getRoute();
 	if (event->getReqBodySize() > serverConf->getLocationBodySize(route))
@@ -57,10 +58,10 @@ StateReqType ChunkedBodyProcess::handle(Event *event, ConfigsData *configsData)
 	return (REQUEST_END);
 }
 
-int ChunkedBodyProcess::_hexToDec(std::string hex)
+size_t ChunkedBodyProcess::_hexToDec(std::string hex)
 {
 	std::stringstream	ss;
-	int					res;
+	size_t				res;
 
 	ss << std::hex << hex;
 	ss >> res;

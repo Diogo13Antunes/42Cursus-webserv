@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/23 12:52:07 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 13:06:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,43 +20,7 @@
 #define CONNECTION_CLOSED		1
 #define CONNECTION_KEEPALIVE	0
 
-//Event::Event(void) {}
-
-/*
-Event::Event(int fd, int state):
-	_fd(fd),
-	_reqState(HEADER_PROCESS),
-	_totalBytesSend(0),
-	_resState1(INITIAL_STATE),
-	_creationTime(Timer::getActualTimeStamp()),
-	_actualState(READ_SOCKET),
-	_finished(false),
-	_connectionClosed(-1),
-	_clientDisconnect(false),
-	_statusCode(0),
-	_redirectCode(0),
-	_fileSize(0),
-	_fileNumBytesRead(0),
-	_serverConf(NULL),
-	_numBytesSendCgi(0),
-	_cgiWriteFd(-1),
-	_cgiReadFd(-1),
-	_cgiPid(0),
-	_cgiExitStatus(0),
-	_cgiScriptEndend(false),
-	_cgiWriteFdClosed(false),
-	_cgiReadFdClosed(false),
-	_isCgi(false),
-	_cgiWriteFdRemoved(true),
-	_cgiReadFdRemoved(true),
-	_fdRemoved(false),
-	_isStateChange(false)
-{
-	SocketUtils::getHostAndPort(_fd, _ip, _port);
-}
-*/
-
-Event::Event(int fd, int state):
+Event::Event(int fd):
 	_fd(fd),
 	_reqState(HEADER_PROCESS),
 	_totalBytesSend(0),
@@ -87,9 +51,6 @@ Event::Event(int fd, int state):
 {
 	SocketUtils::getHostAndPort(_fd, _ip, _port);
 }
-
-
-Event::Event(const Event &src) {}
 
 Event::~Event(void)
 {

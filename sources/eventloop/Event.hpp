@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/23 12:59:24 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 13:06:28 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,7 @@ class Event
 		bool			_isStateChange;
 
 	public:
-		Event(int fd, int state);
-		Event(const Event &src);
+		Event(int fd);
 		~Event(void);
 		Event &operator=(const Event &src);
 
