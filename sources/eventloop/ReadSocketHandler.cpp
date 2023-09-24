@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 18:58:42 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/24 21:27:10 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "HandleReq.hpp"
 #include <unistd.h>
 #include <string>
+#include <sys/socket.h>
 
 ReadSocketHandler::ReadSocketHandler(HandleReq *handleReq): IEventHandler()
 {
@@ -33,7 +34,7 @@ void ReadSocketHandler::handleEvent(Event *event)
 	ssize_t		valread;
 
 	_handleReq->setEvent(event);
-	valread = read(event->getFd(), _buffer, SOCKET_READ_BUFF_SIZE);
+	valread = recv(event->getFd(), _buffer, SOCKET_READ_BUFF_SIZE, 0);
 	if (valread <= 0)
 	{
 		event->setActualState(DISCONNECT_EVENT);
@@ -42,13 +43,16 @@ void ReadSocketHandler::handleEvent(Event *event)
 	}
 	buffer.assign(_buffer, valread);
 	event->updateReqRawData(buffer);
-	if (_isHttps(event))
+	/*if (_isHttps(event))
+	{
 		event->setActualState(DISCONNECT_EVENT);
-	else
+	}*/
+
+	//else
 		_handleReq->handle();
 	if (_handleReq->isProcessingComplete())
 	{
-		if (event->isCgi())
+		if (event->isCgi() && !event->getStatusCode())
 			event->setActualState(WRITE_CGI);
 		else
 			event->setActualState(WRITE_SOCKET);

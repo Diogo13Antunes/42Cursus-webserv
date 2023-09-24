@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/23 13:06:30 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/24 19:21:57 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,16 @@ void Event::setReqState(StateReqType reqState)
 
 void Event::updateReqRawData(std::string &req)
 {
-	_reqRaw += req;
+	_reqRaw.append(req, 0, req.size());
+
+	//std::cout << "=============================" << std::endl;
+	//std::cout << _reqRaw << std::endl;
+
+
+	//std::cout << "_reqRaw.size(): " << _reqRaw.size() << std::endl;
+	//std::cout << "req.size(): " <<  req.size() << std::endl;
+
+	//_reqRaw += req;
 }
 
 bool Event::isReqHeaderComplete(void)

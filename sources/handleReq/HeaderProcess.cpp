@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/23 13:11:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/24 15:51:25 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	if (!event->isReqHeaderComplete())
 		return (HEADER_PROCESS);
 	header = event->getReqHeader();
-	event->parseReqHeader(header);	
+	event->parseReqHeader(header);
 	serverConf = _getServerConfig(event, configsData);
 	event->setServerConfing(serverConf);
 	if (!_isProtocolSupported(event->getReqLineHttpVersion()))
