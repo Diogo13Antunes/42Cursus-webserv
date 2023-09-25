@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/24 19:21:57 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 11:05:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,18 +78,14 @@ void Event::setReqState(StateReqType reqState)
 	_reqState = reqState;
 }
 
-void Event::updateReqRawData(std::string &req)
+void Event::updateReqRawData(const std::string &req)
 {
 	_reqRaw.append(req, 0, req.size());
+}
 
-	//std::cout << "=============================" << std::endl;
-	//std::cout << _reqRaw << std::endl;
-
-
-	//std::cout << "_reqRaw.size(): " << _reqRaw.size() << std::endl;
-	//std::cout << "req.size(): " <<  req.size() << std::endl;
-
-	//_reqRaw += req;
+void Event::setReqRawData(const std::string &req)
+{
+	_reqRaw.assign(req, 0, req.size());
 }
 
 bool Event::isReqHeaderComplete(void)
@@ -116,17 +112,7 @@ void Event::parseReqHeader(std::string &header)
 	this->setStatusCode(_reqParser.headerParse(header));
 }
 
-void Event::setReqRaw1(std::string req)
-{
-	_reqRaw = req;
-}
-
-const std::string&  Event::getReqRaw1(void)
-{
-	return (_reqRaw);
-}
-
-const std::string&  Event::getReqRawData(void)
+std::string Event::getReqRawData(void)
 {
 	return (_reqRaw);
 }

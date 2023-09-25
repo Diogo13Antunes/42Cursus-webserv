@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/02 14:19:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/25 10:06:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 11:45:08 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,15 @@ ChunkedBodyProcess::~ChunkedBodyProcess(void) {}
 
 StateReqType ChunkedBodyProcess::handle(Event *event, ConfigsData *configsData)
 {
-	std::string		bodyChunked = event->getReqRaw1();
+	std::string		bodyChunked;
 	size_t			index;
 	size_t			bodySize;
-	std::string		body;
 	size_t			totalSize;
 	ServerConfig*	serverConf;
 	std::string		route;
 
 	(void)configsData;
+	bodyChunked = event->getReqRawData();
 	serverConf = event->getServerConfing();
 	route = event->getRoute();
 	while (true)
@@ -47,8 +47,8 @@ StateReqType ChunkedBodyProcess::handle(Event *event, ConfigsData *configsData)
 		if (totalSize >= bodyChunked.size())
 			break ;
 		event->updateReqBody(bodyChunked.substr(index, bodySize));
-		event->setReqRaw1(bodyChunked.substr(totalSize));
-		bodyChunked = bodyChunked.substr(totalSize);
+		event->setReqRawData(bodyChunked.substr(totalSize));
+		bodyChunked.erase(0, totalSize);
 		if (event->getReqBodySize() > serverConf->getLocationBodySize(route))
 		{
 			event->setStatusCode(CONTENT_TOO_LARGE_CODE);

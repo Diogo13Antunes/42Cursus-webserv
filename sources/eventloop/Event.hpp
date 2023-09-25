@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/23 13:06:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 11:05:00 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,8 @@ class Event
 		int						getFd(void);
 		StateReqType			getReqState(void);
 		void					setReqState(StateReqType reqState);
-		void					updateReqRawData(std::string &req);
-		const std::string&		getReqRaw1(void);
-		void					setReqRaw1(std::string req);
+		void					updateReqRawData(const std::string &req);
+		void					setReqRawData(const std::string &req);
 		const std::string&		getRes(void);
 		void					setRes(std::string& res);
 		void					clearRes(void);
@@ -115,7 +114,7 @@ class Event
 		bool					isReqHeaderComplete(void);
 		void					parseReqHeader(std::string &header);
 		const std::string&		getReqHeader(void);
-		const std::string&		getReqRawData(void);
+		std::string				getReqRawData(void);
 		void					clearReqRawData(void);
 		int						getStatusCode(void);
 		void					setStatusCode(int statusCode);
