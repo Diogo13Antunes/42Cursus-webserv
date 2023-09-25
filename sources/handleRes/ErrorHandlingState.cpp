@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/25 11:07:22 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 23:14:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 15:38:35 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "StringUtils.hpp"
 #include <fstream>
 
-#define ERROR_PAGE_MAX_SIZE	1000
+#define ERROR_PAGE_MAX_SIZE	100000
 #define ERRO_PAGE_MIME_TYPE	"text/html"
 
 ErrorHandlingState::ErrorHandlingState(void)
@@ -50,7 +50,10 @@ StateResType ErrorHandlingState::handle(Event *event, ServerConfig& config)
 	if (event->getServerConfing())
 		pagePath = config.getErrorPagePath(errorCode);
 	if (!pagePath.empty())
+	{
+		
 		_getPageFromFile(pagePath, pageHtml);
+	}
 	if (pageHtml.empty())
 		_getDefaultPage(errorCode, pageHtml);
 	_getHeader(event, pageHtml.size(), header);
