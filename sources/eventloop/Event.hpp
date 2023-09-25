@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/25 12:18:26 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 12:49:16 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ class Event
 		bool			_cgiWriteFdRemoved;
 		bool			_cgiReadFdRemoved;
 		bool			_isStateChange;
+		bool			_isHttpsTested;
 
 	public:
 		Event(int fd);
@@ -159,4 +160,6 @@ class Event
 		void					setCgiFdRemoved(int cgiFd, bool value);
 		bool					isStateChange(void);
 		void					setIsStateChange(bool isStateChange);
+		bool 					isHttpsTested(void);
+		void 					setHttpsTested(void);
 };

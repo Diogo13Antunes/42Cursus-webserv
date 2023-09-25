@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/24 21:27:10 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 12:53:13 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,9 @@ void ReadSocketHandler::handleEvent(Event *event)
 	}
 	buffer.assign(_buffer, valread);
 	event->updateReqRawData(buffer);
-	/*if (_isHttps(event))
-	{
+	if (_isHttps(event))
 		event->setActualState(DISCONNECT_EVENT);
-	}*/
-
-	//else
+	else
 		_handleReq->handle();
 	if (_handleReq->isProcessingComplete())
 	{
@@ -67,10 +64,11 @@ EventType ReadSocketHandler::getHandleType(void)
 // SSL/TLS handshake starts with byte 0x16
 bool ReadSocketHandler::_isHttps(Event *event)
 {
-	const std::string& reqData = event->getReqRawData();
+	std::string reqData = event->getReqRawData();
 
-	if (!reqData.empty())
+	if (!reqData.empty() && !event->isHttpsTested())
 	{
+		event->setHttpsTested();
 		if (reqData.at(0) == 0x16)
 			return (true);
 	}

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/25 12:17:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 12:50:37 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ Event::Event(int fd):
 	_fdRemoved(false),
 	_cgiWriteFdRemoved(true),
 	_cgiReadFdRemoved(true),
-	_isStateChange(false)
+	_isStateChange(false),
+	_isHttpsTested(false)
 {
 	SocketUtils::getHostAndPort(_fd, _ip, _port);
 }
@@ -561,4 +562,14 @@ bool Event::isStateChange(void)
 void Event::setIsStateChange(bool isStateChange)
 {
 	_isStateChange = isStateChange;
+}
+
+bool Event::isHttpsTested(void)
+{
+	return (_isHttpsTested);
+}
+
+void Event::setHttpsTested(void)
+{
+	_isHttpsTested = true;
 }
