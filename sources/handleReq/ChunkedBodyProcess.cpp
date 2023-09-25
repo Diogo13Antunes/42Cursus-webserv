@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/02 14:19:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/24 21:27:43 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 10:06:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ ChunkedBodyProcess::ChunkedBodyProcess(void) {}
 
 ChunkedBodyProcess::~ChunkedBodyProcess(void) {}
 
-/*
 StateReqType ChunkedBodyProcess::handle(Event *event, ConfigsData *configsData)
 {
 	std::string		bodyChunked = event->getReqRaw1();
@@ -32,49 +31,6 @@ StateReqType ChunkedBodyProcess::handle(Event *event, ConfigsData *configsData)
 	(void)configsData;
 	serverConf = event->getServerConfing();
 	route = event->getRoute();
-	if (event->getReqBodySize() > serverConf->getLocationBodySize(route))
-	{
-		event->setStatusCode(CONTENT_TOO_LARGE_CODE);
-		return (REQUEST_END);
-	}
-	while (true)
-	{
-		index = bodyChunked.find("0\r\n\r\n");
-		if (index == 0)
-			return (REQUEST_END);
-		index = bodyChunked.find("\r\n");
-		if (index == bodyChunked.npos)
-			return (CHUNKED_BODY_PROCESS);
-		bodySize = _hexToDec(bodyChunked.substr(0, index));
-		if (bodySize == 0)
-			return (CHUNKED_BODY_PROCESS);
-		index += 2;
-		totalSize = index + bodySize + 2;
-		if (totalSize >= bodyChunked.size())
-			return (CHUNKED_BODY_PROCESS);
-		event->updateReqBody(bodyChunked.substr(index, bodySize));
-		event->setReqRaw1(bodyChunked.substr(totalSize));
-		bodyChunked = bodyChunked.substr(totalSize);
-	}
-	return (REQUEST_END);
-}
-*/
-
-
-StateReqType ChunkedBodyProcess::handle(Event *event, ConfigsData *configsData)
-{
-	std::string		bodyChunked = event->getReqRaw1();
-	size_t			index;
-	size_t			bodySize;
-	std::string		body;
-	size_t			totalSize;
-	ServerConfig*	serverConf;
-	std::string		route;
-
-	(void)configsData;
-	serverConf = event->getServerConfing();
-	route = event->getRoute();
-
 	while (true)
 	{
 		index = bodyChunked.find("0\r\n\r\n");
@@ -93,6 +49,11 @@ StateReqType ChunkedBodyProcess::handle(Event *event, ConfigsData *configsData)
 		event->updateReqBody(bodyChunked.substr(index, bodySize));
 		event->setReqRaw1(bodyChunked.substr(totalSize));
 		bodyChunked = bodyChunked.substr(totalSize);
+		if (event->getReqBodySize() > serverConf->getLocationBodySize(route))
+		{
+			event->setStatusCode(CONTENT_TOO_LARGE_CODE);
+			return (REQUEST_END);
+		}
 	}
 	return (CHUNKED_BODY_PROCESS);
 }
