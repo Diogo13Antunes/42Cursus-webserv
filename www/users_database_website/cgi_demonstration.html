@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title> WebServ </title>
+		<link rel="icon" href="favicon.ico" type="image/x-icon">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">  
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<link href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" rel="stylesheet">
+		<script src ="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script src ="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+	</head>
+	<body>
+		<nav class="navbar fixed-top navbar-expand-lg navbar-dark navbar_color">
+			<div class="container">
+			  <a class="navbar-brand" href="/">WebServ</a>
+			  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			  </button>
+			  <div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav ml-auto">
+				  <li class="nav-item active">
+					<a class="nav-link" href="/">Home</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="/about">About</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="/team">Team</a>
+				  </li>
+				  <li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" id="cgi_demoDropDownMenu" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Cgi Demonstration <span class="sr-only">(current)</span>
+					</a>
+					<div class="dropdown-menu navbar_color" aria-labelledby="cgi_demoDropDownMenu">
+						<a class="dropdown-item navbar_dropdown_items" href="/cgi_demonstration/">CGI Home Page</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item navbar_dropdown_items" href="/cgi_demonstration/create_user/">Add User</a>
+						<a class="dropdown-item navbar_dropdown_items" href="/cgi_demonstration/delete_user/">List & Remove Users</a>
+						<a class="dropdown-item navbar_dropdown_items" href="/cgi_demonstration/specific_user/">Specific User Info</a>
+						<div class="dropdown-divider"></div>
+						<a class="dropdown-item navbar_dropdown_items" href="/cgi_demonstration/upload_files/">Upload Files</a>
+					</div>
+				  </li>
+				</ul>
+			  </div>
+			</div>
+		</nav>
+
+		<div class="bg-image">
+			<div class="darker_bg">
+				<div class="database_managment_container">
+					<h1 class="database_managment_header"> CGI DEMONSTRATION </h1>
+					<p class="database_about_text"> This webpage will demonstrate the usage of CGI with an emulated database. </p>
+					<h2 class="database_managment_functionalities_header"> FUNCTIONALITIES </h2>
+					<button onclick="window.location.href='create_user'" type="button" class="database_buttons btn btn-dark">Create New User</button>
+					<button onclick="window.location.href='delete_user'" type="button" class="database_buttons btn btn-dark">Show Users List and Delete User</button>
+					<button onclick="window.location.href='specific_user'" type="button" class="database_buttons btn btn-dark">Search a Specific User Info</button>
+					<br>
+					<button onclick="window.location.href='upload_files'" type="button" class="database_buttons btn btn-dark"> Upload Files </button>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+	</body>
+</html>
