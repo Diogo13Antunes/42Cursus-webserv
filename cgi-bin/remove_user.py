@@ -20,7 +20,7 @@ if 'id' in dataDict and dataDict['id']:
 else:
 	id = None
 
-dataBaseDir = "mysite/users_database_website/DataBase"
+dataBaseDir = "www/users_database_website/DataBase"
 dataBaseFileName = "db.json"
 dataBasePath = os.path.join(dataBaseDir, dataBaseFileName)
 

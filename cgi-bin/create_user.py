@@ -7,7 +7,7 @@ import os
 data = input()
 dataDict = parse_qs(data)
 
-dataBaseDir = "mysite/users_database_website/DataBase"
+dataBaseDir = "www/users_database_website/DataBase"
 dataBaseFileName = "db.json"
 dataBasePath = os.path.join(dataBaseDir, dataBaseFileName)
 
