@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:26 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/25 11:05:00 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 12:18:26 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ class Event
 {
 	private:
 		std::string		_reqRaw;
+		std::string		_reqBody;
 		RequestParser	_reqParser;
 		std::string		_res;
 		int				_fd;
@@ -100,8 +101,8 @@ class Event
 		std::string				getReqLineHttpVersion(void);
 		std::string				getReqLineMethod(void);
 		std::string				getReqLinePath(void);
-		std::string&			getReqBody(void);
-		std::string				getReqTransferEncoding(void)		;
+		const std::string&		getReqBody(void);
+		std::string				getReqTransferEncoding(void);
 		std::string				getReqHost(void);
 		EventType				getActualState(void);
 		void					setActualState(EventType actualState);
@@ -109,7 +110,7 @@ class Event
 		void					setAsFinished(void);
 		bool					isClientDisconnect(void);		
 		void					setClientDisconnected(void);
-		void					updateReqBody(std::string body);
+		void					updateReqBody(const std::string& body);
 		size_t					getReqBodySize(void);
 		bool					isReqHeaderComplete(void);
 		void					parseReqHeader(std::string &header);

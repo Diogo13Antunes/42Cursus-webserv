@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/02 14:19:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/25 11:45:08 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 11:54:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ StateReqType ChunkedBodyProcess::handle(Event *event, ConfigsData *configsData)
 	}
 	return (CHUNKED_BODY_PROCESS);
 }
-
 
 size_t ChunkedBodyProcess::_hexToDec(std::string hex)
 {

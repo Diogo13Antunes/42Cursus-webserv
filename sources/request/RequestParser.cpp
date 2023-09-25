@@ -65,16 +65,6 @@ int RequestParser::headerParse(std::string &header)
 	return (_statusCode);
 }
 
-void RequestParser::bodyParse(std::string &body)
-{
-	_requestBody = body;
-}
-
-void RequestParser::updateReqBody(std::string &body)
-{
-	_requestBody += body;
-}
-
 int RequestParser::_isValidRequestHeader(void)
 {
 	if (!_statusCode)
@@ -116,16 +106,6 @@ int RequestParser::_isValidContentLenght(void)
 std::string RequestParser::getRequestLine(void)
 {
 	return (_requestLine);
-}
-
-std::string RequestParser::getRequestBody(void)
-{
-	return (_requestBody);
-}
-
-std::string& RequestParser::getRequestBodyRef(void)
-{
-	return (_requestBody);
 }
 
 std::map<std::string, std::vector<std::string> > RequestParser::getRequestHeader(void)

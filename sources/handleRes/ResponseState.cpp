@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 23:00:28 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 11:51:44 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,11 @@ ResponseState::~ResponseState(void) {}
 
 StateResType ResponseState::handle(Event *event, ServerConfig& config)
 {
-	ssize_t		numBytesSend;
-	ssize_t		resSize;
-	std::string	res;
+	ssize_t				numBytesSend;
+	ssize_t				resSize;
+	const std::string	res = event->getRes();
 
 	(void)config;
-	res = event->getRes();
 	resSize = res.size();
 	numBytesSend = send(event->getFd(), res.c_str(), resSize, 0);
 	if (numBytesSend <= 0)

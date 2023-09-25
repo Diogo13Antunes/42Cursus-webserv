@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:39:35 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/24 16:13:36 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 12:32:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void WriteCgiHandler::handleEvent(Event *event)
 	int			fd;
 	
 	bodyStr = event->getReqBody().c_str();
-	bodySize = event->getReqBody().size();
+	bodySize = event->getReqBodySize();
 	numBytesSend = event->getNumBytesSendCgi();
 	fd = event->getCgiWriteFd();
 	if (numBytesSend < bodySize && bodySize)
@@ -37,13 +37,12 @@ void WriteCgiHandler::handleEvent(Event *event)
 		if (event->getNumBytesSendCgi() >= bodySize)
 		{
 			write(fd, "\n", 1);
-			//event->closeCgiWriteFd();
 			event->setActualState(READ_CGI);
 		}
 	}
 	else
 	{
-		//event->closeCgiWriteFd();
+		write(fd, "\n", 1);
 		event->setActualState(READ_CGI);
 	}
 }

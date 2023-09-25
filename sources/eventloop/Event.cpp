@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/25 11:05:06 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 12:17:51 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,9 +283,9 @@ std::string	Event::getReqLinePath(void)
 	return (_reqParser.getReqLinePath());
 }
 
-std::string& Event::getReqBody(void)
+const std::string& Event::getReqBody(void)
 {
-	return (_reqParser.getRequestBodyRef());
+	return (_reqBody);
 }
 
 EventType Event::getActualState(void)
@@ -319,14 +319,14 @@ void Event::setClientDisconnected(void)
 	_clientDisconnect = true;
 }
 
-void Event::updateReqBody(std::string body)
+void Event::updateReqBody(const std::string& body)
 {
-	_reqParser.updateReqBody(body);
+	_reqBody.append(body, 0, body.size());
 }
 
 size_t Event::getReqBodySize(void)
 {
-	return (_reqParser.getRequestBodyRef().size());
+	return (_reqBody.size());
 }
 
 int Event::getStatusCode(void)

@@ -46,8 +46,6 @@ class RequestParser
 		~RequestParser(void);
 
 		std::string											getRequestLine(void);
-		std::string 										getRequestBody(void);
-		std::string& 										getRequestBodyRef(void);
 		std::map<std::string, std::vector<std::string> >	getRequestHeader(void);
 
 		std::string											getReqLineTarget(void);
@@ -57,9 +55,5 @@ class RequestParser
 		std::string											getConnectionField(void);
 		std::vector<std::string>							getHeaderField(std::string fieldName);
 		std::string											getQueryString(void);
-
 		int													headerParse(std::string	&header);
-		void												bodyParse(std::string &body); // setReqBody -> se calhar pode ir para o evento
-		void												updateReqBody(std::string &body);
-
 };
