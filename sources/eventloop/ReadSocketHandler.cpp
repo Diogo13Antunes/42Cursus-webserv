@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:14 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/25 12:53:13 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/25 18:11:48 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,8 @@ void ReadSocketHandler::handleEvent(Event *event)
 		_handleReq->handle();
 	if (_handleReq->isProcessingComplete())
 	{
+		if (event->getStatusCode())
+			event->setIsCgi(false);
 		if (event->isCgi() && !event->getStatusCode())
 			event->setActualState(WRITE_CGI);
 		else
