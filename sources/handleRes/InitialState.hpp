@@ -25,7 +25,7 @@ class InitialState: public IStateRes
 		std::string	_getRealPath(ServerConfig& config, std::string reqPath, std::string route);
 		std::string	_getPathWithIndex(ServerConfig& config, std::string path, std::string route);
 		bool		_isMethodImplemented(std::string method);
-		bool		_hasForcedRedirection(Event *event, ServerConfig& config);
+		bool		_hasForcedRedirection(Event *event);
 		bool		_hasConfRedirection(Event *event, ServerConfig& config);
 		bool		_isValidMethod(Event *event, ServerConfig& config);
 		bool		_isValidFile(Event *event, std::string path);

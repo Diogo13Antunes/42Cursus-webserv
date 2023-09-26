@@ -40,7 +40,7 @@ StateResType InitialState::handle(Event *event, ServerConfig& config)
 	realPath = event->getResourcePath();
 	if (event->isCgi())
 		return (CGI_RES_HANDLING);
-	if (_hasForcedRedirection(event, config) || _hasConfRedirection(event, config))
+	if (_hasForcedRedirection(event) || _hasConfRedirection(event, config))
 		return (REDIRECTION_HANDLING);
 	event->setResourcePath(realPath);
 	if (event->getStatusCode())
@@ -139,7 +139,7 @@ bool InitialState::_isMethodImplemented(std::string method)
 	return (false);
 }
 
-bool InitialState::_hasForcedRedirection(Event *event, ServerConfig& config)
+bool InitialState::_hasForcedRedirection(Event *event)
 {
 	std::string	method;
 	std::string reqPath;
@@ -154,7 +154,7 @@ bool InitialState::_hasForcedRedirection(Event *event, ServerConfig& config)
 	{
 		if (route.at(route.size() - 1) == '/')
 			route.erase(route.size() - 1);
-		if (FileSystemUtils::isFolder(realPath) || !reqPath.compare(route) || !config.getLocationCgi(route).empty())
+		if (FileSystemUtils::isFolder(realPath) || !reqPath.compare(route))
 		{
 			if (!method.compare("GET"))
 			{
