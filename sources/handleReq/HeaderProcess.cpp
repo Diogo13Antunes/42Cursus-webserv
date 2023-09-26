@@ -53,6 +53,8 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	}
 	if (event->getStatusCode())
 		return (REQUEST_END);
+	if (!serverConf->isLocationAcceptedMethod(event->getRoute(), event->getReqLineMethod()))
+		event->setIsCgi(false);
 	if (_isChunkedTransfer(event))
 		return (CHUNKED_BODY_PROCESS);
 	return (BODY_PROCESS);
