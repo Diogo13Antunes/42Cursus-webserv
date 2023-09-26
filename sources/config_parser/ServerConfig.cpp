@@ -24,6 +24,7 @@ ServerConfig::ServerConfig(std::map<size_t, std::string> configs):
 	std::string								value;
 
 	_locations.clear();
+
 	it = configs.begin();
 	while (it != configs.end() && _configError)
 	{
@@ -499,7 +500,7 @@ void	ServerConfig::_setLocations(std::map<size_t, std::string>::iterator &it,
 					locationInfo.insert(createPair(it->first, it->second));
 					it++;
 				}
-				_locations.insert(std::make_pair(newLocationURL, Location(_masterRoot, locationInfo)));
+				_locations.insert(std::make_pair(newLocationURL, Location(_masterRoot, _clientMaxBodySize, locationInfo)));
 				locationInfo.clear();
 				it--;
 			}

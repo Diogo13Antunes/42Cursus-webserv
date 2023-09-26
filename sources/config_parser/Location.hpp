@@ -58,7 +58,7 @@ class Location
 
 	public:
 		Location(void);
-		Location(std::string masterRoot, std::map<size_t, std::string> locationInfo);
+		Location(std::string masterRoot, size_t serverBodySize, std::map<size_t, std::string> locationInfo);
 		~Location(void);
 
 		std::string					getLocationErrorMsg(void);

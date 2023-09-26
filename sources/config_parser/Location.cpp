@@ -18,10 +18,11 @@ Location::Location(void):
 	//Default Location Constructor
 }
 
-Location::Location(std::string masterRoot, std::map<size_t, std::string> locationInfo):
+Location::Location(std::string masterRoot, size_t serverBodySize, std::map<size_t, std::string> locationInfo):
 	_locationError(true),
 	_redirection(std::make_pair(0, "")),
-	_autoIndex(false)
+	_autoIndex(false),
+	_clientMaxBodySize(serverBodySize)
 {
 	std::map<size_t, std::string>::iterator	it;
 	std::string	key;
@@ -259,50 +260,52 @@ void	Location::_setAccepted(std::map<size_t, std::string>::iterator &it)
 void	Location::_setRedirection(std::map<size_t, std::string>::iterator &it,
 	std::map<size_t, std::string>::iterator	itEnd)
 {
-	if (it++ != itEnd)
-		it++;
-	if (it != itEnd && !isRedirection(it->second))
+	it++;
+	if (it != itEnd)
 	{
-		_updateLocationError(false);
-		_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION, it->second);
-	}
-	else
-	{
-		while (it != itEnd && isRedirection(it->second))
+		if (it != itEnd && !isRedirection(it->second))
 		{
-			if (_redirection.first && !_redirection.second.empty())
+			_updateLocationError(false);
+			_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION, it->second);
+		}
+		else
+		{
+			while (it != itEnd && isRedirection(it->second))
 			{
-				_updateLocationError(false);
-				_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION, it->second);
-				return ;
-			}
-
-			int			code;
-			std::string key;
-			std::string value;
-
-			key = getKey(it->second);
-			value = getValue(it->second);
-			if (isStringEmptyOrSpaces(value)
-				|| key.find_first_not_of("0123456789") != key.npos)
-			{
-				_updateLocationError(false);
-				_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION, it->second);
-			}
-			else
-			{
-				code = strToInt(key);
-				if (!isValidRedirectionCode(code))
+				if (_redirection.first && !_redirection.second.empty())
 				{
-					_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION_CODE, it->second);
 					_updateLocationError(false);
+					_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION, it->second);
+					return ;
+				}
+
+				int			code;
+				std::string key;
+				std::string value;
+
+				key = getKey(it->second);
+				value = getValue(it->second);
+				if (isStringEmptyOrSpaces(value)
+					|| key.find_first_not_of("0123456789") != key.npos)
+				{
+					_updateLocationError(false);
+					_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION, it->second);
 				}
 				else
-					_redirection = std::make_pair(code, value);
+				{
+					code = strToInt(key);
+					if (!isValidRedirectionCode(code))
+					{
+						_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION_CODE, it->second);
+						_updateLocationError(false);
+					}
+					else
+						_redirection = std::make_pair(code, value);
+				}
+				it++;
 			}
-			it++;
+			it--;
 		}
-		it--;
 	}
 }
 
