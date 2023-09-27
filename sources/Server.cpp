@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 21:17:50 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 18:23:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,12 +139,12 @@ int Server::_initAndStoreSocketInf(std::string host, std::string port)
 	int 				enable;
 
     memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_family = AF_INET;			// IPv4
+	hints.ai_socktype = SOCK_STREAM;	// TCP/IP protocol
 
-	if (!_isValidPort(port))
+	if (!_isValidPort(port)) // RANGE PORTS 0 to 65535
 		return (-1);
-	if (getaddrinfo(host.c_str(), port.c_str(), &hints, &result) != 0)
+	if (getaddrinfo(host.c_str(), port.c_str(), &hints, &result) != 0) // DNS LOOKUP
 		return (-1);
 	memset((char *)&address, 0, sizeof(address));
 	address = *((struct sockaddr_in *)(result->ai_addr));
