@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/28 16:53:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 23:14:54 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 15:23:24 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ StateResType StaticFileHandlingState::handle(Event *event, ServerConfig& config)
 	{
 		fileSize = _getFileSize(filePath);
 		_createHeader(event->isConnectionClose(), fileSize, mimeType, header);
-		event->setFileSize(_getFileSize(filePath));
+		event->setFileSize(fileSize);
 		event->setRes(header);
 		event->setResSize(header.size() + fileSize);
 	}
