@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/27 21:13:32 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 21:34:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,17 @@ ClientID EventDemux::getId(void)
 	return (EVENTDEMUX_ID);
 }
 
-void EventDemux::init(std::map<int, struct sockaddr_in> servers)
+int EventDemux::init(std::map<int, struct sockaddr_in> servers)
 {
 	std::map<int, struct sockaddr_in>::iterator it;
 
 	_servers = servers;
 	_epollFd = epoll_create1(0);
+	if (_epollFd < 0)
+		return (-1);
 	for (it = _servers.begin(); it != _servers.end(); it++)
 		_addNewEvent(it->first);
+	return (0);
 }
 
 void EventDemux::waitAndDispatchEvents(void)

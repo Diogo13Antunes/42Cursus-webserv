@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/27 18:23:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 21:33:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,8 @@ bool Server::init(void)
 	if (!_initEventLoop())
 		return (false);
 	_initConnections();
-	_initEventDemux();
+	if (!_initEventDemux())
+		return (false);
 	_printActiveEndpoins();
 	return (true);
 }
@@ -125,10 +126,12 @@ void Server::_initConnections(void)
 	_connections.setMessenger(&_messenger);
 }
 
-void Server::_initEventDemux(void)
+bool Server::_initEventDemux(void)
 {
-	_eventDemux.init(_serversInfo);
+	if (_eventDemux.init(_serversInfo) == -1)
+		return (false);
 	_eventDemux.setMessenger(&_messenger);
+	return (true);
 }
 
 int Server::_initAndStoreSocketInf(std::string host, std::string port)

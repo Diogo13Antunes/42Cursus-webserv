@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/27 20:55:58 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 21:32:47 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ class Server
 		bool		_initServers(std::vector<ServerConfig>& serverConfigs);
 		bool		_initEventLoop(void);
 		void		_initConnections(void);
-		void		_initEventDemux(void);
+		bool		_initEventDemux(void);
 		int			_initAndStoreSocketInf(std::string host, std::string port);
 		bool		_isServerAlreadyInitialized(std::string host, std::string port);
 		void		_addNewServerEndpoint(std::string host, std::string port);
