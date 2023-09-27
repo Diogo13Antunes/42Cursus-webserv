@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/31 15:56:36 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 15:23:02 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 14:53:26 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,30 +86,11 @@ char** CgiExec::_getEnvVars(Event *event)
 	temp.push_back("CONTENT_TYPE=" + event->getReqContentType());
 	temp.push_back("QUERY_STRING=" + event->getQueryString());
 	temp.push_back("DOCUMENT_ROOT=" + serverConfigs->getUploadStore(event->getRoute()));
-	temp.push_back("REMOTE_ADDR=" + event->getIp());
-	temp.push_back("REMOTE_PORT=" + event->getPort());
-	temp.push_back("SERVER_NAME=" + event->getReqHost());
+	temp.push_back("SERVER_NAME=" + serverConfigs->getServerName());
 	temp.push_back("SERVER_PORT=" + event->getPort());
 	temp.push_back("SERVER_SOFTWARE=" + std::string(SERVER_SOFTWARE));
 	temp.push_back("PATH_INFO=" + event->getReqLinePath());
 	temp.push_back("REQUEST_URI=" + event->getReqLineTarget());
-
-	/*
-	std::cout << "====================================" << std::endl;
-	std::cout << "SERVER_PROTOCOL=" << std::string(HTTP_VERSION) << std::endl;
-	std::cout << "REQUEST_METHOD="  << event->getReqLineMethod() << std::endl;
-	std::cout << "CONTENT_LENGTH="  << StringUtils::toString(event->getReqBodySize()) << std::endl;
-	std::cout << "CONTENT_TYPE="    << event->getReqContentType() << std::endl;
-	std::cout << "QUERY_STRING="    << event->getQueryString() << std::endl;
-	std::cout << "DOCUMENT_ROOT="   << serverConfigs->getUploadStore(event->getRoute()) << std::endl;
-	std::cout << "REMOTE_ADDR="     << event->getIp() << std::endl;
-	std::cout << "REMOTE_PORT="     << event->getPort() << std::endl;
-	std::cout << "SERVER_NAME="     << event->getReqHost() << std::endl;
-	std::cout << "SERVER_PORT="     << event->getPort() << std::endl;
-	std::cout << "SERVER_SOFTWARE=" << std::string(SERVER_SOFTWARE) << std::endl;
-	std::cout << "PATH_INFO="       << event->getReqLinePath() << std::endl;
-	std::cout << "REQUEST_URI="     << event->getReqLineTarget() << std::endl;
-	*/
 
 	env = new char*[temp.size() + 1];
 	for (size_t i = 0; i < temp.size(); ++i) {
