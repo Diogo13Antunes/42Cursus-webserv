@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:22 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/22 19:33:26 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 16:17:43 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class HeaderProcess: public IState
 		void			_setPathAndRouteInfo(Event *event, ServerConfig& serverConf);
 		bool			_cgiPathIsValid(std::string reqPath, std::string realPath);
 		bool			_isProtocolSupported(std::string protocol);
+		bool			_isRequestPathEqualToRoute(std::string route, std::string reqPath);
 		
 	public:
 		HeaderProcess(void);

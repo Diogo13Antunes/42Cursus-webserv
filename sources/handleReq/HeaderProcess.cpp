@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/22 15:30:18 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/24 15:51:25 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 16:29:04 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 {
 	ServerConfig	*serverConf;
 	std::string		header;
+	std::string		route;
 	size_t			maxBodySize;
 	size_t			contentLength;
 
@@ -44,7 +45,8 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 		return (REQUEST_END);
 	}
 	_setPathAndRouteInfo(event, *serverConf);
-	maxBodySize = serverConf->getLocationBodySize(event->getRoute());
+	route = event->getRoute();
+	maxBodySize = serverConf->getLocationBodySize(route);
 	contentLength = event->getReqContentLength();
 	if (contentLength > maxBodySize)
 	{
@@ -53,7 +55,7 @@ StateReqType HeaderProcess::handle(Event *event, ConfigsData *configsData)
 	}
 	if (event->getStatusCode())
 		return (REQUEST_END);
-	if (!serverConf->isLocationAcceptedMethod(event->getRoute(), event->getReqLineMethod()))
+	if (!serverConf->isLocationAcceptedMethod(route, event->getReqLineMethod()))
 		event->setIsCgi(false);
 	if (_isChunkedTransfer(event))
 		return (CHUNKED_BODY_PROCESS);
@@ -165,6 +167,8 @@ std::string HeaderProcess::_getRealPath(ServerConfig& config, Event *event, bool
 			realPath = cgi + reqPath;
 		if (isExtesionRoute || reqPath.at(reqPath.size() - 1) == '/')
 			event->setIsCgi(true);
+		if (!isExtesionRoute && !_isRequestPathEqualToRoute(route, reqPath))
+			event->setStatusCode(404);
 	}
 	else if (!root.empty())
 		realPath = root + reqPath;
@@ -234,6 +238,22 @@ void HeaderProcess::_setPathAndRouteInfo(Event *event, ServerConfig& serverConf)
 bool HeaderProcess::_isProtocolSupported(std::string protocol)
 {
 	if (!protocol.compare("HTTP/1.1") || !protocol.compare("HTTP/1.0"))
+		return (true);
+	return (false);
+}
+
+bool HeaderProcess::_isRequestPathEqualToRoute(std::string route, std::string reqPath)
+{
+	size_t routeSize;
+	size_t reqPathSize;
+
+	routeSize = route.size();
+	reqPathSize = reqPath.size();
+	if (routeSize > 0 &&route.at(routeSize - 1) == '/')
+		route.erase(routeSize - 1);
+	if (reqPathSize > 0 && reqPath.at(reqPathSize - 1) == '/')
+		reqPath.erase(reqPathSize - 1);
+	if (!route.compare(reqPath))
 		return (true);
 	return (false);
 }
