@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/17 14:55:41 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/23 18:51:51 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 14:23:29 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,10 @@ void EventLoop::_registerReadEvent(int fd)
 			|| (type == READ_CGI && event->getCgiReadFd() == fd))
 			_addEventToQueue(fd);
 		else
+		{
+			_addEventToQueue(fd);
 			event->setActualState(DISCONNECT_EVENT);
+		}
 	}
 }
 
