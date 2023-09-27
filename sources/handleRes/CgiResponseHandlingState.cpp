@@ -26,6 +26,8 @@ StateResType	CgiResponseHandlingState::handle(Event *event, ServerConfig& config
 			header.setStatus(it->second);
 		else if (!key.compare("date"))
 			header.setDate(it->second);
+		else if (!key.compare("content-type"))
+			header.setContentType(it->second);
 		else if (!key.compare("connection"));
 		else if (!key.compare("content-length"));
 		else if (!key.compare("server"));
