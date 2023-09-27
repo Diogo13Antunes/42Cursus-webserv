@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 15:57:25 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/17 11:58:23 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 17:32:49 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void Signals::init(void)
 	signal(SIGTERM, Signals::handler);
 	signal(SIGQUIT, Signals::handler);
 	signal(SIGCHLD, Signals::handler);
-	signal(SIGPIPE, SIG_IGN);
+	//signal(SIGPIPE, SIG_IGN);
 }
 
 void Signals::handler(int signal)
