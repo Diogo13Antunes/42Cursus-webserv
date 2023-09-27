@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/17 11:01:47 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 20:55:58 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ class Server
 		std::map<int, struct sockaddr_in>	_serversInfo;
 		ConfigsData							*_configs;
 		Messenger							_messenger;
-		EventLoop							_eventLoop;
-		Connections							_connections;
 		EventDemux							_eventDemux;
+		Connections							_connections;
+		EventLoop							_eventLoop;
 
 		bool		_initServers(std::vector<ServerConfig>& serverConfigs);
 		bool		_initEventLoop(void);
