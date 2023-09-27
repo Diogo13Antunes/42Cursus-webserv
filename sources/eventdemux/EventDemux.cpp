@@ -6,15 +6,26 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/09/20 09:30:25 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 21:13:32 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventDemux.hpp"
+#include <unistd.h>
 
 EventDemux::EventDemux(void): AMessengerClient(NULL) {}
 
-EventDemux::~EventDemux(void) {}
+EventDemux::~EventDemux(void) 
+{
+	std::map<int, struct sockaddr_in>::iterator it;
+
+	for (it = _servers.begin(); it != _servers.end(); it++)
+	{
+		_removeEvent(it->first);
+		close(it->first);
+	}
+	close(_epollFd);
+}
 
 ClientID EventDemux::getId(void)
 {
