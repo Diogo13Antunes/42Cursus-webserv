@@ -3,20 +3,6 @@
 import sys
 import os
 
-class Unbuffered(object):
-   def __init__(self, stream):
-       self.stream = stream
-   def write(self, data):
-       self.stream.write(data)
-       self.stream.flush()
-   def writelines(self, datas):
-       self.stream.writelines(datas)
-       self.stream.flush()
-   def __getattr__(self, attr):
-       return getattr(self.stream, attr)
-
-sys.stdout = Unbuffered(sys.stdout)
-
 message = input()
 
 RequestMethod = os.environ.get("REQUEST_METHOD")
@@ -30,13 +16,11 @@ for key, value in os.environ.items():
 		htmlfile += "<p> " + str(key) + " -> " + str(value) + " </p>"
 htmlfile += " </body> </html>"
 
-out = "HTTP/1.1 200 OK\r\n"
-out += "Server: webserv\r\n"
-out += "Connection: keep-alive\r\n"
-out += "Content-Length: " + str(len(htmlfile)) + "\r\n"
-out += "\r\n"
+
+out = "Status: 200 OK\n"
+out = "Content-Type: text/html" + "\n"
+out += "\n"
 out += htmlfile
 
 print(out)
 
-exit(0)
