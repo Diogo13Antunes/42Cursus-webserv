@@ -13,7 +13,7 @@
 #include "EventDemux.hpp"
 #include <unistd.h>
 
-EventDemux::EventDemux(void): AMessengerClient(NULL) {}
+EventDemux::EventDemux(void): AMessengerClient(NULL), _epollFd(-1) {}
 
 EventDemux::~EventDemux(void) 
 {
@@ -94,6 +94,7 @@ void EventDemux::_addNewEvent(int fd)
 	struct epoll_event	ev;
 	int					flags;
 
+	ev.data.ptr = 0;
 	ev.data.fd = fd;
     //ev.events = EPOLLIN | EPOLLOUT;
 	ev.events = EPOLLIN;
@@ -113,6 +114,7 @@ void EventDemux::_changeEvent(int fd, uint32_t eventMask)
 {
 	struct epoll_event	ev;
 
+	ev.data.ptr = 0;
     ev.data.fd = fd;
     //ev.events = EPOLLIN | EPOLLOUT;
 	ev.events = eventMask;
