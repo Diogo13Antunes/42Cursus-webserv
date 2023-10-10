@@ -64,7 +64,7 @@ Replace "[config-file]" with the location of your web server configuration file.
 
 ### Configuration File
 
-To check all the requirements of our Config Files click [HERE](./Config%20File%20Rules.md).
+To check all the requirements of our Config Files click [HERE](./Config_File_Rules.md).
 
 ### HTTP Request Example
 
