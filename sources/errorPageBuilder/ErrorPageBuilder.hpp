@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/04 09:35:09 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/05 08:43:19 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/31 11:06:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,24 +18,17 @@
 class ErrorPageBuilder
 {
 	private:
-		std::map<int, std::string> _reasonPhrase;
-		int						   _errorCode;
+		std::string	_reasonPhrase;
+		int			_errorCode;
 
-		void _initErrorCodes(void);
+		std::string _getCodeAndPhrase(void);
 
 	public:
 		ErrorPageBuilder(void);
-		ErrorPageBuilder(int errorCode);
-		ErrorPageBuilder(const ErrorPageBuilder &src);
 		~ErrorPageBuilder(void);
-		ErrorPageBuilder &operator=(const ErrorPageBuilder &src);
 
-		int		getErrorCode(void);
-		void	setErrorCode(int errorCode);
-
-		std::string	getReasonPhrase(void);
-		std::string	getErrorCodeToString(void);
+		void		setErrorCode(int errorCode);
+		void		setReasonPhrase(std::string reasonPhrase);
 		std::string	getErrorPageHtml(void);
-		std::string	getCodeAndPhrase(void);
 		int			getErrorPageSize(void);
 };

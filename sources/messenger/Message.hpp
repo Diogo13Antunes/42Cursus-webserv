@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 12:06:08 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/14 17:14:39 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 11:45:49 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,11 @@ class Message
 
 	public:
 		Message(int dst, int fd, MessageType type);
+		Message(const Message& other);
 		~Message(void);
+		Message& operator=(const Message& other);
 
-		int			getDst(void);
-		int			getFd(void);
-		MessageType	getType(void);
+		int			getDst(void) const;
+		int			getFd(void) const;
+		MessageType	getType(void) const;
 };

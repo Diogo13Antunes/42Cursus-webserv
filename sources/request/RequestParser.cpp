@@ -1,7 +1,7 @@
 #include "RequestParser.hpp"
 #include "StringUtils.hpp"
 
-#define DIGITS "0123456789"
+#define DIGITS					"0123456789"
 #define MAX_REQUEST_TARGET_LEN	8000
 #define	MAX_HEADER_SIZE			24576
 #define NAX_HEADER_LINE_SIZE	8192
@@ -24,12 +24,7 @@ static std::string				getQueryStr(std::string &src);
 static bool						isValidServerName(std::string &serverName);
 static bool						withConsecutiveChars(std::string &src, char c);
 
-RequestParser::RequestParser(void) : _statusCode(SUCCESSFULL_HEADER)
-{
-	_implementedMethods.push_back("GET");
-	_implementedMethods.push_back("POST");
-	_implementedMethods.push_back("DELETE");
-}
+RequestParser::RequestParser(void) : _statusCode(SUCCESSFULL_HEADER) {}
 
 RequestParser::~RequestParser(void) {}
 
@@ -68,16 +63,6 @@ int RequestParser::headerParse(std::string &header)
 		_statusCode = INTERNAL_SERVER_ERROR;
 	}
 	return (_statusCode);
-}
-
-void RequestParser::bodyParse(std::string &body)
-{
-	_requestBody = body;
-}
-
-void RequestParser::updateReqBody(std::string &body)
-{
-	_requestBody += body;
 }
 
 int RequestParser::_isValidRequestHeader(void)
@@ -123,16 +108,6 @@ std::string RequestParser::getRequestLine(void)
 	return (_requestLine);
 }
 
-std::string RequestParser::getRequestBody(void)
-{
-	return (_requestBody);
-}
-
-std::string& RequestParser::getRequestBodyRef(void)
-{
-	return (_requestBody);
-}
-
 std::map<std::string, std::vector<std::string> > RequestParser::getRequestHeader(void)
 {
 	return (_requestHeader);
@@ -158,9 +133,6 @@ std::string RequestParser::getReqLinePath(void)
 	return (_reqLinePath);
 }
 
-
-// Deve ficar apenas no evento o evento obetem todos os filds que necessita através do getHeaderField.
-// remover daqui para não ficar codigo repetido
 std::string RequestParser::getConnectionField(void)
 {
 	std::vector<std::string> connection;
@@ -254,8 +226,6 @@ int RequestParser::_requestLineParser(void)
 	_reqLineHttpVersion = getRequestLineElement(_requestLine, index_2, _requestLine.size());
 	if (_reqLineMethod.empty() || _reqLineTarget.empty() || _reqLineHttpVersion.empty())
 		return (BAD_REQUEST);
-	if (!_isImplementedRequestMethod())
-		return (NOT_IMPLEMENTED);
 	if (StringUtils::hasWhiteSpaces(_reqLineTarget))
 		return (BAD_REQUEST);
 	if (_reqLineTarget.size() > MAX_REQUEST_TARGET_LEN)
@@ -274,16 +244,6 @@ void RequestParser::_requestTargetParser(void)
 	}
 	else
 		_reqLinePath = _reqLineTarget;
-}
-
-bool RequestParser::_isImplementedRequestMethod()
-{
-	for (size_t i = 0; i < _implementedMethods.size(); i++)
-	{
-		if (!_implementedMethods.at(i).compare(_reqLineMethod))
-			return (true);
-	}
-	return (false);
 }
 
 int RequestParser::_addHeaderElement(std::string &line)

@@ -3,54 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   WriteCgiHandler.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/25 17:39:35 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/21 17:42:31 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/09/25 12:32:52 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "WriteCgiHandler.hpp"
+#include <unistd.h>
 
-WriteCgiHandler::WriteCgiHandler(void)
-{
+WriteCgiHandler::WriteCgiHandler(void) {}
 
-}
+WriteCgiHandler::~WriteCgiHandler(void) {}
 
-WriteCgiHandler::~WriteCgiHandler(void)
-{
-
-}
 
 void WriteCgiHandler::handleEvent(Event *event)
 {
 	const char*	bodyStr;
-	size_t		bodySize;
-	size_t		sentChars;
-	int			nwrite;
-
+	ssize_t		bodySize;
+	ssize_t		numBytesSend;
+	int			fd;
+	
 	bodyStr = event->getReqBody().c_str();
-	bodySize = event->getReqBody().size();
-	sentChars = event->getCgiSentChars();	
-	if (sentChars < bodySize)
+	bodySize = event->getReqBodySize();
+	numBytesSend = event->getNumBytesSendCgi();
+	fd = event->getCgiWriteFd();
+	if (numBytesSend < bodySize && bodySize)
 	{
-		bodyStr += sentChars;
-		nwrite = event->writeToCgi(bodyStr);
-
-		// Se falhar tem de ser mandado um 501 Internal Server Error
-		event->updateCgiSentChars(nwrite);
-		if (event->getCgiSentChars() >= bodySize)
+		bodyStr += numBytesSend;
+		numBytesSend = write(fd, bodyStr, bodySize - numBytesSend);
+		event->updateNumBytesSendCgi(numBytesSend);
+		if (event->getNumBytesSendCgi() >= bodySize)
 		{
-			// event->writeToCgi("\n");
-			close(event->getCgiWriteFd());
-			event->setActualState(TYPE_TRANSITION);
+			write(fd, "\n", 1);
+			event->setActualState(READ_CGI);
 		}
 	}
 	else
 	{
-		// event->writeToCgi("\n");
-		close(event->getCgiWriteFd());
-		event->setActualState(TYPE_TRANSITION);
+		write(fd, "\n", 1);
+		event->setActualState(READ_CGI);
 	}
 }
 

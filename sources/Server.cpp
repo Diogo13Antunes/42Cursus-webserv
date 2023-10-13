@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/07 09:51:15 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/21 13:54:44 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 21:33:06 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
+/*
 static void debugPrint(struct sockaddr_in *address);
 static void debugServersPrint(std::vector<int> servers);
 static void debugServersEndpointPrint(std::vector<std::string> endpoints);
+*/
 
 Server::Server(void): _configs(NULL){}
 
@@ -51,7 +52,8 @@ bool Server::init(void)
 	if (!_initEventLoop())
 		return (false);
 	_initConnections();
-	_initEventDemux();
+	if (!_initEventDemux())
+		return (false);
 	_printActiveEndpoins();
 	return (true);
 }
@@ -99,11 +101,10 @@ bool Server::_initEventLoop(void)
 {
 	try {
 		_eventLoop.setMessenger(&_messenger);
-		_eventLoop.registerEventHandler(new ReadSocketHandler(new HandleReq()));
-		_eventLoop.registerEventHandler(new WriteHandler(new HandleRes(_configs)));
+		_eventLoop.registerEventHandler(new ReadSocketHandler(new HandleReq(_configs)));
+		_eventLoop.registerEventHandler(new WriteSocketHandler(new HandleRes()));
 		_eventLoop.registerEventHandler(new ReadCgiHandler());
 		_eventLoop.registerEventHandler(new WriteCgiHandler());
-		_eventLoop.registerEventHandler(new TypeTransitionHandler(_configs));
 	}
 	catch (const std::bad_alloc& e)
 	{
@@ -125,10 +126,12 @@ void Server::_initConnections(void)
 	_connections.setMessenger(&_messenger);
 }
 
-void Server::_initEventDemux(void)
+bool Server::_initEventDemux(void)
 {
-	_eventDemux.init(_serversInfo);
+	if (_eventDemux.init(_serversInfo) == -1)
+		return (false);
 	_eventDemux.setMessenger(&_messenger);
+	return (true);
 }
 
 int Server::_initAndStoreSocketInf(std::string host, std::string port)
@@ -139,12 +142,12 @@ int Server::_initAndStoreSocketInf(std::string host, std::string port)
 	int 				enable;
 
     memset(&hints, 0, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_family = AF_INET;			// IPv4
+	hints.ai_socktype = SOCK_STREAM;	// TCP/IP protocol
 
-	if (!_isValidPort(port))
+	if (!_isValidPort(port)) // RANGE PORTS 0 to 65535
 		return (-1);
-	if (getaddrinfo(host.c_str(), port.c_str(), &hints, &result) != 0)
+	if (getaddrinfo(host.c_str(), port.c_str(), &hints, &result) != 0) // DNS LOOKUP
 		return (-1);
 	memset((char *)&address, 0, sizeof(address));
 	address = *((struct sockaddr_in *)(result->ai_addr));
@@ -179,7 +182,6 @@ int Server::_initAndStoreSocketInf(std::string host, std::string port)
 
 bool Server::_isServerAlreadyInitialized(std::string host, std::string port)
 {
-	struct addrinfo						hints, *result;
 	std::vector<std::string>::iterator	it;
 	std::string							server;
 	std::string							ip;
@@ -231,6 +233,7 @@ bool Server::_isValidPort(std::string port)
 }
 
 // DEBUG
+/*
 static void debugPrint(struct sockaddr_in *address)
 {
 	std::cout << "sin_family: " << address->sin_family << std::endl;
@@ -255,3 +258,4 @@ static void debugServersEndpointPrint(std::vector<std::string> endpoints)
 	for (it = endpoints.begin(); it != endpoints.end(); it++)
 		std::cout << *it << std::endl;
 }
+*/

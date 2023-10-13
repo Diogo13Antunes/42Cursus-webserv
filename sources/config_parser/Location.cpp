@@ -18,50 +18,71 @@ Location::Location(void):
 	//Default Location Constructor
 }
 
-Location::Location(std::string masterRoot, std::vector<std::string> locationInfo):
+Location::Location(std::string masterRoot, size_t serverBodySize, std::map<size_t, std::string> locationInfo):
 	_locationError(true),
-	_index("index.html"),
-	_redirection(std::make_pair(0, ""))
+	_redirection(std::make_pair(0, "")),
+	_autoIndex(false),
+	_clientMaxBodySize(serverBodySize)
 {
-	std::vector<std::string>::iterator	it;
+	std::map<size_t, std::string>::iterator	it;
 	std::string	key;
 
 	_initAcceptedDefault();
 	for (it = locationInfo.begin(); it != locationInfo.end(); it++)
 	{
-		key = getKey(*it);
-		if (getNumberOfIdentations(*it) == 3)
+		key = getKey(it->second);
+		if (getNumberOfIdentations(it->second) == 3)
 		{
 			if (!key.compare("root"))
-				_setRoot(*it);
+				_setRoot(it);
 			else if (!key.compare("index"))
-				_setIndex(*it);
+				_setIndex(it);
 			else if (!key.compare("cgi"))
-				_setCgi(*it);
-			else if (!key.compare("limit_except"))
-				_setAccepted(*it);
+				_setCgi(it);
+			else if (!key.compare("allowed"))
+				_setAccepted(it);
 			else if (!key.compare("upload_store"))
-				_setUploadStore(*it);
+				_setUploadStore(it);
 			else if (!key.compare("redirect"))
 				_setRedirection(it, locationInfo.end());
+			else if (!key.compare("alias"))
+				_setAlias(it);
+			else if (!key.compare("autoindex"))
+				_setAutoIndex(it);
+			else if (!key.compare("client_max_body_size"))
+				_setClientMaxBodySize(it);
 			else
+			{
 				_updateLocationError(false);
+				_setErrorMessage(it->first, ERROR_INVALID_LOCATION_OPTION, it->second);
+			}
 			if (getLocationError() == false)
 				break;
 		}
 	}
 	if (getLocationError() != false)
 	{
-		if (!masterRoot.empty() && _root.empty())
-			_setRootMasterRoot(masterRoot);
 		if (_root.empty() && masterRoot.empty())
+		{
 			_updateLocationError(false);
+			_setErrorMessage(it->first, ERROR_INVALID_LOCATION_WITHOUT_ROOT_MROOT, it->second);
+		}
+	}
+	if (!_root.empty() && !_alias.empty())
+	{
+		_updateLocationError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_LOCATION_WITHOUT_ROOT_ALIAS, it->second);
 	}
 }
 
 Location::~Location(void)
 {
 	//Default Location Destructor
+}
+
+std::string	Location::getLocationErrorMsg(void)
+{
+	return (_locationErrorMsg);
 }
 
 bool	Location::getLocationError(void)
@@ -89,6 +110,11 @@ std::string	Location::getUploadStore(void)
 	return (_uploadStore);
 }
 
+std::string	Location::getAlias(void)
+{
+	return (_alias);
+}
+
 std::vector<std::string>	Location::getAccepted(void)
 {
 	if (_accepted.size() > 0)
@@ -99,6 +125,11 @@ std::vector<std::string>	Location::getAccepted(void)
 std::pair<int, std::string>	Location::getRedirection(void)
 {
 	return (_redirection);
+}
+
+bool	Location::getAutoIndex(void)
+{
+	return (_autoIndex);
 }
 
 bool	Location::existCgi(void)
@@ -142,6 +173,11 @@ bool	Location::isAcceptedMethod(std::string method)
 	return (false);
 }
 
+size_t Location::getClientMaxBodySize(void)
+{
+	return (_clientMaxBodySize);
+}
+
 /* PRIVATE METHODS */
 
 void	Location::_initAcceptedDefault(void)
@@ -155,9 +191,14 @@ void	Location::_updateLocationError(bool newLocationError)
 	_locationError = newLocationError;
 }
 
-void	Location::_setRoot(std::string &root)
+void	Location::_setRoot(std::map<size_t, std::string>::iterator &it)
 {
-	_root = getValue(root);
+	_root = getValue(it->second);
+	if (_root.empty())
+	{
+		_updateLocationError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_LOCATION_ROOT, it->second);
+	}
 }
 
 void	Location::_setRootMasterRoot(std::string &masterRoot)
@@ -165,29 +206,44 @@ void	Location::_setRootMasterRoot(std::string &masterRoot)
 	_root = masterRoot;
 }
 
-void	Location::_setIndex(std::string &index)
+void	Location::_setIndex(std::map<size_t, std::string>::iterator &it)
 {
-	_index = getValue(index);
+	_index = getValue(it->second);
+	if (_index.empty())
+	{
+		_updateLocationError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_LOCATION_INDEX, it->second);
+	}
 }
 
-void	Location::_setCgi(std::string &cgi)
+void	Location::_setCgi(std::map<size_t, std::string>::iterator &it)
 {
-	_cgi = getValue(cgi);
+	_cgi = getValue(it->second);
+	if (_cgi.empty())
+	{
+		_updateLocationError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_LOCATION_CGI, it->second);
+	}
 }
 
-void	Location::_setUploadStore(std::string &uploadStore)
+void	Location::_setUploadStore(std::map<size_t, std::string>::iterator &it)
 {
-	_uploadStore = getValue(uploadStore);
+	_uploadStore = getValue(it->second);
+	if (_uploadStore.empty())
+	{
+		_updateLocationError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_LOCATION_UPLOAD_STORE, it->second);
+	}
 }
 
-void	Location::_setAccepted(std::string &accepted)
+void	Location::_setAccepted(std::map<size_t, std::string>::iterator &it)
 {
 	std::string	array;
 	size_t start, end;
 
 	start = 0;
 	end = 0;
-	array = getValueArray(accepted);
+	array = getValueArray(it->second);
 	while ((end = array.find(",", start)) != std::string::npos)
 	{
 		_accepted.push_back(array.substr(start, end - start));
@@ -201,43 +257,128 @@ void	Location::_setAccepted(std::string &accepted)
 	}
 }
 
-void	Location::_setRedirection(std::vector<std::string>::iterator &it,
-	std::vector<std::string>::iterator	itEnd)
+void	Location::_setRedirection(std::map<size_t, std::string>::iterator &it,
+	std::map<size_t, std::string>::iterator	itEnd)
 {
 	it++;
-	if (it != itEnd && !isRedirection(*it))
+	if (it != itEnd)
+	{
+		if (it != itEnd && !isRedirection(it->second))
+		{
+			_updateLocationError(false);
+			_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION, it->second);
+		}
+		else
+		{
+			while (it != itEnd && isRedirection(it->second))
+			{
+				if (_redirection.first && !_redirection.second.empty())
+				{
+					_updateLocationError(false);
+					_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION, it->second);
+					return ;
+				}
+
+				int			code;
+				std::string key;
+				std::string value;
+
+				key = getKey(it->second);
+				value = getValue(it->second);
+				if (isStringEmptyOrSpaces(value)
+					|| key.find_first_not_of("0123456789") != key.npos)
+				{
+					_updateLocationError(false);
+					_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION, it->second);
+				}
+				else
+				{
+					code = strToInt(key);
+					if (!isValidRedirectionCode(code))
+					{
+						_setErrorMessage(it->first, ERROR_INVALID_LOCATION_REDIRECTION_CODE, it->second);
+						_updateLocationError(false);
+					}
+					else
+						_redirection = std::make_pair(code, value);
+				}
+				it++;
+			}
+			it--;
+		}
+	}
+}
+
+void	Location::_setAlias(std::map<size_t, std::string>::iterator &it)
+{
+	_alias = getValue(it->second);
+	if (_alias.empty())
+	{
 		_updateLocationError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_LOCATION_ALIAS, it->second);
+	}
+}
+
+void	Location::_setAutoIndex(std::map<size_t, std::string>::iterator &it)
+{
+	std::string value;
+
+	value = getValue(it->second);
+	if (value.empty())
+	{
+		_updateLocationError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_LOCATION_AUTOINDEX, it->second);
+	}
+	if (!value.compare("on"))
+		_autoIndex = true;
+}
+
+void	Location::_setClientMaxBodySize(std::map<size_t, std::string>::iterator &it)
+{
+	std::stringstream	out;
+	std::string strValue;
+	size_t	size;
+
+	strValue = getValue(it->second);
+	if (strValue.find_first_not_of("0123456789") != strValue.npos)
+	{
+		_updateLocationError(false);
+		_setErrorMessage(it->first, ERROR_INVALID_LOCATION_CLIENT_BODY_SIZE, it->second);
+	}
 	else
 	{
-		while (it != itEnd && isRedirection(*it))
-		{
-			if (_redirection.first && !_redirection.second.empty())
-			{
-				_updateLocationError(false);
-				return ;
-			}
-
-			int			code;
-			std::string key;
-			std::string value;
-
-			key = getKey(*it);
-			value = getValue(*it);
-			if (isStringEmptyOrSpaces(value)
-				|| key.find_first_not_of("0123456789") != key.npos)
-				_updateLocationError(false);
-			else
-			{
-				code = strToInt(key);
-				if (!isValidRedirectionCode(code))
-					_updateLocationError(false);
-				else
-					_redirection = std::make_pair(code, value);
-			}
-			it++;
-		}
-		it--;
+		out << strValue;
+		out >> size;
+		_clientMaxBodySize = size;
 	}
+}
+
+void	Location::_setErrorMessage(size_t line, std::string msg, std::string lineContent)
+{
+	std::stringstream ss;
+
+	ss << line;
+	_locationErrorMsg = msg + " | Line: " + std::string(ss.str()) + "\n";
+	_locationErrorMsg += lineContent;
+}
+
+void	Location::_setErrorMessage(size_t line, std::string msg, std::string msg2, std::string lineContent)
+{
+	std::stringstream ss;
+
+	ss << line;
+	_locationErrorMsg = msg + msg2 + " | Line: " + std::string(ss.str()) + "\n";
+	_locationErrorMsg += lineContent;
+}
+
+void	Location::_setErrorMessage(std::string msg)
+{
+	_locationErrorMsg = msg;
+}
+
+void	Location::_setErrorMessage(std::string msg, std::string msg2)
+{
+	_locationErrorMsg = msg + msg2;
 }
 
 /* STATIC FUNCTIONS */

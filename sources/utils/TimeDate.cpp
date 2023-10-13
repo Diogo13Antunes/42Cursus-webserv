@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:28:16 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 12:28:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/23 16:50:46 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,18 @@ std::string TimeDate::getTimeDateIMFfixdateFormat(struct tm *timeDate)
 	IMFfixdate += _getSecToString(timeDate->tm_sec) + " ";
 	IMFfixdate += "GMT";
 	return (IMFfixdate);
+}
+
+std::string TimeDate::FormatLastModification(struct tm *timeDate)
+{
+	std::string	lastMod;  
+
+	lastMod = _getMonthDayToString(timeDate->tm_mday) + "-";
+	lastMod += _getMonthToString(timeDate->tm_mon) + "-";
+	lastMod += _getYearToString(timeDate->tm_year) + " ";
+	lastMod += _getHourToString(timeDate->tm_hour) + ":";
+	lastMod += _getMinToString(timeDate->tm_min);
+	return (lastMod);
 }
 
 std::map<int, std::string>& TimeDate::_getDayMap(void)

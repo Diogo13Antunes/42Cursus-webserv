@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   AMessengerClient.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 12:20:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 10:32:53 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/15 11:19:56 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-
-//#include "Messenger.hpp"
 
 #include "Message.hpp"
 
@@ -40,7 +38,7 @@ class AMessengerClient
 		AMessengerClient &operator=(const AMessengerClient &src);
 		
 		void				setMessenger(Messenger *messenger);
-		void				sendMessage(Message *msg);
+		void				sendMessage(Message msg);
 		virtual	ClientID	getId(void) = 0;
-		virtual	void		receiveMessage(Message *msg) = 0;
+		virtual	void		receiveMessage(Message msg) = 0;
 };

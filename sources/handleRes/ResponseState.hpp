@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/30 16:15:11 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/14 17:57:25 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/30 19:51:53 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,5 @@ class ResponseState: public IStateRes
 		~ResponseState(void);
 		ResponseState &operator=(const ResponseState &src);
 
-		StateResType handle(Event *event, ServerConfig config);
+		StateResType handle(Event *event, ServerConfig& config);
 };

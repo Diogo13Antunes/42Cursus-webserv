@@ -6,38 +6,42 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/05 11:51:32 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/17 11:04:31 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 15:04:46 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Connections.hpp"
-
 #include "Timer.hpp"
+#include <vector>
 
 Connections::Connections(void): AMessengerClient(NULL), _lastUpdateTime(0) {}
 
 Connections::~Connections(void)
 {
 	_removeAllConnections();
-	//std::cout << "~Connections" << std::endl;
 }
 
 void Connections::updateAllConnections(void)
 {
-	std::map<int, Connection *>::iterator it;
+	std::map<int, Connection *>::iterator	it;
+	std::vector<int>::iterator				itVect;
+	std::vector<int>						elmToRemove;
 
 	if (Timer::isTimeoutExpired(_lastUpdateTime, 1))
 	{
-		it = _activeConnects.begin();
-		while (it != _activeConnects.end())
+		for (it = _activeConnects.begin(); it != _activeConnects.end(); it++)
 		{
 			if (it->second->isKeepAliveTimeout())
 			{
-				sendMessage(new Message(EVENTDEMUX_ID, it->second->getFd(), EVENT_REMOVE));
-				_removeConnection(it);
-				break;
+				sendMessage(Message(EVENTDEMUX_ID, it->second->getFd(), EVENT_REMOVE));
+				delete it->second;
+				elmToRemove.push_back(it->first);
 			}
-			it++;
+		}
+		if (!elmToRemove.empty())
+		{
+			for (itVect = elmToRemove.begin(); itVect != elmToRemove.end(); itVect++)
+				_activeConnects.erase(*itVect);
 		}
 		_lastUpdateTime = Timer::getActualTimeStamp();
 	}
@@ -48,13 +52,13 @@ ClientID Connections::getId(void)
 	return (CONNECTIONS_ID);
 }
 
-void Connections::receiveMessage(Message *msg)
+void Connections::receiveMessage(Message msg)
 {
 	MessageType	type;
 	int			fd;
 
-	type = msg->getType();
-	fd = msg->getFd();
+	type = msg.getType();
+	fd = msg.getFd();
 	if (type == CONNECTION_ADD_NEW)
 		_addNewConnection(fd);
 	else if (type == CONNECTION_REMOVE)
@@ -91,7 +95,10 @@ void Connections::_removeAllConnections(void)
 	std::map<int, Connection *>::iterator it;
 
 	for(it = _activeConnects.begin(); it != _activeConnects.end(); it++)
+	{
+		sendMessage(Message(EVENTDEMUX_ID, it->first, EVENT_REMOVE));
 		delete it->second;
+	}
 }
 
 void Connections::_removeConnection(std::map<int, Connection *>::iterator it)
@@ -108,20 +115,18 @@ void Connections::_removeConnection(int fd)
 	if (it != _activeConnects.end())
 	{
 		delete it->second;
-		_activeConnects.erase(it);
+		_activeConnects.erase(fd);
 	}
 }
 
 void Connections::_addNewConnection(int fd)
 {
-	try 
-	{
-		_activeConnects.insert(std::make_pair(fd, new Connection(fd)));
-	}
-	catch (const std::exception& e)
-	{
-		sendMessage(new Message(EVENTDEMUX_ID, fd, EVENT_REMOVE));
-	}
+	std::map<int, Connection *>::iterator	it;
+
+	it = _activeConnects.find(fd);
+	if (it != _activeConnects.end())
+		_activeConnects.erase(fd);
+	_activeConnects.insert(std::make_pair(fd, new Connection(fd)));
 }
 
 void Connections::_pauseKeepAliveTimer(int fd)

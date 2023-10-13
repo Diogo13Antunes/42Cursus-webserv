@@ -15,7 +15,6 @@ class RequestParser
 {
 	private:
 
-		std::vector<std::string>							_implementedMethods;
 		std::string											_requestLine;
 		std::map<std::string, std::vector<std::string> >	_requestHeader;
 		std::string											_requestBody;
@@ -36,7 +35,6 @@ class RequestParser
 		int													_addHeaderElement(std::string &line);
 		bool												_existAlreadyHeader(std::string &key);
 		void												_requestTargetParser(void);
-		bool												_isImplementedRequestMethod(void);
 		int													_hasContentLengthAndTransferEncoded(void);
 		int													_isValidRequestHeader(void);
 		int													_isValidTransferEncodingValue(void);
@@ -48,8 +46,6 @@ class RequestParser
 		~RequestParser(void);
 
 		std::string											getRequestLine(void);
-		std::string 										getRequestBody(void);
-		std::string& 										getRequestBodyRef(void);
 		std::map<std::string, std::vector<std::string> >	getRequestHeader(void);
 
 		std::string											getReqLineTarget(void);
@@ -59,9 +55,5 @@ class RequestParser
 		std::string											getConnectionField(void);
 		std::vector<std::string>							getHeaderField(std::string fieldName);
 		std::string											getQueryString(void);
-
 		int													headerParse(std::string	&header);
-		void												bodyParse(std::string &body); // setReqBody -> se calhar pode ir para o evento
-		void												updateReqBody(std::string &body);
-
 };

@@ -3,207 +3,72 @@
 /*                                                        :::      ::::::::   */
 /*   Event.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dcandeia <dcandeia@student.42lisboa.com    +#+  +:+       +#+        */
+/*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/19 11:15:31 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/21 16:35:35 by dcandeia         ###   ########.fr       */
+/*   Updated: 2023/09/27 14:23:50 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Event.hpp"
 #include "Timer.hpp"
 #include "EventType.hpp"
+#include "configs.hpp"
+#include <signal.h>
+#include <unistd.h>
 
-#define TIMEOUT_SEC				200
 #define CONNECTION_CLOSED		1
 #define CONNECTION_KEEPALIVE	0
 
-static std::string createResponse1(std::string path, std::string contentType);
-static std::string getFileContent(std::string fileName);
-static std::string createResponsePageNotFound(void);
-static std::string getFileType(std::string path);
-
-Event::Event(void) {}
-
-Event::Event(int fd, int state):
+Event::Event(int fd):
 	_fd(fd),
-	_state(state),
-	_parseState(HEADER_HANDLE),
 	_reqState(HEADER_PROCESS),
-	_resState(0),
-	_numWrited(0),
-	_idx(0),
-	_bytesReadBody(0),
 	_totalBytesSend(0),
-	_resState1(CREATE_HEADER),
-	_errorCode(0),
-	_cgiFlag(false),
-	_cgiState(EXEC_CGI),
-	_timeoutSec(TIMEOUT_SEC),
+	_resState1(INITIAL_STATE),
 	_creationTime(Timer::getActualTimeStamp()),
-	_clientClosed(false),
-	_cgiEx(NULL),
 	_actualState(READ_SOCKET),
 	_finished(false),
 	_connectionClosed(-1),
 	_clientDisconnect(false),
-	_cgiExitStatus(NO_EXIT_STATUS),
-	_cgiSentChars(0),
-	_statusCode(0)
+	_cgiExitStatus(0),
+	_statusCode(0),
+	_redirectCode(0),
+	_fileSize(0),
+	_fileNumBytesRead(0),
+	_serverConf(NULL),
+	_cgiWriteFd(-1),
+	_cgiReadFd(-1),
+	_cgiWriteFdClosed(false),
+	_cgiReadFdClosed(false),
+	_cgiPid(0),
+	_numBytesSendCgi(0),
+	_cgiScriptEndend(false),
+	_isCgi(false),
+	_fdRemoved(false),
+	_cgiWriteFdRemoved(true),
+	_cgiReadFdRemoved(true),
+	_isStateChange(false),
+	_isHttpsTested(false)
 {
 	SocketUtils::getHostAndPort(_fd, _ip, _port);
 }
 
-Event::Event(const Event &src) {}
-
 Event::~Event(void)
 {
-	if (_cgiEx)
-		delete _cgiEx;
+	if (_cgiPid > 0 && !_cgiScriptEndend)
+	{
+		if (kill(_cgiPid, SIGTERM) == -1)
+			std::cout << "Webserv: Error terminating SGI script Event" << std::endl;
+	}
+	this->closeCgiWriteFd();
+	this->closeCgiReadFd();
 }
-
-/*
-Event &Event::operator=(const Event &src)
-{
-	//Event Copy Assignment Operator
-}
-*/
 
 int Event::getFd(void)
 {
 	return (_fd);
 }
 
-short Event::getState(void)
-{
-	return (_state);
-}
-
-std::string&	Event::getResponse(void)
-{
-	return (_res);
-}
-
-std::string Event::getReqRaw(void)
-{
-	return (_reqRaw);
-}
-
-std::string Event::getHeaderRaw(void)
-{
-	return (_headerRaw);
-}
-
-short Event::getParseState(void)
-{
-	return (_parseState);
-}
-
-size_t Event::getBodySize(void)
-{
-	return (_reqParsed.getContentLenght());
-}
-
-void Event::setState(short state)
-{
-	_state = state;
-}
-
-void Event::setResponse(std::string res)
-{
-	_res = res;
-}
-
-void Event::setResquestHeader(std::string reqLine, std::map<std::string, std::vector<std::string> > reqHeader)
-{
-	_reqParsed.setRequestLine(reqLine);
-	_reqParsed.setRequestHeader(reqHeader);
-}
-
-// Deprecated , é para apagar esta merda ;)
-void Event::setResquestBody(std::string body)
-{
-	_reqParsed.setRequestBody(body);
-}
-
-void Event::setReqBody(std::string body)
-{
-	_reqParser.bodyParse(body);
-}
-
-void Event::setParseState(int state)
-{
-	_parseState = state;
-}
-
-/*
-void Event::updateReqRaw(std::string req)
-{
-	size_t	headerSize;
-	size_t	bodySize = 0;
-	size_t	currentBodySize = 0;
-
-	_reqRaw += req;
-
-	if (_parseState == HEADER_HANDLE)
-	{
-		headerSize = _reqRaw.find("\r\n\r\n");
-		if (headerSize != std::string::npos)
-		{
-			setParseState(HEADER_DONE);
-			_headerRaw = _reqRaw.substr(0, headerSize + 4);
-			_reqRaw = _reqRaw.substr(headerSize + 4);
-		}
-	}
-	else if (_parseState == BODY_HANDLE)
-	{
-		if (_reqRaw.size() == this->getBodySize())
-			setParseState(BODY_DONE);
-	}
-
-	//this->setBodySize();
-}
-*/
-
-// Para remover mais tarde
-bool Event::isBodyComplete(void)
-{
-	bool bodyComplete;
-
-	bodyComplete = false;
-	if (_reqRaw.size() == this->getBodySize())
-		bodyComplete = true;
-	return (bodyComplete);
-}
-
-/* void Event::createResponse(ConfigsData &configsData)
-{
-	std::string	reqPath;
-	std::string filePath;
-	std::string	contentType;
-
-	reqPath = _reqParser.getPath();
-	//std::cout << "path: " << reqPath << std::endl;
-
-	if (!reqPath.compare("/"))
-		filePath = configsData.getConfig("root");
-	else
-		filePath = configsData.getConfig(reqPath);
-
-	if (filePath.size())//existe rota
-		this->setResponse(createResponse1(filePath, "text/html"));
-	else
-	{
-		reqPath = configsData.getConfig("path") + "/" + reqPath;
-		contentType = configsData.getConfig(getFileType(reqPath));
-		this->setResponse(createResponse1(reqPath, contentType));
-	}
-
-	//std::cout << "respose: " << this->getResponse() << std::endl;
-} */
-
-
-// New Methods
 StateReqType Event::getReqState(void)
 {
 	return (_reqState);
@@ -214,9 +79,14 @@ void Event::setReqState(StateReqType reqState)
 	_reqState = reqState;
 }
 
-void Event::updateReqRawData(std::string &req)
+void Event::updateReqRawData(const std::string &req)
 {
-	_reqRaw += req;
+	_reqRaw.append(req, 0, req.size());
+}
+
+void Event::setReqRawData(const std::string &req)
+{
+	_reqRaw.assign(req, 0, req.size());
 }
 
 bool Event::isReqHeaderComplete(void)
@@ -243,17 +113,7 @@ void Event::parseReqHeader(std::string &header)
 	this->setStatusCode(_reqParser.headerParse(header));
 }
 
-void Event::setReqRaw1(std::string req)
-{
-	_reqRaw = req;
-}
-
-const std::string&  Event::getReqRaw1(void)
-{
-	return (_reqRaw);
-}
-
-const std::string&  Event::getReqRawData(void)
+std::string Event::getReqRawData(void)
 {
 	return (_reqRaw);
 }
@@ -263,249 +123,28 @@ void Event::clearReqRawData(void)
 	_reqRaw.clear();
 }
 
-void Event::setHeaderRaw(std::string header)
-{
-	_headerRaw = header;
-}
-
-void Event::setBodyRaw(std::string body)
-{
-	_bodyRaw = body;
-}
-
-std::string Event::getHeaderRaw1(void)
-{
-	return (_headerRaw);
-}
-
-std::string Event::getBodyRaw(void)
-{
-	return (_bodyRaw);
-}
-
-void Event::setResState(int resState)
-{
-	_resState = resState;
-}
-
-int Event::getResState(void)
-{
-	return (_resState);
-}
-
-void Event::setResVect(void)
-{
-	int maxSize;
-	int copyed;
-	int aux;
-
-	//maxSize = 2000000;
-	maxSize = 100000;
-	copyed = 0;
-	aux = 0;
-
-	while (true)
-	{
-		aux = _res.size() - copyed;
-
-		if (aux > maxSize)
-		{
-			_resVect.push_back(_res.substr(copyed, maxSize));
-			copyed += maxSize;
-		}
-		else
-		{
-			_resVect.push_back(_res.substr(copyed, aux));
-			copyed += aux;
-		}
-		if (copyed == _res.size())
-			break;
-	}
-}
-
-/*
-void Event::printVectDebug(void)
-{
-	std::cout << "############## Print Response ################" << std::endl;
-	for (int i = 0; i < _resVect.size(); i++)
-	{
-		std::cout << _resVect.at(i) << std::endl;
-	}
-}
-*/
-
-ssize_t Event::getNumWrited(void)
-{
-	return (_numWrited);
-}
-
-void Event::updateNumWrited(ssize_t numWrited)
-{
-	_numWrited += numWrited;
-}
-
-
-std::string& Event::getNextRes(void)
-{
-	//if (_resVect[_idx].empty() && _idx < _resVect.size() - 1)
-	//	_idx++;
-
-	//std::cout << "idx: " << _idx << std::endl;
-	//std::cout << "vec size: " << _resVect.size() << std::endl;
-
-	if (_idx >= _resVect.size())
-		return (_resVect[_resVect.size() - 1]);
-	return (_resVect[_idx]);
-}
-
-void Event::updateRes1(std::string res)
-{
-	if (_idx < _resVect.size())
-		_resVect[_idx] = res;
-}
-
-void Event::updateIdx(void)
-{
-	//if (_idx < _resVect.size() - 1)
-	//{
-		_idx++;
-	//}
-}
-
-bool Event::lastIdx(void)
-{
-	if (_idx >= _resVect.size())
-	{
-		return (true);
-	}
-	return (false);
-}
-
-
-std::string Event::getReqPath(void)
-{
-	return (_reqParsed.getPath());
-}
-
-// Static functions
-static std::string createResponse1(std::string path, std::string contentType)
-{
-	std::string response;
-	std::string body;
-	std::stringstream bodySize;
-
-	body = getFileContent(path);
-	if (body.empty())
-		return (createResponsePageNotFound());
-
-	// get content type str
-
-	bodySize << body.size();
-	response = "HTTP/1.1 200 OK\r\nContent-length: ";
-	response += bodySize.str();
-	response += "\r\n";
-	response += "Content-Type: " + contentType;
-	response += "\r\n\r\n";
-	response += body;
-	return (response);
-}
-
-static std::string getFileContent(std::string fileName)
-{
-	std::ifstream	file(fileName.c_str());
-	std::string		buff;
-	std::string		body;
-
-	if (file.is_open())
-	{
-		while (std::getline(file, buff))
-		{
-			body += buff + "\n";
-		}
-		file.close();
-	}
-	else
-		std::cout << "Error: can't open file" << std::endl;
-	return (body);
-}
-
-static std::string createResponsePageNotFound(void)
-{
-	std::string response;
-	std::string body;
-	std::stringstream bodySize;
-
-	body = "<html><head></head><body><h1>404 - Page not Found</h1><a href=\"/\">pagina inicial</a></body></html>";
-
-	bodySize << body.size();
-	response = "HTTP/1.1 404 KO\r\nContent-length: ";
-	response += bodySize.str();
-	response += "\r\n";
-	response += "Content-Type: text/html\r\n\r\n";
-	response += body;
-
-	return (response);
-}
-
-static std::string getFileType(std::string path)
-{
-	std::string type;
-	size_t		dotIdx;
-
-	dotIdx = (path.find_last_of('.')) + 1;
-	if (dotIdx < path.size())
-		type = path.substr(dotIdx, path.size());
-	return (type);
-}
-
-
-// Functions for Handle Response
-std::string Event::getFileName(void)
-{
-	return (_fileName);
-}
-
-void Event::setFileName(std::string fileName)
-{
-	_fileName = fileName;
-}
-
-size_t Event::getBytesReadBody(void)
-{
-	return (_bytesReadBody);
-}
-
-void Event::setBytesReadBody(size_t bytesReadBody)
-{
-	_bytesReadBody = bytesReadBody;
-}
-
-void Event::updateBytesReadBody(size_t bytesReadBody)
-{
-	_bytesReadBody += bytesReadBody;
-}
-
-size_t Event::getBodySize1(void)
-{
-	return (_bodySize);
-}
-
-void Event::setBodySize1(size_t bodySize)
-{
-	_bodySize = bodySize;
-}
-
 const std::string& Event::getRes(void)
 {
 	return (_res);
 }
 
-void Event::setRes(std::string res)
+void Event::setRes(std::string& res)
 {
 	_res = res;
 }
 
-void Event::updateRes(std::string res)
+void Event::clearRes(void)
+{
+	_res.clear();
+}
+
+void Event::eraseRes(size_t start, size_t end)
+{
+	_res.erase(start, end);
+}
+
+
+void Event::updateRes(std::string& res)
 {
 	_res += res;
 }
@@ -525,11 +164,6 @@ size_t Event::getTotalBytesSend(void)
 	return (_totalBytesSend);
 }
 
-void Event::setTotalBytesSend(size_t totalBytesSend)
-{
-	_totalBytesSend = totalBytesSend;
-}
-
 void Event::updateTotalBytesSend(size_t totalBytesSend)
 {
 	_totalBytesSend += totalBytesSend;
@@ -545,30 +179,9 @@ void Event::setResState1(StateResType resState)
 	_resState1 = resState;
 }
 
-int Event::getErrorCode(void)
-{
-	return (_errorCode);
-}
-
-void Event::setErrorCode(int errorCode)
-{
-	_errorCode = errorCode;
-}
-
-bool Event::getCgiFlag(void)
-{
-	return (_cgiFlag);
-}
-
-void Event::setCgiFlag(bool cgiFlag)
-{
-	_cgiFlag = cgiFlag;
-}
 bool Event::isEventTimeout(void)
 {
-	//std::cout << "EVENT TIME OUT" << std::endl;
-	return (Timer::isTimeoutExpired(_creationTime, _timeoutSec));
-	//return (true);
+	return (Timer::isTimeoutExpired(_creationTime, EVENT_TIMEOUT_SEC));
 }
 
 bool Event::isConnectionClose(void)
@@ -585,59 +198,9 @@ bool Event::isConnectionClose(void)
 	return (false);
 }
 
-// Não usado
-bool Event::isClientClosed(void)
+void Event::setConnectionClose(void)
 {
-	return (_clientClosed);
-}
-
-void Event::setClientClosed(void)
-{
-	_clientClosed = true;
-}
-
-// CGI Functions
-CGIExecuter* Event::getCgiEx(void)
-{
-	return (_cgiEx);
-}
-
-void Event::setCgiEx(CGIExecuter *cgiEx)
-{
-	_cgiEx = cgiEx;
-}
-
-// Deprecated
-int Event::getCgiFd(void)
-{
-	if (_cgiEx)
-		return (_cgiEx->getReadFD());
-	return (-1);
-}
-
-int Event::getCgiWriteFd(void)
-{
-	if (_cgiEx)
-		return (_cgiEx->getWriteFD());
-	return (-1);
-}
-
-int Event::getCgiReadFd(void)
-{
-	if (_cgiEx)
-		return (_cgiEx->getReadFD());
-	return (-1);
-}
-
-
-StateCgiType	Event::getCgiState(void)
-{
-	return (_cgiState);
-}
-
-void	Event::setCgiState(StateCgiType state)
-{
-	_cgiState = state;
+	_connectionClosed = CONNECTION_CLOSED;
 }
 
 std::string		Event::getCgiScriptResult(void)
@@ -645,62 +208,15 @@ std::string		Event::getCgiScriptResult(void)
 	return (_cgiScriptResult);
 }
 
-void	Event::updateCgiScriptResult(std::string src)
+void	Event::updateCgiScriptResult(std::string& src)
 {
 	_cgiScriptResult += src;
 }
-
-/*
-bool Event::isCgiScriptEnd(void)
-{
-	if (this->getCgiFd() > 0 && _state == CGI_EVENT)
-	{
-		if (_cgiEx->isEnded())
-			return (true);
-	}
-	return (false);
-}
-*/
-
-int Event::isCgiScriptEnd(void)
-{
-	if (_cgiEx && _cgiExitStatus == NO_EXIT_STATUS)
-		_cgiExitStatus = _cgiEx->isEnded();
-	return (_cgiExitStatus);
-}
-
-/* Getters for RequestData */
 
 std::string	Event::getQueryString(void)
 {
 	return (_reqParser.getQueryString());
 }
-
-std::vector<std::string>	Event::getRequestHeaderValue(std::string key)
-{
-	return (_reqParsed.getHeaderValue(key));
-}
-
-std::string	Event::getReqMethod(void)
-{
-	return (_reqParsed.getRequestLine().at(0));
-}
-
-std::string	Event::getServerProtocol(void)
-{
-	return (_reqParsed.getRequestLine().at(2));
-}
-
-
-// Alterar esta funcao para o novo parser
-/*std::string	Event::getReqContentType(void)
-{
-	std::string	contentType;
-
-	if (!_reqParsed.getHeaderValue("content-type").empty())
-		contentType = _reqParsed.getHeaderValue("content-type").at(0);
-	return (contentType);
-}*/
 
 std::string	Event::getReqContentType(void)
 {
@@ -708,10 +224,7 @@ std::string	Event::getReqContentType(void)
 
 	contentType = _reqParser.getHeaderField("content-type");
 	if (!contentType.empty())
-	{
-		std::cout << "Não vazio getHeaderField()" << std::endl;
 		return (contentType.at(0));
-	}
 	return (std::string());
 }
 
@@ -771,45 +284,9 @@ std::string	Event::getReqLinePath(void)
 	return (_reqParser.getReqLinePath());
 }
 
-std::string& Event::getReqBody(void)
+const std::string& Event::getReqBody(void)
 {
-	
-	//return (_reqParser.getRequestBody());
-	return (_reqParser.getRequestBodyRef());
-}
-
-void Event::parseHeader(std::string &header)
-{
-	//Função devolva true or false
-
-	int	statusCode;
-
-
-	statusCode = _reqParser.headerParse(header);
-	switch (statusCode)
-	{
-		case 0:
-			//std::cout << "---------- SUCCESS ----------" << std::endl;
-			break;
-		case 400:
-			std::cout << "---------- 400 BAD_REQUEST ----------" << std::endl;
-			break;
-		case 414:
-			std::cout << "---------- 414 URI_TOO_LONG ----------" << std::endl;
-			break;
-		case 501:
-			std::cout << "---------- 501 NOT_IMPLEMENTED ----------" << std::endl;
-			break;
-	}
-
-	//if (!_reqParser.headerParse(header))
-	//colocar status event.setStatusCode(400) 
-}
-
-
-EventType Event::getOldState(void)
-{
-	return (_oldState);
+	return (_reqBody);
 }
 
 EventType Event::getActualState(void)
@@ -819,8 +296,8 @@ EventType Event::getActualState(void)
 
 void Event::setActualState(EventType newState)
 {
-	_oldState = _actualState;
 	_actualState = newState;
+	this->setIsStateChange(true);
 }
 
 bool Event::isFinished(void)
@@ -843,65 +320,14 @@ void Event::setClientDisconnected(void)
 	_clientDisconnect = true;
 }
 
-
-void Event::cgiExecute(ServerConfig *config, std::string scriptName)
+void Event::updateReqBody(const std::string& body)
 {
-	if (!_cgiEx)
-		_cgiEx = new CGIExecuter(config, _reqParser, scriptName);
-}
-
-int Event::writeToCgi(const char *str)
-{
-	if (_cgiEx)
-		return (_cgiEx->writeToScript(str));
-	return (-1);
-}
-
-int Event::readFromCgi(std::string &str)
-{
-	if (_cgiEx)
-		return (_cgiEx->readFromScript(str));
-	return (-1);
-}
-
-void Event::setCgiExitStatus(int cgiExitStatus)
-{
-	_cgiExitStatus = cgiExitStatus;
-}
-
-int Event::getCgiExitStatus(void)
-{
-	return (_cgiExitStatus);
-}
-
-void	Event::updateCgiSentChars(size_t value)
-{
-	_cgiSentChars += value;
-}
-
-size_t	Event::getCgiSentChars(void)
-{
-	return (_cgiSentChars);
-}
-
-std::string Event::getBody(void)
-{
-	return (_body);
-}
-
-void	Event::setBody(std::string &src)
-{
-	_body = src;
-}
-
-void Event::updateReqBody(std::string body)
-{
-	_reqParser.updateReqBody(body);
+	_reqBody.append(body, 0, body.size());
 }
 
 size_t Event::getReqBodySize(void)
 {
-	return (_reqParser.getRequestBodyRef().size());
+	return (_reqBody.size());
 }
 
 int Event::getStatusCode(void)
@@ -924,12 +350,226 @@ std::string Event::getPort(void)
 	return (_port);
 }
 
-std::string Event::getCgiBodyRes(void)
+
+void Event::setRredirectCode(int redirectCode)
 {
-	return (_cgiBodyRes);
+	_redirectCode = redirectCode;
 }
 
-void	Event::setCgiBodyRes(std::string &src)
+int Event::getRredirectCode(void)
 {
-	_cgiBodyRes = src;
+	return (_redirectCode);
+}
+
+void Event::setRredirectResource(std::string redirectResource)
+{
+	_redirectResource = redirectResource;
+}
+
+std::string	Event::getRredirectResource(void)
+{
+	return (_redirectResource);
+}
+
+void Event::setFileSize(size_t fileSize)
+{
+	_fileSize = fileSize;
+}
+
+size_t Event::getFileSize(void)
+{
+	return (_fileSize);
+}
+
+void Event::updateFileNumBytesRead(size_t fileNumBytesRead)
+{
+	_fileNumBytesRead += fileNumBytesRead;
+}
+
+size_t Event::getFileNumBytesRead(void)
+{
+	return (_fileNumBytesRead);
+}
+
+void Event::setServerConfing(ServerConfig* serverConf)
+{
+	_serverConf = serverConf;
+}
+
+ServerConfig* Event::getServerConfing(void)
+{
+	return (_serverConf);
+}
+
+int Event::getCgiWriteFd(void)
+{
+	return (_cgiWriteFd);
+}
+
+void Event::setCgiWriteFd(int cgiWriteFd)
+{
+	_cgiWriteFd = cgiWriteFd;
+}
+
+int Event::getCgiReadFd(void)
+{
+	return (_cgiReadFd);
+}
+
+void Event::setCgiReadFd(int cgiReadFd)
+{
+	_cgiReadFd = cgiReadFd;
+}
+
+int Event::getCgiPid(void)
+{
+	return (_cgiPid);
+}
+
+void Event::setCgiPid(int pidCgi)
+{
+	_cgiPid = pidCgi;
+}
+
+ssize_t Event::getNumBytesSendCgi(void)
+{
+	return (_numBytesSendCgi);
+}
+
+void Event::updateNumBytesSendCgi(ssize_t numBytesSendCgi)
+{
+	_numBytesSendCgi += numBytesSendCgi;
+}
+
+void Event::closeCgiWriteFd(void)
+{
+	if (_cgiWriteFd < 0 || _cgiWriteFdClosed)
+		return ;
+	close(_cgiWriteFd);
+	_cgiWriteFdClosed = true;
+}
+
+void Event::closeCgiReadFd(void)
+{
+	if (_cgiReadFd < 0 || _cgiReadFdClosed)
+		return ;
+	close(_cgiReadFd);
+	_cgiReadFdClosed = true;
+}
+
+int Event::getCgiExitStatus(void)
+{
+	return (_cgiExitStatus);
+}
+
+void Event::setCgiExitStatus(int cgiExitStatus)
+{
+	_cgiExitStatus = cgiExitStatus;
+}
+
+bool Event::isCgiScriptEndend(void)
+{
+	return (_cgiScriptEndend);
+}
+
+void Event::setCgiScriptEndend(bool cgiScriptEndend)
+{
+	_cgiScriptEndend = cgiScriptEndend;
+}
+
+std::string Event::getRoute(void)
+{
+	return (_route);
+}
+
+void Event::setRoute(std::string route)
+{
+	_route = route;
+}
+
+std::string Event::getRequestPath(void)
+{
+	return (_requestPath);
+}
+
+void Event::setRequestPath(std::string requestPath)
+{
+	_requestPath = requestPath;
+}
+
+std::string Event::getResourcePath(void)
+{
+	return (_resourcePath);
+}
+
+void Event::setResourcePath(std::string resourcePath)
+{
+	_resourcePath = resourcePath;
+}
+
+void Event::setIsCgi(bool isCgi)
+{
+	_isCgi = isCgi;
+}
+
+bool Event::isCgi(void)
+{
+	return (_isCgi);
+}
+
+bool Event::isCgiWriteFdRemoved(void)
+{
+	return (_cgiWriteFdRemoved);
+}
+
+void Event::setCgiWriteFdRemoved(void)
+{
+	_cgiWriteFdRemoved = true;
+}
+
+bool Event::isCgiReadFdRemoved(void)
+{
+	return (_cgiReadFdRemoved);
+}
+
+void Event::setCgiReadFdRemoved(void)
+{
+	_cgiReadFdRemoved = true;
+}
+
+bool Event::isCgiFdRemoved(int cgiFd)
+{
+	if (cgiFd == _cgiReadFd)
+		return (_cgiReadFdRemoved);
+	if (cgiFd == _cgiWriteFd)
+		return (_cgiWriteFdRemoved);
+	return (false);
+}
+
+void Event::setCgiFdRemoved(int cgiFd, bool value)
+{
+	if (cgiFd == _cgiReadFd)
+		_cgiReadFdRemoved = value;
+	else if (cgiFd == _cgiWriteFd)
+		_cgiWriteFdRemoved = value;
+}
+
+bool Event::isStateChange(void)
+{
+	return (_isStateChange);
+}
+
+void Event::setIsStateChange(bool isStateChange)
+{
+	_isStateChange = isStateChange;
+}
+
+bool Event::isHttpsTested(void)
+{
+	return (_isHttpsTested);
+}
+
+void Event::setHttpsTested(void)
+{
+	_isHttpsTested = true;
 }

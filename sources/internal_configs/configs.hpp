@@ -1,8 +1,8 @@
 #pragma once
 
 #define SERVER_SOFTWARE			"webserv/1.0"
-#define HTTP_VERSION            "HTTP/1.1"
-#define PROTOCOL                "http"
+#define HTTP_VERSION			"HTTP/1.1"
+#define PROTOCOL				"http"
 
 #define SOCKET_READ_BUFF_SIZE	100000
 #define DEFAULT_PORT_STR		"80"
@@ -11,11 +11,29 @@
 #define DEFAULT_HOST			"localhost"
 #define LOOPBACK_ADD			"127.0.0.1"
 
+#define EVENT_TIMEOUT_SEC       30
+#define KEEP_ALIVE_TIMEOUT_SEC  15
+
 // socket defines (max size of internal queue of listen)
 #define DEFAULT_BACKLOG 		128
 
 #define EPOLL_MAX_NEVENTS	100000
 #define EPOLL_TIMEOUT		5
+
+// Error codes
+#define BAD_REQUEST_CODE                    400
+#define FORBIDEN_CODE                       403
+#define NOT_FOUND_CODE                      404
+#define NOT_ALLOWED_CODE                    405
+#define REQUEST_TIMEOUT_CODE                408
+#define CONTENT_TOO_LARGE_CODE              413
+#define NOT_IMPLEMENTED_CODE                501
+#define INTERNAL_SERVER_ERROR_CODE          500
+#define GATEWAY_TIMEOUT_CODE                504
+#define HTTP_VERSION_NOT_SUPPORTED_CODE     505
+#define MOVED_PERMANENTLY_CODE              301
+
+#define IMPLEMENTED_METHODS "GET, POST, DELETE"
 
 // Colors
 #define RESET		"\033[0m"

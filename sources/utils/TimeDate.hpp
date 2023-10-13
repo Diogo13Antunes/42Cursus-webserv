@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 08:28:21 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/07/06 12:19:14 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/08/23 16:44:23 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class TimeDate
 		static std::string					_getSecToString(int sec);
 
 	public:
-		static std::string getTimeDateIMFfixdateFormat(void);
-		static std::string getTimeDateIMFfixdateFormat(struct tm *timeDate);
+		static std::string	getTimeDateIMFfixdateFormat(void);
+		static std::string	getTimeDateIMFfixdateFormat(struct tm *timeDate);
+		static std::string	FormatLastModification(struct tm *timeDate);
 };

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/20 17:11:39 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/06/01 10:37:52 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/22 21:26:30 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,7 @@
 
 Messenger::Messenger(void) {}
 
-Messenger::Messenger(const Messenger &src) {}
-
 Messenger::~Messenger(void) {}
-
-/*
-Messenger &Messenger::operator=(const Messenger &src)
-{
-	//Messenger Copy Assignment Operator
-}
-*/
 
 void Messenger::registerClient(AMessengerClient *client)
 {
@@ -40,14 +31,14 @@ void Messenger::unregisterClient(ClientID clientID)
 	_clients.erase(clientID);
 }
 
-void Messenger::sendMessage(Message *msg)
+void Messenger::sendMessage(Message msg)
 {
 	std::map<ClientID, AMessengerClient*>::iterator it;
 
 	if (_clients.size())
 	{
-		it = _clients.find((ClientID) msg->getDst());
-		it->second->receiveMessage(msg);
+		it = _clients.find((ClientID) msg.getDst());
+		if (it != _clients.end())
+			it->second->receiveMessage(msg);
 	}
-	delete msg;
 }

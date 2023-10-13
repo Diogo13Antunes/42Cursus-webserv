@@ -6,17 +6,25 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/24 12:10:06 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/17 11:39:18 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/27 21:34:39 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EventDemux.hpp"
+#include <unistd.h>
 
-EventDemux::EventDemux(void): AMessengerClient(NULL) {}
+EventDemux::EventDemux(void): AMessengerClient(NULL), _epollFd(-1) {}
 
-EventDemux::~EventDemux(void)
+EventDemux::~EventDemux(void) 
 {
-	//std::cout << "~EventDemux" << std::endl;
+	std::map<int, struct sockaddr_in>::iterator it;
+
+	for (it = _servers.begin(); it != _servers.end(); it++)
+	{
+		_removeEvent(it->first);
+		close(it->first);
+	}
+	close(_epollFd);
 }
 
 ClientID EventDemux::getId(void)
@@ -24,14 +32,17 @@ ClientID EventDemux::getId(void)
 	return (EVENTDEMUX_ID);
 }
 
-void EventDemux::init(std::map<int, struct sockaddr_in> servers)
+int EventDemux::init(std::map<int, struct sockaddr_in> servers)
 {
 	std::map<int, struct sockaddr_in>::iterator it;
 
 	_servers = servers;
 	_epollFd = epoll_create1(0);
+	if (_epollFd < 0)
+		return (-1);
 	for (it = _servers.begin(); it != _servers.end(); it++)
 		_addNewEvent(it->first);
+	return (0);
 }
 
 void EventDemux::waitAndDispatchEvents(void)
@@ -48,26 +59,26 @@ void EventDemux::waitAndDispatchEvents(void)
 		if (newClientFd != -1)
 		{
 			_addNewEvent(newClientFd);
-			sendMessage(new Message(CONNECTIONS_ID, newClientFd, CONNECTION_ADD_NEW));
+			sendMessage(Message(CONNECTIONS_ID, newClientFd, CONNECTION_ADD_NEW));
 		}
 		else
 		{
 			if (_isReadEvent(_events[i].events))
-				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_READ_TRIGGERED));
+				sendMessage(Message(EVENTLOOP_ID, eventFd, EVENT_READ_TRIGGERED));
 
 			else if (_isWriteEvent(_events[i].events))
-				sendMessage(new Message(EVENTLOOP_ID, eventFd, EVENT_WRITE_TRIGGERED));
+				sendMessage(Message(EVENTLOOP_ID, eventFd, EVENT_WRITE_TRIGGERED));
 		}
 	}
 }
 
-void EventDemux::receiveMessage(Message *msg)
+void EventDemux::receiveMessage(Message msg)
 {
 	MessageType	type;
 	int			fd;
 
-	type = msg->getType();
-	fd = msg->getFd();
+	type = msg.getType();
+	fd = msg.getFd();
 	if (type == EVENT_ADD_NEW)
 		_addNewEvent(fd);
 	else if (type == EVENT_CHANGE_TO_READ)
@@ -83,6 +94,7 @@ void EventDemux::_addNewEvent(int fd)
 	struct epoll_event	ev;
 	int					flags;
 
+	ev.data.ptr = 0;
 	ev.data.fd = fd;
     //ev.events = EPOLLIN | EPOLLOUT;
 	ev.events = EPOLLIN;
@@ -95,13 +107,14 @@ void EventDemux::_addNewEvent(int fd)
 void EventDemux::_removeEvent(int fd)
 {
 	if (epoll_ctl(_epollFd, EPOLL_CTL_DEL, fd, NULL) == -1)
-		;//std::cerr << "Failed to remove event from epoll" << std::endl;
+		std::cerr << "Failed to remove event from epoll" << std::endl;
 }
 
 void EventDemux::_changeEvent(int fd, uint32_t eventMask)
 {
 	struct epoll_event	ev;
 
+	ev.data.ptr = 0;
     ev.data.fd = fd;
     //ev.events = EPOLLIN | EPOLLOUT;
 	ev.events = eventMask;

@@ -6,7 +6,7 @@
 /*   By: dsilveri <dsilveri@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 15:34:03 by dsilveri          #+#    #+#             */
-/*   Updated: 2023/08/18 16:29:38 by dsilveri         ###   ########.fr       */
+/*   Updated: 2023/09/23 09:00:07 by dsilveri         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,20 @@
 #include <ctime>
 
 
-HttpHeaderBuilder::HttpHeaderBuilder(void): 
-	_contentLength(0), 
+HttpHeaderBuilder::HttpHeaderBuilder(void):
 	_status("200 OK"),
+	_date(TimeDate::getTimeDateIMFfixdateFormat()),
 	_connection("keep-alive"),
-	_date(TimeDate::getTimeDateIMFfixdateFormat())
+	_contentLength(0)
+	
 {}
 
 HttpHeaderBuilder::~HttpHeaderBuilder(void) {}
+
+void HttpHeaderBuilder::addNewField(std::string key, std::string value)
+{
+	_fields.insert(std::make_pair(key, value));
+}
 
 void HttpHeaderBuilder::setStatus(std::string status)
 {
@@ -42,9 +48,9 @@ void  HttpHeaderBuilder::setDate(std::string date)
 	_date = date;
 }
 
-void HttpHeaderBuilder::setConnection(std::string connection)
+void HttpHeaderBuilder::setConnectionClose(void)
 {
-	_connection = connection;
+	_connection = "close";
 }
 
 void HttpHeaderBuilder::setTransferEncoding(std::string transferEncoding)
@@ -62,66 +68,34 @@ void HttpHeaderBuilder::setContentLength(int contentLength)
 	_contentLength = contentLength;
 }
 
-/*
-< HTTP/1.1 200 OK
-< Server: nginx
-< Date: Fri, 07 Jul 2023 08:38:49 GMT
-< Content-Type: text/html; charset=utf-8
-< Content-Length: 65099
-< Connection: keep-alive
-< Transfer-Encoding: chunked
-*/
-
-/*
 std::string	HttpHeaderBuilder::getHeader(void)
 {
-	std::string			header;
-	std::string			httpVersion;
-	std::stringstream	contentLength;
-
-	httpVersion = HTTP_VERSION;
-	contentLength << _contentLength;
-	header = httpVersion + " " + _status + "\r\n";
-	if (!_serverName.empty())
-		header += "Server: " + _serverName + "\r\n";
-	if (!_date.empty())
-		header += "Date: " + _date + "\r\n";
-	if (!_contentType.empty())
-		header += "Content-Type: " + _contentType + "\r\n";
-	header += "Content-Length: " + contentLength.str() + "\r\n";
-	if (!_connection.empty())
-		header += "Connection: " + _connection + "\r\n";
-	if (!_transferEncoding.empty())
-		header += "Transfer-Encoding: " + _transferEncoding + "\r\n";
-	header += "\r\n";
-	return (header);
-}
-*/
-
-std::string	HttpHeaderBuilder::getHeader(void)
-{
-	std::string			header;
-	std::string			httpVersion;
-	std::string			server;
-	std::stringstream	contentLength;
+	std::map<std::string, std::string>::iterator	it;
+	std::string										header;
+	std::string										httpVersion;
+	std::string										server;
 
 	httpVersion = HTTP_VERSION;
 	server = SERVER_SOFTWARE;
-	contentLength << _contentLength;
 	header = httpVersion + " " + _status + "\r\n";
 	header += "Server: " + server + "\r\n";
 	if (!_date.empty())
 		header += "Date: " + _date + "\r\n";
 	if (!_contentType.empty())
 		header += "Content-Type: " + _contentType + "\r\n";
-	if (_contentLength)
-		header += "Content-Length: " + contentLength.str() + "\r\n";
+	if (_contentLength || !_contentType.empty())
+		header += "Content-Length: " + StringUtils::toString(_contentLength) + "\r\n";
 	if (!_location.empty())
 		header += "Location: " + _location + "\r\n";
 	if (!_connection.empty())
 		header += "Connection: " + _connection + "\r\n";
 	if (!_transferEncoding.empty())
 		header += "Transfer-Encoding: " + _transferEncoding + "\r\n";
+	if (!_fields.empty())
+	{
+		for (it = _fields.begin(); it != _fields.end(); it++)
+			header += it->first + ": " + it->second + "\r\n";
+	}
 	header += "\r\n";
 	return (header);
 }
