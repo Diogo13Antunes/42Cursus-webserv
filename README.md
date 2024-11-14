@@ -1,4 +1,6 @@
 # WebServ
+This project is an integral part of the 42 Lisboa curriculum and aims to develop an HTTP server for serving static files. The server is capable of hosting a fully static website, is compatible with HTTP/1.1, and supports the GET, POST, and DELETE methods. Additionally, it can execute CGI scripts in any language installed on the server host.
+
 
 ## Introduction
 
@@ -28,6 +30,13 @@ The WebServ project is a comprehensive web server development project to create 
     
 12. **Deployment:** Learn how to deploy their web server to a production environment, configure domain names, and manage server infrastructure.
 
+
+
+## Configuration File
+To define how your website will be served such as routes, methods, and other options you need to create a configuration file where you can specify all the necessary rules. The configuration file uses YAML syntax for easy readability and flexibility.
+
+For a full list of configuration requirements, click [HERE](./Config_File_Rules.md).
+
 ## Installation / Usage
 This project is designed to work on Linux.
 
@@ -45,16 +54,6 @@ make
 ```
 Note: In the conf.d folder, you’ll find multiple example configuration files that you can use or customize as needed.
 
-### Features
-
-- **HTTP Protocol:** The server supports common HTTP methods (GET, POST, DELETE) and follows the HTTP/1.1 protocol.
-- **File I/O:** Serve static web content by reading and writing files.
-- **Dynamic Content:** Optionally support server-side scripting or templating for dynamic content generation.
-- **Error Handling:** Properly handle errors and respond with appropriate HTTP status codes.
-
-### Configuration File
-
-To check all the requirements of our Config Files click [HERE](./Config_File_Rules.md).
 
 ### HTTP Request Example
 
