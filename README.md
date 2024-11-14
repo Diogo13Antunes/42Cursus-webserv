@@ -30,7 +30,8 @@ In your configuration file, ensure you specify the correct paths for the chosen 
 ./webserv path-to-your-config-file
 ```
 
-### HTTP Request Example
+## HTTP Request/Response Examples
+### Request
 
 ```
 GET / HTTP/1.1
@@ -39,7 +40,7 @@ User-Agent: insomnia/2023.5.8
 Accept: */*
 ```
 
-### HTTP Response Example
+### Response
 
 ```
 HTTP/1.1 200 OK
