@@ -1,6 +1,8 @@
 # WebServ
 This project is part of the 42 Lisboa curriculum and involves developing an HTTP server in C++ from scratch to serve static files. The server is capable of hosting a fully static website, supports HTTP/1.1, and handles GET, POST, and DELETE methods. Additionally, it can execute CGI scripts in any language installed on the server host.
 
+For more information about WebServ, see the project [subject](https://github.com/dspereira/42Cursus-webserv/blob/main/en.subject.pdf).
+
 ## Configuration File
 To define how your website will be served such as routes, methods, and other options you need to create a configuration file where you can specify all the necessary rules. The configuration file uses YAML syntax for easy readability and flexibility.
 
