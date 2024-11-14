@@ -32,7 +32,7 @@ In your configuration file, ensure you specify the correct paths for the chosen 
 ./webserv path-to-your-config-file
 ```
 
-## HTTP Request/Response Examples
+## HTTP Request/Response Header Examples
 ### Request
 
 ```
