@@ -1,15 +1,6 @@
 # WebServ
 
-## Table of Content
-
-- [Introduction](#introduction)
-- [Getting Started](#getting-started)
-- [Features](#features)
-- [Configuration File](#configuration-file)
-- [HTTP Request Example](#http-request-example)
-- [HTTP Response Example](#http-response-example)
-
-### Introduction
+## Introduction
 
 The WebServ project is a comprehensive web server development project to create a functional web server from scratch. The project aims to teach the following key concepts and skills:
 
@@ -37,23 +28,22 @@ The WebServ project is a comprehensive web server development project to create 
     
 12. **Deployment:** Learn how to deploy their web server to a production environment, configure domain names, and manage server infrastructure.
 
-### Getting Started
+## Installation / Usage
+This project is designed to work on Linux.
 
-To get started with this project, follow these steps:
-
-1. Clone the repository to your local machine:
+### Clone repo:
 ```bash
-git clone git@github.com:dspereira/42Cursus-webserv.git
+git clone git@github.com:dspereira/42Cursus-webserv.git webserv && cd webserv
 ```
-2. Build and compile the web server code:
+### Build:
 ```bash
 make
 ```
-3. Run the web server:
+### Usage
 ```markdown
-clear && ./webserv [config-file]
+./webserv path-to-your-config-file
 ```
-Replace "[config-file]" with the location of your web server configuration file.
+Note: In the conf.d folder, you’ll find multiple example configuration files that you can use or customize as needed.
 
 ### Features
 
