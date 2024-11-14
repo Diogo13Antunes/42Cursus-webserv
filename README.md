@@ -50,3 +50,6 @@ Content-Type: text/html
 Content-Length: 0
 Connection: keep-alive
 ```
+
+## License
+This project is licensed under the [MIT License](https://github.com/dspereira/42Cursus-webserv/blob/main/LICENSE).
