@@ -32,6 +32,12 @@ In your configuration file, ensure you specify the correct paths for the chosen 
 ./webserv path-to-your-config-file
 ```
 
+Example:
+```markdown
+./webserv conf.d/users_database.conf
+```
+
+
 ## HTTP Request/Response Header Examples
 ### Request
 
