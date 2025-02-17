@@ -1,5 +1,5 @@
 # WebServ
-This project is part of the 42 Lisboa curriculum and involves developing an HTTP server in C++ from scratch to serve static files. The server is capable of hosting a fully static website, supports HTTP/1.1, and handles GET, POST, and DELETE methods. Additionally, it can execute CGI scripts in any language installed on the server host.
+This project is part of the 42 Lisboa curriculum and involves developing an HTTP server in C++ from scratch to serve static website. The server is capable of hosting a fully static website, supports HTTP/1.1, and handles GET, POST, and DELETE methods. Additionally, it can execute CGI scripts in any language installed on the server host.
 
 For more information about WebServ, see the project [subject](https://github.com/dspereira/42Cursus-webserv/blob/main/en.subject.pdf).
 
